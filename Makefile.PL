@@ -18,6 +18,6 @@ requires       ('Moose'            => '0');
 requires       ('namespace::clean' => '0');
 test_requires  ('Test::More'       => '0');
 test_requires  ('Test::Script'     => '0');
-#tests_recursive();
+tests_recursive();
 author_tests   ('xt');
 WriteAll();
