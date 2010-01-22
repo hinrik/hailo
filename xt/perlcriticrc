@@ -1,0 +1,20 @@
+# level 3 is a nice compromise
+severity = 3
+verbose  = 3
+
+# these policies are either too anal, demand additional dependencies,
+# or inhibit backwards-compatability
+[-RegularExpressions::RequireExtendedFormatting]
+
+[-ValuesAndExpressions::ProhibitConstantPragma]
+
+[-Variables::ProhibitPackageVars]
+[-Variables::RequireLocalizedPunctuationVars]
+
+[-BuiltinFunctions::ProhibitStringyEval]
+
+[-Subroutines::ProhibitBuiltinHomonyms]
+[-Subroutines::RequireArgUnpacking]
+
+[-ErrorHandling::RequireCarping]
+[-ErrorHandling::RequireCheckingReturnValueOfEval]

@@ -1,0 +1,83 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Encode qw<decode>;
+use Getopt::Long qw<:config autohelp no_ignore_case>;
+use Hal;
+use Pod::Usage;
+
+my $VERSION = '0.01';
+
+# use utf8 everywhere
+$_ = decode('utf8', $_) for @ARGV;
+binmode $_, ':encoding(utf8)' for (*STDIN, *STDOUT, *STDERR);
+
+GetOptions(
+    'l|learn=s'     => \my $learn,
+    't|train=s'     => \my $train_file,
+    'r|reply=s'     => \my $reply,
+    'o|order=s'     => \(my $order = 5),
+    'b|brain=s'     => \my $brain_file,
+    'S|storage=s'   => \my $storage,
+    'T|tokenizer=s' => \my $tokenizer,
+    'v|version'     => sub { print "hal version $VERSION\n"; exit },
+) or pod2usage();
+
+my $hal = Hal->new(
+    file      => $brain_file,
+    order     => $order,
+    storage   => $storage,
+    tokenizer => $tokenizer,
+);
+
+$hal->train($train_file) if defined $train_file;
+$hal->learn($learn)      if defined $learn;
+$hal->save()             if defined $brain_file;
+
+if (defined $reply) {
+    my $answer = $hal->reply($reply);
+    die "I don't know enough to answer you yet.\n" if !defined $answer;
+    print $answer, "\n";
+}
+
+=encoding utf8
+
+=head1 NAME
+
+hal - Command-line interface to the L<Hal|Hal> Markov bot
+
+=head1 SYNOPSIS
+
+B<hal> <options>
+
+ Options:
+   -l STRING, --learn=NAME      Learn from STRING
+   -t FILE,   --train=FILE      Learn from all the lines in FILE
+   -r STRING, --reply=STRING    Reply to STRING
+   -o INT,    --order=INT       Change Markov order from 5 to INT
+   -b FILE,   --brain=FILE      Load/save brain to/from FILE
+   -C CLASS,  --class=CLASS     Use storage CLASS instead of 'Perl'
+   -T CLASS,  --tokenizer=CLASS Use tokenizer CLASS instead of 'Generic'
+   -h,        --help            This help message
+   -v,        --version         Print verion and exit
+
+Note: All input/output and files are assumed to be UTF-8 encoded.
+
+=head1 DESCRIPTION
+
+See the documentation for L<Hal|Hal> for more information.
+
+=head1 AUTHOR
+
+Hinrik E<Ouml>rn SigurE<eth>sson, hinrik.sig@gmail.com
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2010 Hinrik E<Ouml>rn SigurE<eth>sson
+
+This program is free software, you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut

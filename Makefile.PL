@@ -1,0 +1,21 @@
+use strict;
+use warnings;
+use inc::Module::Install;
+use 5.006;
+
+name           ('Hal');
+perl_version   ('5.006');
+author         ('Hinrik Örn Sigurðsson <hinrik.sig@gmail.com>');
+abstract_from  ('lib/Hal.pm');
+version_from   ('lib/Hal.pm');
+install_script ('script/hal');
+license        ('perl');
+githubmeta     ();
+requires       ('Encode'          => '0');
+requires       ('List::MoreUtils' => '0');
+requires       ('Storable'        => '0');
+test_requires  ('Test::More'      => '0');
+test_requires  ('Test::Script'    => '0');
+tests_recursive();
+author_tests   ('xt');
+WriteAll();
