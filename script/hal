@@ -58,7 +58,7 @@ B<hal> <options>
    -r STRING, --reply=STRING    Reply to STRING
    -o INT,    --order=INT       Change Markov order from 5 to INT
    -b FILE,   --brain=FILE      Load/save brain to/from FILE
-   -C CLASS,  --class=CLASS     Use storage CLASS instead of 'Perl'
+   -S CLASS,  --storage=CLASS   Use storage CLASS instead of 'Perl'
    -T CLASS,  --tokenizer=CLASS Use tokenizer CLASS instead of 'Generic'
    -h,        --help            This help message
    -v,        --version         Print verion and exit
