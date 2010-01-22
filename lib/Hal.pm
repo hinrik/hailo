@@ -1,5 +1,5 @@
 package Hal;
-use 5.10.0;
+use 5.010;
 use Moose;
 use namespace::clean -except => 'meta';
 
@@ -87,7 +87,7 @@ sub _build_storage {
     eval "require $storage";
     die $@ if $@;
 
-    $storage->new(
+    return $storage->new(
         file  => $self->brain_file,
         order => $self->order,
     );
@@ -108,7 +108,7 @@ sub _build_tokenizer {
     eval "require $tokenizer";
     die $@ if $@;
 
-    $tokenizer->new();
+    return $tokenizer->new();
 }
 
 sub run {
@@ -123,6 +123,7 @@ sub run {
         die "I don't know enough to answer you yet.\n" if !defined $answer;
         say $answer;
     }
+    return;
 }
 
 sub save {
