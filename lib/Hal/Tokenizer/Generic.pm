@@ -43,7 +43,7 @@ sub make_output {
     my $string = join '', @_;
 
     # capitalize the first letter of every sentence
-    $string =~ s/^($OPEN_QUOTE?)($WORD)/$1.$2.ucfirst($3)/eg;
+    $string =~ s/^($OPEN_QUOTE?)($WORD)/$1.ucfirst($2)/e;
     $string =~ s/($TERMINATOR\s+)($OPEN_QUOTE?)($WORD)/$1.$2.ucfirst($3)/eg;
 
     # capitalize the word 'I' between word boundaries
