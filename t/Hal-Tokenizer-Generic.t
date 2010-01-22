@@ -1,3 +1,4 @@
+use 5.10.0;
 use utf8;
 use Test::More tests => 1;
 use Hal::Tokenizer::Generic;
@@ -12,7 +13,7 @@ subtest make_tokens => sub {
         is_deeply(
             [ Hal::Tokenizer::Generic::make_tokens(undef, $str) ],
             $tokens,
-            "make_tokens: <<$str>> ==> <<" . (join ' ', map { qq['$_'] } @$tokens) . ">>"
+            "make_tokens: <<$str>> ==> " . (join ' ', map { qq[<<$_>>] } @$tokens) . ""
         );
     };
 
@@ -24,6 +25,12 @@ subtest make_tokens => sub {
     $t->("", undef);
     $t->("foo bar", [ 'foo', ' ', 'bar' ]);
     $t->("Æ", [ 'Æ' ]);
+
+    # Apostrophe
+    #use Data::Dump 'dump';
+    #say dump Hal::Tokenizer::Generic::make_tokens(undef, "'foo' 'bar'");
+    $t->("'foo' 'bar'", [ ("'", "foo", "'", " ", "'", "bar", "'") ]);
+    $t->("’foo’ ’bar’", [ ("’", "foo", "’", " ", "’", "bar", "’") ]);
 
     done_testing();
 };
