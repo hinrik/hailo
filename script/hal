@@ -1,46 +1,15 @@
 #!/usr/bin/perl
-
-use strict;
-use warnings;
-
-use Encode qw<decode>;
-use Getopt::Long qw<:config autohelp no_ignore_case>;
+use Moose;
+use FindBin qw($Bin);
+use lib "$Bin/../lib";
 use Hal;
-use Pod::Usage;
-
-my $VERSION = '0.01';
+use Encode qw(decode);
 
 # use utf8 everywhere
 $_ = decode('utf8', $_) for @ARGV;
 binmode $_, ':encoding(utf8)' for (*STDIN, *STDOUT, *STDERR);
 
-GetOptions(
-    'l|learn=s'     => \my $learn,
-    't|train=s'     => \my $train_file,
-    'r|reply=s'     => \my $reply,
-    'o|order=s'     => \(my $order = 5),
-    'b|brain=s'     => \my $brain_file,
-    'S|storage=s'   => \my $storage,
-    'T|tokenizer=s' => \my $tokenizer,
-    'v|version'     => sub { print "hal version $VERSION\n"; exit },
-) or pod2usage();
-
-my $hal = Hal->new(
-    file      => $brain_file,
-    order     => $order,
-    storage   => $storage,
-    tokenizer => $tokenizer,
-);
-
-$hal->train($train_file) if defined $train_file;
-$hal->learn($learn)      if defined $learn;
-$hal->save()             if defined $brain_file;
-
-if (defined $reply) {
-    my $answer = $hal->reply($reply);
-    die "I don't know enough to answer you yet.\n" if !defined $answer;
-    print $answer, "\n";
-}
+Hal->new_with_options->run;
 
 =encoding utf8
 

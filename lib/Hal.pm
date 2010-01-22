@@ -1,68 +1,140 @@
 package Hal;
+use 5.10.0;
+use Moose;
+use namespace::clean -except => 'meta';
 
-use strict;
-use warnings;
+with qw(MooseX::Getopt);
 
-our $DEFAULT_ORDER   = 5;
-our $DEFAULT_BACKEND = 'Perl';
-our $DEFAULT_TOKE    = 'Generic';
+our $VERSION = '0.02';
 
-our $VERSION = '0.01';
+has learn_str => (
+    traits        => [qw(Getopt)],
+    cmd_aliases   => "l",
+    cmd_flag      => "learn",
+    documentation => "Learn from STRING",
+    isa           => "Str",
+    is            => "ro",
+);
 
-sub new {
-    my ($package, %args) = @_;
-    my $self = bless \%args, $package;
+has train_file => (
+    traits        => [qw(Getopt)],
+    cmd_aliases   => "t",
+    cmd_flag      => "train",
+    documentation => "Learn from all the lines in FILE",
+    isa           => "Str",
+    is            => "ro",
+);
+
+has reply_str => (
+    traits        => [qw(Getopt)],
+    cmd_aliases   => "r",
+    cmd_flag      => "reply",
+    documentation => "Reply to STRING",
+    isa           => "Str",
+    is            => "ro",
+);
+
+has order         => (
+    traits        => [qw(Getopt)],
+    cmd_aliases   => "o",
+    cmd_flag      => "order",
+    documentation => "Markov order",
+    isa           => "Int",
+    is            => "ro",
+    default       => 5,
+);
+
+has brain_file => (
+    traits        => [qw(Getopt)],
+    cmd_aliases   => "b",
+    cmd_flag      => "brain",
+    documentation => "Load/save brain to/from FILE",
+    isa           => "Str",
+    is            => "ro",
+);
+
+has storage_class => (
+    traits        => [qw(Getopt)],
+    cmd_aliases   => "S",
+    cmd_flag      => "storage",
+    documentation => "Use storage CLASS",
+    isa           => "Str",
+    is            => "ro",
+    default       => "Perl",
+);
+
+has tokenizer_class => (
+    traits        => [qw(Getopt)],
+    cmd_aliases   => "S",
+    cmd_flag      => "storage",
+    documentation => "Use tokenizer CLASS",
+    isa           => "Str",
+    is            => "ro",
+    default       => "Generic",
+);
+
+has storage => (
+    traits      => [qw(NoGetopt)],
+    lazy_build  => 1,
+    is          => 'ro',
+);
+
+sub _build_storage {
+    my ($self) = @_;
     
-    if (!defined $self->{storage} || $self->{storage} !~ /^\w+$/) {
-        $self->{storage} = $DEFAULT_BACKEND;
-    }
-    if (!defined $self->{tokenizer} || $self->{tokenizer} !~ /^\w+$/) {
-        $self->{tokenizer} = $DEFAULT_TOKE;
-    }
-    if (!defined $self->{order} || $self->{order} !~ /^\d+$/) {
-        $self->{order} = $DEFAULT_ORDER;
-    }
-    
-    $self->_create_storage();
-    $self->_create_tokenizer();
+    my $storage_class = $self->storage_class;
+    my $storage = "Hal::Storage::$storage_class";
+    eval "require $storage";
+    die $@ if $@;
 
-    return $self;
+    $storage->new(
+        file  => $self->brain_file,
+        order => $self->order,
+    );
+}
+
+has tokenizer => (
+    traits      => [qw(NoGetopt)],
+    lazy_build  => 1,
+    is          => 'ro',
+);
+
+sub _build_tokenizer {
+    my ($self) = @_;
+
+    my $tokenizer_class = $self->tokenizer_class;
+    
+    my $tokenizer = "Hal::Tokenizer::$tokenizer_class";
+    eval "require $tokenizer";
+    die $@ if $@;
+
+    $tokenizer->new();
+}
+
+sub run {
+    my $self = shift;
+
+    $self->train($self->train_file) if $self->train_file;
+    $self->learn($self->learn_str)  if $self->learn_str;
+    $self->save()                   if $self->brain_file;
+
+    if (defined $self->reply_str) {
+        my $answer = $self->reply($self->reply_str);
+        die "I don't know enough to answer you yet.\n" if !defined $answer;
+        say $answer;
+    }
 }
 
 sub save {
     my ($self) = @_;
-    $self->{storage}->save();
-    return;
-}
-
-sub _create_storage {
-    my ($self) = @_;
-    
-    my $storage = "Hal::Storage::$self->{storage}";
-    eval "require $storage";
-    $self->{storage} = $storage->new(
-        file  => $self->{file},
-        order => $self->{order},
-    );
-
-    delete $self->{file};
-    delete $self->{order};
-
-    return;
-}
-
-sub _create_tokenizer {
-    my ($self) = @_;
-    
-    my $tokenizer = "Hal::Tokenizer::$self->{tokenizer}";
-    eval "require $tokenizer";
-    $self->{tokenizer} = $tokenizer->new();
-
+    $self->storage->save();
     return;
 }
 
 sub train {
-    my ($self, $filename) = @_;
+    my ($self) = @_;
+
+    my $filename = $self->train_file;
 
     open my $fh, '<:encoding(utf8)', $filename or die "Can't open file '$filename': $!\n";
     while (my $line = <$fh>) {
@@ -74,9 +146,9 @@ sub train {
 }
 
 sub learn {
-    my $self = shift;
-    my @tokens = $self->{tokenizer}->make_tokens(shift);
-    my $storage = $self->{storage};
+    my ($self, $str) = @_;
+    my @tokens = $self->tokenizer->make_tokens($str);
+    my $storage = $self->storage;
 
     # only learn from inputs which are long enough
     return if @tokens < $storage->order();
@@ -104,8 +176,8 @@ sub learn {
 
 sub reply {
     my ($self, $input) = @_;
-    my $storage = $self->{storage};
-    my $toke = $self->{tokenizer};
+    my $storage = $self->storage;
+    my $toke = $self->tokenizer;
     
     my @tokens = $toke->make_tokens($input);
     my @key_tokens = grep { $storage->token_exists($_) } $toke->find_key_tokens(@tokens);
@@ -152,7 +224,7 @@ sub reply {
 # removes corresponding element from $key_tokens array if used
 sub _next_token {
     my ($self, $blurb, $key_tokens) = @_;
-    my $storage = $self->{storage};
+    my $storage = $self->storage;
 
     my $next_tokens = $storage->next_tokens($blurb);
 
@@ -169,7 +241,7 @@ sub _next_token {
 # removes corresponding element from $key_tokens array if used
 sub _prev_token {
     my ($self, $blurb, $key_tokens) = @_;
-    my $storage = $self->{storage};
+    my $storage = $self->storage;
 
     my $prev_tokens = $storage->prev_tokens($blurb);
 
