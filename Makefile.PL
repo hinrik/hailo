@@ -15,6 +15,7 @@ requires       ('Encode'           => '0');
 requires       ('List::MoreUtils'  => '0');
 requires       ('Storable'         => '0');
 requires       ('Moose'            => '0');
+requires       ('MooseX::Getopt'   => '0');
 requires       ('namespace::clean' => '0');
 test_requires  ('Test::More'       => '0');
 test_requires  ('Test::Script'     => '0');
