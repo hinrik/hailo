@@ -9,7 +9,7 @@ our $VERSION = '0.01';
 
 our $APOSTROPHE  = qr/['’]/;
 our $WORD        = qr/\w+(?:$APOSTROPHE\w+)*/;
-our $TOKEN       = qr/(?:$WORD|\s+|.)/;
+our $TOKEN       = qr/(?:$WORD| +|.)/;
 our $OPEN_QUOTE  = qr/['"‘“«»„「『‹]/;
 our $TERMINATOR  = qr/(?:[…?!.‽]|$WORD:)/;
 our $INTERESTING = qr/[[:alpha:]]/;
