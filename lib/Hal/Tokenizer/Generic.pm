@@ -8,7 +8,7 @@ use base 'Hal::Tokenizer';
 our $VERSION = '0.01';
 
 our $APOSTROPHE  = qr/['’]/;
-our $WORD        = qr/\w+(?:$APOSTROPHE\w+)?/;
+our $WORD        = qr/\w+(?:$APOSTROPHE\w+)*/;
 our $TOKEN       = qr/(?:$WORD|.)/;
 our $OPEN_QUOTE  = qr/['"‘“«»„「『‹]/;
 our $TERMINATOR  = qr/[…?!.‽]/;
