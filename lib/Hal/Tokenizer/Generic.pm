@@ -1,10 +1,9 @@
 package Hal::Tokenizer::Generic;
-
-use strict;
-use warnings;
+use Moose;
 use List::MoreUtils qw<uniq>;
 
-use base 'Hal::Tokenizer';
+with 'Hal::Tokenizer';
+
 our $VERSION = '0.01';
 
 our $APOSTROPHE  = qr/['’]/;
@@ -13,11 +12,6 @@ our $TOKEN       = qr/(?:$WORD| +|.)/;
 our $OPEN_QUOTE  = qr/['"‘“«»„「『‹]/;
 our $TERMINATOR  = qr/(?:[…?!.‽]|$WORD:)/;
 our $INTERESTING = qr/[[:alpha:]]/;
-
-sub new {
-    my ($package, %args) = @_;
-    return bless \%args, $package;
-}
 
 # output -> tokens
 sub make_tokens {

@@ -1,10 +1,9 @@
 package Hal::Storage::Perl;
-
-use strict;
-use warnings;
+use Moose;
 use Storable;
 
-use base 'Hal::Storage';
+with 'Hal::Storage';
+
 our $VERSION = '0.01';
 
 sub order {

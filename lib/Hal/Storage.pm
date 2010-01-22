@@ -1,18 +1,14 @@
 package Hal::Storage;
+use Moose::Role;
 
-use strict;
-use warnings;
-use Carp 'croak';
-
-sub new             { croak 'Not implemented!' };
-sub order           { croak 'Not implemented!' };
-sub save            { croak 'Not implemented!' };
-sub add_blurb       { croak 'Not implemented!' };
-sub find_blurb      { croak 'Not implemented!' };
-sub random_blurb    { croak 'Not implemented!' };
-sub token_exists    { croak 'Not implemented!' };
-sub next_tokens     { croak 'Not implemented!' };
-sub prev_tokens     { croak 'Not implemented!' };
+requires 'order';
+requires 'save';
+requires 'add_blurb';
+requires 'find_blurb';
+requires 'random_blurb';
+requires 'token_exists';
+requires 'next_tokens';
+requires 'prev_tokens';
 
 1;
 

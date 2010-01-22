@@ -1,13 +1,9 @@
 package Hal::Tokenizer;
+use Moose::Role;
 
-use strict;
-use warnings;
-use Carp 'croak';
-
-sub new             { croak 'Not implemented!' };
-sub find_key_tokens { croak 'Not implemented!' };
-sub make_tokens     { croak 'Not implemented!' };
-sub make_output     { croak 'Not implemented!' };
+requires 'find_key_tokens';
+requires 'make_tokens';
+requires 'make_output';
 
 1;
 
