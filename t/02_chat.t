@@ -3,7 +3,7 @@ use warnings;
 use Hal;
 use Test::More tests => 2;
 
-my $hal = Hal->new(storage => 'Perl');
+my $hal = Hal->new_with_options(storage => 'Perl');
 my $string = 'Congress shall make no law';
 
 $hal->learn($string);

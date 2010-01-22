@@ -73,13 +73,13 @@ has tokenizer_class => (
     default       => "Generic",
 );
 
-has storage => (
+has storage_obj => (
     traits      => [qw(NoGetopt)],
     lazy_build  => 1,
     is          => 'ro',
 );
 
-sub _build_storage {
+sub _build_storage_obj {
     my ($self) = @_;
     
     my $storage_class = $self->storage_class;
@@ -93,13 +93,13 @@ sub _build_storage {
     );
 }
 
-has tokenizer => (
+has tokenizer_obj => (
     traits      => [qw(NoGetopt)],
     lazy_build  => 1,
     is          => 'ro',
 );
 
-sub _build_tokenizer {
+sub _build_tokenizer_obj {
     my ($self) = @_;
 
     my $tokenizer_class = $self->tokenizer_class;
@@ -128,7 +128,7 @@ sub run {
 
 sub save {
     my ($self) = @_;
-    $self->storage->save();
+    $self->storage_obj->save();
     return;
 }
 
@@ -148,8 +148,8 @@ sub train {
 
 sub learn {
     my ($self, $str) = @_;
-    my @tokens = $self->tokenizer->make_tokens($str);
-    my $storage = $self->storage;
+    my @tokens = $self->tokenizer_obj->make_tokens($str);
+    my $storage = $self->storage_obj;
 
     # only learn from inputs which are long enough
     return if @tokens < $storage->order();
@@ -177,8 +177,8 @@ sub learn {
 
 sub reply {
     my ($self, $input) = @_;
-    my $storage = $self->storage;
-    my $toke = $self->tokenizer;
+    my $storage = $self->storage_obj;
+    my $toke = $self->tokenizer_obj;
     
     my @tokens = $toke->make_tokens($input);
     my @key_tokens = grep { $storage->token_exists($_) } $toke->find_key_tokens(@tokens);
@@ -225,7 +225,7 @@ sub reply {
 # removes corresponding element from $key_tokens array if used
 sub _next_token {
     my ($self, $blurb, $key_tokens) = @_;
-    my $storage = $self->storage;
+    my $storage = $self->storage_obj;
 
     my $next_tokens = $storage->next_tokens($blurb);
 
@@ -242,7 +242,7 @@ sub _next_token {
 # removes corresponding element from $key_tokens array if used
 sub _prev_token {
     my ($self, $blurb, $key_tokens) = @_;
-    my $storage = $self->storage;
+    my $storage = $self->storage_obj;
 
     my $prev_tokens = $storage->prev_tokens($blurb);
 
