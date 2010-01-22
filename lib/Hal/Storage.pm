@@ -90,8 +90,6 @@ The keys are all the tokens that can succeed the blurb.
 Takes a blurb hash reference as an argument and returns a hash reference.
 The keys are all the tokens that can precede the blurb.
 
-=head2
-
 =head1 AUTHOR
 
 Hinrik E<Ouml>rn SigurE<eth>sson, hinrik.sig@gmail.com
