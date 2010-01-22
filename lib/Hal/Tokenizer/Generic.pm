@@ -38,7 +38,7 @@ sub make_output {
 
     # capitalize the first letter of every sentence
     $string =~ s/^($OPEN_QUOTE?)($WORD)/$1.ucfirst($2)/e;
-    $string =~ s/($TERMINATOR\s+)($OPEN_QUOTE?)($WORD)/$1.$2.ucfirst($3)/eg;
+    $string =~ s/($WORD)($TERMINATOR\s+)($OPEN_QUOTE?)($WORD)/$1.$2.$3.ucfirst($4)/eg;
 
     # capitalize the word 'I' between word boundaries
     # except after an apostrophe
