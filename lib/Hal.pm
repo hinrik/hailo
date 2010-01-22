@@ -65,8 +65,8 @@ has storage_class => (
 
 has tokenizer_class => (
     traits        => [qw(Getopt)],
-    cmd_aliases   => "S",
-    cmd_flag      => "storage",
+    cmd_aliases   => "T",
+    cmd_flag      => "tokenizer",
     documentation => "Use tokenizer CLASS",
     isa           => "Str",
     is            => "ro",
