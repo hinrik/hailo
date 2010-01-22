@@ -4,7 +4,7 @@ use inc::Module::Install;
 use 5.006;
 
 name           ('Hal');
-perl_version   ('5.006');
+perl_version   ('5.010');
 author         ('Hinrik Örn Sigurðsson <hinrik.sig@gmail.com>');
 abstract_from  ('lib/Hal.pm');
 version_from   ('lib/Hal.pm');
