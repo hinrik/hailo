@@ -16,10 +16,11 @@ lib/Hal/Storage/Perl.pm
 lib/Hal/Tokenizer.pm
 lib/Hal/Tokenizer/Generic.pm
 Makefile.PL
-MANIFEST
+MANIFEST			This list of files
 script/hal
 t/01_compile.t
 t/02_chat.t
+t/Hal-Tokenizer-Generic.t
 xt/01_pod.t
 xt/02_pod_coverage.t
 xt/03_perl_critic.t
