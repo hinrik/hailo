@@ -303,6 +303,10 @@ Takes a line of text and generates a reply that might be relevant.
 
 Tells the underlying storage backend to save its state.
 
+=head2 C<run>
+
+Run the application according to the command line arguments.
+
 =head1 LICENSE AND COPYRIGHT
 
 Copyright 2010 Hinrik E<Ouml>rn SigurE<eth>sson
