@@ -262,7 +262,7 @@ sub _prev_token {
 
 =head1 NAME
 
-Hal - A Markov bot
+Hal - A conversation bot using Markov chains
 
 =head1 DESCRIPTION
 
