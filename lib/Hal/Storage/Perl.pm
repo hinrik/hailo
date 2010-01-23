@@ -6,11 +6,8 @@ with 'Hal::Storage';
 
 our $VERSION = '0.01';
 
-sub order {
-    my ($self) = @_;
-    return $self->{memory}{order};
-}
-
+# TODO: these data structures aren't very normalized, so they take up
+# much more memory than necessary
 sub new {
     my ($package, %args) = @_;
     my $self = bless \%args, $package;
@@ -30,6 +27,11 @@ sub new {
     }
 
     return $self;
+}
+
+sub order {
+    my ($self) = @_;
+    return $self->{memory}{order};
 }
 
 sub add_blurb {
