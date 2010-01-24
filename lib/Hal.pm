@@ -161,7 +161,6 @@ sub learn {
     return if @tokens < $order;
 
     for my $i (0 .. @tokens - $order) {
-        my %args;
         my @expr = map { $tokens[$_] } ($i .. $i+$order-1);
 
         my ($next_token, $prev_token);
@@ -225,7 +224,7 @@ sub _next_token {
     my $storage = $self->storage_obj;
 
     my @next_tokens = $storage->next_tokens($expr);
-    my %next = map { +$_, 1 } @next_tokens;
+    my %next = map { +$_ => 1 } @next_tokens;
 
     for my $i (0 .. $#{ $key_tokens }) {
         next if !exists $next{ @$key_tokens[$i] };
@@ -243,7 +242,7 @@ sub _prev_token {
     my $storage = $self->storage_obj;
 
     my @prev_tokens = $storage->prev_tokens($expr);
-    my %prev = map { +$_, 1 } @prev_tokens;
+    my %prev = map { +$_ => 1 } @prev_tokens;
 
     for my $i (0 .. $#{ $key_tokens }) {
         next if !exists $prev{ @$key_tokens[$i] };

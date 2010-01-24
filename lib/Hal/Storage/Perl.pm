@@ -16,7 +16,7 @@ sub new {
     }
     else {
         $self->{memory} = {
-            token      => { }, # $token => \@exprs_that_contain_it
+            token      => { }, # $token => \@ehash_of_exprs_that_contain_it
             expr       => { }, # $ehash => \@tokens_it_contains
             next_token => { }, # $ehash => \%tokens_that_can_follow_this_expr
             prev_token => { }, # $ehash => \%tokens_that_can_precede_this_expr

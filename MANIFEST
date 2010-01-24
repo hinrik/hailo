@@ -13,6 +13,7 @@ inc/Module/Install/WriteAll.pm
 lib/Hal.pm
 lib/Hal/Storage.pm
 lib/Hal/Storage/Perl.pm
+lib/Hal/Storage/SQLite.pm
 lib/Hal/Tokenizer.pm
 lib/Hal/Tokenizer/Generic.pm
 Makefile.PL
