@@ -17,6 +17,14 @@ has memory => (
     lazy_build => 1,
 );
 
+has order => (
+    isa    => Int,
+    is     => 'ro',
+    default => sub { shift->memory->{order} },
+);
+
+with 'Hal::Storage';
+
 sub _build_memory {
     my ($self) = @_;
 
@@ -35,14 +43,6 @@ sub _build_memory {
         };
     }
 }
-
-has order => (
-    isa    => Int,
-    is     => 'rw',
-    default => sub { shift->memory->{order} },
-);
-
-with 'Hal::Storage';
 
 sub add_expr {
     my ($self, %args) = @_;
