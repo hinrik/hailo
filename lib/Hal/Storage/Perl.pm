@@ -1,14 +1,13 @@
 package Hal::Storage::Perl;
 use Moose;
 use MooseX::Types::Moose qw<HashRef Int Str>;
-use MooseX::Types::Path::Class qw<File>;
 use namespace::clean -except => 'meta';
 use Storable;
 
 our $VERSION = '0.01';
 
 has file => (
-    isa    => File,
+    isa    => Str,
     is     => 'ro',
 );
 
@@ -40,13 +39,8 @@ sub _build_memory {
 has order => (
     isa    => Int,
     is     => 'rw',
-    #reader => '_gets_order',
+    default => sub { shift->memory->{order} },
 );
-
-#sub _gets_order {
-#    my ($self) = @_;
-#    return $self->memory->{order};
-#}
 
 with 'Hal::Storage';
 
