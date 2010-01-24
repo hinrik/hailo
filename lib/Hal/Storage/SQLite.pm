@@ -49,14 +49,22 @@ sub BUILD {
 
 sub start_training {
     my ($self) = @_;
+
+    # allow for 50MB of in-memory cache
     $self->dbh->do('PRAGMA cache_size = 50000');
+
+    #start a transaction
     $self->dbh->begin_work;
+
     return;
 }
 
 sub stop_training {
     my ($self) = @_;
+
+    # finish a transaction
     $self->dbh->commit;
+
     return;
 }
 
