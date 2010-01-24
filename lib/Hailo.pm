@@ -282,10 +282,6 @@ Hailo - A conversation bot using Markov chains
 This is a chat bot which utilizes Markov chains. It is loosely based on a
 C program called MegaHAL.
 
-=head1 AUTHOR
-
-Hinrik E<Ouml>rn SigurE<eth>sson, hinrik.sig@gmail.com
-
 =head1 METHODS
 
 =head2 C<new>
@@ -319,6 +315,10 @@ Tells the underlying storage backend to save its state.
 =head2 C<run>
 
 Run the application according to the command line arguments.
+
+=head1 AUTHOR
+
+Hinrik E<Ouml>rn SigurE<eth>sson, hinrik.sig@gmail.com
 
 =head1 LICENSE AND COPYRIGHT
 
