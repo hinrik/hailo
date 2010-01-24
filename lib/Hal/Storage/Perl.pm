@@ -64,13 +64,13 @@ sub add_expr {
 
     if (defined $args{next_token}) {
         if (!exists $mem->{next_token}{$ehash}{$args{next_token}}) {
-            $mem->{next_token}{$ehash}{$args{next_token}} = 1;
+            $mem->{next_token}{$ehash}{$args{next_token}} = undef;
         }
     }
 
     if (defined $args{prev_token}) {
         if (!exists $mem->{prev_token}{$ehash}{$args{prev_token}}) {
-            $mem->{prev_token}{$ehash}{$args{prev_token}} = 1;
+            $mem->{prev_token}{$ehash}{$args{prev_token}} = undef;
         }
     }
     
