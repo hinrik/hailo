@@ -1,9 +1,8 @@
 #!/usr/bin/perl
+
 use Moose;
-use FindBin qw($Bin);
-use lib "$Bin/../lib";
-use Hailo;
 use Encode qw(decode);
+use Hailo;
 use namespace::clean -except => 'meta';
 
 __PACKAGE__->meta->make_immutable;
