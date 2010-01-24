@@ -25,6 +25,7 @@ has train_file => (
     cmd_flag      => "train",
     documentation => "Learn from all the lines in FILE",
     isa           => File,
+    coerce        => 1,
     is            => "ro",
 );
 
