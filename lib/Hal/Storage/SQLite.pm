@@ -1,47 +1,67 @@
 package Hal::Storage::SQLite;
 use Moose;
+use MooseX::Types::Moose qw<Int Str>;
 use DBI;
 use DBIx::Perlish;
 use List::Util qw<shuffle>;
 use List::MoreUtils qw<natatime>;
-
-with 'Hal::Storage';
+use namespace::clean -except => 'meta';
 
 our $VERSION = '0.01';
 
-sub new {
-    my ($package, %args) = @_;
-    my $self = bless \%args, $package;
+has file => (
+    isa      => Str,
+    is       => 'ro',
+    required => 1,
+);
 
-    die "No database file specified\n" if !defined $self->{file};
-    $self->{dbh} = DBI->connect(
-        "dbi:SQLite:dbname=$self->{file}",
+has dbh => (
+    isa        => 'DBI::db',
+    is         => 'ro',
+    lazy_build => 1,
+);
+
+has order => (
+    isa     => Int,
+    is      => 'ro',
+    default => sub { db_fetch { info->attribute eq 'markov_order'; return info->text } },
+);
+
+with 'Hal::Storage';
+
+sub _build_dbh {
+    my ($self) = @_;
+
+    return DBI->connect(
+        "dbi:SQLite:dbname=".$self->file,
         '',
         '', 
         { sqlite_unicode => 1, RaiseError => 1 },
     );
-    DBIx::Perlish::init($self->{dbh});
-    $self->_create() if !-s $self->{file};
+}
 
-    return $self;
+sub BUILD {
+    my ($self) = @_;
+    $self->_create_db() if !-s $self->file;
+    DBIx::Perlish::init($self->dbh);
+    return;
 }
 
 sub start_training {
     my ($self) = @_;
-    $self->{dbh}->do('PRAGMA cache_size = 50000');
-    $self->{dbh}->begin_work;
+    $self->dbh->do('PRAGMA cache_size = 50000');
+    $self->dbh->begin_work;
     return;
 }
 
 sub stop_training {
     my ($self) = @_;
-    $self->{dbh}->commit;
+    $self->dbh->commit;
     return;
 }
 
-sub _create {
+sub _create_db{
     my ($self) = @_;
-    my $dbh = $self->{dbh};
 
     my @state = (
         'CREATE TABLE info (
@@ -75,7 +95,7 @@ sub _create {
     );
     
     for my $statement (@state) {
-        my $sth = $dbh->prepare($statement);
+        my $sth = $self->dbh->prepare($statement);
         $sth->execute();
     }
 
@@ -87,15 +107,6 @@ sub _create {
     return;
 }
 
-sub order {
-    my ($self) = @_;
-    
-    return db_fetch {
-        info->attribute eq 'markov_order';
-        return info->text;
-    };
-}
-
 sub add_expr {
     my ($self, %args) = @_;
     my $tokens = $args{tokens};
@@ -104,7 +115,7 @@ sub add_expr {
 
     # dirty hack, patches welcome
     db_insert 'expr', { dummy => undef };
-    my $expr_id = $self->{dbh}->selectrow_array('SELECT last_insert_rowid()');
+    my $expr_id = $self->dbh->selectrow_array('SELECT last_insert_rowid()');
 
     # add the tokens
     my @token_ids = $self->_add_tokens($tokens);
