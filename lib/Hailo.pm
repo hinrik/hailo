@@ -1,5 +1,5 @@
 package Hailo;
-use 5.010;
+
 use Moose;
 use MooseX::Types -declare => [qw(OrderInt)];
 use MooseX::Types::Moose qw/Int Str/;

@@ -1,10 +1,10 @@
 use strict;
 use warnings;
 use inc::Module::Install;
-use 5.006;
+use 5.008;
 
 name           ('Hailo');
-perl_version   ('5.010');
+perl_version   ('5.008');
 author         ('Hinrik Örn Sigurðsson <hinrik.sig@gmail.com>');
 abstract_from  ('lib/Hailo.pm');
 version_from   ('lib/Hailo.pm');
