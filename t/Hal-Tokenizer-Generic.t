@@ -1,5 +1,7 @@
 use 5.10.0;
 use utf8;
+use strict;
+use warnings;
 use Test::More tests => 1;
 use Hal::Tokenizer::Generic;
 
