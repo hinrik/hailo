@@ -1,4 +1,5 @@
 package Hailo::Storage::SQLite;
+
 use Moose;
 use MooseX::Types::Moose qw<Int Str>;
 use DBI;

@@ -4,6 +4,7 @@ use FindBin qw($Bin);
 use lib "$Bin/../lib";
 use Hailo;
 use Encode qw(decode);
+use namespace::clean -except => 'meta';
 
 __PACKAGE__->meta->make_immutable;
 

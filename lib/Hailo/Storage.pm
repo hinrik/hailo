@@ -1,5 +1,7 @@
 package Hailo::Storage;
+
 use Moose::Role;
+use namespace::clean -except => 'meta';
 
 requires 'order';
 requires 'save';

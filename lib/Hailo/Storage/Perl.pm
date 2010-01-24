@@ -1,8 +1,9 @@
 package Hailo::Storage::Perl;
+
 use Moose;
 use MooseX::Types::Moose qw<HashRef Int Str>;
-use namespace::clean -except => 'meta';
 use Storable;
+use namespace::clean -except => 'meta';
 
 our $VERSION = '0.01';
 

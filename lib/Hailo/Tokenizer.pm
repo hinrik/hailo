@@ -1,5 +1,7 @@
 package Hailo::Tokenizer;
+
 use Moose::Role;
+use namespace::clean -except => 'meta';
 
 requires 'find_key_tokens';
 requires 'make_tokens';
