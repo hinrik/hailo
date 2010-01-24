@@ -1,6 +1,10 @@
 package Hal;
 use 5.010;
 use Moose;
+use MooseX::Types 
+    -declare => [ qw( OrderInt ) ];
+use MooseX::Types::Moose qw/Int Str/;
+use MooseX::Types::Path::Class qw(File);
 use namespace::clean -except => 'meta';
 with qw(MooseX::Getopt);
 
@@ -11,7 +15,7 @@ has learn_str => (
     cmd_aliases   => "l",
     cmd_flag      => "learn",
     documentation => "Learn from STRING",
-    isa           => "Str",
+    isa           => Str,
     is            => "ro",
 );
 
@@ -20,7 +24,7 @@ has train_file => (
     cmd_aliases   => "t",
     cmd_flag      => "train",
     documentation => "Learn from all the lines in FILE",
-    isa           => "Str",
+    isa           => File,
     is            => "ro",
 );
 
@@ -29,16 +33,21 @@ has reply_str => (
     cmd_aliases   => "r",
     cmd_flag      => "reply",
     documentation => "Reply to STRING",
-    isa           => "Str",
+    isa           => Str,
     is            => "ro",
 );
+
+subtype OrderInt,
+    as Int,
+    where { $_ > 0 and $_ < 50 },
+    message { "Order outsite 1..50 will explode the database" };
 
 has order         => (
     traits        => [qw(Getopt)],
     cmd_aliases   => "o",
     cmd_flag      => "order",
     documentation => "Markov order",
-    isa           => "Int",
+    isa           => OrderInt,
     is            => "ro",
     default       => 5,
 );
@@ -48,7 +57,7 @@ has brain_file => (
     cmd_aliases   => "b",
     cmd_flag      => "brain",
     documentation => "Load/save brain to/from FILE",
-    isa           => "Str",
+    isa           => Str,
     is            => "ro",
 );
 
@@ -57,7 +66,7 @@ has storage_class => (
     cmd_aliases   => "S",
     cmd_flag      => "storage",
     documentation => "Use storage CLASS",
-    isa           => "Str",
+    isa           => Str,
     is            => "ro",
     default       => "Perl",
 );
@@ -67,7 +76,7 @@ has tokenizer_class => (
     cmd_aliases   => "T",
     cmd_flag      => "tokenizer",
     documentation => "Use tokenizer CLASS",
-    isa           => "Str",
+    isa           => Str,
     is            => "ro",
     default       => "Generic",
 );
