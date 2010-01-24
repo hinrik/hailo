@@ -12,23 +12,23 @@ has file => (
     is     => 'ro',
 );
 
-has memory => (
-    isa        => HashRef,
-    is         => 'ro',
-    lazy_build => 1,
-);
-
 has order => (
     isa    => Int,
     is     => 'ro',
     default => sub { shift->memory->{order} },
 );
 
+has _memory => (
+    isa        => HashRef,
+    is         => 'ro',
+    lazy_build => 1,
+);
+
 with 'Hailo::Storage';
 
 __PACKAGE__->meta->make_immutable;
 
-sub _build_memory {
+sub _build__memory {
     my ($self) = @_;
 
     if (defined $self->file && -s $self->file) {
@@ -49,7 +49,7 @@ sub _build_memory {
 
 sub add_expr {
     my ($self, %args) = @_;
-    my $mem = $self->memory;
+    my $mem = $self->_memory;
 
     my $ehash = _hash_tokens($args{tokens});
     $mem->{expr}{$ehash} = $args{tokens};
@@ -76,26 +76,26 @@ sub add_expr {
 
 sub token_exists {
     my ($self, $token) = @_;
-    return 1 if exists $self->memory->{token}{$token};
+    return 1 if exists $self->_memory->{token}{$token};
     return;
 }
 
 sub random_expr {
     my ($self, $token) = @_;
-    my @ehash = @{ $self->memory->{token}{$token} };
-    return @{ $self->memory->{expr}{ $ehash[rand @ehash] } };
+    my @ehash = @{ $self->_memory->{token}{$token} };
+    return @{ $self->_memory->{expr}{ $ehash[rand @ehash] } };
 }
 
 sub next_tokens {
     my ($self, $expr) = @_;
     my $ehash = _hash_tokens($expr);
-    return keys %{ $self->memory->{next_token}{ $ehash } };
+    return keys %{ $self->_memory->{next_token}{ $ehash } };
 }
 
 sub prev_tokens {
     my ($self, $expr) = @_;
     my $ehash = _hash_tokens($expr);
-    return keys %{ $self->memory->{prev_token}{ $ehash } };
+    return keys %{ $self->_memory->{prev_token}{ $ehash } };
 }
 
 # hash the contents of an expression for unique identification
@@ -109,7 +109,7 @@ sub _hash_tokens {
 
 sub save {
     my ($self) = @_;
-    store($self->memory, $self->file);
+    store($self->_memory, $self->file);
     return;
 }
 

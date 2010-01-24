@@ -16,22 +16,22 @@ has file => (
     required => 1,
 );
 
-has dbh => (
-    isa        => 'DBI::db',
-    is         => 'ro',
-    lazy_build => 1,
-);
-
 has order => (
     isa     => Int,
     is      => 'rw',
+);
+
+has _dbh => (
+    isa        => 'DBI::db',
+    is         => 'ro',
+    lazy_build => 1,
 );
 
 with 'Hailo::Storage';
 
 __PACKAGE__->meta->make_immutable;
 
-sub _build_dbh {
+sub _build__dbh {
     my ($self) = @_;
 
     return DBI->connect(
@@ -45,7 +45,7 @@ sub _build_dbh {
 sub BUILD {
     my ($self) = @_;
 
-    DBIx::Perlish::init($self->dbh);
+    DBIx::Perlish::init($self->_dbh);
 
     if (-s $self->file) {
         $self->order(db_fetch {
@@ -69,10 +69,10 @@ sub start_training {
     my ($self) = @_;
 
     # allow for 50MB of in-memory cache
-    $self->dbh->do('PRAGMA cache_size = 50000');
+    $self->_dbh->do('PRAGMA cache_size = 50000');
 
     #start a transaction
-    $self->dbh->begin_work;
+    $self->_dbh->begin_work;
 
     return;
 }
@@ -81,7 +81,7 @@ sub stop_training {
     my ($self) = @_;
 
     # finish a transaction
-    $self->dbh->commit;
+    $self->_dbh->commit;
 
     return;
 }
@@ -121,7 +121,7 @@ sub _create_db {
     );
     
     for my $statement (@state) {
-        my $sth = $self->dbh->prepare($statement);
+        my $sth = $self->_dbh->prepare($statement);
         $sth->execute();
     }
 
@@ -136,7 +136,7 @@ sub add_expr {
 
     # dirty hack, patches welcome
     db_insert 'expr', { dummy => undef };
-    my $expr_id = $self->dbh->selectrow_array('SELECT last_insert_rowid()');
+    my $expr_id = $self->_dbh->selectrow_array('SELECT last_insert_rowid()');
 
     # add the tokens
     my @token_ids = $self->_add_tokens($tokens);

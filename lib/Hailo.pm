@@ -80,13 +80,13 @@ has tokenizer_class => (
     default       => "Generic",
 );
 
-has storage_obj => (
+has _storage_obj => (
     traits      => [qw(NoGetopt)],
     lazy_build  => 1,
     is          => 'ro',
 );
 
-has tokenizer_obj => (
+has _tokenizer_obj => (
     traits      => [qw(NoGetopt)],
     lazy_build  => 1,
     is          => 'ro',
@@ -96,7 +96,7 @@ with qw(MooseX::Getopt);
 
 __PACKAGE__->meta->make_immutable;
 
-sub _build_storage_obj {
+sub _build__storage_obj {
     my ($self) = @_;
     
     my $storage_class = $self->storage_class;
@@ -113,7 +113,7 @@ sub _build_storage_obj {
     );
 }
 
-sub _build_tokenizer_obj {
+sub _build__tokenizer_obj {
     my ($self) = @_;
 
     my $tokenizer_class = $self->tokenizer_class;
@@ -142,14 +142,14 @@ sub run {
 
 sub save {
     my ($self) = @_;
-    $self->storage_obj->save();
+    $self->_storage_obj->save();
     return;
 }
 
 sub train {
     my ($self) = @_;
 
-    $self->storage_obj->start_training();
+    $self->_storage_obj->start_training();
     my $filename = $self->train_file;
 
     open my $fh, '<:encoding(utf8)', $filename or die "Can't open file '$filename': $!\n";
@@ -158,7 +158,7 @@ sub train {
         $self->learn($line);
     }
     close $fh;
-    $self->storage_obj->stop_training();
+    $self->_storage_obj->stop_training();
     return;
 }
 
@@ -167,9 +167,9 @@ sub learn {
 
     # a newline functions as beginning-of-string or end-of-string
     $input = "\n$input\n";
-    my @tokens = $self->tokenizer_obj->make_tokens($input);
+    my @tokens = $self->_tokenizer_obj->make_tokens($input);
 
-    my $storage = $self->storage_obj;
+    my $storage = $self->_storage_obj;
     my $order = $storage->order;
 
     # only learn from inputs which are long enough
@@ -195,9 +195,9 @@ sub learn {
 
 sub reply {
     my ($self, $input) = @_;
-    my $storage = $self->storage_obj;
+    my $storage = $self->_storage_obj;
     my $order = $storage->order;
-    my $toke = $self->tokenizer_obj;
+    my $toke = $self->_tokenizer_obj;
     
     my @tokens = $toke->make_tokens($input);
     my @key_tokens = grep { $storage->token_exists($_) } $toke->find_key_tokens(@tokens);
@@ -236,7 +236,7 @@ sub reply {
 # removes corresponding element from $key_tokens array if used
 sub _next_token {
     my ($self, $expr, $key_tokens) = @_;
-    my $storage = $self->storage_obj;
+    my $storage = $self->_storage_obj;
 
     my @next_tokens = $storage->next_tokens($expr);
     my %next = map { +$_ => 1 } @next_tokens;
@@ -254,7 +254,7 @@ sub _next_token {
 # removes corresponding element from $key_tokens array if used
 sub _prev_token {
     my ($self, $expr, $key_tokens) = @_;
-    my $storage = $self->storage_obj;
+    my $storage = $self->_storage_obj;
 
     my @prev_tokens = $storage->prev_tokens($expr);
     my %prev = map { +$_ => 1 } @prev_tokens;
