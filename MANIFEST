@@ -10,18 +10,18 @@ inc/Module/Install/Metadata.pm
 inc/Module/Install/Scripts.pm
 inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
-lib/Hal.pm
-lib/Hal/Storage.pm
-lib/Hal/Storage/Perl.pm
-lib/Hal/Storage/SQLite.pm
-lib/Hal/Tokenizer.pm
-lib/Hal/Tokenizer/Generic.pm
+lib/Hailo.pm
+lib/Hailo/Storage.pm
+lib/Hailo/Storage/Perl.pm
+lib/Hailo/Storage/SQLite.pm
+lib/Hailo/Tokenizer.pm
+lib/Hailo/Tokenizer/Generic.pm
 Makefile.PL
 MANIFEST			This list of files
-script/hal
+script/hailo
 t/01_compile.t
 t/02_chat.t
-t/Hal-Tokenizer-Generic.t
+t/Hailo-Tokenizer-Generic.t
 xt/01_pod.t
 xt/02_pod_coverage.t
 xt/03_perl_critic.t

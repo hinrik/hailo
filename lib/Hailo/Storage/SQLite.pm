@@ -1,4 +1,4 @@
-package Hal::Storage::SQLite;
+package Hailo::Storage::SQLite;
 use Moose;
 use MooseX::Types::Moose qw<Int Str>;
 use DBI;
@@ -26,7 +26,7 @@ has order => (
     is      => 'rw',
 );
 
-with 'Hal::Storage';
+with 'Hailo::Storage';
 
 __PACKAGE__->meta->make_immutable;
 
@@ -323,7 +323,7 @@ sub save {
 
 =head1 NAME
 
-Hal::Storage::SQLite - A storage backend for L<Hal|Hal> using
+Hailo::Storage::SQLite - A storage backend for L<Hailo|Hailo> using
 L<DBD::SQLite|DBD::SQLite>
 
 =head1 DESCRIPTION

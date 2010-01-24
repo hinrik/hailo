@@ -1,10 +1,10 @@
-package Hal::Tokenizer::Generic;
+package Hailo::Tokenizer::Generic;
 use Moose;
 use List::MoreUtils qw<uniq>;
 
 our $VERSION = '0.01';
 
-with 'Hal::Tokenizer';
+with 'Hailo::Tokenizer';
 
 __PACKAGE__->meta->make_immutable;
 
@@ -56,7 +56,7 @@ sub make_output {
 
 =head1 NAME
 
-Hal::Tokenizer::Perl - A generic tokenizer for L<Hal|Hal>
+Hailo::Tokenizer::Perl - A generic tokenizer for L<Hailo|Hailo>
 
 =head1 DESCRIPTION
 

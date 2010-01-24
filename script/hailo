@@ -2,7 +2,7 @@
 use Moose;
 use FindBin qw($Bin);
 use lib "$Bin/../lib";
-use Hal;
+use Hailo;
 use Encode qw(decode);
 
 __PACKAGE__->meta->make_immutable;
@@ -11,17 +11,17 @@ __PACKAGE__->meta->make_immutable;
 $_ = decode('utf8', $_) for @ARGV;
 binmode $_, ':encoding(utf8)' for (*STDIN, *STDOUT, *STDERR);
 
-Hal->new_with_options->run;
+Hailo->new_with_options->run;
 
 =encoding utf8
 
 =head1 NAME
 
-hal - Command-line interface to the L<Hal|Hal> Markov bot
+hailo - Command-line interface to the L<Hailo|Hailo> Markov bot
 
 =head1 SYNOPSIS
 
-B<hal> <options>
+B<hailo> <options>
 
  Options:
    -l STRING, --learn=NAME      Learn from STRING
@@ -38,7 +38,7 @@ Note: All input/output and files are assumed to be UTF-8 encoded.
 
 =head1 DESCRIPTION
 
-See the documentation for L<Hal|Hal> for more information.
+See the documentation for L<Hailo|Hailo> for more information.
 
 =head1 AUTHOR
 

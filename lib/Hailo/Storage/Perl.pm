@@ -1,4 +1,4 @@
-package Hal::Storage::Perl;
+package Hailo::Storage::Perl;
 use Moose;
 use MooseX::Types::Moose qw<HashRef Int Str>;
 use namespace::clean -except => 'meta';
@@ -23,7 +23,7 @@ has order => (
     default => sub { shift->memory->{order} },
 );
 
-with 'Hal::Storage';
+with 'Hailo::Storage';
 
 __PACKAGE__->meta->make_immutable;
 
@@ -128,7 +128,7 @@ sub stop_training {
 
 =head1 NAME
 
-Hal::Storage::Perl - A storage backend for L<Hal|Hal> using Perl structures
+Hailo::Storage::Perl - A storage backend for L<Hailo|Hailo> using Perl structures
 
 =head1 DESCRIPTION
 

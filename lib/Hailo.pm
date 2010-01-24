@@ -1,4 +1,4 @@
-package Hal;
+package Hailo;
 use 5.010;
 use Moose;
 use MooseX::Types 
@@ -101,7 +101,7 @@ sub _build_storage_obj {
     my ($self) = @_;
     
     my $storage_class = $self->storage_class;
-    my $storage = "Hal::Storage::$storage_class";
+    my $storage = "Hailo::Storage::$storage_class";
     eval "require $storage";
     die $@ if $@;
 
@@ -119,7 +119,7 @@ sub _build_tokenizer_obj {
 
     my $tokenizer_class = $self->tokenizer_class;
     
-    my $tokenizer = "Hal::Tokenizer::$tokenizer_class";
+    my $tokenizer = "Hailo::Tokenizer::$tokenizer_class";
     eval "require $tokenizer";
     die $@ if $@;
 
@@ -275,7 +275,7 @@ sub _prev_token {
 
 =head1 NAME
 
-Hal - A conversation bot using Markov chains
+Hailo - A conversation bot using Markov chains
 
 =head1 DESCRIPTION
 
@@ -290,7 +290,7 @@ Hinrik E<Ouml>rn SigurE<eth>sson, hinrik.sig@gmail.com
 
 =head2 C<new>
 
-Creates a new Hal object. Takes the following optional parameters:
+Creates a new Hailo object. Takes the following optional parameters:
 
 B<'file'>, path to the file you want your brain to be saved/loaded.
 

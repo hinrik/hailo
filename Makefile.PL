@@ -3,12 +3,12 @@ use warnings;
 use inc::Module::Install;
 use 5.006;
 
-name           ('Hal');
+name           ('Hailo');
 perl_version   ('5.010');
 author         ('Hinrik Örn Sigurðsson <hinrik.sig@gmail.com>');
-abstract_from  ('lib/Hal.pm');
-version_from   ('lib/Hal.pm');
-install_script ('script/hal');
+abstract_from  ('lib/Hailo.pm');
+version_from   ('lib/Hailo.pm');
+install_script ('script/hailo');
 license        ('perl');
 githubmeta     ();
 requires       ('Encode'                     => '0');

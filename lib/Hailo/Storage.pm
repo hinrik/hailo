@@ -1,4 +1,4 @@
-package Hal::Storage;
+package Hailo::Storage;
 use Moose::Role;
 
 requires 'order';
@@ -17,7 +17,7 @@ requires 'stop_training';
 
 =head1 NAME
 
-Hal::Storage - Superclass for a L<Hal|Hal> storage backend
+Hailo::Storage - Superclass for a L<Hailo|Hailo> storage backend
 
 =head1 METHODS
 
@@ -76,12 +76,12 @@ returns a list tokens that may precede it.
 
 =head2 C<start_training>
 
-Takes no arguments. This method is called by C<Hal|Hal> right before training
+Takes no arguments. This method is called by C<Hailo|Hailo> right before training
 begins.
 
 =head2 C<stop_training>
 
-Takes no arguments. This method is called by C<Hal|Hal> right after training
+Takes no arguments. This method is called by C<Hailo|Hailo> right after training
 finishes.
 
 =head1 AUTHOR

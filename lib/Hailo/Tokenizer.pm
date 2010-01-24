@@ -1,4 +1,4 @@
-package Hal::Tokenizer;
+package Hailo::Tokenizer;
 use Moose::Role;
 
 requires 'find_key_tokens';
@@ -11,7 +11,7 @@ requires 'make_output';
 
 =head1 NAME
 
-Hal::Tokenizer - Superclass for a L<Hal|Hal> tokenizer
+Hailo::Tokenizer - Superclass for a L<Hailo|Hailo> tokenizer
 
 =head1 METHODS
 
