@@ -47,10 +47,10 @@ sub BUILD {
     DBIx::Perlish::init($self->dbh);
 
     if (-s $self->file) {
-        $self->order = db_fetch {
+        $self->order(db_fetch {
             info->attribute eq 'markov_order';
             return info->text;
-        };
+        });
     }
     else {
         $self->_create_db();
