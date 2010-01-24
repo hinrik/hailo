@@ -2,16 +2,18 @@ package Hal::Tokenizer::Generic;
 use Moose;
 use List::MoreUtils qw<uniq>;
 
-with 'Hal::Tokenizer';
-
 our $VERSION = '0.01';
 
-our $APOSTROPHE  = qr/['’]/;
-our $WORD        = qr/\w+(?:$APOSTROPHE\w+)*/;
-our $TOKEN       = qr/(?:$WORD| +|.)/s;
-our $OPEN_QUOTE  = qr/['"‘“«»„「『‹]/;
-our $TERMINATOR  = qr/(?:[…?!.‽]|$WORD:)/;
-our $INTERESTING = qr/[[:alpha:]]/;
+with 'Hal::Tokenizer';
+
+__PACKAGE__->meta->make_immutable;
+
+my $APOSTROPHE  = qr/['’]/;
+my $WORD        = qr/\w+(?:$APOSTROPHE\w+)*/;
+my $TOKEN       = qr/(?:$WORD| +|.)/s;
+my $OPEN_QUOTE  = qr/['"‘“«»„「『‹]/;
+my $TERMINATOR  = qr/(?:[…?!.‽]|$WORD:)/;
+my $INTERESTING = qr/[[:alpha:]]/;
 
 # output -> tokens
 sub make_tokens {

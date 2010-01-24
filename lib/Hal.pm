@@ -6,9 +6,13 @@ use MooseX::Types
 use MooseX::Types::Moose qw/Int Str/;
 use MooseX::Types::Path::Class qw(File);
 use namespace::clean -except => 'meta';
-with qw(MooseX::Getopt);
 
 our $VERSION = '0.02';
+
+subtype OrderInt,
+    as Int,
+    where { $_ > 0 and $_ < 50 },
+    message { "Order outsite 1..50 will explode the database" };
 
 has learn_str => (
     traits        => [qw(Getopt)],
@@ -37,11 +41,6 @@ has reply_str => (
     isa           => Str,
     is            => "ro",
 );
-
-subtype OrderInt,
-    as Int,
-    where { $_ > 0 and $_ < 50 },
-    message { "Order outsite 1..50 will explode the database" };
 
 has order         => (
     traits        => [qw(Getopt)],
@@ -88,6 +87,16 @@ has storage_obj => (
     is          => 'ro',
 );
 
+has tokenizer_obj => (
+    traits      => [qw(NoGetopt)],
+    lazy_build  => 1,
+    is          => 'ro',
+);
+
+with qw(MooseX::Getopt);
+
+__PACKAGE__->meta->make_immutable;
+
 sub _build_storage_obj {
     my ($self) = @_;
     
@@ -104,12 +113,6 @@ sub _build_storage_obj {
         order => $self->order,
     );
 }
-
-has tokenizer_obj => (
-    traits      => [qw(NoGetopt)],
-    lazy_build  => 1,
-    is          => 'ro',
-);
 
 sub _build_tokenizer_obj {
     my ($self) = @_;

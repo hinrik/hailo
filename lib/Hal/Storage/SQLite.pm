@@ -28,6 +28,8 @@ has order => (
 
 with 'Hal::Storage';
 
+__PACKAGE__->meta->make_immutable;
+
 sub _build_dbh {
     my ($self) = @_;
 

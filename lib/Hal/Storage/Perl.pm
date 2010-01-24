@@ -25,6 +25,8 @@ has order => (
 
 with 'Hal::Storage';
 
+__PACKAGE__->meta->make_immutable;
+
 sub _build_memory {
     my ($self) = @_;
 

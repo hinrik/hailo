@@ -5,6 +5,8 @@ use lib "$Bin/../lib";
 use Hal;
 use Encode qw(decode);
 
+__PACKAGE__->meta->make_immutable;
+
 # use utf8 everywhere
 $_ = decode('utf8', $_) for @ARGV;
 binmode $_, ':encoding(utf8)' for (*STDIN, *STDOUT, *STDERR);
