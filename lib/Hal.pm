@@ -58,7 +58,7 @@ has brain_file => (
     cmd_aliases   => "b",
     cmd_flag      => "brain",
     documentation => "Load/save brain to/from FILE",
-    isa           => File,
+    isa           => Str,
     is            => "ro",
 );
 
