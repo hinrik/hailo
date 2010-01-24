@@ -23,8 +23,7 @@ has dbh => (
 
 has order => (
     isa     => Int,
-    is      => 'ro',
-    default => sub { db_fetch { info->attribute eq 'markov_order'; return info->text } },
+    is      => 'rw',
 );
 
 with 'Hal::Storage';
@@ -42,8 +41,24 @@ sub _build_dbh {
 
 sub BUILD {
     my ($self) = @_;
-    $self->_create_db() if !-s $self->file;
+
     DBIx::Perlish::init($self->dbh);
+
+    if (-s $self->file) {
+        $self->order = db_fetch {
+            info->attribute eq 'markov_order';
+            return info->text;
+        };
+    }
+    else {
+        $self->_create_db();
+
+        db_insert 'info', {
+            attribute => 'markov_order',
+            text      => $self->order,
+        };
+    }
+
     return;
 }
 
@@ -68,7 +83,7 @@ sub stop_training {
     return;
 }
 
-sub _create_db{
+sub _create_db {
     my ($self) = @_;
 
     my @state = (
@@ -106,11 +121,6 @@ sub _create_db{
         my $sth = $self->dbh->prepare($statement);
         $sth->execute();
     }
-
-    db_insert 'info', {
-        attribute => 'markov_order',
-        text      => $self->{order},
-    };
 
     return;
 }
