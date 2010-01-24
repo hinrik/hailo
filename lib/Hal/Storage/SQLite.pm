@@ -250,6 +250,7 @@ sub random_expr {
             sort $e->token_pos;
             return $t->text;
         };
+        last if @expr;
     }
 
     return @expr;
