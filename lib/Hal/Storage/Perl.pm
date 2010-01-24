@@ -1,40 +1,58 @@
 package Hal::Storage::Perl;
 use Moose;
+use MooseX::Types::Moose qw<HashRef Int Str>;
+use MooseX::Types::Path::Class qw<File>;
+use namespace::clean -except => 'meta';
 use Storable;
-with 'Hal::Storage';
+
 our $VERSION = '0.01';
 
-# TODO: these data structures aren't very normalized, so they take up
-# much more memory than necessary
-sub new {
-    my ($package, %args) = @_;
-    my $self = bless \%args, $package;
-    my $order = delete $self->{order};
-    
-    if (defined $self->{file} && -s $self->{file}) {
-        $self->_load($self->{file});
+has file => (
+    isa    => File,
+    is     => 'ro',
+);
+
+has memory => (
+    isa        => HashRef,
+    is         => 'ro',
+    lazy_build => 1,
+);
+
+sub _build_memory {
+    my ($self) = @_;
+
+    if (defined $self->file && -s $self->file) {
+        return retrieve($self->file);
     }
     else {
-        $self->{memory} = {
+        # TODO: these data structures aren't very normalized, so they take up
+        # much more memory than necessary
+        return {
             token      => { }, # $token => \@ehash_of_exprs_that_contain_it
             expr       => { }, # $ehash => \@tokens_it_contains
             next_token => { }, # $ehash => \%tokens_that_can_follow_this_expr
             prev_token => { }, # $ehash => \%tokens_that_can_precede_this_expr
-            order       => $order,
+            order      => $self->order,
         };
     }
-
-    return $self;
 }
 
-sub order {
-    my ($self) = @_;
-    return $self->{memory}{order};
-}
+has order => (
+    isa    => Int,
+    is     => 'rw',
+    #reader => '_gets_order',
+);
+
+#sub _gets_order {
+#    my ($self) = @_;
+#    return $self->memory->{order};
+#}
+
+with 'Hal::Storage';
 
 sub add_expr {
     my ($self, %args) = @_;
-    my $mem = $self->{memory};
+    my $mem = $self->memory;
 
     my $ehash = _hash_tokens($args{tokens});
     $mem->{expr}{$ehash} = $args{tokens};
@@ -61,26 +79,26 @@ sub add_expr {
 
 sub token_exists {
     my ($self, $token) = @_;
-    return 1 if exists $self->{memory}{token}{$token};
+    return 1 if exists $self->memory->{token}{$token};
     return;
 }
 
 sub random_expr {
     my ($self, $token) = @_;
-    my @ehash = @{ $self->{memory}{token}{$token} };
-    return @{ $self->{memory}{expr}{ $ehash[rand @ehash] } };
+    my @ehash = @{ $self->memory->{token}{$token} };
+    return @{ $self->memory->{expr}{ $ehash[rand @ehash] } };
 }
 
 sub next_tokens {
     my ($self, $expr) = @_;
     my $ehash = _hash_tokens($expr);
-    return keys %{ $self->{memory}{next_token}{ $ehash } };
+    return keys %{ $self->memory->{next_token}{ $ehash } };
 }
 
 sub prev_tokens {
     my ($self, $expr) = @_;
     my $ehash = _hash_tokens($expr);
-    return keys %{ $self->{memory}{prev_token}{ $ehash } };
+    return keys %{ $self->memory->{prev_token}{ $ehash } };
 }
 
 # hash the contents of an expression for unique identification
@@ -92,15 +110,9 @@ sub _hash_tokens {
     return $ehash;
 }
 
-sub _load {
-    my ($self, $file) = @_;
-    $self->{memory} = retrieve($self->{file});
-    return;
-}
-
 sub save {
     my ($self) = @_;
-    store($self->{memory}, $self->{file});
+    store($self->memory, $self->file);
     return;
 }
 
