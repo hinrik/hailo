@@ -3,12 +3,13 @@ use Moose::Role;
 
 requires 'order';
 requires 'save';
-requires 'add_blurb';
-requires 'find_blurb';
-requires 'random_blurb';
+requires 'add_expr';
+requires 'random_expr';
 requires 'token_exists';
 requires 'next_tokens';
 requires 'prev_tokens';
+requires 'start_training';
+requires 'stop_training';
 
 1;
 
@@ -41,34 +42,21 @@ Returns the Markov order being used. Takes no arguments.
 
 Saves the current state to a file.
 
-=head2 C<add_blurb>
+=head2 C<add_expr>
 
-Adds a new blurb. Takes the follwing arguments:
+Adds a new expression. Takes the follwing arguments:
 
-B<'blurb'>, a hash reference (see below).
+B<'tokens'>, an array reference of the tokens that make up the expression.
+The number of elements should be equal to the value returned by
+C<order|/order>.
 
-B<'next_token'>, the token that succeeds this blurb, if any.
+B<'next_token'>, the token that succeeds this expression, if any.
 
-B<'next_token'>, the token that precedes this blurb, if any.
+B<'next_token'>, the token that precedes this expression, if any.
 
-The blurb hash reference can have the following keys:
+=head2 C<random_expr>
 
-B<'can_start'>, should be true if the blurb occurred at the beginning of
-a line.
-
-B<'can_end'>, should be true if the blurb occurred at the end of a line.
-
-B<'tokens'>, an array reference of the tokens in the blurb. The amount of
-tokens should be equal to the return value of C<order|/order>.
-
-=head2 C<find_blurb>
-
-Takes a list of tokens (amount determined by C<order|/order>) as arguments
-and returns the blurb hash reference which contains these tokens.
-
-=head2 C<random_blurb>
-
-Takes a single token as an argument and returns a randomly picked blurb
+Takes a single token as an argument and returns a randomly picked expression
 which contains it.
 
 =head2 C<token_exists>
@@ -78,13 +66,23 @@ exists.
 
 =head2 C<next_tokens>
 
-Takes a blurb hash reference as an argument and returns a hash reference.
-The keys are all the tokens that can succeed the blurb.
+Takes an array reference of tokens arguments that make up an expression and
+returns a list tokens that may succeed it.
 
 =head2 C<prev_tokens>
 
-Takes a blurb hash reference as an argument and returns a hash reference.
-The keys are all the tokens that can precede the blurb.
+Takes an array reference of tokens arguments that make up an expression and
+returns a list tokens that may precede it.
+
+=head2 C<start_training>
+
+Takes no arguments. This method is called by C<Hal|Hal> right before training
+begins.
+
+=head2 C<stop_training>
+
+Takes no arguments. This method is called by C<Hal|Hal> right after training
+finishes.
 
 =head1 AUTHOR
 

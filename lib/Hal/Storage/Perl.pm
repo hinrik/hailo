@@ -1,9 +1,7 @@
 package Hal::Storage::Perl;
 use Moose;
 use Storable;
-
 with 'Hal::Storage';
-
 our $VERSION = '0.01';
 
 # TODO: these data structures aren't very normalized, so they take up
@@ -18,10 +16,10 @@ sub new {
     }
     else {
         $self->{memory} = {
-            tokens      => { }, # $token => \%blurbs_that_contain_it
-            blurbs      => { }, # $bhash => \%blurb
-            next_tokens => { }, # $bhash => \%tokens_that_can_follow_this_blurb
-            prev_tokens => { }, # $bhash => \%tokens_that_can_precede_this_blurb
+            token      => { }, # $token => \@exprs_that_contain_it
+            expr       => { }, # $ehash => \@tokens_it_contains
+            next_token => { }, # $ehash => \%tokens_that_can_follow_this_expr
+            prev_token => { }, # $ehash => \%tokens_that_can_precede_this_expr
             order       => $order,
         };
     }
@@ -34,26 +32,27 @@ sub order {
     return $self->{memory}{order};
 }
 
-sub add_blurb {
+sub add_expr {
     my ($self, %args) = @_;
     my $mem = $self->{memory};
 
-    my $bhash = _hash_tokens($args{blurb}{tokens});
-    $mem->{blurbs}{$bhash} = $args{blurb};
+    my $ehash = _hash_tokens($args{tokens});
+    $mem->{expr}{$ehash} = $args{tokens};
 
-    for my $token (@{ $args{blurb}{tokens} }) {
-        $mem->{tokens}{$token}{$bhash} = 1 if !exists $mem->{tokens}{$token}{$bhash};
+    for my $token (@{ $args{tokens} }) {
+        $mem->{token}{$token} = [ ] if !exists $mem->{token}{$token};
+        push @{ $mem->{token}{$token} }, $ehash;
     }
 
     if (defined $args{next_token}) {
-        if (!exists $mem->{next_tokens}{$bhash}{$args{next_token}}) {
-            $mem->{next_tokens}{$bhash}{$args{next_token}} = 1;
+        if (!exists $mem->{next_token}{$ehash}{$args{next_token}}) {
+            $mem->{next_token}{$ehash}{$args{next_token}} = 1;
         }
     }
 
     if (defined $args{prev_token}) {
-        if (!exists $mem->{prev_tokens}{$bhash}{$args{prev_token}}) {
-            $mem->{prev_tokens}{$bhash}{$args{prev_token}} = 1;
+        if (!exists $mem->{prev_token}{$ehash}{$args{prev_token}}) {
+            $mem->{prev_token}{$ehash}{$args{prev_token}} = 1;
         }
     }
     
@@ -62,41 +61,35 @@ sub add_blurb {
 
 sub token_exists {
     my ($self, $token) = @_;
-    return 1 if exists $self->{memory}{tokens}{$token};
+    return 1 if exists $self->{memory}{token}{$token};
     return;
 }
 
-sub find_blurb {
-    my ($self, @tokens) = @_;
-    my $bhash = _hash_tokens(\@tokens);
-    return $self->{memory}{blurbs}{$bhash};
-}
-
-sub random_blurb {
+sub random_expr {
     my ($self, $token) = @_;
-    my @bhash = keys %{ $self->{memory}{tokens}{$token} };
-    return $self->{memory}{blurbs}{ $bhash[rand @bhash] };
+    my @ehash = @{ $self->{memory}{token}{$token} };
+    return @{ $self->{memory}{expr}{ $ehash[rand @ehash] } };
 }
 
 sub next_tokens {
-    my ($self, $blurb) = @_;
-    my $bhash = _hash_tokens($blurb->{tokens});
-    return $self->{memory}{next_tokens}{ $bhash };
+    my ($self, $expr) = @_;
+    my $ehash = _hash_tokens($expr);
+    return keys %{ $self->{memory}{next_token}{ $ehash } };
 }
 
 sub prev_tokens {
-    my ($self, $blurb) = @_;
-    my $bhash = _hash_tokens($blurb->{tokens});
-    return $self->{memory}{prev_tokens}{ $bhash };
+    my ($self, $expr) = @_;
+    my $ehash = _hash_tokens($expr);
+    return keys %{ $self->{memory}{prev_token}{ $ehash } };
 }
 
-# hash the contents of a blurb for unique identification
-# pretty naïve so far, just joins all the tokens with a newline,
+# hash the contents of an expression for unique identification
+# pretty naïve so far, just joins all the tokens with ASCII escapes
 # since newlines aren't allowed
 sub _hash_tokens {
     my ($tokens) = @_;
-    my $bhash = join "\n", @$tokens;
-    return $bhash;
+    my $ehash = join "\x03", @$tokens;
+    return $ehash;
 }
 
 sub _load {
@@ -108,6 +101,16 @@ sub _load {
 sub save {
     my ($self) = @_;
     store($self->{memory}, $self->{file});
+    return;
+}
+
+sub start_training {
+    my ($self) = @_;
+    return;
+}
+
+sub stop_training {
+    my ($self) = @_;
     return;
 }
 

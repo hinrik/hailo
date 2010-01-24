@@ -8,7 +8,7 @@ our $VERSION = '0.01';
 
 our $APOSTROPHE  = qr/['’]/;
 our $WORD        = qr/\w+(?:$APOSTROPHE\w+)*/;
-our $TOKEN       = qr/(?:$WORD| +|.)/;
+our $TOKEN       = qr/(?:$WORD| +|.)/s;
 our $OPEN_QUOTE  = qr/['"‘“«»„「『‹]/;
 our $TERMINATOR  = qr/(?:[…?!.‽]|$WORD:)/;
 our $INTERESTING = qr/[[:alpha:]]/;
@@ -16,7 +16,7 @@ our $INTERESTING = qr/[[:alpha:]]/;
 # output -> tokens
 sub make_tokens {
     my ($self, $line) = @_;
-    my (@tokens) = $line =~ /($TOKEN)/g;
+    my (@tokens) = $line =~ /($TOKEN)/gs;
 
     # lower-case everything except those which are ALL UPPERCASE
     @tokens = map { $_ ne uc($_) ? lc($_) : $_ } @tokens;
@@ -35,6 +35,7 @@ sub find_key_tokens {
 sub make_output {
     my $self = shift;
     my $string = join '', @_;
+    $string =~ s/(?:^\n|\n$)//gs;
 
     # capitalize the first letter of every sentence
     $string =~ s/^($OPEN_QUOTE?)($WORD)/$1.ucfirst($2)/e;

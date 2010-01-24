@@ -2,7 +2,6 @@ package Hal;
 use 5.010;
 use Moose;
 use namespace::clean -except => 'meta';
-
 with qw(MooseX::Getopt);
 
 our $VERSION = '0.02';
@@ -135,6 +134,7 @@ sub save {
 sub train {
     my ($self) = @_;
 
+    $self->storage_obj->start_training();
     my $filename = $self->train_file;
 
     open my $fh, '<:encoding(utf8)', $filename or die "Can't open file '$filename': $!\n";
@@ -143,30 +143,34 @@ sub train {
         $self->learn($line);
     }
     close $fh;
+    $self->storage_obj->stop_training();
     return;
 }
 
 sub learn {
-    my ($self, $str) = @_;
-    my @tokens = $self->tokenizer_obj->make_tokens($str);
+    my ($self, $input) = @_;
+
+    # a newline functions as beginning-of-string or end-of-string
+    $input = "\n$input\n";
+    my @tokens = $self->tokenizer_obj->make_tokens($input);
+
     my $storage = $self->storage_obj;
+    my $order = $storage->order;
 
     # only learn from inputs which are long enough
-    return if @tokens < $storage->order();
+    return if @tokens < $order;
 
-    for (my $i = 0; $i <= @tokens - $storage->order(); $i++) {
-        my %blurb;
-        $blurb{can_start} = 1 if $i == 0;
-        $blurb{can_end}   = 1 if $i == @tokens - $storage->order();
-        $blurb{tokens}    = [ map { $tokens[$_] } ($i .. $i+$storage->order()-1) ];
+    for my $i (0 .. @tokens - $order) {
+        my %args;
+        my @expr = map { $tokens[$_] } ($i .. $i+$order-1);
 
         my ($next_token, $prev_token);
-        $next_token = $tokens[$i+$storage->order()] if $i < @tokens - $storage->order();
+        $next_token = $tokens[$i+$order] if $i < @tokens - $order;
         $prev_token = $tokens[$i-1] if $i > 0;
 
-        # tell the storage about the current blurb
-        $storage->add_blurb(
-            blurb      => \%blurb,
+        # store the current expression
+        $storage->add_expr(
+            tokens     => \@expr,
             next_token => $next_token,
             prev_token => $prev_token,
         );
@@ -178,6 +182,7 @@ sub learn {
 sub reply {
     my ($self, $input) = @_;
     my $storage = $self->storage_obj;
+    my $order = $storage->order;
     my $toke = $self->tokenizer_obj;
     
     my @tokens = $toke->make_tokens($input);
@@ -186,75 +191,68 @@ sub reply {
     my @current_key_tokens;
     my $key_token = shift @key_tokens;
 
-    my $middle_blurb = $storage->random_blurb($key_token);
-    my $reply = join '', @{ $middle_blurb->{tokens} };
+    my @middle_expr = $storage->random_expr($key_token);
+    my @reply = @middle_expr;
     
-    my $current_blurb = $middle_blurb;
+    my @current_expr = @middle_expr;
 
     # construct the end of the reply
-    while (!$current_blurb->{can_end}) {
-        my $next_token = $self->_next_token($current_blurb, \@current_key_tokens);
-        #my %next_tokens = keys %{ $storage->next_tokens($current_blurb) };
-        #my $next_token = @next_tokens[rand @next_tokens];
-        
-        $reply .= $next_token;
-        my @new_tokens = (@{ $current_blurb->{tokens} }[1..$storage->order()-1], $next_token);
-        $current_blurb = $storage->find_blurb(@new_tokens);
+    while ($current_expr[-1] ne "\n") {
+        my $next_token = $self->_next_token(\@current_expr, \@current_key_tokens);
+        push @reply, $next_token;
+        @current_expr = (@current_expr[1 .. $order-1], $next_token);
     }
     
     # reuse the key tokens
     @current_key_tokens = @key_tokens;
 
-    $current_blurb = $middle_blurb;
+    @current_expr = @middle_expr;
 
     # construct the beginning of the reply
-    while (!$current_blurb->{can_start}) {
-        my $prev_token = $self->_prev_token($current_blurb, \@current_key_tokens);
-        #my @prev_tokens = keys %{ $storage->prev_tokens($current_blurb) };
-        #my $prev_token = @prev_tokens[rand @prev_tokens];
-        
-        $reply = "$prev_token$reply";
-        my @new_tokens = ($prev_token, @{ $current_blurb->{tokens} }[0..$storage->order()-2]);
-        $current_blurb = $storage->find_blurb(@new_tokens);
+    while ($current_expr[0] ne "\n") {
+        my $prev_token = $self->_prev_token(\@current_expr, \@current_key_tokens);
+        @reply = ($prev_token, @reply);
+        @current_expr = ($prev_token, @current_expr[0 .. $order-2]);
     }
 
-   return $toke->make_output($reply);
+    return $toke->make_output(@reply);
 }
 
 # return a succeeding token, preferring key tokens, otherwise random
 # removes corresponding element from $key_tokens array if used
 sub _next_token {
-    my ($self, $blurb, $key_tokens) = @_;
+    my ($self, $expr, $key_tokens) = @_;
     my $storage = $self->storage_obj;
 
-    my $next_tokens = $storage->next_tokens($blurb);
+    my @next_tokens = $storage->next_tokens($expr);
+    my %next = map { +$_, 1 } @next_tokens;
 
-    for (my $i = 0; $i < @$key_tokens; $i++) {
-        next if !exists $next_tokens->{ @$key_tokens[$i] };
+    for my $i (0 .. $#{ $key_tokens }) {
+        next if !exists $next{ @$key_tokens[$i] };
         return splice @$key_tokens, $i, 1;
     }
 
-    my @novel_tokens = keys %$next_tokens;
+    my @novel_tokens = keys %next;
     return @novel_tokens[rand @novel_tokens];
 }
 
 # return a preceding token, preferring key tokens, otherwise random
 # removes corresponding element from $key_tokens array if used
 sub _prev_token {
-    my ($self, $blurb, $key_tokens) = @_;
+    my ($self, $expr, $key_tokens) = @_;
     my $storage = $self->storage_obj;
 
-    my $prev_tokens = $storage->prev_tokens($blurb);
+    my @prev_tokens = $storage->prev_tokens($expr);
+    my %prev = map { +$_, 1 } @prev_tokens;
 
-    for (my $i = 0; $i < @$key_tokens; $i++) {
-        next if !exists $prev_tokens->{ @$key_tokens[$i] };
+    for my $i (0 .. $#{ $key_tokens }) {
+        next if !exists $prev{ @$key_tokens[$i] };
         return splice @$key_tokens, $i, 1;
     }
 
-    my @novel_tokens = keys %$prev_tokens;
+    my @novel_tokens = keys %prev;
     return @novel_tokens[rand @novel_tokens];
 }
-
 
 1;
 
