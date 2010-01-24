@@ -58,7 +58,7 @@ has brain_file => (
     cmd_aliases   => "b",
     cmd_flag      => "brain",
     documentation => "Load/save brain to/from FILE",
-    isa           => Str,
+    isa           => File,
     is            => "ro",
 );
 
@@ -97,7 +97,10 @@ sub _build_storage_obj {
     die $@ if $@;
 
     return $storage->new(
-        file  => $self->brain_file,
+        (defined $self->brain_file
+            ? (file => $self->brain_file)
+            : ()
+        ),
         order => $self->order,
     );
 }
