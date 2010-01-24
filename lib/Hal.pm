@@ -7,7 +7,7 @@ use MooseX::Types::Moose qw/Int Str/;
 use MooseX::Types::Path::Class qw(File);
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.02';
+our $VERSION = '0.01';
 
 subtype OrderInt,
     as Int,
