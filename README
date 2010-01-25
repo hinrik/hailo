@@ -22,7 +22,7 @@ ATTRIBUTES
 
 METHODS
   "new"
-    This is the contructor. It accept the attributes specified in
+    This is the constructor. It accept the attributes specified in
     "ATTRIBUTES".
 
   "run"

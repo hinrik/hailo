@@ -19,7 +19,7 @@ Hailo::Tokenizer - A role representing a L<Hailo|Hailo> tokenizer
 
 =head2 C<new>
 
-This is the contructor. It takes no arguments.
+This is the constructor. It takes no arguments.
 
 =head2 C<make_tokens>
 

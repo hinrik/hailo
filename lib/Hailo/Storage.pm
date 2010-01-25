@@ -36,7 +36,7 @@ The filename to the permanent on-disk storage used by the backend.
 
 =head2 C<new>
 
-This is the contructor. It accept the attributes specified in
+This is the constructor. It accept the attributes specified in
 L</ATTRIBUTES>.
 
 =head2 C<save>

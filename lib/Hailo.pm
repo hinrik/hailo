@@ -310,7 +310,7 @@ The tokenizer to use. Default: 'Generic';
 
 =head2 C<new>
 
-This is the contructor. It accept the attributes specified in
+This is the constructor. It accept the attributes specified in
 L</ATTRIBUTES>.
 
 =head2 C<run>
