@@ -8,13 +8,13 @@ use namespace::clean -except => 'meta';
 our $VERSION = '0.01';
 
 has file => (
-    isa    => Str,
-    is     => 'ro',
+    isa => Str,
+    is  => 'ro',
 );
 
 has order => (
-    isa    => Int,
-    is     => 'ro',
+    isa     => Int,
+    is      => 'ro',
     default => sub { shift->memory->{order} },
 );
 

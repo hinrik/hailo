@@ -17,8 +17,8 @@ has file => (
 );
 
 has order => (
-    isa     => Int,
-    is      => 'rw',
+    isa => Int,
+    is  => 'rw',
 );
 
 has _dbh => (
