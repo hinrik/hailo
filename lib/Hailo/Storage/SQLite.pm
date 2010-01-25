@@ -99,7 +99,7 @@ sub _create_db {
         )',
         'CREATE TABLE expr (
             expr_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-            dummy INTEGER
+            dummy   INTEGER
         )',
         'CREATE TABLE expr_token (
             expr_token_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -108,14 +108,14 @@ sub _create_db {
             token_pos     INTEGER NOT NULL
         )',
         'CREATE TABLE next_token (
-            next_token_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-            expr_id       INTEGER NOT NULL REFERENCES expr (expr_id),
-            token_id      INTEGER NOT NULL REFERENCES token (token_id)
+            pos_token_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+            expr_id      INTEGER NOT NULL REFERENCES expr (expr_id),
+            token_id     INTEGER NOT NULL REFERENCES token (token_id)
         )',
         'CREATE TABLE prev_token (
-            prev_token_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-            expr_id       INTEGER NOT NULL REFERENCES expr (expr_id),
-            token_id      INTEGER NOT NULL REFERENCES token (token_id)
+            pos_token_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+            expr_id      INTEGER NOT NULL REFERENCES expr (expr_id),
+            token_id     INTEGER NOT NULL REFERENCES token (token_id)
         )',
     );
     
@@ -148,30 +148,17 @@ sub add_expr {
         };
     }
 
-    if (defined $args{next_token}) {
-        my $token_id = $self->_add_tokens($args{next_token});
+    for my $pos_token (qw(next_token prev_token)) {
+        next if !defined $args{$pos_token};
+        my $token_id = $self->_add_tokens($args{$pos_token});
 
         if (!defined db_fetch {
-            next_token->expr_id == $expr_id;
-            next_token->token_id == $token_id;
-            return next_token->next_token_id;
+            my $t : table = $pos_token;
+            $t->expr_id == $expr_id;
+            $t->token_id == $token_id;
+            return $t->pos_token_id;
         }) {
-            db_insert 'next_token', {
-                expr_id  => $expr_id,
-                token_id => $token_id,
-            };
-        }
-    }
-    
-    if (defined $args{prev_token}) {
-        my $token_id = $self->_add_tokens($args{prev_token});
-
-        if (!defined db_fetch {
-            prev_token->expr_id == $expr_id;
-            prev_token->token_id == $token_id;
-            return prev_token->prev_token_id;
-        }) {
-            db_insert 'prev_token', {
+            db_insert $pos_token, {
                 expr_id  => $expr_id,
                 token_id => $token_id,
             };
@@ -289,28 +276,26 @@ sub random_expr {
 
 sub next_tokens {
     my ($self, $tokens) = @_;
-
-    my $expr_id = $self->_expr_id($tokens);
-    return db_fetch {
-        token->token_id <- db_fetch {
-            next_token->expr_id eq $expr_id;
-            return next_token->token_id;
-        };
-        return token->text;
-    };
+    return $self->_pos_tokens('next_token', $tokens);
 }
 
 sub prev_tokens {
     my ($self, $tokens) = @_;
+    return $self->_pos_tokens('prev_token', $tokens);
+}
+
+sub _pos_tokens {
+    my ($self, $table, $tokens) = @_;
 
     my $expr_id = $self->_expr_id($tokens);
     return db_fetch {
         token->token_id <- db_fetch {
-            prev_token->expr_id eq $expr_id;
-            return prev_token->token_id;
+            my $t : table = $table;
+            $t->expr_id eq $expr_id;
+            return $t->token_id;
         };
         return token->text;
-    }
+    };
 }
 
 sub save {
