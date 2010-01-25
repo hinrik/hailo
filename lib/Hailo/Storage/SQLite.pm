@@ -119,10 +119,7 @@ sub _create_db {
         )',
     );
     
-    for my $statement (@state) {
-        my $sth = $self->_dbh->prepare($statement);
-        $sth->execute();
-    }
+    $self->_dbh->do($_) for @state;
 
     return;
 }
