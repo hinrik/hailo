@@ -84,12 +84,14 @@ has _storage_obj => (
     traits      => [qw(NoGetopt)],
     lazy_build  => 1,
     is          => 'ro',
+    init_arg    => undef,
 );
 
 has _tokenizer_obj => (
     traits      => [qw(NoGetopt)],
     lazy_build  => 1,
     is          => 'ro',
+    init_arg    => undef,
 );
 
 with qw(MooseX::Getopt);

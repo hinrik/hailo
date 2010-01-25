@@ -22,6 +22,7 @@ has _memory => (
     isa        => HashRef,
     is         => 'ro',
     lazy_build => 1,
+    init_arg   => undef,
 );
 
 with 'Hailo::Storage';
