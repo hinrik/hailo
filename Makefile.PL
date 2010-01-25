@@ -10,6 +10,7 @@ abstract_from  ('lib/Hailo.pm');
 version_from   ('lib/Hailo.pm');
 install_script ('script/hailo');
 license        ('perl');
+homepage       ('http://search.cpan.org/dist/Hailo');
 githubmeta     ();
 requires       ('Encode'                     => '0');
 requires       ('DBD::SQLite'                => '0');
