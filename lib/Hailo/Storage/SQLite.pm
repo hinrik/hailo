@@ -88,38 +88,8 @@ sub stop_training {
 sub _create_db {
     my ($self) = @_;
 
-    my @state = (
-        'CREATE TABLE info (
-            attribute TEXT NOT NULL UNIQUE PRIMARY KEY,
-            text      TEXT NOT NULL
-        )',
-        'CREATE TABLE token (
-            token_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            text     TEXT NOT NULL
-        )',
-        'CREATE TABLE expr (
-            expr_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-            dummy   INTEGER
-        )',
-        'CREATE TABLE expr_token (
-            expr_token_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-            expr_id       INTEGER NOT NULL REFERENCES expr (expr_id),
-            token_id      INTEGER NOT NULL REFERENCES token (token_id),
-            token_pos     INTEGER NOT NULL
-        )',
-        'CREATE TABLE next_token (
-            pos_token_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-            expr_id      INTEGER NOT NULL REFERENCES expr (expr_id),
-            token_id     INTEGER NOT NULL REFERENCES token (token_id)
-        )',
-        'CREATE TABLE prev_token (
-            pos_token_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-            expr_id      INTEGER NOT NULL REFERENCES expr (expr_id),
-            token_id     INTEGER NOT NULL REFERENCES token (token_id)
-        )',
-    );
-    
-    $self->_dbh->do($_) for @state;
+    my @statements = split /\n\n/, do { local $/ = undef; <DATA> };
+    $self->_dbh->do($_) for @statements;
 
     return;
 }
@@ -332,3 +302,38 @@ This program is free software, you can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut
+
+__DATA__
+CREATE TABLE info (
+    attribute TEXT NOT NULL UNIQUE PRIMARY KEY,
+    text      TEXT NOT NULL
+)
+
+CREATE TABLE token (
+    token_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    text     TEXT NOT NULL
+)
+
+CREATE TABLE expr (
+    expr_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    dummy   INTEGER
+)
+
+CREATE TABLE expr_token (
+    expr_token_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    expr_id       INTEGER NOT NULL REFERENCES expr (expr_id),
+    token_id      INTEGER NOT NULL REFERENCES token (token_id),
+    token_pos     INTEGER NOT NULL
+)
+
+CREATE TABLE next_token (
+    pos_token_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    expr_id      INTEGER NOT NULL REFERENCES expr (expr_id),
+    token_id     INTEGER NOT NULL REFERENCES token (token_id)
+)
+
+CREATE TABLE prev_token (
+    pos_token_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    expr_id      INTEGER NOT NULL REFERENCES expr (expr_id),
+    token_id     INTEGER NOT NULL REFERENCES token (token_id)
+)
