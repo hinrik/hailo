@@ -3,7 +3,7 @@ package Hailo;
 use 5.010;
 use Moose;
 use MooseX::Types -declare => [qw(OrderInt)];
-use MooseX::Types::Moose qw/Int Str/;
+use MooseX::Types::Moose qw/Int Str Bool/;
 use MooseX::Types::Path::Class qw(File);
 use namespace::clean -except => 'meta';
 
@@ -13,6 +13,15 @@ subtype OrderInt,
     as Int,
     where { $_ > 0 and $_ < 50 },
     message { "Order outsite 1..50 will explode the database" };
+
+has print_version => (
+    traits        => [qw(Getopt)],
+    cmd_aliases   => 'v',
+    cmd_flag      => 'version',
+    documentation => 'Print version and exit',
+    isa           => Bool,
+    is            => 'ro',
+);
 
 has learn_str => (
     traits        => [qw(Getopt)],
@@ -130,6 +139,11 @@ sub _build__tokenizer_obj {
 
 sub run {
     my $self = shift;
+
+    if ($self->print_version) {
+        print "hailo $VERSION\n";
+        exit;
+    }
 
     $self->train($self->train_file) if $self->train_file;
     $self->learn($self->learn_str)  if $self->learn_str;
