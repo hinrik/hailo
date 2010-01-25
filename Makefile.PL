@@ -1,7 +1,6 @@
 use strict;
 use warnings;
-use inc::Module::Install;
-use 5.010;
+use inc::Module::Install '0.92';
 
 name           ('Hailo');
 perl_version   ('5.010');
@@ -12,6 +11,7 @@ install_script ('script/hailo');
 license        ('perl');
 homepage       ('http://search.cpan.org/dist/Hailo');
 githubmeta     ();
+
 requires       ('Encode'                     => '0');
 requires       ('DBD::SQLite'                => '0');
 requires       ('DBIx::Perlish'              => '0');
@@ -24,8 +24,17 @@ requires       ('MooseX::Types'              => '0');
 requires       ('MooseX::Types::Moose'       => '0');
 requires       ('namespace::clean'           => '0');
 requires       ('Storable'                   => '0');
-test_requires  ('Test::More'                 => '0');
-test_requires  ('Test::Script'               => '0');
+
+test_requires  ('Test::More'   => '0');
+test_requires  ('Test::Script' => '0');
 tests_recursive();
+
+author_requires('Perl::Critic'        => '1,098');
+# uncomment when the distro becomes installable via cpanp(1)
+#author_requires('Perl::Critic::Moose' => 'o');
+author_requires('Test::Perl::Critic'  => '0');
+author_requires('Test::Pod'           => '1.41');
+author_requires('Test::Pod::Coverage' => '1.08');
 author_tests   ('xt');
+
 WriteAll();
