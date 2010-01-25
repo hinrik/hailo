@@ -3,6 +3,7 @@ package Hailo::Storage;
 use Moose::Role;
 use namespace::clean -except => 'meta';
 
+requires 'file';
 requires 'order';
 requires 'save';
 requires 'add_expr';
