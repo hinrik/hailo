@@ -249,15 +249,16 @@ sub random_expr {
     my @positions = shuffle(0 .. $self->order-1);
     my @expr;
 
+    my @expr_ids;
     for my $pos (@positions) {
-        my @expr_id = db_fetch {
+        @expr_ids = shuffle db_fetch {
             expr_token->token_pos == $pos;
             expr_token->token_id == $token_id;
             return expr_token->expr_id;
         };
-        next if !@expr_id;
+        next if !@expr_ids;
         
-        my $expr_id = $expr_id[rand @expr_id];
+        my $expr_id = shift @expr_ids;
         @expr = db_fetch {
             my $t : token;
             my $e : expr_token;
