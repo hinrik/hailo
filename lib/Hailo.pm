@@ -42,7 +42,7 @@ has reply_str => (
     is            => "ro",
 );
 
-has order         => (
+has order => (
     traits        => [qw(Getopt)],
     cmd_aliases   => "o",
     cmd_flag      => "order",
@@ -83,6 +83,7 @@ has tokenizer_class => (
 
 has _storage_obj => (
     traits      => [qw(NoGetopt)],
+    does        => 'Hailo::Storage',
     lazy_build  => 1,
     is          => 'ro',
     init_arg    => undef,
@@ -90,6 +91,7 @@ has _storage_obj => (
 
 has _tokenizer_obj => (
     traits      => [qw(NoGetopt)],
+    does        => 'Hailo::Tokenizer',
     lazy_build  => 1,
     is          => 'ro',
     init_arg    => undef,
