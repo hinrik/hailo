@@ -99,8 +99,6 @@ has _tokenizer_obj => (
 
 with qw(MooseX::Getopt);
 
-__PACKAGE__->meta->make_immutable;
-
 sub _build__storage_obj {
     my ($self) = @_;
     
@@ -272,6 +270,8 @@ sub _prev_token {
     my @novel_tokens = keys %prev;
     return @novel_tokens[rand @novel_tokens];
 }
+
+__PACKAGE__->meta->make_immutable;
 
 1;
 

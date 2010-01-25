@@ -6,8 +6,6 @@ our $VERSION = '0.01';
 
 with 'Hailo::Tokenizer';
 
-__PACKAGE__->meta->make_immutable;
-
 my $APOSTROPHE  = qr/['’]/;
 my $WORD        = qr/\w+(?:$APOSTROPHE\w+)*/;
 my $TOKEN       = qr/(?:$WORD| +|.)/s;
@@ -49,6 +47,8 @@ sub make_output {
 
     return $string;
 }
+
+__PACKAGE__->meta->make_immutable;
 
 1;
 

@@ -30,8 +30,6 @@ has _dbh => (
 
 with 'Hailo::Storage';
 
-__PACKAGE__->meta->make_immutable;
-
 sub _build__dbh {
     my ($self) = @_;
 
@@ -318,6 +316,8 @@ sub prev_tokens {
 sub save {
     # no op
 }
+
+__PACKAGE__->meta->make_immutable;
 
 1;
 

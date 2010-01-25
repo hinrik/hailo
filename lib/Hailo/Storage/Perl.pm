@@ -27,8 +27,6 @@ has _memory => (
 
 with 'Hailo::Storage';
 
-__PACKAGE__->meta->make_immutable;
-
 sub _build__memory {
     my ($self) = @_;
 
@@ -123,6 +121,8 @@ sub stop_training {
     my ($self) = @_;
     return;
 }
+
+__PACKAGE__->meta->make_immutable;
 
 1;
 
