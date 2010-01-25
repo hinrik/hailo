@@ -24,15 +24,15 @@ hailo - Command-line interface to the L<Hailo|Hailo> Markov bot
 B<hailo> <options>
 
  Options:
-   -l STRING, --learn=NAME      Learn from STRING
-   -t FILE,   --train=FILE      Learn from all the lines in FILE
-   -r STRING, --reply=STRING    Reply to STRING
-   -o INT,    --order=INT       Change Markov order from 5 to INT
-   -b FILE,   --brain=FILE      Load/save brain to/from FILE
-   -S CLASS,  --storage=CLASS   Use storage CLASS instead of 'Perl'
-   -T CLASS,  --tokenizer=CLASS Use tokenizer CLASS instead of 'Generic'
-   -h,        --help            This help message
-   -v,        --version         Print verion and exit
+   -l LINE,  --learn=LINE       Learn from LINE
+   -t FILE,  --train=FILE       Learn from all lines in FILE
+   -r LINE,  --reply=LINE       Reply to LINE
+   -o INT,   --order=INT        Change Markov order from 5 to INT
+   -b FILE,  --brain=FILE       Load/save brain to/from FILE
+   -S CLASS, --storage=CLASS    Use storage CLASS instead of 'Perl'
+   -T CLASS, --tokenizer=CLASS  Use tokenizer CLASS instead of 'Generic'
+   -h,       --help             This help message
+   -v,       --version          Print verion and exit
 
 Note: All input/output and files are assumed to be UTF-8 encoded.
 
