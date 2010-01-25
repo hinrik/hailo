@@ -12,7 +12,7 @@ our $VERSION = '0.01';
 subtype OrderInt,
     as Int,
     where { $_ > 0 and $_ < 50 },
-    message { "Order outsite 1..50 will explode the database" };
+    message { "Order outside 1..50 will explode the database" };
 
 has print_version => (
     traits        => [qw(Getopt)],
