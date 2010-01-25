@@ -31,7 +31,7 @@ tests_recursive();
 
 author_requires('Perl::Critic'        => '1,098');
 # uncomment when the distro becomes installable via cpanp(1)
-#author_requires('Perl::Critic::Moose' => 'o');
+#author_requires('Perl::Critic::Moose' => '0');
 author_requires('Test::Perl::Critic'  => '0');
 author_requires('Test::Pod'           => '1.41');
 author_requires('Test::Pod::Coverage' => '1.08');
