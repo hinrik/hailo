@@ -1,0 +1,51 @@
+NAME
+    Hailo - A conversation bot using Markov chains
+
+DESCRIPTION
+    This is a chat bot which utilizes Markov chains. It is loosely based on
+    a C program called MegaHAL.
+
+ATTRIBUTES
+  "file"
+    Path to the file you want the storage backend to save/load its state
+    to/from. There is no default.
+
+  "order"
+    The Markov order (chain length) you want to use for an empty brain. The
+    default is 5.
+
+  "storage"
+    The storage backend to use. Default: 'Perl'.
+
+  "tokenizer"
+    The tokenizer to use. Default: 'Generic';
+
+METHODS
+  "new"
+    This is the contructor. It accept the attributes specified in
+    "ATTRIBUTES".
+
+  "run"
+    Run the application according to the command line arguments.
+
+  "learn"
+    Takes a line of next as input and learns from it.
+
+  "train"
+    Takes a filename and calls "learn" on all its lines.
+
+  "reply"
+    Takes a line of text and generates a reply that might be relevant.
+
+  "save"
+    Tells the underlying storage backend to save its state.
+
+AUTHOR
+    Hinrik Örn Sigurðsson, hinrik.sig@gmail.com
+
+LICENSE AND COPYRIGHT
+    Copyright 2010 Hinrik Örn Sigurðsson
+
+    This program is free software, you can redistribute it and/or modify it
+    under the same terms as Perl itself.
+
