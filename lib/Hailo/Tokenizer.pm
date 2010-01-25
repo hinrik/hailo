@@ -13,16 +13,13 @@ requires 'make_output';
 
 =head1 NAME
 
-Hailo::Tokenizer - Superclass for a L<Hailo|Hailo> tokenizer
+Hailo::Tokenizer - A role representing a L<Hailo|Hailo> tokenizer
 
 =head1 METHODS
 
-B<Note:> all of the following methods must be overridden by tokenizer
-subclasses.
-
 =head2 C<new>
 
-Returns a new tokenizer object.
+This is the contructor. It takes no arguments.
 
 =head2 C<make_tokens>
 

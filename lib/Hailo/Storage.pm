@@ -20,26 +20,24 @@ requires 'stop_training';
 
 =head1 NAME
 
-Hailo::Storage - Superclass for a L<Hailo|Hailo> storage backend
+Hailo::Storage - A role representing a L<Hailo|Hailo> storage backend
 
-=head1 METHODS
-
-B<Note:> all of the following methods must be overridden by tokenizer
-subclasses.
-
-=head2 C<new>
-
-Returns a new storage backend object.
-
-Takes the following arguments:
-
-B<'order'>, the Markov order of the bot.
-
-B<'file'>, the which the backend will save to/load from.
+=head1 ATTRIBUTES
 
 =head2 C<order>
 
-Returns the Markov order being used. Takes no arguments.
+The Markov order (chain length) being used.
+
+=head2 C<file>
+
+The filename to the permanent on-disk storage used by the backend.
+
+=head1 METHODS
+
+=head2 C<new>
+
+This is the contructor. It accept the attributes specified in
+L</ATTRIBUTES>.
 
 =head2 C<save>
 

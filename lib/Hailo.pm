@@ -286,19 +286,36 @@ Hailo - A conversation bot using Markov chains
 This is a chat bot which utilizes Markov chains. It is loosely based on a
 C program called MegaHAL.
 
+=head1 ATTRIBUTES
+
+=head2 C<file>
+
+Path to the file you want the storage backend to save/load its state to/from.
+There is no default.
+
+=head2 C<order>
+
+The Markov order (chain length) you want to use for an empty brain.
+The default is 5.
+
+=head2 C<storage>
+
+The storage backend to use. Default: 'Perl'.
+
+=head2 C<tokenizer>
+
+The tokenizer to use. Default: 'Generic';
+
 =head1 METHODS
 
 =head2 C<new>
 
-Creates a new Hailo object. Takes the following optional parameters:
+This is the contructor. It accept the attributes specified in
+L</ATTRIBUTES>.
 
-B<'file'>, path to the file you want your brain to be saved/loaded.
+=head2 C<run>
 
-B<'order'>, the Markov order of the bot (default: 5).
-
-B<'storage'>, the storage backend to use (default 'Perl').
-
-B<'tokenizer'>, the tokenizer to use (default 'Generic').
+Run the application according to the command line arguments.
 
 =head2 C<learn>
 
@@ -315,10 +332,6 @@ Takes a line of text and generates a reply that might be relevant.
 =head2 C<save>
 
 Tells the underlying storage backend to save its state.
-
-=head2 C<run>
-
-Run the application according to the command line arguments.
 
 =head1 AUTHOR
 
