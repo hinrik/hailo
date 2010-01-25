@@ -25,7 +25,6 @@ has _dbh => (
     isa        => 'DBI::db',
     is         => 'ro',
     lazy_build => 1,
-    init_arg   => undef,
 );
 
 with 'Hailo::Storage';
@@ -89,32 +88,34 @@ sub _create_db {
     my ($self) = @_;
 
     my @statements = split /\n\n/, do { local $/ = undef; <DATA> };
+
+    for my $i (0 .. $self->order-1) {
+        push @statements, "ALTER TABLE expr ADD token${i}_id "
+            .'TEXT REFERENCES token (token_id)';
+    }
     $self->_dbh->do($_) for @statements;
 
     return;
 }
 
+# add a new expression to the database
 sub add_expr {
     my ($self, %args) = @_;
     my $tokens = $args{tokens};
- 
-    return if defined $self->_expr_id($tokens);
 
-    # dirty hack, patches welcome
-    db_insert 'expr', { dummy => undef };
-    my $expr_id = $self->_dbh->selectrow_array('SELECT last_insert_rowid()');
+    return if defined $self->_expr_id($tokens);
 
     # add the tokens
     my @token_ids = $self->_add_tokens($tokens);
 
-    for my $pos (0 .. $#{ $tokens }) {
-        db_insert 'expr_token', {
-            expr_id   => $expr_id,
-            token_id  => $token_ids[$pos],
-            token_pos => $pos,
-        };
-    }
+    # add the expression
+    db_insert 'expr', {
+        (map { +"token${_}_id" => $token_ids[$_] } 0 .. $self->order-1),
+    };
 
+    my $expr_id = $self->_dbh->selectrow_array('SELECT last_insert_rowid()');
+
+    # add next/previous tokens for this expression, if any
     for my $pos_token (qw(next_token prev_token)) {
         next if !defined $args{$pos_token};
         my $token_id = $self->_add_tokens($args{$pos_token});
@@ -131,48 +132,62 @@ sub add_expr {
             };
         }
     }
-    
+
     return;
 }
 
+# look up an expression id based on tokens
 sub _expr_id {
     my ($self, $tokens) = @_;
     
-    my $first_token = $tokens->[0];
-    my @expr_ids = db_fetch {
-        expr_token->token_pos == 0;
-        expr_token->token_id <- db_fetch {
-            token->text eq $first_token;
-            return token->token_id;
-        };
-        return expr_token->expr_id;
-    };
+    my @expr_ids;
 
-    for my $pos (1 .. $#{ $tokens }) {
+    # go through the positions
+    for my $pos (0 .. $self->order-1) {
+        my $token = $tokens->[$pos];
+        my $column = "token${pos}_id";
+
+        # find all expressions beginning with the first token
+        if ($pos == 0) {
+            @expr_ids = db_fetch {
+                expr->$column <- db_fetch {
+                    token->text eq $token;
+                    return token->token_id;
+                };
+                return expr->expr_id;
+            };
+        }
+
+        # the expression doesn't exist
         return if !@expr_ids;
-        my $current_token = $tokens->[$pos];
         
         # limit the number of SQL variables we use, sqlite only allows 999
         my $iter = natatime(997, @expr_ids);
         my @fewer_ids;
+
+        # find expressions containing the next token at the right position
         while (my @ids = $iter->()) {
             push @fewer_ids, db_fetch {
-                expr_token->token_pos == $pos;
-                expr_token->expr_id <- @ids;
-                expr_token->token_id <- db_fetch {
-                    token->text eq $current_token;
+                expr->expr_id <- @ids;
+                expr->$column <- db_fetch {
+                    token->text eq $token;
                     return token->token_id;
                 };
-                return expr_token->expr_id;
+                return expr->expr_id;
             };
         }
+
+        # throw away expressions that didn't match
         @expr_ids = @fewer_ids;
     }
+
+    # return the expression if it was found
     return $expr_ids[0] if @expr_ids == 1;
 
     return;
 }
 
+# add tokens and/or return their ids
 sub _add_tokens {
     my ($self) = shift;
     my $tokens = ref $_[0] eq 'ARRAY' ? shift : [@_];
@@ -189,14 +204,17 @@ sub _add_tokens {
         }
         else {
             db_insert 'token', { text => $token };
-            push @token_ids, db_fetch {
-                token->text eq $token;
-                return token->token_id;
-            };
+            push @token_ids, $self->_last_rowid();
         }
     }
 
     return @token_ids > 1 ? @token_ids : $token_ids[0];
+}
+
+# return the primary key of the last inserted row
+sub _last_rowid {
+    my ($self) = @_;
+    return $self->_dbh->selectrow_array('SELECT last_insert_rowid()');
 }
 
 sub token_exists {
@@ -209,34 +227,38 @@ sub token_exists {
     return;
 }
 
+# return a random expression containing the given token
 sub random_expr {
     my ($self, $token) = @_;
 
     my $token_id = $self->_add_tokens($token);
-    my @positions = shuffle(0 .. $self->order-1);
     my @expr;
 
-    my @expr_ids;
-    for my $pos (@positions) {
-        @expr_ids = shuffle db_fetch {
-            expr_token->token_pos == $pos;
-            expr_token->token_id == $token_id;
-            return expr_token->expr_id;
+    # try the positions in a random order
+    POSITION: for my $pos (shuffle 0 .. $self->order-1) {
+        my $column = "token${pos}_id";
+
+        # find all expressions which include the token at this position
+        my @expr_ids = shuffle db_fetch {
+            expr->$column == $token_id;
+            return expr->expr_id;
         };
+
+        # try the next position if no expression has it at this one
         next if !@expr_ids;
-        
-        my $expr_id = shift @expr_ids;
-        @expr = db_fetch {
-            my $t : token;
-            my $e : expr_token;
-            $e->expr_id == $expr_id;
-            join $t * $e <= db_fetch {
-                $t->token_id == $e->token_id;
+
+        # we found some, let's pick a random one and return its tokens
+        my $expr_id = (shuffle @expr_ids)[0];
+        my $expr = db_fetch { expr->expr_id == $expr_id };
+
+        for my $i (0 .. $self->order-1) {
+            my $id = $expr->{"token${i}_id"};
+            push @expr, db_fetch {
+                token->token_id == $id;
+                return token->text;
             };
-            sort $e->token_pos;
-            return $t->text;
-        };
-        last if @expr;
+        }
+        last POSITION;
     }
 
     return @expr;
@@ -315,15 +337,7 @@ CREATE TABLE token (
 )
 
 CREATE TABLE expr (
-    expr_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    dummy   INTEGER
-)
-
-CREATE TABLE expr_token (
-    expr_token_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    expr_id       INTEGER NOT NULL REFERENCES expr (expr_id),
-    token_id      INTEGER NOT NULL REFERENCES token (token_id),
-    token_pos     INTEGER NOT NULL
+    expr_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
 )
 
 CREATE TABLE next_token (
