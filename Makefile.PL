@@ -29,7 +29,7 @@ test_requires  ('Test::More'   => '0');
 test_requires  ('Test::Script' => '0');
 tests_recursive();
 
-author_requires('Perl::Critic'        => '1,098');
+author_requires('Perl::Critic'        => '1.098');
 # uncomment when the distro becomes installable via cpanp(1)
 #author_requires('Perl::Critic::Moose' => '0');
 author_requires('Test::Perl::Critic'  => '0');
