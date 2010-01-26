@@ -340,6 +340,9 @@ CREATE TABLE expr (
     expr_id   INTEGER PRIMARY KEY AUTOINCREMENT,
     expr_text TEXT NOT NULL UNIQUE
 );
+[% FOREACH i IN orders %]
+ALTER TABLE expr ADD token[% i %]_id INTEGER REFERENCES token (token_id);
+[% END %]
 __[ table_next_token ]__
 CREATE TABLE next_token (
     pos_token_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -347,9 +350,6 @@ CREATE TABLE next_token (
     token_id     INTEGER NOT NULL REFERENCES token (token_id),
     count        INTEGER NOT NULL
 );
-[% FOREACH i IN orders %]
-ALTER TABLE expr ADD token[% i %]_id INTEGER REFERENCES token (token_id);
-[% END %]
 __[ table_prev_token ]__
 CREATE TABLE prev_token (
     pos_token_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
