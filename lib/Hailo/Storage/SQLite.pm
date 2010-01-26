@@ -137,7 +137,7 @@ sub add_expr {
         };
 
         # get the new expr id
-        $expr_id = $self->_last_rowid();
+        $expr_id = $self->_last_expr_rowid();
     }
 
     # add next/previous tokens for this expression, if any
@@ -199,7 +199,7 @@ sub _add_tokens {
         }
         else {
             db_insert 'token', { text => $token };
-            push @token_ids, $self->_last_rowid();
+            push @token_ids, $self->_last_token_rowid();
         }
     }
 
@@ -207,10 +207,8 @@ sub _add_tokens {
 }
 
 # return the primary key of the last inserted row
-sub _last_rowid {
-    my ($self) = @_;
-    $self->_dbh->selectrow_array('SELECT last_insert_rowid()');
-}
+sub _last_expr_rowid  { shift->_dbh->selectrow_array('SELECT last_insert_rowid()') }
+sub _last_token_rowid { shift->_dbh->selectrow_array('SELECT last_insert_rowid()') }
 
 sub token_exists {
     my ($self, $token) = @_;
