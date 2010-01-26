@@ -77,7 +77,7 @@ has boundary_token => (
     documentation => "Token used to signify a paragraph boundary",
     isa           => Str,
     is            => 'ro',
-    default       => "\x1B",
+    default       => "\n",
 );
 
 has storage_class => (
