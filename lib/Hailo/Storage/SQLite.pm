@@ -169,14 +169,14 @@ sub _expr_id {
             };
         }
 
-        # the expression doesn't exist
+        # no expression begins with the first token, bail
         return if !@expr_ids;
         
         # limit the number of SQL variables we use, sqlite only allows 999
         my $iter = natatime(997, @expr_ids);
-        my @fewer_ids;
 
         # find expressions containing the next token at the right position
+        my @fewer_ids;
         while (my @ids = $iter->()) {
             push @fewer_ids, db_fetch {
                 expr->expr_id <- @ids;
