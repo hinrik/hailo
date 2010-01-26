@@ -23,8 +23,7 @@ sub _build__dbh {
 sub _exists_db {
     my ($self) = @_;
 
-    # Hack!
-    not exists $ENV{SPAWN_TABLES};
+    shift->_dbh->selectrow_array("SELECT count(*) FROM information_schema.columns WHERE table_name ='info'") != 0;
 }
 
 sub start_training {
