@@ -126,7 +126,7 @@ sub add_expr {
             my $t : table = $pos_token;
             $t->expr_id == $expr_id;
             $t->token_id == $token_id;
-            return $t->pos_token_id;
+            return $t->count;
         };
 
         if (defined $count) {
