@@ -70,6 +70,16 @@ has brain_file => (
     is            => "ro",
 );
 
+has boundary_token => (
+    traits        => [qw(Getopt)],
+    cmd_aliases   => 'B',
+    cmd_flag      => 'boundary',
+    documentation => "Token used to signify a paragraph boundary",
+    isa           => Str,
+    is            => 'ro',
+    default       => "\x1B",
+);
+
 has storage_class => (
     traits        => [qw(Getopt)],
     cmd_aliases   => "S",
@@ -181,13 +191,13 @@ sub train {
 
 sub learn {
     my ($self, $input) = @_;
+    my $storage  = $self->_storage_obj;
+    my $order    = $storage->order;
+    my $boundary = $self->boundary_token;
 
-    # a newline functions as beginning-of-string or end-of-string
-    $input = "\n$input\n";
+    # add boundary tokens
+    $input = "$boundary$input$boundary";
     my @tokens = $self->_tokenizer_obj->make_tokens($input);
-
-    my $storage = $self->_storage_obj;
-    my $order = $storage->order;
 
     # only learn from inputs which are long enough
     return if @tokens < $order;
@@ -212,9 +222,10 @@ sub learn {
 
 sub reply {
     my ($self, $input) = @_;
-    my $storage = $self->_storage_obj;
-    my $order = $storage->order;
-    my $toke = $self->_tokenizer_obj;
+    my $storage  = $self->_storage_obj;
+    my $order    = $storage->order;
+    my $toke     = $self->_tokenizer_obj;
+    my $boundary = $self->boundary_token;
     
     my @tokens = $toke->make_tokens($input);
     my @key_tokens = grep { $storage->token_exists($_) } $toke->find_key_tokens(@tokens);
@@ -228,7 +239,7 @@ sub reply {
     my @current_expr = @middle_expr;
 
     # construct the end of the reply
-    while ($current_expr[-1] ne "\n") {
+    while ($current_expr[-1] ne $boundary) {
         my $next_tokens = $storage->next_tokens(\@current_expr);
         my $next_token = $self->_pos_token($next_tokens, \@current_key_tokens);
         push @reply, $next_token;
@@ -241,7 +252,7 @@ sub reply {
     @current_expr = @middle_expr;
 
     # construct the beginning of the reply
-    while ($current_expr[0] ne "\n") {
+    while ($current_expr[0] ne $boundary) {
         my $prev_tokens = $storage->prev_tokens(\@current_expr);
         my $prev_token = $self->_pos_token($prev_tokens, \@current_key_tokens);
         @reply = ($prev_token, @reply);
@@ -301,6 +312,12 @@ The storage backend to use. Default: 'Perl'.
 =head2 C<tokenizer>
 
 The tokenizer to use. Default: 'Generic';
+
+=head2 C<boundary_token>
+
+The token used to signify a paragraph boundary. Has to be something that
+would never appear in your inputs. Defaults to C<"\x1B">, the ASCII escape
+character.
 
 =head1 METHODS
 

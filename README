@@ -20,6 +20,11 @@ ATTRIBUTES
   "tokenizer"
     The tokenizer to use. Default: 'Generic';
 
+  "boundary_token"
+    The token used to signify a paragraph boundary. Has to be something that
+    would never appear in your inputs. Defaults to "\x1B", the ASCII escape
+    character.
+
 METHODS
   "new"
     This is the constructor. It accept the attributes specified in
