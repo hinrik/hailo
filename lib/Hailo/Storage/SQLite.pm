@@ -1,11 +1,13 @@
 package Hailo::Storage::SQLite;
-
+use 5.10.0;
 use Moose;
 use MooseX::Types::Moose qw<Int Str>;
 use DBI;
 use DBIx::Perlish;
 use List::Util qw<shuffle>;
-use namespace::clean -except => 'meta';
+use Data::Section qw(-setup);
+use Template;
+use namespace::clean -except => [ qw(meta section_data) ];
 
 our $VERSION = '0.01';
 
@@ -86,15 +88,29 @@ sub stop_training {
 sub _create_db {
     my ($self) = @_;
 
-    my @statements = split /\n\n/, do { local $/ = undef; <DATA> };
+    my @statements = $self->_get_create_db_sql;
 
-    for my $i (0 .. $self->order-1) {
-        push @statements, "ALTER TABLE expr ADD token${i}_id "
-            .'INTEGER REFERENCES token (token_id)';
-    }
     $self->_dbh->do($_) for @statements;
 
     return;
+}
+
+sub _get_create_db_sql {
+    my ($self) = @_;
+    my $sql;
+
+    for my $table (qw(info token expr next_token prev_token)) {
+        my $template = $self->section_data( "table_$table" );
+        Template->new->process(
+            $template,
+            {
+                orders => [ 0 .. $self->order-1 ],
+            },
+            \$sql,
+        );
+    }
+
+    my (@sql) = $sql =~ /\s*(.*?);/gs;
 }
 
 sub _expr_text {
@@ -193,7 +209,7 @@ sub _add_tokens {
 # return the primary key of the last inserted row
 sub _last_rowid {
     my ($self) = @_;
-    return $self->_dbh->sqlite_last_insert_rowid();
+    $self->_dbh->selectrow_array('SELECT last_insert_rowid()');
 }
 
 sub token_exists {
@@ -309,31 +325,35 @@ it under the same terms as Perl itself.
 =cut
 
 __DATA__
+__[ table_info ]__
 CREATE TABLE info (
     attribute TEXT NOT NULL UNIQUE PRIMARY KEY,
     text      TEXT NOT NULL
-)
-
+);
+__[ table_token ]__
 CREATE TABLE token (
-    token_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    token_id SERIAL,
     text     TEXT NOT NULL
-)
-
+);
+__[ table_expr ]__
 CREATE TABLE expr (
     expr_id   INTEGER PRIMARY KEY AUTOINCREMENT,
     expr_text TEXT NOT NULL UNIQUE
-)
-
+);
+__[ table_next_token ]__
 CREATE TABLE next_token (
     pos_token_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     expr_id      INTEGER NOT NULL REFERENCES expr (expr_id),
     token_id     INTEGER NOT NULL REFERENCES token (token_id),
     count        INTEGER NOT NULL
-)
-
+);
+[% FOREACH i IN orders %]
+ALTER TABLE expr ADD token[% i %]_id INTEGER REFERENCES token (token_id);
+[% END %]
+__[ table_prev_token ]__
 CREATE TABLE prev_token (
     pos_token_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     expr_id      INTEGER NOT NULL REFERENCES expr (expr_id),
     token_id     INTEGER NOT NULL REFERENCES token (token_id),
     count        INTEGER NOT NULL
-)
+);
