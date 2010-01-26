@@ -103,17 +103,19 @@ sub add_expr {
     my ($self, %args) = @_;
     my $tokens = $args{tokens};
 
-    return if defined $self->_expr_id($tokens);
+    my $expr_id = $self->_expr_id($tokens);
+    if (!defined $expr_id) {
+        # add the tokens
+        my @token_ids = $self->_add_tokens($tokens);
 
-    # add the tokens
-    my @token_ids = $self->_add_tokens($tokens);
+        # add the expression
+        db_insert 'expr', {
+            (map { +"token${_}_id" => $token_ids[$_] } 0 .. $self->order-1),
+        };
 
-    # add the expression
-    db_insert 'expr', {
-        (map { +"token${_}_id" => $token_ids[$_] } 0 .. $self->order-1),
-    };
-
-    my $expr_id = $self->_dbh->selectrow_array('SELECT last_insert_rowid()');
+        # get the new expr id
+        $expr_id = $self->_last_rowid();
+    }
 
     # add next/previous tokens for this expression, if any
     for my $pos_token (qw(next_token prev_token)) {

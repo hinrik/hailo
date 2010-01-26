@@ -51,11 +51,14 @@ sub add_expr {
     my $mem = $self->_memory;
 
     my $ehash = _hash_tokens($args{tokens});
-    $mem->{expr}{$ehash} = $args{tokens};
 
-    for my $token (@{ $args{tokens} }) {
-        $mem->{token}{$token} = [ ] if !exists $mem->{token}{$token};
-        push @{ $mem->{token}{$token} }, $ehash;
+    if (!exists $mem->{expr}{$ehash}) {
+        $mem->{expr}{$ehash} = $args{tokens};
+
+        for my $token (@{ $args{tokens} }) {
+            $mem->{token}{$token} = [ ] if !exists $mem->{token}{$token};
+            push @{ $mem->{token}{$token} }, $ehash;
+        }
     }
 
     for my $pos_token (qw(next_token prev_token)) {
