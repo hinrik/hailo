@@ -188,7 +188,7 @@ sub _expr_id {
             };
         }
 
-        # throw away expressions that didn't match
+        # only keep the expressions that matched
         @expr_ids = @fewer_ids;
     }
 
