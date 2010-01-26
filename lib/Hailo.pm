@@ -229,7 +229,8 @@ sub reply {
 
     # construct the end of the reply
     while ($current_expr[-1] ne "\n") {
-        my $next_token = $self->_next_token(\@current_expr, \@current_key_tokens);
+        my $next_tokens = $storage->next_tokens(\@current_expr);
+        my $next_token = $self->_pos_token($next_tokens, \@current_key_tokens);
         push @reply, $next_token;
         @current_expr = (@current_expr[1 .. $order-1], $next_token);
     }
@@ -241,7 +242,8 @@ sub reply {
 
     # construct the beginning of the reply
     while ($current_expr[0] ne "\n") {
-        my $prev_token = $self->_prev_token(\@current_expr, \@current_key_tokens);
+        my $prev_tokens = $storage->prev_tokens(\@current_expr);
+        my $prev_token = $self->_pos_token($prev_tokens, \@current_key_tokens);
         @reply = ($prev_token, @reply);
         @current_expr = ($prev_token, @current_expr[0 .. $order-2]);
     }
@@ -249,39 +251,19 @@ sub reply {
     return $toke->make_output(@reply);
 }
 
-# return a succeeding token, preferring key tokens, otherwise random
-# removes corresponding element from $key_tokens array if used
-sub _next_token {
-    my ($self, $expr, $key_tokens) = @_;
+sub _pos_token {
+    my ($self, $next_tokens, $key_tokens) = @_;
     my $storage = $self->_storage_obj;
 
-    my @next_tokens = $storage->next_tokens($expr);
-    my %next = map { +$_ => 1 } @next_tokens;
-
     for my $i (0 .. $#{ $key_tokens }) {
-        next if !exists $next{ @$key_tokens[$i] };
+        next if !exists $next_tokens->{ @$key_tokens[$i] };
         return splice @$key_tokens, $i, 1;
     }
 
-    my @novel_tokens = keys %next;
-    return @novel_tokens[rand @novel_tokens];
-}
-
-# return a preceding token, preferring key tokens, otherwise random
-# removes corresponding element from $key_tokens array if used
-sub _prev_token {
-    my ($self, $expr, $key_tokens) = @_;
-    my $storage = $self->_storage_obj;
-
-    my @prev_tokens = $storage->prev_tokens($expr);
-    my %prev = map { +$_ => 1 } @prev_tokens;
-
-    for my $i (0 .. $#{ $key_tokens }) {
-        next if !exists $prev{ @$key_tokens[$i] };
-        return splice @$key_tokens, $i, 1;
+    my @novel_tokens;
+    while (my ($token, $count) = each %$next_tokens) {
+        push @novel_tokens, ($token) x $count;
     }
-
-    my @novel_tokens = keys %prev;
     return @novel_tokens[rand @novel_tokens];
 }
 

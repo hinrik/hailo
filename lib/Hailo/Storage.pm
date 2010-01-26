@@ -68,12 +68,14 @@ exists.
 =head2 C<next_tokens>
 
 Takes an array reference of tokens arguments that make up an expression and
-returns a list tokens that may succeed it.
+returns a hash reference of tokens that may succeed it. The value is the
+number of times the token has been seen succeeding the expression.
 
 =head2 C<prev_tokens>
 
 Takes an array reference of tokens arguments that make up an expression and
-returns a list tokens that may precede it.
+returns a hash reference of tokens that may precede it. The value is the
+number of times the token has been seen preceding the expression.
 
 =head2 C<start_training>
 

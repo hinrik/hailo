@@ -58,15 +58,9 @@ sub add_expr {
         push @{ $mem->{token}{$token} }, $ehash;
     }
 
-    if (defined $args{next_token}) {
-        if (!exists $mem->{next_token}{$ehash}{$args{next_token}}) {
-            $mem->{next_token}{$ehash}{$args{next_token}} = undef;
-        }
-    }
-
-    if (defined $args{prev_token}) {
-        if (!exists $mem->{prev_token}{$ehash}{$args{prev_token}}) {
-            $mem->{prev_token}{$ehash}{$args{prev_token}} = undef;
+    for my $pos_token (qw(next_token prev_token)) {
+        if (defined $args{$pos_token}) {
+            $mem->{$pos_token}{$ehash}{ $args{$pos_token} }++;
         }
     }
     
@@ -88,13 +82,13 @@ sub random_expr {
 sub next_tokens {
     my ($self, $expr) = @_;
     my $ehash = _hash_tokens($expr);
-    return keys %{ $self->_memory->{next_token}{ $ehash } };
+    return $self->_memory->{next_token}{ $ehash };
 }
 
 sub prev_tokens {
     my ($self, $expr) = @_;
     my $ehash = _hash_tokens($expr);
-    return keys %{ $self->_memory->{prev_token}{ $ehash } };
+    return $self->_memory->{prev_token}{ $ehash };
 }
 
 # hash the contents of an expression for unique identification

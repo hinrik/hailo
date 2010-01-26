@@ -120,15 +120,26 @@ sub add_expr {
         next if !defined $args{$pos_token};
         my $token_id = $self->_add_tokens($args{$pos_token});
 
-        if (!defined db_fetch {
+        my $count = db_fetch {
             my $t : table = $pos_token;
             $t->expr_id == $expr_id;
             $t->token_id == $token_id;
             return $t->pos_token_id;
-        }) {
+        };
+
+        if (defined $count) {
+            db_update {
+                my $t : table = $pos_token;
+                $t->expr_id == $expr_id;
+                $t->token_id == $token_id;
+                $t->count = $t->count+1;
+            };
+        }
+        else {
             db_insert $pos_token, {
                 expr_id  => $expr_id,
                 token_id => $token_id,
+                count    => 1,
             };
         }
     }
@@ -275,16 +286,17 @@ sub prev_tokens {
 }
 
 sub _pos_tokens {
-    my ($self, $table, $tokens) = @_;
+    my ($self, $pos_table, $tokens) = @_;
 
     my $expr_id = $self->_expr_id($tokens);
     return db_fetch {
-        token->token_id <- db_fetch {
-            my $t : table = $table;
-            $t->expr_id eq $expr_id;
-            return $t->token_id;
+        my $pos : table = $pos_table;
+        my $tok : token;
+        $pos->expr_id == $expr_id;
+        join $pos * $tok => db_fetch {
+            $pos->token_id == $tok->token_id;
         };
-        return token->text;
+        return -k $tok->text, $pos->count;
     };
 }
 
@@ -343,11 +355,13 @@ CREATE TABLE expr (
 CREATE TABLE next_token (
     pos_token_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     expr_id      INTEGER NOT NULL REFERENCES expr (expr_id),
-    token_id     INTEGER NOT NULL REFERENCES token (token_id)
+    token_id     INTEGER NOT NULL REFERENCES token (token_id),
+    count        INTEGER NOT NULL
 )
 
 CREATE TABLE prev_token (
     pos_token_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     expr_id      INTEGER NOT NULL REFERENCES expr (expr_id),
-    token_id     INTEGER NOT NULL REFERENCES token (token_id)
+    token_id     INTEGER NOT NULL REFERENCES token (token_id),
+    count        INTEGER NOT NULL
 )
