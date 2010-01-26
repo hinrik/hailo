@@ -141,7 +141,7 @@ sub run {
     my $self = shift;
 
     if ($self->print_version) {
-        print "hailo $VERSION\n";
+        say "hailo $VERSION";
         exit;
     }
 
