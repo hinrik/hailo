@@ -59,7 +59,7 @@ sub add_expr {
     }
 
     for my $pos_token (qw(next_token prev_token)) {
-        if (exists $args{$pos_token}) {
+        if (defined $args{$pos_token}) {
             $mem->{$pos_token}{$ehash}{ $args{$pos_token} }++;
         }
     }
