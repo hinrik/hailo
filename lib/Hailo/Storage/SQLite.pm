@@ -322,7 +322,8 @@ This backend maintains information in an SQLite database.
 It uses very little memory, but training is very slow. Some optimizations
 are yet to be made (crafting more efficient queries, adding indexes, etc).
 
-Importing 1000 lines of IRC output takes about 6 minutes on my laptop.
+Importing 1000 lines of IRC output takes about 3 minutes on my laptop
+(2.53 GHz Core 2 Duo).
 
 =head1 AUTHOR
 
