@@ -5,7 +5,6 @@ use MooseX::Types::Moose qw<Int Str>;
 use DBI;
 use DBIx::Perlish;
 use List::Util qw<shuffle>;
-use List::MoreUtils qw<natatime>;
 use namespace::clean -except => 'meta';
 
 our $VERSION = '0.01';
@@ -98,12 +97,19 @@ sub _create_db {
     return;
 }
 
+sub _expr_text {
+    my ($self, $tokens) = @_;
+    return join $self->token_separator, @$tokens;
+}
+
 # add a new expression to the database
 sub add_expr {
     my ($self, %args) = @_;
     my $tokens = $args{tokens};
 
-    my $expr_id = $self->_expr_id($tokens);
+    my $expr_text = $self->_expr_text($tokens);
+    my $expr_id = $self->_expr_id($expr_text);
+
     if (!defined $expr_id) {
         # add the tokens
         my @token_ids = $self->_add_tokens($tokens);
@@ -111,6 +117,7 @@ sub add_expr {
         # add the expression
         db_insert 'expr', {
             (map { +"token${_}_id" => $token_ids[$_] } 0 .. $self->order-1),
+            expr_text => $expr_text,
         };
 
         # get the new expr id
@@ -151,53 +158,12 @@ sub add_expr {
 
 # look up an expression id based on tokens
 sub _expr_id {
-    my ($self, $tokens) = @_;
+    my ($self, $expr_text) = @_;
     
-    my @expr_ids;
-
-    # go through the positions
-    for my $pos (0 .. $self->order-1) {
-        my $token = $tokens->[$pos];
-        my $column = "token${pos}_id";
-
-        # find all expressions beginning with the first token
-        if ($pos == 0) {
-            @expr_ids = db_fetch {
-                expr->$column <- db_fetch {
-                    token->text eq $token;
-                    return token->token_id;
-                };
-                return expr->expr_id;
-            };
-        }
-
-        # no expression begins with the first token, bail
-        return if !@expr_ids;
-        
-        # limit the number of SQL variables we use, sqlite only allows 999
-        my $iter = natatime(997, @expr_ids);
-
-        # find expressions containing the next token at the right position
-        my @fewer_ids;
-        while (my @ids = $iter->()) {
-            push @fewer_ids, db_fetch {
-                expr->expr_id <- @ids;
-                expr->$column <- db_fetch {
-                    token->text eq $token;
-                    return token->token_id;
-                };
-                return expr->expr_id;
-            };
-        }
-
-        # only keep the expressions that matched
-        @expr_ids = @fewer_ids;
-    }
-
-    # return the expression if it was found
-    return $expr_ids[0] if @expr_ids == 1;
-
-    return;
+    return db_fetch {
+        expr->expr_text eq $expr_text;
+        return expr->expr_id;
+    };
 }
 
 # add tokens and/or return their ids
@@ -227,17 +193,21 @@ sub _add_tokens {
 # return the primary key of the last inserted row
 sub _last_rowid {
     my ($self) = @_;
-    return $self->_dbh->selectrow_array('SELECT last_insert_rowid()');
+    return $self->_dbh->sqlite_last_insert_rowid();
 }
 
 sub token_exists {
     my ($self, $token) = @_;
     
-    return 1 if defined db_fetch {
+    return defined db_fetch {
         token->text eq $token;
         return token->token_id;
     };
-    return;
+}
+
+sub _split_expr {
+    my ($self, $expr) = @_;
+    return split /\t/, $expr;
 }
 
 # return a random expression containing the given token
@@ -262,15 +232,12 @@ sub random_expr {
 
         # we found some, let's pick a random one and return its tokens
         my $expr_id = (shuffle @expr_ids)[0];
-        my $expr = db_fetch { expr->expr_id == $expr_id };
+        my $expr_text = db_fetch {
+            expr->expr_id == $expr_id;
+            return expr->expr_text;
+        };
 
-        for my $i (0 .. $self->order-1) {
-            my $id = $expr->{"token${i}_id"};
-            push @expr, db_fetch {
-                token->token_id == $id;
-                return token->text;
-            };
-        }
+        @expr = $self->_split_expr($expr_text);
         last POSITION;
     }
 
@@ -290,7 +257,8 @@ sub prev_tokens {
 sub _pos_tokens {
     my ($self, $pos_table, $tokens) = @_;
 
-    my $expr_id = $self->_expr_id($tokens);
+    my $expr_text = $self->_expr_text($tokens);
+    my $expr_id = $self->_expr_id($expr_text);
     return db_fetch {
         my $pos : table = $pos_table;
         my $tok : token;
@@ -324,7 +292,7 @@ This backend maintains information in an SQLite database.
 It uses very little memory, but training is very slow. Some optimizations
 are yet to be made (crafting more efficient queries, adding indexes, etc).
 
-Importing 1000 lines of IRC output takes about 3 minutes on my laptop
+Importing 1000 lines of IRC output takes 1 minutes and 5 seconds on my laptop
 (2.53 GHz Core 2 Duo).
 
 =head1 AUTHOR
@@ -352,7 +320,8 @@ CREATE TABLE token (
 )
 
 CREATE TABLE expr (
-    expr_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+    expr_id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    expr_text TEXT NOT NULL UNIQUE
 )
 
 CREATE TABLE next_token (
