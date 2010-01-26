@@ -91,7 +91,7 @@ sub _create_db {
 
     for my $i (0 .. $self->order-1) {
         push @statements, "ALTER TABLE expr ADD token${i}_id "
-            .'TEXT REFERENCES token (token_id)';
+            .'INTEGER REFERENCES token (token_id)';
     }
     $self->_dbh->do($_) for @statements;
 
