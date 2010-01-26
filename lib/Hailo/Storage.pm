@@ -7,7 +7,7 @@ use namespace::clean -except => 'meta';
 has token_separator => (
     isa     => Str,
     is      => 'ro',
-    default => "\n",
+    default => "\t",
 );
 
 requires 'file';
