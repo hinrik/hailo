@@ -50,7 +50,7 @@ sub add_expr {
     my ($self, %args) = @_;
     my $mem = $self->_memory;
 
-    my $ehash = _hash_tokens($args{tokens});
+    my $ehash = $self->_hash_tokens($args{tokens});
 
     if (!exists $mem->{expr}{$ehash}) {
         $mem->{expr}{$ehash} = $args{tokens};
@@ -84,22 +84,20 @@ sub random_expr {
 
 sub next_tokens {
     my ($self, $expr) = @_;
-    my $ehash = _hash_tokens($expr);
+    my $ehash = $self->_hash_tokens($expr);
     return $self->_memory->{next_token}{ $ehash };
 }
 
 sub prev_tokens {
     my ($self, $expr) = @_;
-    my $ehash = _hash_tokens($expr);
+    my $ehash = $self->_hash_tokens($expr);
     return $self->_memory->{prev_token}{ $ehash };
 }
 
-# hash the contents of an expression for unique identification
-# pretty naïve so far, just joins all the tokens with ASCII escapes
-# since newlines aren't allowed
+# concatenate contents of an expression for unique identification
 sub _hash_tokens {
-    my ($tokens) = @_;
-    my $ehash = join "\x03", @$tokens;
+    my ($self, $tokens) = @_;
+    my $ehash = join $self->token_separator, @$tokens;
     return $ehash;
 }
 

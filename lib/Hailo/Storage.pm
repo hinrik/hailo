@@ -1,7 +1,14 @@
 package Hailo::Storage;
 
 use Moose::Role;
+use MooseX::Types::Moose qw<Str>;
 use namespace::clean -except => 'meta';
+
+has token_separator => (
+    isa     => Str,
+    is      => 'ro',
+    default => "\n",
+);
 
 requires 'file';
 requires 'order';
