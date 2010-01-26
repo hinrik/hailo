@@ -66,8 +66,8 @@ sub BUILD {
 sub start_training {
     my ($self) = @_;
 
-    # allow for 50MB of in-memory cache
-    $self->_dbh->do('PRAGMA cache_size = 50000');
+    # don't fsync till we're done
+    $self->_dbh->do('PRAGMA synchronous=OFF;');
 
     #start a transaction
     $self->_dbh->begin_work;
