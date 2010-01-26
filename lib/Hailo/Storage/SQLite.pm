@@ -46,7 +46,7 @@ sub BUILD {
 
     DBIx::Perlish::init($self->_dbh);
 
-    if (-s $self->file) {
+    if ($self->_exists_db) {
         $self->order(db_fetch {
             info->attribute eq 'markov_order';
             return info->text;
@@ -83,6 +83,12 @@ sub stop_training {
     $self->_dbh->commit;
 
     return;
+}
+
+sub _exists_db {
+    my ($self) = @_;
+
+    -s $self->file;
 }
 
 sub _create_db {
