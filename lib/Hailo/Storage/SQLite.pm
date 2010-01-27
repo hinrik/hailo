@@ -65,9 +65,9 @@ sub _build__st {
     }
 
     for my $pos_token (qw(next_token prev_token)) {
-        $state{"${pos_token}_count"} = "SELECT count FROM next_token WHERE expr_id = ? AND token_id = ?";
-        $state{"${pos_token}_inc"} = "UPDATE next_token SET count = ? WHERE expr_id = ? AND token_id = ?";
-        $state{"${pos_token}_add"} = "INSERT INTO next_token (expr_id, token_id, count) VALUES (?, ?, 1)";
+        $state{"${pos_token}_count"} = "SELECT count FROM $pos_token WHERE expr_id = ? AND token_id = ?";
+        $state{"${pos_token}_inc"} = "UPDATE $pos_token SET count = ? WHERE expr_id = ? AND token_id = ?";
+        $state{"${pos_token}_add"} = "INSERT INTO $pos_token (expr_id, token_id, count) VALUES (?, ?, 1)";
         $state{"${pos_token}_get"} = "SELECT t.text, p.count FROM token t INNER JOIN $pos_token p ON p.token_id = t.token_id WHERE p.expr_id = ?";
     }
 
