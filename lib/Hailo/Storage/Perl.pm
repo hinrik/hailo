@@ -1,6 +1,5 @@
 package Hailo::Storage::Perl;
 
-use 5.010;
 use Moose;
 use MooseX::Types::Moose qw<HashRef Int Str>;
 use Storable;
@@ -38,26 +37,12 @@ sub _build__memory {
         # TODO: these data structures aren't very normalized, so they take up
         # much more memory than necessary
         return {
-            token      => { }, # $token => [$id, \@ehash_of_exprs_that_contain_it]
-            expr       => { }, # $ehash => [$id, \@tokens_it_contains]
-            next_token => { }, # $ehash => [$id, \%tokens_that_can_follow_this_expr]
-            prev_token => { }, # $ehash => [$id, \%tokens_that_can_precede_this_expr]
+            token      => { }, # $token => \@ehash_of_exprs_that_contain_it
+            expr       => { }, # $ehash => \@tokens_it_contains
+            next_token => { }, # $ehash => \%tokens_that_can_follow_this_expr
+            prev_token => { }, # $ehash => \%tokens_that_can_precede_this_expr
             order      => $self->order,
         };
-    }
-}
-
-{
-    my %id = (
-        token      => 0,
-        expr       => 0,
-        next_token => 0,
-        prev_token => 0,
-    );
-
-    sub _next_id {
-        my ($type) = @_;
-        return $id{$type}++;
     }
 }
 
@@ -68,24 +53,20 @@ sub add_expr {
     my $ehash = $self->_hash_tokens($args{tokens});
 
     if (!exists $mem->{expr}{$ehash}) {
-        $mem->{expr}{$ehash} = [_next_id('expr'), $args{tokens}];
+        $mem->{expr}{$ehash} = $args{tokens};
 
         for my $token (@{ $args{tokens} }) {
-            my $id = _next_id('token');
-            $mem->{token}{$token} = [$id, [ ]] if !exists $mem->{token}{$token};
-            push @{ $mem->{token}{$token}[1] }, $ehash;
+            $mem->{token}{$token} = [ ] if !exists $mem->{token}{$token};
+            push @{ $mem->{token}{$token} }, $ehash;
         }
     }
 
     for my $pos_token (qw(next_token prev_token)) {
         if (defined $args{$pos_token}) {
-            my $id = _next_id($pos_token);
-            if (!exists $mem->{$pos_token}{$ehash}) {
-                $mem->{$pos_token}{$ehash} = [$id, { }];
-            }
-            $mem->{$pos_token}{$ehash}[1]{ $args{$pos_token} }++;
+            $mem->{$pos_token}{$ehash}{ $args{$pos_token} }++;
         }
     }
+    
     return;
 }
 
@@ -97,20 +78,20 @@ sub token_exists {
 
 sub random_expr {
     my ($self, $token) = @_;
-    my @ehash = @{ $self->_memory->{token}{$token}[1] };
-    return @{ @{ $self->_memory->{expr}{ $ehash[rand @ehash] } }[1] };
+    my @ehash = @{ $self->_memory->{token}{$token} };
+    return @{ $self->_memory->{expr}{ $ehash[rand @ehash] } };
 }
 
 sub next_tokens {
     my ($self, $expr) = @_;
     my $ehash = $self->_hash_tokens($expr);
-    return $self->_memory->{next_token}{ $ehash }[1];
+    return $self->_memory->{next_token}{ $ehash };
 }
 
 sub prev_tokens {
     my ($self, $expr) = @_;
     my $ehash = $self->_hash_tokens($expr);
-    return $self->_memory->{prev_token}{ $ehash }[1];
+    return $self->_memory->{prev_token}{ $ehash };
 }
 
 # concatenate contents of an expression for unique identification
@@ -122,8 +103,7 @@ sub _hash_tokens {
 
 sub save {
     my ($self) = @_;
-    #store($self->_memory, $self->file);
-    $self->_dump_sql();
+    store($self->_memory, $self->file);
     return;
 }
 
@@ -135,53 +115,6 @@ sub start_training {
 sub stop_training {
     my ($self) = @_;
     return;
-}
-
-sub _sql_escape {
-    my @strings = @_;
-
-    s/'/''/g for @strings;
-    return $strings[0] if @strings == 1;
-    return @strings;
-}
-
-sub _dump_sql {
-    my ($self) = @_;
-    my $mem = $self->_memory;
-    open my $fh, '>:encoding(utf8)', $self->file or die "Can't open ".$self->file.": $!\n";
-
-    say $fh "PRAGMA synchronous=OFF;";
-    say $fh "BEGIN TRANSACTION;";
-
-    my $token_count;
-    while (my ($token, $entry) = each %{ $mem->{token} }) {
-        say "token: ", ++$token_count;
-        my $esc_token = _sql_escape($token);
-        say $fh "INSERT INTO token VALUES ($entry->[0], '$esc_token');";
-    }
-
-    my $expr_count;
-    while (my ($expr, $entry) = each %{ $mem->{expr} }) {
-        say "expr: ",++$expr_count;
-        my $expr_text = join("\t", _sql_escape(@{ $entry->[1] }));
-        my @token_ids = map { $mem->{token}{$_}[0] } @{ $entry->[1] };
-        say $fh "INSERT INTO expr VALUES ($entry->[0], '$expr_text', ".join(', ', @token_ids).');';
-    }
-    for my $pos_token (qw(next_token prev_token)) {
-        my $pos_token_count;
-        my $id = 0;
-        while (my ($ehash, $entry) = each %{ $mem->{$pos_token} }) {
-            say "$pos_token: ",++$pos_token_count;
-            my $expr_id = $mem->{expr}{$ehash}[0];
-            while (my ($token, $count) = each %{ $entry->[1] }) {
-                $id++;
-                my $token_id = $mem->{token}{$token}[0];
-                say $fh "INSERT INTO $pos_token VALUES ($id, $expr_id, $token_id, $count);";
-            }
-        }
-    }
-
-    say $fh "COMMIT;";
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -213,3 +146,4 @@ This program is free software, you can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut
+
