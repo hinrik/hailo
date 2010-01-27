@@ -336,7 +336,7 @@ CREATE TABLE info (
 );
 __[ table_token ]__
 CREATE TABLE token (
-    token_id SERIAL,
+    token_id INTEGER PRIMARY KEY AUTOINCREMENT,
     text     TEXT NOT NULL
 );
 __[ table_expr ]__
