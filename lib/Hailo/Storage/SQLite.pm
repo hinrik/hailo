@@ -314,7 +314,14 @@ L<DBD::SQLite|DBD::SQLite>
 
 =head1 DESCRIPTION
 
-This backend maintains information in an SQLite database.
+This backend maintains information in an SQLite database. It can handle
+pretty large datasets.
+
+For some example numbers, I have a database built from a 204k line IRC channel
+log file. On my laptop (Core 2 Duo 2.53 GHz) it took 10 minutes and 42 seconds
+(317 lines/sec) to create the 290MB database. Furthermore, it can generate 166
+replies per second from it. Since this is just an SQL database, there is very
+little RAM usage.
 
 =head1 AUTHOR
 
