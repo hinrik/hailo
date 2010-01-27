@@ -7,7 +7,11 @@ use MooseX::Types::Moose qw/Int Str Bool/;
 use MooseX::Types::Path::Class qw(File);
 use Term::ProgressBar 2.00;
 use File::CountLines qw(count_lines);
-use namespace::clean -except => [ qw(meta count_lines) ];
+use Time::HiRes qw(gettimeofday tv_interval);
+use namespace::clean -except => [ qw(meta
+                                     count_lines
+                                     gettimeofday
+                                     tv_interval) ];
 
 our $VERSION = '0.01';
 
@@ -200,6 +204,7 @@ sub _train_progress {
     });
     $progress->minor(0);
     my $next_update = 0;
+    my $start_time = [gettimeofday()];
 
     my $i = 1; while (my $line = <$fh>) {
         chomp $line;
@@ -209,6 +214,8 @@ sub _train_progress {
     }
 
     $progress->update($lines) if $lines >= $next_update;
+    my $elapsed = tv_interval($start_time);
+    say "Imported in $elapsed seconds";
 
     return;
 }

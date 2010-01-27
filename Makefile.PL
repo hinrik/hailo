@@ -26,6 +26,7 @@ requires       ('MooseX::Types'              => '0');
 requires       ('MooseX::Types::Moose'       => '0');
 requires       ('Term::ProgressBar'          => '2.00');
 requires       ('File::CountLines'           => '0');
+requires       ('Time::HiRes'                => '0');
 requires       ('namespace::clean'           => '0');
 requires       ('Storable'                   => '0');
 
