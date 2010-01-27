@@ -8,10 +8,7 @@ use MooseX::Types::Path::Class qw(File);
 use Term::ProgressBar 2.00;
 use File::CountLines qw(count_lines);
 use Time::HiRes qw(gettimeofday tv_interval);
-use namespace::clean -except => [ qw(meta
-                                     count_lines
-                                     gettimeofday
-                                     tv_interval) ];
+use namespace::clean -except => 'meta';
 
 our $VERSION = '0.01';
 
