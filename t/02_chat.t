@@ -11,7 +11,7 @@ for my $storage (qw(Perl SQLite)) {
             : ()
         ),
     );
-    my $string = 'Congress shall make no law';
+    my $string = 'Congress shall make no law.';
 
     $hailo->learn($string);
     is($hailo->reply('make'), $string, 'Learned string correctly');

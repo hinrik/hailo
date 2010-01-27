@@ -9,8 +9,11 @@ with 'Hailo::Tokenizer';
 my $APOSTROPHE  = qr/['’]/;
 my $WORD        = qr/\w+(?:$APOSTROPHE\w+)*/;
 my $TOKEN       = qr/(?:$WORD| +|.)/s;
-my $OPEN_QUOTE  = qr/['"‘“«»„「『‹]/;
-my $TERMINATOR  = qr/(?:[…?!.‽]|$WORD:)/;
+my $OPEN_QUOTE  = qr/['"‘“„«»「『‹‚]/;
+my $CLOSE_QUOTE = qr/['"’«»“”」』›‘]/;
+my $TERMINATOR  = qr/(?:[?!‽]+|(?<!\.)\.)/;
+my $ADDRESS     = qr/:/;
+my $BOUNDARY    = qr/\s*$CLOSE_QUOTE?\s*(?:$TERMINATOR|$ADDRESS)\s+$OPEN_QUOTE?\s*/;
 my $INTERESTING = qr/[[:alpha:]]/;
 
 # output -> tokens
@@ -37,9 +40,20 @@ sub make_output {
     my $string = join '', @_;
     $string =~ s/(?:^\n|\n$)//gs;
 
-    # capitalize the first letter of every sentence
-    $string =~ s/^($OPEN_QUOTE?)($WORD)/$1.ucfirst($2)/e;
-    $string =~ s/($WORD)($TERMINATOR\s+)($OPEN_QUOTE?)($WORD)/$1.$2.$3.ucfirst($4)/eg;
+    # capitalize the first word
+    $string =~ s/^$TERMINATOR?\s*$OPEN_QUOTE?\s*\K($WORD)/\u$1/;
+
+    # capitalize the second word
+    $string =~ s/^$TERMINATOR?\s*$OPEN_QUOTE?\s*$WORD(?:\s*(?:$TERMINATOR|$ADDRESS)\s*)\K($WORD)/\u$1/;
+
+    # capitalize all other words after word boundaries
+    # we do it in two passes because we need to match two words at a time
+    $string =~ s/ $WORD$BOUNDARY\K($WORD)/\x1B\u$1\x1B/g;
+    $string =~ s/\x1B$WORD\x1B$BOUNDARY\K($WORD)/\u$1/g;
+    $string =~ s/\x1B//g;
+
+    # end paragraphs with a period when it makes sense
+    $string =~ s/ $WORD\K$/./;
 
     # capitalize the word 'I' between word boundaries
     # except after an apostrophe

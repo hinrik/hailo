@@ -23,6 +23,7 @@ META.yml
 script/hailo
 t/01_compile.t
 t/02_chat.t
+t/tokens_output.t
 t/Hailo-Tokenizer-Generic.t
 xt/01_pod.t
 xt/02_pod_coverage.t
