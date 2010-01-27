@@ -119,8 +119,6 @@ sub stop_training {
 
 __PACKAGE__->meta->make_immutable;
 
-1;
-
 =encoding utf8
 
 =head1 NAME
