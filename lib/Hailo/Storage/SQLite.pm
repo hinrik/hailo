@@ -145,12 +145,12 @@ sub add_expr {
         next if !defined $args{$pos_token};
         my $token_id = $self->_add_tokens($args{$pos_token});
 
-        $_ = "SELECT count FROM $pos_token WHERE expr_id == $expr_id AND token_id == $token_id";
+        $_ = "SELECT count FROM $pos_token WHERE expr_id = $expr_id AND token_id = $token_id";
         my $count = $dbh->selectrow_array($_);
 
         if (defined $count) {
             my $inc = $count++;
-            $_ = $dbh->prepare("UPDATE $pos_token SET count = $inc WHERE expr_id == $expr_id AND token_id == $token_id");
+            $_ = $dbh->prepare("UPDATE $pos_token SET count = $inc WHERE expr_id = $expr_id AND token_id = $token_id");
             $_->execute();
         }
         else {
