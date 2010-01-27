@@ -15,7 +15,6 @@ githubmeta     ();
 requires       ('Encode'                     => '0');
 requires       ('DBD::SQLite'                => '0');
 requires       ('DBD::Pg'                    => '0');
-requires       ('DBIx::Perlish'              => '0');
 requires       ('List::MoreUtils'            => '0');
 requires       ('List::Util'                 => '0');
 requires       ('Data::Section'              => '0');
