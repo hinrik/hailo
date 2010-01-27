@@ -12,7 +12,7 @@ sub _build__dbh {
     return DBI->connect(
         "dbi:Pg:dbname=".$self->file,
         '',
-        '', 
+        '',
         {
             pg_enable_utf8 => 1,
             RaiseError => 1,
