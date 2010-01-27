@@ -5,7 +5,9 @@ use Moose;
 use MooseX::Types -declare => [qw(OrderInt)];
 use MooseX::Types::Moose qw/Int Str Bool/;
 use MooseX::Types::Path::Class qw(File);
-use namespace::clean -except => 'meta';
+use Term::ProgressBar 2.00;
+use File::CountLines qw(count_lines);
+use namespace::clean -except => [ qw(meta count_lines) ];
 
 our $VERSION = '0.01';
 
@@ -180,12 +182,34 @@ sub train {
     my $filename = $self->train_file;
 
     open my $fh, '<:encoding(utf8)', $filename or die "Can't open file '$filename': $!\n";
-    while (my $line = <$fh>) {
-        chomp $line;
-        $self->learn($line);
-    }
+    $self->_train_progress($fh, $filename);
     close $fh;
     $self->_storage_obj->stop_training();
+    return;
+}
+
+sub _train_progress {
+    my ($self, $fh, $filename) = @_;
+
+    my $lines = count_lines($filename);
+    my $progress = Term::ProgressBar->new({
+        name => "training from $filename",
+        count => $lines,
+        remove => 1,
+        ETA => 'linear',
+    });
+    $progress->minor(0);
+    my $next_update = 0;
+
+    my $i = 1; while (my $line = <$fh>) {
+        chomp $line;
+        $self->learn($line);
+
+        $next_update = $progress->update($i) if $i++ >= $next_update;
+    }
+
+    $progress->update($lines) if $lines >= $next_update;
+
     return;
 }
 
