@@ -18,7 +18,6 @@ sub _build__dbh {
             RaiseError => 1,
         },
     );
-    return;
 }
 
 sub _exists_db {
