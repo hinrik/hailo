@@ -9,7 +9,7 @@ our $VERSION = '0.01';
 sub _build__dbh {
     my ($self) = @_;
 
-    DBI->connect(
+    return DBI->connect(
         "dbi:Pg:dbname=".$self->file,
         '',
         '', 
