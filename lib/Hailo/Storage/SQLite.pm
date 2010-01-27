@@ -1,7 +1,7 @@
 package Hailo::Storage::SQLite;
 use 5.10.0;
 use Moose;
-use MooseX::Types::Moose qw<Int Str>;
+use MooseX::Types::Moose qw<HashRef Int Str>;
 use DBI;
 use List::Util qw<shuffle>;
 use Data::Section qw(-setup);
@@ -27,6 +27,12 @@ has _dbh => (
     lazy_build => 1,
 );
 
+has _st => (
+    isa        => HashRef,
+    is         => 'ro',
+    lazy_build => 1,
+);
+
 with 'Hailo::Storage';
 
 sub _build__dbh {
@@ -40,19 +46,52 @@ sub _build__dbh {
     );
 }
 
+sub _build__st {
+    my ($self) = @_;
+
+    my %state = (
+        get_order => "SELECT text FROM info WHERE attribute = 'markov_order'",
+        set_order => "INSERT INTO info (attribute, text) VALUES ('markov_order', ?)",
+        expr_id   => "SELECT expr_id FROM expr WHERE expr_text = ?",
+        expr_text => "SELECT expr_text FROM expr WHERE expr_id = ?",
+        token_id  => "SELECT token_id FROM token WHERE text = ?",
+        add_token => "INSERT INTO token (text) VALUES (?)",
+        last_expr_rowid => 'SELECT last_insert_rowid()',
+        last_token_rowid => 'SELECT last_insert_rowid()',
+    );
+
+    for my $col (map { "token${_}_id" } 0 .. $self->order-1) {
+        $state{"expr_id_$col"} = "SELECT expr_id FROM expr WHERE $col = ?";
+    }
+
+    for my $pos_token (qw(next_token prev_token)) {
+        $state{"${pos_token}_count"} = "SELECT count FROM next_token WHERE expr_id = ? AND token_id = ?";
+        $state{"${pos_token}_inc"} = "UPDATE next_token SET count = ? WHERE expr_id = ? AND token_id = ?";
+        $state{"${pos_token}_add"} = "INSERT INTO next_token (expr_id, token_id, count) VALUES (?, ?, 1)";
+        $state{"${pos_token}_get"} = "SELECT t.text, p.count FROM token t INNER JOIN $pos_token p ON p.token_id = t.token_id WHERE p.expr_id = ?";
+    }
+
+    my @columns = map { "token${_}_id" } 0 .. $self->order-1;
+    my @ids = join(', ', ('?') x @columns);
+    local $" = ', ';
+    $state{add_expr} = "INSERT INTO expr (@columns, expr_text) VALUES (@ids, ?)";
+
+    $state{$_} = $self->_dbh->prepare($state{$_}) for keys %state;
+    return \%state;
+}
+
 sub BUILD {
     my ($self) = @_;
-    my $dbh = $self->_dbh;
 
     if ($self->_exists_db) {
-        my $st = "SELECT text FROM info WHERE attribute = 'markov_order'";
-        my $order = $dbh->selectrow_array($st);
+        $self->_st->{get_order}->execute();
+        my $order = $self->_st->{get_order}->fetchrow_array();
         $self->order($order);
     }
     else {
         $self->_create_db();
         my $order = $self->order;
-        $dbh->do("INSERT INTO info (attribute, text) VALUES ('markov_order', $order)");
+        $self->_st->{set_order}->execute($order);
     }
 
     return;
@@ -121,7 +160,6 @@ sub _expr_text {
 # add a new expression to the database
 sub add_expr {
     my ($self, %args) = @_;
-    my $dbh       = $self->_dbh;
     my $tokens    = $args{tokens};
     my $expr_text = $self->_expr_text($tokens);
     my $expr_id   = $self->_expr_id($expr_text);
@@ -131,13 +169,11 @@ sub add_expr {
         my @token_ids = $self->_add_tokens($tokens);
 
         # add the expression
-        my @columns = map { "token${_}_id" } 0 .. $self->order-1;
-        local $" = ', ';
-        $_ = $dbh->prepare("INSERT INTO expr (@columns, expr_text) VALUES (@token_ids, ?)");
-        $_->execute($expr_text);
+        $self->_st->{add_expr}->execute(@token_ids, $expr_text);
 
         # get the new expr id
-        $expr_id = $self->_last_expr_rowid();
+        $self->_st->{last_expr_rowid}->execute();
+        $expr_id = $self->_st->{last_expr_rowid}->fetchrow_array;
     }
 
     # add next/previous tokens for this expression, if any
@@ -145,17 +181,18 @@ sub add_expr {
         next if !defined $args{$pos_token};
         my $token_id = $self->_add_tokens($args{$pos_token});
 
-        $_ = "SELECT count FROM $pos_token WHERE expr_id = $expr_id AND token_id = $token_id";
-        my $count = $dbh->selectrow_array($_);
+        my $get_count = "${pos_token}_count";
+        $self->_st->{$get_count}->execute($expr_id, $token_id);
+        my $count = $self->_st->{$get_count}->fetchrow_array;
 
         if (defined $count) {
-            my $inc = $count++;
-            $_ = $dbh->prepare("UPDATE $pos_token SET count = $inc WHERE expr_id = $expr_id AND token_id = $token_id");
-            $_->execute();
+            my $new_count = $count++;
+            my $inc_count = "${pos_token}_inc";
+            $self->_st->{$inc_count}->execute($new_count, $expr_id, $token_id);
         }
         else {
-            $_ = $dbh->prepare("INSERT INTO $pos_token (expr_id, token_id, count) VALUES ($expr_id, $token_id, 1)");
-            $_->execute();
+            my $add_count = "${pos_token}_add";
+            $self->_st->{$add_count}->execute($expr_id, $token_id);
         }
     }
 
@@ -165,44 +202,38 @@ sub add_expr {
 # look up an expression id based on tokens
 sub _expr_id {
     my ($self, $expr_text) = @_;
-    $_ = "SELECT expr_id FROM expr where expr_text = ?";
-    return scalar $self->_dbh->selectrow_array($_, {}, $expr_text);
+    $self->_st->{expr_id}->execute($expr_text);
+    return scalar $self->_st->{expr_id}->fetchrow_array();
 }
 
 # add tokens and/or return their ids
 sub _add_tokens {
     my ($self) = shift;
     my $tokens = ref $_[0] eq 'ARRAY' ? shift : [@_];
-    my $dbh = $self->_dbh;
     my @token_ids;
 
     for my $token (@$tokens) {
-        $_ = "SELECT token_id FROM token WHERE text = ?";
-        my $old_token_id = $dbh->selectrow_array($_, {}, $token);
+        $self->_st->{token_id}->execute($token);
+        my $old_token_id = $self->_st->{token_id}->fetchrow_array();
 
         if (defined $old_token_id) {
             push @token_ids, $old_token_id;
         }
         else {
-            $_ = "INSERT INTO token (text) VALUES (?)";
-            $dbh->do($_, {}, $token);
-            push @token_ids, $self->_last_token_rowid();
+            $self->_st->{add_token}->execute($token);
+            $self->_st->{last_expr_rowid}->execute();
+            push @token_ids, $self->_st->{last_expr_rowid}->fetchrow_array;
         }
     }
 
     return @token_ids > 1 ? @token_ids : $token_ids[0];
 }
 
-# return the primary key of the last inserted row
-sub _last_expr_rowid  { return shift->_dbh->selectrow_array('SELECT last_insert_rowid()') }
-sub _last_token_rowid { return shift->_dbh->selectrow_array('SELECT last_insert_rowid()') }
-
 sub token_exists {
     my ($self, $token) = @_;
-    my $dbh = $self->_dbh;
 
-    my $_ = "SELECT token_id FROM token WHERE text = ?";
-    return defined $dbh->selectrow_array($_, {}, $token);
+    $self->_st->{token_id}->execute($token);
+    return defined $self->_st->{token_id}->fetchrow_array();
 }
 
 sub _split_expr {
@@ -223,16 +254,18 @@ sub random_expr {
         my $column = "token${pos}_id";
 
         # find all expressions which include the token at this position
-        $_ = "SELECT expr_id FROM expr WHERE $column = ?";
-        my $expr_ids = $dbh->selectcol_arrayref($_, {}, $token_id);
+        #$_ = "SELECT expr_id FROM expr WHERE $column = ?";
+        $self->_st->{"expr_id_$column"}->execute($token_id);
+        my $expr_ids = $self->_st->{"expr_id_$column"}->fetchall_arrayref();
+        $expr_ids = [ map { $_->[0] } @$expr_ids ];
 
         # try the next position if no expression has it at this one
         next if !@$expr_ids;
 
         # we found some, let's pick a random one and return its tokens
         my $expr_id = $expr_ids->[rand @$expr_ids];
-        $_ = "SELECT expr_text FROM expr WHERE expr_id = ?";
-        my $expr_text = $dbh->selectrow_array($_, {}, $expr_id);
+        $self->_st->{expr_text}->execute($expr_id);
+        my $expr_text = $self->_st->{expr_text}->fetchrow_array();
         @expr = $self->_split_expr($expr_text);
 
         last;
@@ -258,8 +291,8 @@ sub _pos_tokens {
     my $expr_text = $self->_expr_text($tokens);
     my $expr_id = $self->_expr_id($expr_text);
 
-    $_ = "SELECT t.text, p.count FROM token t INNER JOIN $pos_table p ON p.token_id = t.token_id WHERE p.expr_id = ?";
-    my $ugly_hash = $dbh->selectall_hashref($_, 'text', {}, $expr_id);
+    $self->_st->{"${pos_table}_get"}->execute($expr_id);
+    my $ugly_hash = $self->_st->{"${pos_table}_get"}->fetchall_hashref('text');
     my %clean_hash = map { +$_ => $ugly_hash->{$_}{count} } keys %$ugly_hash;
     return \%clean_hash;
 }
