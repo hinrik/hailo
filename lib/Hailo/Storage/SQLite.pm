@@ -1,4 +1,5 @@
 package Hailo::Storage::SQLite;
+
 use 5.10.0;
 use Moose;
 use MooseX::Types::Moose qw<HashRef Int Str>;
