@@ -26,6 +26,24 @@ sub _exists_db {
     return shift->_dbh->selectrow_array("SELECT count(*) FROM information_schema.columns WHERE table_name ='info'") != 0;
 }
 
+# These two are optimized to use PostgreSQL >8.2's INSERT ... RETURNING 
+sub _add_expr {
+    my ($self, $token_ids, $expr_text) = @_;
+
+    # add the expression
+    $self->_sth->{add_expr}->execute(@$token_ids, $expr_text);
+
+    # get the new expr id
+    return $self->_sth->{add_expr}->fetchrow_array;
+}
+
+sub _add_token {
+    my ($self, $token) = @_;
+
+    $self->_sth->{add_token}->execute($token);
+    return $self->_sth->{add_token}->fetchrow_array;
+}
+
 __PACKAGE__->meta->make_immutable;
 
 =encoding utf8
@@ -82,7 +100,7 @@ CREATE TABLE prev_token (
     token_id     INTEGER NOT NULL REFERENCES token (token_id),
     count        INTEGER NOT NULL
 );
-__[ query_last_expr_rowid ]_
-SELECT expr_id  FROM expr  ORDER BY expr_id  DESC LIMIT 1;
-__[ query_last_token_rowid ]__
-SELECT token_id FROM token ORDER BY token_id DESC LIMIT 1;
+__[ query_add_token ]__
+INSERT INTO token (text) VALUES (?) RETURNING token_id;
+__[ query_(add_expr) ]__
+INSERT INTO expr ([% columns %], expr_text) VALUES ([% ids %], ?) RETURNING expr_id;

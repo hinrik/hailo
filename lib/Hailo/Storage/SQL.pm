@@ -187,12 +187,7 @@ sub add_expr {
         # add the tokens
         my @token_ids = $self->_add_tokens($tokens);
 
-        # add the expression
-        $self->_sth->{add_expr}->execute(@token_ids, $expr_text);
-
-        # get the new expr id
-        $self->_sth->{last_expr_rowid}->execute();
-        $expr_id = $self->_sth->{last_expr_rowid}->fetchrow_array;
+        $expr_id = $self->_add_expr(\@token_ids, $expr_text);
     }
 
     # add next/previous tokens for this expression, if any
@@ -218,6 +213,17 @@ sub add_expr {
     return;
 }
 
+sub _add_expr {
+    my ($self, $token_ids, $expr_text) = @_;
+
+    # add the expression
+    $self->_sth->{add_expr}->execute(@$token_ids, $expr_text);
+
+    # get the new expr id
+    $self->_sth->{last_expr_rowid}->execute();
+    return $self->_sth->{last_expr_rowid}->fetchrow_array;
+}
+
 # look up an expression id based on tokens
 sub _expr_id {
     my ($self, $expr_text) = @_;
@@ -239,13 +245,19 @@ sub _add_tokens {
             push @token_ids, $old_token_id;
         }
         else {
-            $self->_sth->{add_token}->execute($token);
-            $self->_sth->{last_token_rowid}->execute();
-            push @token_ids, $self->_sth->{last_token_rowid}->fetchrow_array;
+            push @token_ids, => $self->_add_token($token);
         }
     }
 
     return @token_ids > 1 ? @token_ids : $token_ids[0];
+}
+
+sub _add_token {
+    my ($self, $token) = @_;
+
+    $self->_sth->{add_token}->execute($token);
+    $self->_sth->{last_token_rowid}->execute();
+    return $self->_sth->{last_token_rowid}->fetchrow_array;
 }
 
 sub token_exists {
@@ -398,12 +410,10 @@ __[ query_token_id ]__
 SELECT token_id FROM token WHERE text = ?;
 __[ query_add_token ]__
 INSERT INTO token (text) VALUES (?);
-__[ query_last_expr_rowid ]__
--- Implement me!
-SELECT NULL;
+__[ query_last_expr_rowid ]_
+SELECT expr_id  FROM expr  ORDER BY expr_id  DESC LIMIT 1;
 __[ query_last_token_rowid ]__
--- Implement me!
-SELECT NULL;
+SELECT token_id FROM token ORDER BY token_id DESC LIMIT 1;
 __[ query_(next_token|prev_token)_count ]__
 SELECT count FROM [% table %] WHERE expr_id = ? AND token_id = ?;
 __[ query_(next_token|prev_token)_inc ]__
