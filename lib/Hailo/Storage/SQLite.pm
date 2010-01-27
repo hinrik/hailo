@@ -99,8 +99,8 @@ sub _get_create_db_sql {
     my ($self) = @_;
     my $sql;
 
-    for my $table (qw(info token expr next_token prev_token)) {
-        my $template = $self->section_data( "table_$table" );
+    for my $section (qw(info token expr next_token prev_token indexes)) {
+        my $template = $self->section_data($section);
         Template->new->process(
             $template,
             {
@@ -283,12 +283,6 @@ L<DBD::SQLite|DBD::SQLite>
 
 This backend maintains information in an SQLite database.
 
-It uses very little memory, but training is very slow. Some optimizations
-are yet to be made (crafting more efficient queries, adding indexes, etc).
-
-Importing 1000 lines of IRC output takes 1 minutes and 5 seconds on my laptop
-(2.53 GHz Core 2 Duo).
-
 =head1 AUTHOR
 
 Hinrik E<Ouml>rn SigurE<eth>sson, hinrik.sig@gmail.com
@@ -303,17 +297,17 @@ it under the same terms as Perl itself.
 =cut
 
 __DATA__
-__[ table_info ]__
+__[ info ]__
 CREATE TABLE info (
     attribute TEXT NOT NULL UNIQUE PRIMARY KEY,
     text      TEXT NOT NULL
 );
-__[ table_token ]__
+__[ token ]__
 CREATE TABLE token (
     token_id INTEGER PRIMARY KEY AUTOINCREMENT,
     text     TEXT NOT NULL
 );
-__[ table_expr ]__
+__[ expr ]__
 CREATE TABLE expr (
     expr_id   INTEGER PRIMARY KEY AUTOINCREMENT,
     expr_text TEXT NOT NULL UNIQUE
@@ -321,17 +315,26 @@ CREATE TABLE expr (
 [% FOREACH i IN orders %]
 ALTER TABLE expr ADD token[% i %]_id INTEGER REFERENCES token (token_id);
 [% END %]
-__[ table_next_token ]__
+__[ next_token ]__
 CREATE TABLE next_token (
     pos_token_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     expr_id      INTEGER NOT NULL REFERENCES expr (expr_id),
     token_id     INTEGER NOT NULL REFERENCES token (token_id),
     count        INTEGER NOT NULL
 );
-__[ table_prev_token ]__
+__[ prev_token ]__
 CREATE TABLE prev_token (
     pos_token_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     expr_id      INTEGER NOT NULL REFERENCES expr (expr_id),
     token_id     INTEGER NOT NULL REFERENCES token (token_id),
     count        INTEGER NOT NULL
 );
+__[ indexes ]__
+CREATE INDEX token_text ON token (text);
+CREATE INDEX expr_token0_id on expr (token0_id);
+CREATE INDEX expr_token1_id on expr (token1_id);
+CREATE INDEX expr_token2_id on expr (token2_id);
+CREATE INDEX expr_token3_id on expr (token3_id);
+CREATE INDEX expr_token4_id on expr (token4_id);
+CREATE INDEX next_token_expr_id ON next_token (expr_id);
+CREATE INDEX prev_token_expr_id ON prev_token (expr_id);
