@@ -2,7 +2,7 @@ package Hailo::Storage::Pg;
 use 5.10.0;
 use Moose;
 
-extends 'Hailo::Storage::SQLite';
+extends 'Hailo::Storage::SQL';
 
 our $VERSION = '0.01';
 
@@ -25,18 +25,6 @@ sub _exists_db {
 
     return shift->_dbh->selectrow_array("SELECT count(*) FROM information_schema.columns WHERE table_name ='info'") != 0;
 }
-
-sub start_training {
-    my ($self) = @_;
-
-    # start a transaction
-    $self->_dbh->begin_work;
-
-    return;
-}
-
-sub _last_expr_rowid  { return shift->_dbh->selectrow_array('SELECT expr_id  FROM expr  ORDER BY expr_id  DESC LIMIT 1') }
-sub _last_token_rowid { return shift->_dbh->selectrow_array('SELECT token_id FROM token ORDER BY token_id DESC LIMIT 1') }
 
 __PACKAGE__->meta->make_immutable;
 
@@ -67,12 +55,12 @@ it under the same terms as Perl itself.
 =cut
 
 __DATA__
-__[ token ]__
+__[ table_token ]__
 CREATE TABLE token (
     token_id SERIAL UNIQUE,
     text     TEXT NOT NULL
 );
-__[ expr ]__
+__[ table_expr ]__
 CREATE TABLE expr (
     expr_id   SERIAL UNIQUE,
     expr_text TEXT NOT NULL UNIQUE
@@ -80,17 +68,21 @@ CREATE TABLE expr (
 [% FOREACH i IN orders %]
 ALTER TABLE expr ADD token[% i %]_id INTEGER REFERENCES token (token_id);
 [% END %]
-__[ next_token ]__
+__[ table_next_token ]__
 CREATE TABLE next_token (
     pos_token_id SERIAL UNIQUE,
     expr_id      INTEGER NOT NULL REFERENCES  expr (expr_id),
     token_id     INTEGER NOT NULL REFERENCES token (token_id),
     count        INTEGER NOT NULL
 );
-__[ prev_token ]__
+__[ table_prev_token ]__
 CREATE TABLE prev_token (
     pos_token_id SERIAL UNIQUE,
     expr_id      INTEGER NOT NULL REFERENCES expr (expr_id),
     token_id     INTEGER NOT NULL REFERENCES token (token_id),
     count        INTEGER NOT NULL
 );
+__[ query_last_expr_rowid ]_
+SELECT expr_id  FROM expr  ORDER BY expr_id  DESC LIMIT 1;
+__[ query_last_token_rowid ]__
+SELECT token_id FROM token ORDER BY token_id DESC LIMIT 1;
