@@ -7,7 +7,11 @@ use DBI;
 use List::Util qw<shuffle>;
 use Data::Section qw(-setup);
 use Template;
-use namespace::clean -except => [ qw(meta section_data) ];
+use namespace::clean -except => [ qw(meta
+                                     section_data
+                                     section_data_names
+                                     merged_section_data
+                                     merged_section_data_names) ];
 
 our $VERSION = '0.01';
 
@@ -52,35 +56,68 @@ sub _build__dbh {
 sub _build__sth {
     my ($self) = @_;
 
-    my %state = (
-        get_order => "SELECT text FROM info WHERE attribute = 'markov_order'",
-        set_order => "INSERT INTO info (attribute, text) VALUES ('markov_order', ?)",
-        expr_id   => "SELECT expr_id FROM expr WHERE expr_text = ?",
-        expr_text => "SELECT expr_text FROM expr WHERE expr_id = ?",
-        token_id  => "SELECT token_id FROM token WHERE text = ?",
-        add_token => "INSERT INTO token (text) VALUES (?)",
-        last_expr_rowid => 'SELECT last_insert_rowid()',
-        last_token_rowid => 'SELECT last_insert_rowid()',
-    );
-
-    for my $col (map { "token${_}_id" } 0 .. $self->order-1) {
-        $state{"expr_id_$col"} = "SELECT expr_id FROM expr WHERE $col = ?";
+    my $sections = $self->_sth_sections();
+    my %state;
+    while (my ($name, $options) = each %$sections) {
+        my $section = $options->{section} // $name;
+        my %options = %{ $options->{options} // {} };
+        my $template = $self->section_data("query_$section");
+        my $sql;
+        Template->new->process(
+            $template,
+            {
+                orders => [ 0 .. $self->order-1 ],
+                %options,
+            },
+            \$sql,
+        );
+        $state{$name} = $sql;
     }
-
-    for my $pos_token (qw(next_token prev_token)) {
-        $state{"${pos_token}_count"} = "SELECT count FROM $pos_token WHERE expr_id = ? AND token_id = ?";
-        $state{"${pos_token}_inc"} = "UPDATE $pos_token SET count = ? WHERE expr_id = ? AND token_id = ?";
-        $state{"${pos_token}_add"} = "INSERT INTO $pos_token (expr_id, token_id, count) VALUES (?, ?, 1)";
-        $state{"${pos_token}_get"} = "SELECT t.text, p.count FROM token t INNER JOIN $pos_token p ON p.token_id = t.token_id WHERE p.expr_id = ?";
-    }
-
-    my @columns = map { "token${_}_id" } 0 .. $self->order-1;
-    my @ids = join(', ', ('?') x @columns);
-    local $" = ', ';
-    $state{add_expr} = "INSERT INTO expr (@columns, expr_text) VALUES (@ids, ?)";
 
     $state{$_} = $self->_dbh->prepare($state{$_}) for keys %state;
     return \%state;
+}
+
+sub _sth_sections {
+    my ($self) = @_;
+    my %sections;
+
+    my @plain_sections = map { s[^query_][]; $_ }
+                         # () sections are magical
+                         grep { /^query_/ and not /\(.*?\)/ }
+                         $self->section_data_names;
+
+    $sections{$_} = undef for @plain_sections;
+
+    for my $np (qw(next_token prev_token)) {
+        for my $ciag (qw(count inc add get)) {
+            $sections{$np . '_' . $ciag} = {
+                section => "(next_token|prev_token)_$ciag",
+                options => { table => $np },
+            };
+        }
+    }
+
+    for my $order (0 .. $self->order-1) {
+        $sections{"expr_id_token${order}_id"} = {
+            section => 'expr_id_token(NUM)_id',
+            options => { column => "token${order}_id" },
+        };
+    }
+
+    {
+        my @columns = map { "token${_}_id" } 0 .. $self->order-1;
+        my @ids = join(', ', ('?') x @columns);
+        $sections{add_expr} = {
+            section => '(add_expr)',
+            options => {
+                columns => join(', ', @columns),
+                ids     => join(', ', @ids),
+            }
+        }
+    }
+
+    return \%sections;
 }
 
 sub BUILD {
@@ -142,7 +179,7 @@ sub _get_create_db_sql {
     my $sql;
 
     for my $section (qw(info token expr next_token prev_token indexes)) {
-        my $template = $self->section_data($section);
+        my $template = $self->section_data("table_$section");
         Template->new->process(
             $template,
             {
@@ -224,8 +261,8 @@ sub _add_tokens {
         }
         else {
             $self->_sth->{add_token}->execute($token);
-            $self->_sth->{last_expr_rowid}->execute();
-            push @token_ids, $self->_sth->{last_expr_rowid}->fetchrow_array;
+            $self->_sth->{last_token_rowid}->execute();
+            push @token_ids, $self->_sth->{last_token_rowid}->fetchrow_array;
         }
     }
 
@@ -337,17 +374,17 @@ it under the same terms as Perl itself.
 =cut
 
 __DATA__
-__[ info ]__
+__[ table_info ]__
 CREATE TABLE info (
     attribute TEXT NOT NULL UNIQUE PRIMARY KEY,
     text      TEXT NOT NULL
 );
-__[ token ]__
+__[ table_token ]__
 CREATE TABLE token (
     token_id INTEGER PRIMARY KEY AUTOINCREMENT,
     text     TEXT NOT NULL
 );
-__[ expr ]__
+__[ table_expr ]__
 CREATE TABLE expr (
     expr_id   INTEGER PRIMARY KEY AUTOINCREMENT,
     expr_text TEXT NOT NULL UNIQUE
@@ -355,21 +392,21 @@ CREATE TABLE expr (
 [% FOREACH i IN orders %]
 ALTER TABLE expr ADD token[% i %]_id INTEGER REFERENCES token (token_id);
 [% END %]
-__[ next_token ]__
+__[ table_next_token ]__
 CREATE TABLE next_token (
     pos_token_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     expr_id      INTEGER NOT NULL REFERENCES expr (expr_id),
     token_id     INTEGER NOT NULL REFERENCES token (token_id),
     count        INTEGER NOT NULL
 );
-__[ prev_token ]__
+__[ table_prev_token ]__
 CREATE TABLE prev_token (
     pos_token_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     expr_id      INTEGER NOT NULL REFERENCES expr (expr_id),
     token_id     INTEGER NOT NULL REFERENCES token (token_id),
     count        INTEGER NOT NULL
 );
-__[ indexes ]__
+__[ table_indexes ]__
 CREATE INDEX token_text ON token (text);
 CREATE INDEX expr_token0_id on expr (token0_id);
 CREATE INDEX expr_token1_id on expr (token1_id);
@@ -378,3 +415,35 @@ CREATE INDEX expr_token3_id on expr (token3_id);
 CREATE INDEX expr_token4_id on expr (token4_id);
 CREATE INDEX next_token_expr_id ON next_token (expr_id);
 CREATE INDEX prev_token_expr_id ON prev_token (expr_id);
+__[ query_get_order ]__
+SELECT text FROM info WHERE attribute = 'markov_order';
+__[ query_set_order ]__
+INSERT INTO info (attribute, text) VALUES ('markov_order', ?);
+__[ query_expr_id ]__
+SELECT expr_id FROM expr WHERE expr_text = ?;
+__[ query_expr_id_token(NUM)_id ]__
+SELECT expr_id FROM expr WHERE [% column %] = ?;
+__[ query_expr_text ]__
+SELECT expr_text FROM expr WHERE expr_id = ?;
+__[ query_token_id ]__
+SELECT token_id FROM token WHERE text = ?;
+__[ query_add_token ]__
+INSERT INTO token (text) VALUES (?);
+__[ query_last_expr_rowid ]__
+SELECT last_insert_rowid();
+__[ query_last_token_rowid ]__
+SELECT last_insert_rowid();
+__[ query_(next_token|prev_token)_count ]__
+SELECT count FROM [% table %] WHERE expr_id = ? AND token_id = ?;
+__[ query_(next_token|prev_token)_inc ]__
+UPDATE [% table %] SET count = ? WHERE expr_id = ? AND token_id = ?
+__[ query_(next_token|prev_token)_add ]__
+INSERT INTO [% table %] (expr_id, token_id, count) VALUES (?, ?, 1);
+__[ query_(next_token|prev_token)_get ]__
+SELECT t.text, p.count
+  FROM token t
+INNER JOIN [% table %] p
+        ON p.token_id = t.token_id
+     WHERE p.expr_id = ?;
+__[ query_(add_expr) ]__
+INSERT INTO expr ([% columns %], expr_text) VALUES ([% ids %], ?);
