@@ -88,7 +88,7 @@ sub stop_training {
 sub _exists_db {
     my ($self) = @_;
 
-    -s $self->file;
+    return -s $self->file;
 }
 
 sub _create_db {
@@ -116,7 +116,7 @@ sub _get_create_db_sql {
         );
     }
 
-    my (@sql) = $sql =~ /\s*(.*?);/gs;
+    return ($sql =~ /\s*(.*?);/gs);
 }
 
 sub _expr_text {
@@ -213,8 +213,8 @@ sub _add_tokens {
 }
 
 # return the primary key of the last inserted row
-sub _last_expr_rowid  { shift->_dbh->selectrow_array('SELECT last_insert_rowid()') }
-sub _last_token_rowid { shift->_dbh->selectrow_array('SELECT last_insert_rowid()') }
+sub _last_expr_rowid  { return shift->_dbh->selectrow_array('SELECT last_insert_rowid()') }
+sub _last_token_rowid { return shift->_dbh->selectrow_array('SELECT last_insert_rowid()') }
 
 sub token_exists {
     my ($self, $token) = @_;

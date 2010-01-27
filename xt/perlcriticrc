@@ -12,9 +12,12 @@ theme    = moose || core
 
 [-ValuesAndExpressions::ProhibitConstantPragma]
 [-ValuesAndExpressions::ProhibitImplicitNewlines]
+[-ValuesAndExpressions::ProhibitVersionStrings]
 
 [-Variables::ProhibitPackageVars]
 [-Variables::RequireLocalizedPunctuationVars]
+
+[-Modules::RequireEndWithOne]
 
 [-BuiltinFunctions::ProhibitStringyEval]
 

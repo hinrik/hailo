@@ -18,12 +18,13 @@ sub _build__dbh {
             RaiseError => 1,
         },
     );
+    return;
 }
 
 sub _exists_db {
     my ($self) = @_;
 
-    shift->_dbh->selectrow_array("SELECT count(*) FROM information_schema.columns WHERE table_name ='info'") != 0;
+    return shift->_dbh->selectrow_array("SELECT count(*) FROM information_schema.columns WHERE table_name ='info'") != 0;
 }
 
 sub start_training {
@@ -35,8 +36,8 @@ sub start_training {
     return;
 }
 
-sub _last_expr_rowid  { shift->_dbh->selectrow_array('SELECT expr_id  FROM expr  ORDER BY expr_id  DESC LIMIT 1') }
-sub _last_token_rowid { shift->_dbh->selectrow_array('SELECT token_id FROM token ORDER BY token_id DESC LIMIT 1') }
+sub _last_expr_rowid  { return shift->_dbh->selectrow_array('SELECT expr_id  FROM expr  ORDER BY expr_id  DESC LIMIT 1') }
+sub _last_token_rowid { return shift->_dbh->selectrow_array('SELECT token_id FROM token ORDER BY token_id DESC LIMIT 1') }
 
 __PACKAGE__->meta->make_immutable;
 
