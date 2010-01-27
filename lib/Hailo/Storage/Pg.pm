@@ -67,12 +67,12 @@ it under the same terms as Perl itself.
 =cut
 
 __DATA__
-__[ table_token ]__
+__[ token ]__
 CREATE TABLE token (
     token_id SERIAL UNIQUE,
     text     TEXT NOT NULL
 );
-__[ table_expr ]__
+__[ expr ]__
 CREATE TABLE expr (
     expr_id   SERIAL UNIQUE,
     expr_text TEXT NOT NULL UNIQUE
@@ -80,14 +80,14 @@ CREATE TABLE expr (
 [% FOREACH i IN orders %]
 ALTER TABLE expr ADD token[% i %]_id INTEGER REFERENCES token (token_id);
 [% END %]
-__[ table_next_token ]__
+__[ next_token ]__
 CREATE TABLE next_token (
     pos_token_id SERIAL UNIQUE,
     expr_id      INTEGER NOT NULL REFERENCES  expr (expr_id),
     token_id     INTEGER NOT NULL REFERENCES token (token_id),
     count        INTEGER NOT NULL
 );
-__[ table_prev_token ]__
+__[ prev_token ]__
 CREATE TABLE prev_token (
     pos_token_id SERIAL UNIQUE,
     expr_id      INTEGER NOT NULL REFERENCES expr (expr_id),
