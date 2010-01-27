@@ -28,7 +28,7 @@ has _dbh => (
     lazy_build => 1,
 );
 
-has _st => (
+has _sth => (
     isa        => HashRef,
     is         => 'ro',
     lazy_build => 1,
@@ -36,6 +36,7 @@ has _st => (
 
 with 'Hailo::Storage';
 
+# our database handler
 sub _build__dbh {
     my ($self) = @_;
 
@@ -47,7 +48,8 @@ sub _build__dbh {
     );
 }
 
-sub _build__st {
+# our statement handlers
+sub _build__sth {
     my ($self) = @_;
 
     my %state = (
@@ -85,14 +87,14 @@ sub BUILD {
     my ($self) = @_;
 
     if ($self->_exists_db) {
-        $self->_st->{get_order}->execute();
-        my $order = $self->_st->{get_order}->fetchrow_array();
+        $self->_sth->{get_order}->execute();
+        my $order = $self->_sth->{get_order}->fetchrow_array();
         $self->order($order);
     }
     else {
         $self->_create_db();
         my $order = $self->order;
-        $self->_st->{set_order}->execute($order);
+        $self->_sth->{set_order}->execute($order);
     }
 
     return;
@@ -170,11 +172,11 @@ sub add_expr {
         my @token_ids = $self->_add_tokens($tokens);
 
         # add the expression
-        $self->_st->{add_expr}->execute(@token_ids, $expr_text);
+        $self->_sth->{add_expr}->execute(@token_ids, $expr_text);
 
         # get the new expr id
-        $self->_st->{last_expr_rowid}->execute();
-        $expr_id = $self->_st->{last_expr_rowid}->fetchrow_array;
+        $self->_sth->{last_expr_rowid}->execute();
+        $expr_id = $self->_sth->{last_expr_rowid}->fetchrow_array;
     }
 
     # add next/previous tokens for this expression, if any
@@ -183,17 +185,17 @@ sub add_expr {
         my $token_id = $self->_add_tokens($args{$pos_token});
 
         my $get_count = "${pos_token}_count";
-        $self->_st->{$get_count}->execute($expr_id, $token_id);
-        my $count = $self->_st->{$get_count}->fetchrow_array;
+        $self->_sth->{$get_count}->execute($expr_id, $token_id);
+        my $count = $self->_sth->{$get_count}->fetchrow_array;
 
         if (defined $count) {
             my $new_count = $count++;
             my $inc_count = "${pos_token}_inc";
-            $self->_st->{$inc_count}->execute($new_count, $expr_id, $token_id);
+            $self->_sth->{$inc_count}->execute($new_count, $expr_id, $token_id);
         }
         else {
             my $add_count = "${pos_token}_add";
-            $self->_st->{$add_count}->execute($expr_id, $token_id);
+            $self->_sth->{$add_count}->execute($expr_id, $token_id);
         }
     }
 
@@ -203,8 +205,8 @@ sub add_expr {
 # look up an expression id based on tokens
 sub _expr_id {
     my ($self, $expr_text) = @_;
-    $self->_st->{expr_id}->execute($expr_text);
-    return scalar $self->_st->{expr_id}->fetchrow_array();
+    $self->_sth->{expr_id}->execute($expr_text);
+    return scalar $self->_sth->{expr_id}->fetchrow_array();
 }
 
 # add tokens and/or return their ids
@@ -214,16 +216,16 @@ sub _add_tokens {
     my @token_ids;
 
     for my $token (@$tokens) {
-        $self->_st->{token_id}->execute($token);
-        my $old_token_id = $self->_st->{token_id}->fetchrow_array();
+        $self->_sth->{token_id}->execute($token);
+        my $old_token_id = $self->_sth->{token_id}->fetchrow_array();
 
         if (defined $old_token_id) {
             push @token_ids, $old_token_id;
         }
         else {
-            $self->_st->{add_token}->execute($token);
-            $self->_st->{last_expr_rowid}->execute();
-            push @token_ids, $self->_st->{last_expr_rowid}->fetchrow_array;
+            $self->_sth->{add_token}->execute($token);
+            $self->_sth->{last_expr_rowid}->execute();
+            push @token_ids, $self->_sth->{last_expr_rowid}->fetchrow_array;
         }
     }
 
@@ -233,8 +235,8 @@ sub _add_tokens {
 sub token_exists {
     my ($self, $token) = @_;
 
-    $self->_st->{token_id}->execute($token);
-    return defined $self->_st->{token_id}->fetchrow_array();
+    $self->_sth->{token_id}->execute($token);
+    return defined $self->_sth->{token_id}->fetchrow_array();
 }
 
 sub _split_expr {
@@ -255,9 +257,8 @@ sub random_expr {
         my $column = "token${pos}_id";
 
         # find all expressions which include the token at this position
-        #$_ = "SELECT expr_id FROM expr WHERE $column = ?";
-        $self->_st->{"expr_id_$column"}->execute($token_id);
-        my $expr_ids = $self->_st->{"expr_id_$column"}->fetchall_arrayref();
+        $self->_sth->{"expr_id_$column"}->execute($token_id);
+        my $expr_ids = $self->_sth->{"expr_id_$column"}->fetchall_arrayref();
         $expr_ids = [ map { $_->[0] } @$expr_ids ];
 
         # try the next position if no expression has it at this one
@@ -265,8 +266,8 @@ sub random_expr {
 
         # we found some, let's pick a random one and return its tokens
         my $expr_id = $expr_ids->[rand @$expr_ids];
-        $self->_st->{expr_text}->execute($expr_id);
-        my $expr_text = $self->_st->{expr_text}->fetchrow_array();
+        $self->_sth->{expr_text}->execute($expr_id);
+        my $expr_text = $self->_sth->{expr_text}->fetchrow_array();
         @expr = $self->_split_expr($expr_text);
 
         last;
@@ -292,8 +293,8 @@ sub _pos_tokens {
     my $expr_text = $self->_expr_text($tokens);
     my $expr_id = $self->_expr_id($expr_text);
 
-    $self->_st->{"${pos_table}_get"}->execute($expr_id);
-    my $ugly_hash = $self->_st->{"${pos_table}_get"}->fetchall_hashref('text');
+    $self->_sth->{"${pos_table}_get"}->execute($expr_id);
+    my $ugly_hash = $self->_sth->{"${pos_table}_get"}->fetchall_hashref('text');
     my %clean_hash = map { +$_ => $ugly_hash->{$_}{count} } keys %$ugly_hash;
     return \%clean_hash;
 }
