@@ -1,7 +1,7 @@
 use Test::More;
 use Test::Pod::Coverage;
 
-my @modules = grep { $_ !~ /^Hailo::(?:Tokenizer|Storage)::/ } all_modules();
+my @modules = grep { $_ !~ /^Hailo::(?:Tokenizer|Storage|Engine)::/ } all_modules();
 
 plan tests => scalar @modules;
 
