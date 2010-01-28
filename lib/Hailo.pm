@@ -67,7 +67,7 @@ has order => (
     default       => 5,
 );
 
-has brain_file => (
+has brain_resource => (
     traits        => [qw(Getopt)],
     cmd_aliases   => "b",
     cmd_flag      => "brain",
@@ -133,8 +133,8 @@ sub _build__storage_obj {
     die $@ if $@;
 
     return $storage->new(
-        (defined $self->brain_file
-            ? (file => $self->brain_file)
+        (defined $self->brain_resource
+            ? (brain => $self->brain_resource)
             : ()
         ),
         order => $self->order,
@@ -174,7 +174,7 @@ sub run {
         $storage->start_learning();
     }
 
-    $self->save() if defined $self->brain_file;
+    $self->save() if defined $self->brain_resource;
 
     if (defined $self->reply_str) {
         my $answer = $self->reply($self->reply_str);
@@ -335,8 +335,8 @@ Hailo - A pluggable Markov engine analogous to MegaHAL
 
     my $hailo = Hailo->new(
         # Or Pg, or Perl ...
-        storage_class => 'SQLite',
-        brain   => 'brain.storable'
+        storage_class  => 'SQLite',
+        brain_resource => 'brain.storable'
     );
 
     while (<>) {
@@ -358,9 +358,9 @@ L<POE::Component::IRC>.
 
 =head1 ATTRIBUTES
 
-=head2 C<file>
+=head2 C<brain_resource>
 
-Path to the file you want the storage backend to save/load its state to/from.
+The name of the resource (file name, database name) to use as storage.
 There is no default.
 
 =head2 C<order>

@@ -7,7 +7,7 @@ use namespace::clean -except => 'meta';
 
 our $VERSION = '0.01';
 
-has file => (
+has brain => (
     isa => Str,
     is  => 'ro',
 );
@@ -30,8 +30,8 @@ with 'Hailo::Role::Storage';
 sub _build__memory {
     my ($self) = @_;
 
-    if (defined $self->file && -s $self->file) {
-        return retrieve($self->file);
+    if (defined $self->brain && -s $self->brain) {
+        return retrieve($self->brain);
     }
     else {
         # TODO: these data structures aren't very normalized, so they take up
@@ -103,7 +103,7 @@ sub _hash_tokens {
 
 sub save {
     my ($self) = @_;
-    store($self->_memory, $self->file);
+    store($self->_memory, $self->brain);
     return;
 }
 

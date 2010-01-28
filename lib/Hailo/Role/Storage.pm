@@ -10,7 +10,7 @@ has token_separator => (
     default => "\t",
 );
 
-requires 'file';
+requires 'brain';
 requires 'order';
 requires 'save';
 requires 'add_expr';
@@ -37,9 +37,9 @@ Hailo::Role::Storage - A role representing a L<Hailo|Hailo> storage backend
 
 The Markov order (chain length) being used.
 
-=head2 C<file>
+=head2 C<brain>
 
-The filename to the permanent on-disk storage used by the backend.
+The name of the resource (file name, database name) to use as storage.
 
 =head1 METHODS
 
@@ -50,7 +50,7 @@ L</ATTRIBUTES>.
 
 =head2 C<save>
 
-Saves the current state to a file.
+Saves the current state.
 
 =head2 C<add_expr>
 

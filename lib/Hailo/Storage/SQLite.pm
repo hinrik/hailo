@@ -10,7 +10,7 @@ sub _build__dbh {
     my ($self) = @_;
 
     return DBI->connect(
-        "dbi:SQLite:dbname=".$self->file,
+        "dbi:SQLite:dbname=".$self->brain,
         '',
         '', 
         { sqlite_unicode => 1, RaiseError => 1 },
@@ -29,7 +29,7 @@ after stop_training => sub {
 
 sub _exists_db {
     my ($self) = @_;
-    return -s $self->file;
+    return -s $self->brain;
 }
 
 __PACKAGE__->meta->make_immutable;

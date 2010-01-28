@@ -7,7 +7,7 @@ for my $storage (qw(Perl SQLite)) {
     my $hailo = Hailo->new(
         storage_class => $storage,
         ($storage eq 'SQLite'
-            ? (brain_file => ':memory:')
+            ? (brain_resource => ':memory:')
             : ()
         ),
     );

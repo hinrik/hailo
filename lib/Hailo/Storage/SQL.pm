@@ -15,7 +15,7 @@ use namespace::clean -except => [ qw(meta
 
 our $VERSION = '0.01';
 
-has file => (
+has brain => (
     isa      => Str,
     is       => 'ro',
     required => 1,

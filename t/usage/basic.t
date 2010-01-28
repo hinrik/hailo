@@ -4,7 +4,7 @@ use warnings;
 use Test::More tests => 4;
 use Hailo;
 
-my $hailo = Hailo->new(brain_file => ':memory:');
+my $hailo = Hailo->new(brain_resource => ':memory:');
 
 while (<DATA>) {
     $hailo->learn($_);

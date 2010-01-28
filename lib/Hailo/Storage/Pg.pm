@@ -10,7 +10,7 @@ sub _build__dbh {
     my ($self) = @_;
 
     return DBI->connect(
-        "dbi:Pg:dbname=".$self->file,
+        "dbi:Pg:dbname=".$self->brain,
         '',
         '',
         {
