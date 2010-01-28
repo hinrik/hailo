@@ -356,7 +356,6 @@ Hailo - A pluggable Markov engine analogous to MegaHAL
 
 =head1 SYNOPSIS
 
-    use 5.10.0;
     use Hailo;
 
     my $hailo = Hailo->new(
