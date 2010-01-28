@@ -385,6 +385,11 @@ backend|Hailo::Storage::SQLite>.
 It can be used, amongst other things, to implement IRC chat bots with
 L<POE::Component::IRC>.
 
+=head2 Etymology
+
+I<Hailo> is a portmanteau of I<HAL> (as in MegaHAL) and
+L<I<failo>|http://identi.ca/failo>
+
 =head1 ATTRIBUTES
 
 =head2 C<brain_resource>
@@ -444,10 +449,6 @@ relevant.
 =head2 C<save>
 
 Tells the underlying storage backend to save its state.
-
-=head1 ETYMOLOGY
-
-I<Hailo> is a portmanteau of I<Hal> and L<I<failo>|http://identi.ca/failo>
 
 =head1 CAVEATS
 

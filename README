@@ -25,6 +25,9 @@ DESCRIPTION
     It can be used, amongst other things, to implement IRC chat bots with
     POE::Component::IRC.
 
+  Etymology
+    *Hailo* is a portmanteau of *HAL* (as in MegaHAL) and <*failo*>
+
 ATTRIBUTES
   "brain_resource"
     The name of the resource (file name, database name) to use as storage.
@@ -70,9 +73,6 @@ METHODS
 
   "save"
     Tells the underlying storage backend to save its state.
-
-ETYMOLOGY
-    *Hailo* is a portmanteau of *Hal* and <*failo*>
 
 CAVEATS
     "boundary_token" and "token_separator" will be stripped from your input
