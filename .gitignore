@@ -8,3 +8,4 @@ META.yml
 cover_db
 *.db
 *.txt
+*.bak

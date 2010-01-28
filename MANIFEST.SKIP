@@ -1,0 +1,6 @@
+^Makefile$
+\.old$
+\.bak$
+\.git
+\.txt$
+\.db$
