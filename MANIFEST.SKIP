@@ -4,3 +4,7 @@
 \.git
 \.txt$
 \.db$
+\.trn$
+^pm_to_blib$
+\.brn$
+^blib/

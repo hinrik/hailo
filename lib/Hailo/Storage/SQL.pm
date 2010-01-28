@@ -14,35 +14,8 @@ use namespace::clean -except => [ qw(meta
 
 our $VERSION = '0.01';
 
-has brain => (
-    isa      => Str,
-    is       => 'ro',
-    required => 1,
-);
-
-has order => (
-    isa => Int,
-    is  => 'rw',
-);
-
-has token_separator => (
-    isa => Str,
-    is  => 'rw',
-);
-
-has _dbh => (
-    isa        => 'DBI::db',
-    is         => 'ro',
-    lazy_build => 1,
-);
-
-has _sth => (
-    isa        => HashRef,
-    is         => 'ro',
-    lazy_build => 1,
-);
-
-with 'Hailo::Role::Storage';
+with qw(Hailo::Role::Storage
+        Hailo::Role::Storage::SQL);
 
 # our statement handlers
 sub _build__sth {

@@ -12,7 +12,10 @@ inc/Module/Install/Scripts.pm
 inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
 lib/Hailo.pm
+lib/Hailo/Engine/Default.pm
+lib/Hailo/Role/Engine.pm
 lib/Hailo/Role/Storage.pm
+lib/Hailo/Role/Storage/SQL.pm
 lib/Hailo/Role/Tokenizer.pm
 lib/Hailo/Storage/Perl.pm
 lib/Hailo/Storage/Pg.pm
@@ -28,6 +31,8 @@ README
 script/hailo
 t/01_compile.t
 t/02_chat.t
+t/03_sanity.t
+t/storage/all.t
 t/tokenizer/Characters.t
 t/tokenizer/Words.t
 t/usage/basic.t

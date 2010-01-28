@@ -1,12 +1,25 @@
 package Hailo::Role::Storage;
 
 use Moose::Role;
-use MooseX::Types::Moose qw<Str>;
+use MooseX::Types::Moose qw<Str Int>;
 use namespace::clean -except => 'meta';
 
-requires 'token_separator';
-requires 'brain';
-requires 'order';
+has brain => (
+    isa      => Str,
+    is       => 'ro',
+    required => 1,
+);
+
+has order => (
+    isa => Int,
+    is  => 'rw',
+);
+
+has token_separator => (
+    isa => Str,
+    is  => 'rw',
+);
+
 requires 'save';
 requires 'add_expr';
 requires 'random_expr';

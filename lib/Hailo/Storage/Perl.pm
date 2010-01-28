@@ -7,18 +7,20 @@ use namespace::clean -except => 'meta';
 
 our $VERSION = '0.01';
 
+with 'Hailo::Role::Storage';
+
 has brain => (
     isa => Str,
     is  => 'ro',
 );
 
-has order => (
+has 'order' => (
     isa     => Int,
     is      => 'ro',
     default => sub { shift->_memory->{order} },
 );
 
-has token_separator => (
+has 'token_separator' => (
     isa     => Str,
     is      => 'ro',
     default => sub { shift->_memory->{separator} },
@@ -30,8 +32,6 @@ has _memory => (
     lazy_build => 1,
     init_arg   => undef,
 );
-
-with 'Hailo::Role::Storage';
 
 sub _build__memory {
     my ($self) = @_;
