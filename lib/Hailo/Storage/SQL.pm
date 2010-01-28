@@ -27,7 +27,7 @@ has order => (
 
 has token_separator => (
     isa => Str,
-    is  => 'ro',
+    is  => 'rw',
 );
 
 has _dbh => (
@@ -121,7 +121,7 @@ sub BUILD {
 
         $self->_sth->{get_separator}->execute();
         my $sep = $self->_sth->{get_separator}->fetchrow_array();
-        $self->token_separator($order);
+        $self->token_separator($sep);
     }
     else {
         $self->_create_db();
