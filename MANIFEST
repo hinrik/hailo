@@ -17,6 +17,7 @@ lib/Hailo/Role/Tokenizer.pm
 lib/Hailo/Storage/Perl.pm
 lib/Hailo/Storage/SQLite.pm
 lib/Hailo/Tokenizer/Generic.pm
+lib/Hailo/Tokenizer/Characters.pm
 Makefile.PL
 MANIFEST			This list of files
 META.yml
