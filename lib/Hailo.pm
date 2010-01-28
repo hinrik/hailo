@@ -83,7 +83,7 @@ has boundary_token => (
     documentation => "Token used to signify a paragraph boundary",
     isa           => Str,
     is            => 'ro',
-    default       => "\n",
+    default       => "\012",
 );
 
 has storage_class => (
@@ -379,8 +379,7 @@ The tokenizer to use. Default: 'Generic';
 =head2 C<boundary_token>
 
 The token used to signify a paragraph boundary. Has to be something that
-would never appear in your inputs. Defaults to C<"\x1B">, the ASCII escape
-character.
+would never appear in your inputs. Defaults to C<"\012">.
 
 =head1 METHODS
 

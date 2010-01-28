@@ -42,8 +42,7 @@ ATTRIBUTES
 
   "boundary_token"
     The token used to signify a paragraph boundary. Has to be something that
-    would never appear in your inputs. Defaults to "\x1B", the ASCII escape
-    character.
+    would never appear in your inputs. Defaults to "\012".
 
 METHODS
   "new"
