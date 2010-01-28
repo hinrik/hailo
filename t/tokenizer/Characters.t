@@ -1,4 +1,3 @@
-use 5.10.0;
 use utf8;
 use strict;
 use warnings;
