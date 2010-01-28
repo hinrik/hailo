@@ -269,7 +269,8 @@ sub token_exists {
 
 sub _split_expr {
     my ($self, $expr) = @_;
-    return split /\t/, $expr;
+    my $sep = quotemeta $self->token_separator;
+    return split /$sep/, $expr;
 }
 
 # return a random expression containing the given token
