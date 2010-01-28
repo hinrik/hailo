@@ -23,7 +23,8 @@ sub _build__dbh {
 sub _exists_db {
     my ($self) = @_;
 
-    return shift->_dbh->selectrow_array("SELECT count(*) FROM information_schema.columns WHERE table_name ='info'") != 0;
+    $self->_sth->{exists_db}->execute();
+    return int $self->_sth->{exists_db}->fetchrow_array;
 }
 
 # These two are optimized to use PostgreSQL >8.2's INSERT ... RETURNING 
@@ -104,3 +105,5 @@ __[ query_add_token ]__
 INSERT INTO token (text) VALUES (?) RETURNING token_id;
 __[ query_(add_expr) ]__
 INSERT INTO expr ([% columns %], can_start, can_end, expr_text) VALUES ([% ids %], ?, ?, ?) RETURNING expr_id;
+__[ query_exists_db ]__
+SELECT count(*) FROM information_schema.columns WHERE table_name ='info';
