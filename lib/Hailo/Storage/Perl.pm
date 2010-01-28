@@ -60,7 +60,11 @@ sub add_expr {
     my $ehash = $self->_hash_tokens($args{tokens});
 
     if (!exists $mem->{expr}{$ehash}) {
-        $mem->{expr}{$ehash} = $args{tokens};
+        $mem->{expr}{$ehash} = {
+            tokens    => $args{tokens},
+            can_start => $args{can_start},
+            can_end   => $args{can_end},
+        };
 
         for my $token (@{ $args{tokens} }) {
             $mem->{token}{$token} = [ ] if !exists $mem->{token}{$token};
@@ -86,7 +90,14 @@ sub token_exists {
 sub random_expr {
     my ($self, $token) = @_;
     my @ehash = @{ $self->_memory->{token}{$token} };
-    return @{ $self->_memory->{expr}{ $ehash[rand @ehash] } };
+    my $expr = $self->_memory->{expr}{ $ehash[rand @ehash] };
+    return ($expr->{can_start}, $expr->{can_end}, @{ $expr->{tokens} });
+}
+
+sub expr_can {
+    my ($self, @tokens) = @_;
+    my $ehash = $self->_hash_tokens(\@tokens);
+    my ($can_start, $can_end) = @{ $self->_memory->{expr}{$ehash} }{qw(can_start can_end)};
 }
 
 sub next_tokens {

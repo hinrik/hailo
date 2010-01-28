@@ -75,16 +75,6 @@ has brain_resource => (
     is            => "ro",
 );
 
-has boundary_token => (
-    traits        => [qw(Getopt)],
-    cmd_aliases   => 'B',
-    cmd_flag      => 'boundary',
-    documentation => "Token used to signify a paragraph boundary",
-    isa           => Str,
-    is            => 'ro',
-    default       => "\012",
-);
-
 has token_separator => (
     traits        => [qw(Getopt)],
     cmd_aliases   => 'P',
@@ -245,12 +235,8 @@ sub learn {
     my ($self, $input) = @_;
     my $storage  = $self->_storage_obj;
     my $order    = $storage->order;
-    my $boundary = $self->boundary_token;
 
     $input = $self->_clean_input($input);
-
-    # add boundary tokens
-    $input = "$boundary$input$boundary";
     my @tokens = $self->_tokenizer_obj->make_tokens($input);
 
     # only learn from inputs which are long enough
@@ -268,6 +254,8 @@ sub learn {
             tokens     => \@expr,
             next_token => $next_token,
             prev_token => $prev_token,
+            can_start  => ($i == 0 ? 1 : undef),
+            can_end    => ($i == @tokens-$order ? 1 : undef),
         );
     }
 
@@ -279,7 +267,6 @@ sub reply {
     my $storage  = $self->_storage_obj;
     my $order    = $storage->order;
     my $toke     = $self->_tokenizer_obj;
-    my $boundary = $self->boundary_token;
     
     $input = $self->_clean_input($input);
     my @tokens = $toke->make_tokens($input);
@@ -288,44 +275,40 @@ sub reply {
     my @current_key_tokens;
     my $key_token = shift @key_tokens;
 
-    my @middle_expr = $storage->random_expr($key_token);
+    my ($can_start, $can_end, @middle_expr) = $storage->random_expr($key_token);
     my @reply = @middle_expr;
-    
-    my @current_expr = @middle_expr;
+    my @expr = @middle_expr;
 
     # construct the end of the reply
-    while ($current_expr[-1] ne $boundary) {
-        my $next_tokens = $storage->next_tokens(\@current_expr);
+    while (!$can_end) {
+        my $next_tokens = $storage->next_tokens(\@expr);
         my $next_token = $self->_pos_token($next_tokens, \@current_key_tokens);
         push @reply, $next_token;
-        @current_expr = (@current_expr[1 .. $order-1], $next_token);
+        @expr = (@expr[1 .. $order-1], $next_token);
+        (undef, $can_end) = $storage->expr_can(@expr);
     }
     
     # reuse the key tokens
     @current_key_tokens = @key_tokens;
 
-    @current_expr = @middle_expr;
+    @expr = @middle_expr;
 
     # construct the beginning of the reply
-    while ($current_expr[0] ne $boundary) {
-        my $prev_tokens = $storage->prev_tokens(\@current_expr);
+    while (!$can_start) {
+        my $prev_tokens = $storage->prev_tokens(\@expr);
         my $prev_token = $self->_pos_token($prev_tokens, \@current_key_tokens);
         @reply = ($prev_token, @reply);
-        @current_expr = ($prev_token, @current_expr[0 .. $order-2]);
+        @expr = ($prev_token, @expr[0 .. $order-2]);
+        ($can_start, undef) = $storage->expr_can(@expr);
     }
-
-    # remove boundary tokens
-    shift @reply;
-    pop @reply;
 
     return $toke->make_output(@reply);
 }
 
 sub _clean_input {
     my ($self, $input) = @_;
-    my $boundary = quotemeta $self->boundary_token;
     my $separator = quotemeta $self->token_separator;
-    $input =~ s/(?:$boundary|$separator)//g;
+    $input =~ s/$separator//g;
     return $input;
 }
 
@@ -405,11 +388,6 @@ The storage backend to use. Default: 'SQLite'.
 
 The tokenizer to use. Default: 'Words';
 
-=head2 C<boundary_token>
-
-The token used to signify a paragraph boundary. Has to be something that
-would never appear in your inputs. Defaults to C<"\012"> (linefeed).
-
 =head2 C<token_separator>
 
 Storage backends may choose to store the tokens of an expression as a single
@@ -447,9 +425,9 @@ Tells the underlying storage backend to save its state.
 
 =head1 CAVEATS
 
-L<C<boundary_token>|/boundary_token> and L<C<token_separator>|/token_separator>
-will be stripped from your input before it is processed, so make sure those
-are set to something that is unlikely to appear in it.
+All occurences of L<C<token_separator>|/token_separator> will be stripped
+from your input before it is processed, so make sure those are set to
+something that is unlikely to appear in it.
 
 =head1 AUTHORS
 

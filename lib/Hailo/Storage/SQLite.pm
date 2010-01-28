@@ -66,6 +66,16 @@ it under the same terms as Perl itself.
 =cut
 
 __DATA__
+__[ table_expr ]__
+CREATE TABLE expr (
+    expr_id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    can_start BOOL,
+    can_end   BOOL,
+[% FOREACH i IN orders %]
+    token[% i %]_id INTEGER NOT NULL REFERENCES token (token_id),
+[% END %]
+    expr_text TEXT NOT NULL UNIQUE
+);
 __[ query_last_expr_rowid ]_
 SELECT last_insert_rowid();
 __[ query_last_token_rowid ]__

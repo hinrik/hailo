@@ -202,7 +202,7 @@ sub add_expr {
         # add the tokens
         my @token_ids = $self->_add_tokens($tokens);
 
-        $expr_id = $self->_add_expr(\@token_ids, $expr_text);
+        $expr_id = $self->_add_expr(\@token_ids, $args{can_start}, $args{can_end}, $expr_text);
     }
 
     # add next/previous tokens for this expression, if any
@@ -229,10 +229,10 @@ sub add_expr {
 }
 
 sub _add_expr {
-    my ($self, $token_ids, $expr_text) = @_;
+    my ($self, $token_ids, $can_start, $can_end, $expr_text) = @_;
 
     # add the expression
-    $self->_sth->{add_expr}->execute(@$token_ids, $expr_text);
+    $self->_sth->{add_expr}->execute(@$token_ids, $can_start, $can_end, $expr_text);
 
     # get the new expr id
     $self->_sth->{last_expr_rowid}->execute();
@@ -244,6 +244,13 @@ sub _expr_id {
     my ($self, $expr_text) = @_;
     $self->_sth->{expr_id}->execute($expr_text);
     return scalar $self->_sth->{expr_id}->fetchrow_array();
+}
+
+sub expr_can {
+    my ($self, @tokens) = @_;
+    my $expr_text = $self->_expr_text(\@tokens);
+    $self->_sth->{expr_can}->execute($expr_text);
+    return $self->_sth->{expr_can}->fetchrow_array();
 }
 
 # add tokens and/or return their ids
@@ -308,15 +315,14 @@ sub random_expr {
         # try the next position if no expression has it at this one
         next if !@$expr_ids;
 
-        # we found some, let's pick a random one and return its tokens
+        # we found some, let's pick a random one and return it
         my $expr_id = $expr_ids->[rand @$expr_ids];
-        $self->_sth->{expr_text}->execute($expr_id);
-        my $expr_text = $self->_sth->{expr_text}->fetchrow_array();
-        @expr = $self->_split_expr($expr_text);
+        $self->_sth->{expr_by_id}->execute($expr_id);
+        my ($can_start, $can_end, $expr_text) = $self->_sth->{expr_by_id}->fetchrow_array();
+        @expr = ($can_start, $can_end, $self->_split_expr($expr_text));
 
         last;
     }
-
     return @expr;
 }
 
@@ -384,6 +390,8 @@ CREATE TABLE token (
 __[ table_expr ]__
 CREATE TABLE expr (
     expr_id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    can_start BOOL,
+    can_end   BOOL,
 [% FOREACH i IN orders %]
     token[% i %]_id INTEGER NOT NULL REFERENCES token (token_id),
 [% END %]
@@ -422,8 +430,10 @@ __[ query_expr_id ]__
 SELECT expr_id FROM expr WHERE expr_text = ?;
 __[ query_expr_id_token(NUM)_id ]__
 SELECT expr_id FROM expr WHERE [% column %] = ?;
-__[ query_expr_text ]__
-SELECT expr_text FROM expr WHERE expr_id = ?;
+__[ query_expr_by_id ]__
+SELECT can_start, can_end, expr_text FROM expr WHERE expr_id = ?;
+__[ query_expr_can ]__
+SELECT can_start, can_end FROM expr WHERE expr_text = ?;
 __[ query_token_id ]__
 SELECT token_id FROM token WHERE text = ?;
 __[ query_add_token ]__
@@ -445,4 +455,4 @@ INNER JOIN [% table %] p
         ON p.token_id = t.token_id
      WHERE p.expr_id = ?;
 __[ query_(add_expr) ]__
-INSERT INTO expr ([% columns %], expr_text) VALUES ([% ids %], ?);
+INSERT INTO expr ([% columns %], can_start, can_end, expr_text) VALUES ([% ids %], ?, ?, ?);
