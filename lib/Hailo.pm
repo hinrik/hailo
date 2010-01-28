@@ -158,6 +158,7 @@ sub _getopt_full_usage {
             -output   => $fh,
             -exitval  => 'noexit',
         );
+        close $fh;
 
         $out =~ s/\n+$//s;
         $out =~ s/^Usage:/examples:/;
