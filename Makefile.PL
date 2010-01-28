@@ -11,6 +11,8 @@ install_script ('script/hailo');
 license        ('perl');
 homepage       ('http://search.cpan.org/dist/Hailo');
 githubmeta     ();
+bugtracker     ('http://github.com/hinrik/hailo/issues');
+resources      (Ratings => 'http://cpanratings.perl.org/d/Hailo');
 
 requires       ('Encode'                     => '0');
 requires       ('DBD::SQLite'                => '0');
@@ -30,9 +32,10 @@ requires       ('Time::HiRes'                => '0');
 requires       ('namespace::clean'           => '0');
 requires       ('Storable'                   => '0');
 
+tests_recursive();
 test_requires  ('Test::More'   => '0');
 test_requires  ('Test::Script' => '0');
-tests_recursive();
+test_requires  ('Data::Random' => '0');
 
 author_requires('Perl::Critic'        => '1.098');
 # uncomment when the distro becomes installable via cpanp(1)
