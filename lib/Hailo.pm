@@ -226,7 +226,7 @@ sub run {
     if (defined $self->learn_str) {
         $storage->start_learning();
         $self->learn($self->learn_str);
-        $storage->start_learning();
+        $storage->stop_learning();
     }
 
     $self->save() if defined $self->brain_resource;
