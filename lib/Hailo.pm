@@ -210,12 +210,13 @@ sub _build__tokenizer_obj {
 
 sub run {
     my ($self) = @_;
-    my $storage = $self->_storage_obj;
 
     if ($self->print_version) {
         print "hailo $VERSION\n";
         exit;
     }
+
+    my $storage = $self->_storage_obj;
 
     if (defined $self->train_file) {
         $storage->start_training();
