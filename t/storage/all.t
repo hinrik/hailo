@@ -24,7 +24,7 @@ for my $backend (qw(Perl Pg SQLite)) {
 
     if ($backend eq "Pg") {
         # It doesn't use the file to store data obviously, it's just a convenient random token.
-        if (system "createdb '$filename'") {
+        if (system "createdb '$filename' >/dev/null 2>&1") {
             $skip_all = 1;
             pass("Skipping PostgreSQL tests, can't create a database named '$filename'");
         } else {
