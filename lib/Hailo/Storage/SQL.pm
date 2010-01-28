@@ -51,8 +51,8 @@ sub _build__sth {
     my $sections = $self->_sth_sections();
     my %state;
     while (my ($name, $options) = each %$sections) {
-        my $section = $options->{section} // $name;
-        my %options = %{ $options->{options} // {} };
+        my $section = defined $options->{section} ? $options->{section} : $name;
+        my %options = %{ defined $options->{options} ? $options->{options} : {} };
         my $template = $self->section_data("query_$section");
         my $sql;
         Template->new->process(
@@ -384,6 +384,8 @@ CREATE TABLE token (
 __[ table_expr ]__
 CREATE TABLE expr (
     expr_id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    can_start INTEGER,
+    can_end   INTEGER,
 [% FOREACH i IN orders %]
     token[% i %]_id INTEGER NOT NULL REFERENCES token (token_id),
 [% END %]
