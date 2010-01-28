@@ -230,7 +230,6 @@ sub _build__storage_obj {
         order => $self->order,
     );
 
-    $self->token_separator($obj->token_separator);
     return $obj;
 }
 
