@@ -38,10 +38,18 @@ my @tokens = (
     [
         'foo: foo: foo: what are you doing?',
         [
-            'foo', ':', ' ', 'foo', ':', ' ', 'foo', ':', ' ','what', ' ', 'are', ' ', 'you',
-            ' ', 'doing', '?',
+            'foo', ':', ' ', 'foo', ':', ' ', 'foo', ':', ' ','what', ' ',
+            'are', ' ', 'you', ' ', 'doing', '?',
         ],
         'Foo: Foo: Foo: What are you doing?',
+    ],
+    [
+        "I'm talking about this key:value thing",
+        [
+            "i'm", ' ', 'talking', ' ', 'about', ' ', 'this', ' ', 'key',
+            ':', 'value', ' ', 'thing',
+        ],
+        "I'm talking about this key:value thing."
     ],
 );
 

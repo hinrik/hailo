@@ -45,7 +45,7 @@ sub make_output {
     $string =~ s/^$TERMINATOR?\s*$OPEN_QUOTE?\s*\K($WORD)/\u$1/;
 
     # capitalize the second word
-    $string =~ s/^$TERMINATOR?\s*$OPEN_QUOTE?\s*$WORD(?:\s*(?:$TERMINATOR|$ADDRESS)\s*)\K($WORD)/\u$1/;
+    $string =~ s/^$TERMINATOR?\s*$OPEN_QUOTE?\s*$WORD(?:\s*(?:$TERMINATOR|$ADDRESS)\s+)\K($WORD)/\u$1/;
 
     # capitalize all other words after word boundaries
     # we do it in two passes because we need to match two words at a time
