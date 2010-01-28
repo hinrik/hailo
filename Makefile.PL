@@ -25,6 +25,7 @@ requires       ('MooseX::Types'              => '0');
 requires       ('MooseX::Types::Moose'       => '0');
 requires       ('namespace::clean'           => '0');
 requires       ('Template'                   => '0');
+requires       ('IO::Interactive'            => '0');
 requires       ('Term::ProgressBar'          => '2.00');
 requires       ('Text::Trim'                 => '0');
 recommends     ('DBD::Pg'                    => '0');

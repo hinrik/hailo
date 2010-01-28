@@ -5,6 +5,7 @@ use MooseX::Types -declare => [qw(OrderInt)];
 use MooseX::Types::Moose qw/Int Str Bool/;
 use MooseX::Types::Path::Class qw(File);
 use Time::HiRes qw(gettimeofday tv_interval);
+use IO::Interactive qw(is_interactive);
 use namespace::clean -except => [ qw(meta
                                      count_lines
                                      gettimeofday
@@ -33,6 +34,7 @@ has print_progress => (
     documentation => 'Print import progress with Term::ProgressBar',
     isa           => Bool,
     is            => 'ro',
+    default       => sub { is_interactive() },
 );
 
 has learn_str => (

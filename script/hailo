@@ -11,7 +11,7 @@ __PACKAGE__->meta->make_immutable;
 $_ = decode('utf8', $_) for @ARGV;
 binmode $_, ':encoding(utf8)' for (*STDIN, *STDOUT, *STDERR);
 
-Hailo->new_with_options( print_progress => 1 )->run;
+Hailo->new_with_options->run;
 
 =encoding utf8
 
@@ -31,6 +31,8 @@ B<hailo> <options>
    -b FILE,  --brain=FILE       Load/save brain to/from FILE
    -S CLASS, --storage=CLASS    Use storage CLASS instead of 'SQLite'
    -T CLASS, --tokenizer=CLASS  Use tokenizer CLASS instead of 'Words'
+   -p        --progress         Print import progress during training,
+                                default=yes running interactively
    -h,       --help             This help message
    -v,       --version          Print verion and exit
 
