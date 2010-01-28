@@ -28,10 +28,10 @@ sub _exists_db {
 
 # These two are optimized to use PostgreSQL >8.2's INSERT ... RETURNING 
 sub _add_expr {
-    my ($self, $token_ids, $expr_text) = @_;
+    my ($self, $token_ids, $can_start, $can_end, $expr_text) = @_;
 
     # add the expression
-    $self->_sth->{add_expr}->execute(@$token_ids, $expr_text);
+    $self->_sth->{add_expr}->execute(@$token_ids, $can_start, $can_end, $expr_text);
 
     # get the new expr id
     return $self->_sth->{add_expr}->fetchrow_array;
@@ -103,4 +103,4 @@ CREATE TABLE prev_token (
 __[ query_add_token ]__
 INSERT INTO token (text) VALUES (?) RETURNING token_id;
 __[ query_(add_expr) ]__
-INSERT INTO expr ([% columns %], expr_text) VALUES ([% ids %], ?) RETURNING expr_id;
+INSERT INTO expr ([% columns %], can_start, can_end, expr_text) VALUES ([% ids %], ?, ?, ?) RETURNING expr_id;
