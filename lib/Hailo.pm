@@ -500,8 +500,8 @@ Tells the underlying storage backend to save its state.
 =head1 CAVEATS
 
 All occurences of L<C<token_separator>|/token_separator> will be stripped
-from your input before it is processed, so make sure those are set to
-something that is unlikely to appear in it.
+from your input before it is processed, so make sure it's set to something
+that is unlikely to appear in it.
 
 =head1 AUTHORS
 
