@@ -71,7 +71,7 @@ METHODS
 
 CAVEATS
     All occurences of "token_separator" will be stripped from your input
-    before it is processed, so make sure those are set to something that is
+    before it is processed, so make sure it's set to something that is
     unlikely to appear in it.
 
 AUTHORS
