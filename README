@@ -13,7 +13,7 @@ SYNOPSIS
 
         while (<>) {
             $hailo->learn($_);
-            say $hailo->reply($_);
+            print $hailo->reply($_), "\n";
         }
 
 DESCRIPTION
