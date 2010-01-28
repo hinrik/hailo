@@ -1,6 +1,7 @@
 package Hailo::Tokenizer::Generic;
 use Moose;
 use List::MoreUtils qw<uniq>;
+use namespace::clean -except => 'meta';
 
 our $VERSION = '0.01';
 

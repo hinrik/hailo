@@ -2,6 +2,7 @@ package Hailo::Tokenizer::Characters;
 use Moose;
 use List::MoreUtils qw<uniq>;
 use Text::Trim;
+use namespace::clean -except => 'meta';
 
 our $VERSION = '0.01';
 
