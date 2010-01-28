@@ -142,7 +142,7 @@ sub start_training {
 }
 
 sub stop_training {
-    shift->stop_learning;
+    shift->stop_learning();
     return;
 }
 

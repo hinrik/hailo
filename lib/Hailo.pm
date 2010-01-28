@@ -251,7 +251,7 @@ sub save {
 
 sub train {
     my ($self, $filename) = @_;
-    my $storage = $self->storage_obj;
+    my $storage = $self->_storage_obj;
     $storage->start_training();
 
     open my $fh, '<:encoding(utf8)', $filename or die "Can't open file '$filename': $!\n";
@@ -260,7 +260,7 @@ sub train {
     } else {
         while (my $line = <$fh>) {
             chomp $line;
-            $self->do_learn($line);
+            $self->_do_learn($line);
         }
     }
     close $fh;
@@ -292,7 +292,7 @@ sub _train_progress {
 
     while (my $line = <$fh>) {
         chomp $line;
-        $self->learn($line);
+        $self->_do_learn($line);
         if ($. >= $next_update) {
             $next_update = $progress->update($.);
 
