@@ -46,9 +46,9 @@ L<DBD::SQLite|DBD::SQLite>
 This backend maintains information in an SQLite database. It can handle
 pretty large datasets.
 
-For some example numbers, I have a database built from a 204k line (7.2MB)
-IRC channel log file (7.2MB). On my laptop (Core 2 Duo 2.53 GHz) it took 10
-minutes and 42 seconds (317 lines/sec) to create the 290MB database.
+For some example numbers, I have a 5th-order database built from a 204k line
+(7.2MB) IRC channel log file (7.2MB). On my laptop (Core 2 Duo 2.53 GHz) it
+took 10 minutes and 42 seconds (317 lines/sec) to create the 290MB database.
 Furthermore, it can generate 166 replies per second from it. Since this is
 just an SQL database, there is very little RAM usage.
 
