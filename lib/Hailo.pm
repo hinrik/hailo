@@ -176,7 +176,7 @@ USAGE
 
 sub _build__storage_obj {
     my ($self) = @_;
-    
+
     my $storage_class = $self->storage_class;
     my $storage = "Hailo::Storage::$storage_class";
     eval "require $storage";
@@ -199,7 +199,7 @@ sub _build__tokenizer_obj {
     my ($self) = @_;
 
     my $tokenizer_class = $self->tokenizer_class;
-    
+
     my $tokenizer = "Hailo::Tokenizer::$tokenizer_class";
     eval "require $tokenizer";
     die $@ if $@;
@@ -340,7 +340,7 @@ sub reply {
     my $storage  = $self->_storage_obj;
     my $order    = $storage->order;
     my $toke     = $self->_tokenizer_obj;
-    
+
     $input = $self->_clean_input($input);
     my @tokens = $toke->make_tokens($input);
     my @key_tokens = grep { $storage->token_exists($_) } $toke->find_key_tokens(@tokens);
@@ -360,7 +360,7 @@ sub reply {
         @expr = (@expr[1 .. $order-1], $next_token);
         (undef, $can_end) = $storage->expr_can(@expr);
     }
-    
+
     # reuse the key tokens
     @current_key_tokens = @key_tokens;
 
