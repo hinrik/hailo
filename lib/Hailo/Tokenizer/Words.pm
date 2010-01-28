@@ -1,4 +1,5 @@
 package Hailo::Tokenizer::Words;
+
 use Moose;
 use List::MoreUtils qw<uniq>;
 use namespace::clean -except => 'meta';

@@ -1,4 +1,5 @@
 package Hailo::Tokenizer::Characters;
+
 use Moose;
 use List::MoreUtils qw<uniq>;
 use Text::Trim;

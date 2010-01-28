@@ -1,5 +1,5 @@
 package Hailo::Storage::SQLite;
-use 5.10.0;
+
 use Moose;
 
 extends 'Hailo::Storage::SQL';

@@ -1,6 +1,5 @@
 package Hailo;
 
-use 5.010;
 use Moose;
 use MooseX::Types -declare => [qw(OrderInt)];
 use MooseX::Types::Moose qw/Int Str Bool/;
@@ -172,7 +171,7 @@ sub run {
     my $storage = $self->_storage_obj;
 
     if ($self->print_version) {
-        say "hailo $VERSION";
+        print "hailo $VERSION\n";
         exit;
     }
 
@@ -193,7 +192,7 @@ sub run {
     if (defined $self->reply_str) {
         my $answer = $self->reply($self->reply_str);
         die "I don't know enough to answer you yet.\n" if !defined $answer;
-        say $answer;
+        print "$answer\n";
     }
     return;
 }
@@ -240,7 +239,7 @@ sub _train_progress {
 
     $progress->update($lines) if $lines >= $next_update;
     my $elapsed = tv_interval($start_time);
-    say "Imported in $elapsed seconds";
+    print "Imported in $elapsed seconds\n";
 
     return;
 }
