@@ -372,11 +372,11 @@ CREATE TABLE token (
 __[ table_expr ]__
 CREATE TABLE expr (
     expr_id   INTEGER PRIMARY KEY AUTOINCREMENT,
+[% FOREACH i IN orders %]
+    token[% i %]_id INTEGER NOT NULL REFERENCES token (token_id),
+[% END %]
     expr_text TEXT NOT NULL UNIQUE
 );
-[% FOREACH i IN orders %]
-ALTER TABLE expr ADD token[% i %]_id INTEGER REFERENCES token (token_id);
-[% END %]
 __[ table_next_token ]__
 CREATE TABLE next_token (
     pos_token_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -393,11 +393,9 @@ CREATE TABLE prev_token (
 );
 __[ table_indexes ]__
 CREATE INDEX token_text ON token (text);
-CREATE INDEX expr_token0_id on expr (token0_id);
-CREATE INDEX expr_token1_id on expr (token1_id);
-CREATE INDEX expr_token2_id on expr (token2_id);
-CREATE INDEX expr_token3_id on expr (token3_id);
-CREATE INDEX expr_token4_id on expr (token4_id);
+[% FOREACH i IN orders %]
+CREATE INDEX expr_token[% i %]_id on expr (token[% i %]_id);
+[% END %]
 CREATE INDEX next_token_expr_id ON next_token (expr_id);
 CREATE INDEX prev_token_expr_id ON prev_token (expr_id);
 __[ query_get_order ]__
