@@ -11,7 +11,7 @@ __PACKAGE__->meta->make_immutable;
 $_ = decode('utf8', $_) for @ARGV;
 binmode $_, ':encoding(utf8)' for (*STDIN, *STDOUT, *STDERR);
 
-Hailo->new_with_options->run;
+Hailo->new_with_options( print_progress => 1 )->run;
 
 =encoding utf8
 

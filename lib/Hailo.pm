@@ -4,8 +4,6 @@ use Moose;
 use MooseX::Types -declare => [qw(OrderInt)];
 use MooseX::Types::Moose qw/Int Str Bool/;
 use MooseX::Types::Path::Class qw(File);
-use Term::ProgressBar 2.00;
-use File::CountLines qw(count_lines);
 use Time::HiRes qw(gettimeofday tv_interval);
 use namespace::clean -except => [ qw(meta
                                      count_lines
@@ -24,6 +22,15 @@ has print_version => (
     cmd_aliases   => 'v',
     cmd_flag      => 'version',
     documentation => 'Print version and exit',
+    isa           => Bool,
+    is            => 'ro',
+);
+
+has print_progress => (
+    traits        => [qw(Getopt)],
+    cmd_aliases   => 'p',
+    cmd_flag      => 'progress',
+    documentation => 'Print import progress with Term::ProgressBar',
     isa           => Bool,
     is            => 'ro',
 );
@@ -199,10 +206,25 @@ sub train {
     my $filename = $self->train_file;
 
     open my $fh, '<:encoding(utf8)', $filename or die "Can't open file '$filename': $!\n";
-    $self->_train_progress($fh, $filename);
+    if ($self->print_progress) {
+        $self->_train_progress($fh, $filename);
+    } else {
+        while (my $line = <$fh>) {
+            chomp $line;
+            $self->learn($line);
+        }
+    }
     close $fh;
     return;
 }
+
+before _train_progress => sub {
+    require Term::ProgressBar;
+    Term::ProgressBar->import(2.00);
+    require File::CountLines;
+    File::CountLines->import('count_lines');
+    return;
+};
 
 sub _train_progress {
     my ($self, $fh, $filename) = @_;
@@ -221,7 +243,14 @@ sub _train_progress {
     while (my $line = <$fh>) {
         chomp $line;
         $self->learn($line);
-        $next_update = $progress->update($.) if $. >= $next_update;
+        if ($. >= $next_update) {
+            $next_update = $progress->update($.);
+
+            # The default Term::ProgressBar estimate for next updates
+            # is way too concervative. With a ~200k line file we only
+            # update every ~2k lines which is 10 seconds or so.
+            $next_update = (($next_update-$.) / 10) + $.;
+        }
     }
 
     $progress->update($lines) if $lines >= $next_update;
