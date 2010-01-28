@@ -1,0 +1,38 @@
+#!/usr/bin/env perl
+use 5.10.0;
+use Moose;
+use WWW::Mechanize;
+
+=head1 NAME
+
+crunchbase-companies - Fetch company names from L<http://crunchbase.com>
+
+=head1 SYNOPSIS
+
+    perl utils/crunchbase-companies > utils/companies.txt
+    perl -Ilib -I/home/avar/src/data-section/lib script/hailo --storage SQLite --tokenizer Characters --train utils/companies.txt --brain utils/companies.db
+
+=head1 DESCRIPTION
+
+This is to emulate L<http://collison.ie/blog/2009/04/using-mathematica-to-generate-web-20-company-names>
+
+=cut
+
+# use utf8 everywhere
+binmode $_, ':encoding(utf8)' for (*STDIN, *STDOUT, *STDERR);
+
+my $mech = WWW::Mechanize->new;
+
+my %companies;
+
+for my $letter ('a' .. 'z', 'other') {
+    say STDERR "Getting companies $letter*";
+
+    $mech->get("http://www.crunchbase.com/companies?c=$letter");
+
+    my @companies = $mech->content =~ m[<a href="/company/[^"]+" title="(.*?)">(.*?)</a></li>]g;
+
+    @companies{@companies} = ();
+}
+
+say for keys %companies;
