@@ -15,7 +15,7 @@ has brain => (
 has order => (
     isa     => Int,
     is      => 'ro',
-    default => sub { shift->memory->{order} },
+    default => sub { shift->_memory->{order} },
 );
 
 has token_separator => (
