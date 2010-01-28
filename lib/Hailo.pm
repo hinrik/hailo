@@ -145,9 +145,9 @@ with qw(MooseX::Getopt);
 sub _getopt_full_usage {
     my ($self, $usage) = @_;
     my $options = do {
-        my $options = $usage->text;
-        $options  =~ s/\n+$//s;
-        $options;
+        my $out = $usage->text;
+        $out  =~ s/\n+$//s;
+        $out;
     };
     my $synopsis = do {
         require Pod::Usage;
