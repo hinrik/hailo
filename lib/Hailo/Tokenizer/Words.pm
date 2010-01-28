@@ -15,14 +15,14 @@ my $CLOSE_QUOTE = qr/['"’«»“”」』›‘]/;
 my $TERMINATOR  = qr/(?:[?!‽]+|(?<!\.)\.)/;
 my $ADDRESS     = qr/:/;
 my $BOUNDARY    = qr/\s*$CLOSE_QUOTE?\s*(?:$TERMINATOR|$ADDRESS)\s+$OPEN_QUOTE?\s*/;
-my $INTERESTING = qr/[[:alpha:]]/;
+my $INTERESTING = qr/\S/;
 
-# output -> tokens
+# input -> tokens
 sub make_tokens {
     my ($self, $line) = @_;
     my (@tokens) = $line =~ /($TOKEN)/gs;
 
-    # lower-case everything except those which are ALL UPPERCASE
+    # lower-case tokens except those which are ALL UPPERCASE
     @tokens = map { $_ ne uc($_) ? lc($_) : $_ } @tokens;
     return @tokens;
 }
