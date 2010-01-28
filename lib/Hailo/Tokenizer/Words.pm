@@ -8,15 +8,21 @@ our $VERSION = '0.01';
 
 with 'Hailo::Role::Tokenizer';
 
-my $APOSTROPHE  = qr/['’]/;
-my $WORD        = qr/\w+(?:$APOSTROPHE\w+)*/;
-my $TOKEN       = qr/(?:$WORD| +|.)/s;
-my $OPEN_QUOTE  = qr/['"‘“„«»「『‹‚]/;
-my $CLOSE_QUOTE = qr/['"’«»“”」』›‘]/;
-my $TERMINATOR  = qr/(?:[?!‽]+|(?<!\.)\.)/;
-my $ADDRESS     = qr/:/;
-my $BOUNDARY    = qr/\s*$CLOSE_QUOTE?\s*(?:$TERMINATOR|$ADDRESS)\s+$OPEN_QUOTE?\s*/;
-my $INTERESTING = qr/\S/;
+my $APOSTROPHE    = qr/['’]/;
+my $DOTTED_WORD   = qr/\w+(?:\.\w+)?/;
+my $WORD          = qr/$DOTTED_WORD(?:$APOSTROPHE$DOTTED_WORD)*/;
+my $TOKEN         = qr/(?:$WORD| +|.)/s;
+my $OPEN_QUOTE    = qr/['"‘“„«»「『‹‚]/;
+my $CLOSE_QUOTE   = qr/['"’«»“”」』›‘]/;
+my $TERMINATOR    = qr/(?:[?!‽]+|(?<!\.)\.)/;
+my $ADDRESS       = qr/:/;
+my $BOUNDARY      = qr/\s*$CLOSE_QUOTE?\s*(?:$TERMINATOR|$ADDRESS)\s+$OPEN_QUOTE?\s*/;
+my $INTERESTING   = qr/\S/;
+
+# these are only used in capitalization, because we want to capitalize words
+# that come after "On example.com?" or "You mean 3.2?", but not "Yes, e.g."
+my $DOTTED_STRICT = qr/\w+(?:\.(?:\d+|\w{2,}))?/;
+my $WORD_STRICT   = qr/$DOTTED_STRICT(?:$APOSTROPHE$DOTTED_STRICT)*/;
 
 # input -> tokens
 sub make_tokens {
@@ -49,8 +55,8 @@ sub make_output {
 
     # capitalize all other words after word boundaries
     # we do it in two passes because we need to match two words at a time
-    $string =~ s/ $WORD$BOUNDARY\K($WORD)/\x1B\u$1\x1B/g;
-    $string =~ s/\x1B$WORD\x1B$BOUNDARY\K($WORD)/\u$1/g;
+    $string =~ s/ $WORD_STRICT$BOUNDARY\K($WORD)/\x1B\u$1\x1B/g;
+    $string =~ s/\x1B$WORD_STRICT\x1B$BOUNDARY\K($WORD)/\u$1/g;
     $string =~ s/\x1B//g;
 
     # end paragraphs with a period when it makes sense

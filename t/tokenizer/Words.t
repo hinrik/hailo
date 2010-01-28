@@ -43,7 +43,7 @@ subtest make_output => sub {
             [
                 ' ', '"', ' ', 'why', ' ', 'hello', ' ', 'there', '.', ' ', '«',
                 'yes', '»', '.', ' ', '"', 'foo', ' ', 'is', ' ', 'a', ' ',
-                'bar', '"', ',', ' ', 'e', '.', 'g', '.', ' ', 'bla', ' ', '.',
+                'bar', '"', ',', ' ', 'e.g', '.', ' ', 'bla', ' ', '.',
                 '.', '.', ' ', 'yes',
             ],
             ' " Why hello there. «Yes». "Foo is a bar", e.g. bla ... yes.',
@@ -81,6 +81,20 @@ subtest make_output => sub {
                 ':', 'value', ' ', 'thing',
             ],
             "I'm talking about this key:value thing."
+        ],
+        [
+            "what? but that's impossible",
+            [
+                'what', '?', ' ', 'but', ' ', "that's", ' ', 'impossible',
+            ],
+            "What? But that's impossible.",
+        ],
+        [
+            'on example.com? yes',
+            [
+                'on', ' ', 'example.com', '?', ' ', 'yes',
+            ],
+            "On example.com? Yes.",
         ],
     );
 
