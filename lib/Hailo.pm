@@ -228,11 +228,10 @@ sub _train_progress {
     my $next_update = 0;
     my $start_time = [gettimeofday()];
 
-    my $i = 1; while (my $line = <$fh>) {
+    while (my $line = <$fh>) {
         chomp $line;
         $self->learn($line);
-
-        $next_update = $progress->update($i) if $i++ >= $next_update;
+        $next_update = $progress->update($.) if $. >= $next_update;
     }
 
     $progress->update($lines) if $lines >= $next_update;
