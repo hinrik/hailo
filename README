@@ -1,9 +1,29 @@
 NAME
-    Hailo - A conversation bot using Markov chains
+    Hailo - A pluggable Markov engine analogous to MegaHAL
+
+SYNOPSIS
+        use 5.10.0;
+        use Hailo;
+
+        my $hailo = Hailo->new(
+            # Or SQLite, or Pg, ...
+            storage => 'Perl',
+            brain   => 'brain.storable'
+        );
+
+        while (<>) {
+            $hailo->learn($_);
+            say $hailo->reply($_);
+        }
 
 DESCRIPTION
-    This is a chat bot which utilizes Markov chains. It is loosely based on
-    a C program called MegaHAL.
+    Hailo is a fast and pluggable markov engine intended to replace
+    AI::MegaHAL, it has a lightweight Moose-based core with pluggable
+    storage backends and tokenizers. It's faster than MegaHAL and can handle
+    huge brains easily with the recommended SQLite backend.
+
+    It can be used, amongst other things, to implement IRC chat bots with
+    POE::Component::IRC.
 
 ATTRIBUTES
   "file"
@@ -45,11 +65,17 @@ METHODS
   "save"
     Tells the underlying storage backend to save its state.
 
-AUTHOR
+ETYMOLOGY
+    *Hailo* is a portmanteau of *Hal* and *failo <http://identi.ca/failo>*
+
+AUTHORS
     Hinrik Örn Sigurðsson, hinrik.sig@gmail.com
 
+    Ævar Arnfjörð Bjarmason <avar@cpan.org>
+
 LICENSE AND COPYRIGHT
-    Copyright 2010 Hinrik Örn Sigurðsson
+    Copyright 2010 Hinrik Örn Sigurðsson and Ævar Arnfjörð Bjarmason
+    <avar@cpan.org>
 
     This program is free software, you can redistribute it and/or modify it
     under the same terms as Perl itself.
