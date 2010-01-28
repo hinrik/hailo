@@ -2,7 +2,6 @@ NAME
     Hailo - A pluggable Markov engine analogous to MegaHAL
 
 SYNOPSIS
-        use 5.10.0;
         use Hailo;
 
         my $hailo = Hailo->new(
@@ -37,10 +36,10 @@ ATTRIBUTES
     The Markov order (chain length) you want to use for an empty brain. The
     default is 5.
 
-  "storage"
+  "storage_class"
     The storage backend to use. Default: 'SQLite'.
 
-  "tokenizer"
+  "tokenizer_class"
     The tokenizer to use. Default: 'Words';
 
   "token_separator"

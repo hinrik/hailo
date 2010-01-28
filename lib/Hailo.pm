@@ -454,11 +454,11 @@ There is no default.
 The Markov order (chain length) you want to use for an empty brain.
 The default is 5.
 
-=head2 C<storage>
+=head2 C<storage_class>
 
 The storage backend to use. Default: 'SQLite'.
 
-=head2 C<tokenizer>
+=head2 C<tokenizer_class>
 
 The tokenizer to use. Default: 'Words';
 
