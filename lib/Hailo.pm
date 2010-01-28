@@ -18,6 +18,16 @@ subtype OrderInt,
     where { $_ > 0 and $_ < 50 },
     message { "Order outside 1..50 will explode the database" };
 
+has help => (
+    traits        => [qw(Getopt)],
+    cmd_aliases   => 'h',
+    cmd_flag      => 'help',
+    isa           => Bool,
+    is            => 'ro',
+    default       => 0,
+    documentation => 'This help message',
+);
+
 has print_version => (
     traits        => [qw(Getopt)],
     cmd_aliases   => 'v',
@@ -131,6 +141,38 @@ has _tokenizer_obj => (
 );
 
 with qw(MooseX::Getopt);
+
+sub _getopt_full_usage {
+    my ($self, $usage) = @_;
+    my $options = do {
+        my $options = $usage->text;
+        $options  =~ s/\n+$//s;
+        $options;
+    };
+    my $synopsis = do {
+        require Pod::Usage;
+        my $out;
+        open my $fh, '>', \$out or die "Can't open in-memory filehandle";
+        Pod::Usage::pod2usage(
+            -sections => 'SYNOPSIS',
+            -output   => $fh,
+            -exitval  => 'noexit',
+        );
+
+        $out =~ s/\n+$//s;
+        $out =~ s/^Usage:/examples:/;
+
+        $out;
+    };
+
+    print <<USAGE;
+$options
+\tNote: All input/output and files are assumed to be UTF-8 encoded.
+$synopsis
+USAGE
+
+    exit 1;
+}
 
 sub _build__storage_obj {
     my ($self) = @_;

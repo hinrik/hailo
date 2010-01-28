@@ -21,22 +21,7 @@ hailo - Command-line interface to the L<Hailo|Hailo> Markov bot
 
 =head1 SYNOPSIS
 
-B<hailo> <options>
-
- Options:
-   -l LINE,  --learn=LINE       Learn from LINE
-   -t FILE,  --train=FILE       Learn from all lines in FILE
-   -r LINE,  --reply=LINE       Reply to LINE
-   -o INT,   --order=INT        Change Markov order from 5 to INT
-   -b FILE,  --brain=FILE       Load/save brain to/from FILE
-   -S CLASS, --storage=CLASS    Use storage CLASS instead of 'SQLite'
-   -T CLASS, --tokenizer=CLASS  Use tokenizer CLASS instead of 'Words'
-   -p        --progress         Print import progress during training,
-                                default=yes running interactively
-   -h,       --help             This help message
-   -v,       --version          Print verion and exit
-
-Note: All input/output and files are assumed to be UTF-8 encoded.
+    hailo --help
 
 =head1 DESCRIPTION
 
@@ -44,11 +29,11 @@ See the documentation for L<Hailo|Hailo> for more information.
 
 =head1 AUTHOR
 
-Hinrik E<Ouml>rn SigurE<eth>sson, hinrik.sig@gmail.com
+E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2010 Hinrik E<Ouml>rn SigurE<eth>sson
+Copyright 2010 E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
 
 This program is free software, you can redistribute it and/or modify
 it under the same terms as Perl itself.
