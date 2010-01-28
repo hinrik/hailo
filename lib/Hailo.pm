@@ -166,7 +166,7 @@ sub _getopt_full_usage {
         $out;
     };
 
-    print <<USAGE;
+    print <<"USAGE";
 $options
 \tNote: All input/output and files are assumed to be UTF-8 encoded.
 $synopsis
