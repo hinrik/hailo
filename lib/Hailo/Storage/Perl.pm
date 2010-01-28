@@ -97,7 +97,7 @@ sub random_expr {
 sub expr_can {
     my ($self, @tokens) = @_;
     my $ehash = $self->_hash_tokens(\@tokens);
-    my ($can_start, $can_end) = @{ $self->_memory->{expr}{$ehash} }{qw(can_start can_end)};
+    return @{ $self->_memory->{expr}{$ehash} }{qw(can_start can_end)};
 }
 
 sub next_tokens {
