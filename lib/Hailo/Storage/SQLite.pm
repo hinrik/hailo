@@ -17,15 +17,18 @@ sub _build__dbh {
     );
 }
 
-before 'start_training' => sub {
-    my ($self) = @_;
+before start_training => sub {
+    shift->_dbh->do('PRAGMA synchronous=OFF;');
+    return;
+};
 
-    $self->_dbh->do('PRAGMA synchronous=OFF;');
+after stop_training => sub {
+    shift->_dbh->do('PRAGMA synchronous=ON;');
+    return;
 };
 
 sub _exists_db {
     my ($self) = @_;
-
     return -s $self->file;
 }
 
