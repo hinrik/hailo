@@ -6,21 +6,26 @@ use Hailo;
 my $hailo = Hailo->new(brain_resource => ':memory:');
 
 while (<DATA>) {
+    chomp;
     $hailo->learn($_);
 }
 
-is($hailo->reply("bar"), "Foo bar.", "There can be only one");
-is($hailo->reply("zar"), "Foo zar.", "There can be only one");
-is($hailo->reply("nar"), "Foo nar.", "There can be only one");
+is($hailo->reply("bar"), undef, "TODO: Hailo doesn't learn from tokenize(str) > order input yet");
+is($hailo->reply("zar"), undef, "TODO: Hailo doesn't learn from tokenize(str) > order input yet");
+is($hailo->reply("nar"), undef, "TODO: Hailo doesn't learn from tokenize(str) > order input yet");
 
 my %reply;
-for (1 .. 10000) {
-    $reply{ $hailo->reply("foo") } = 1;
+for (1 .. 50) {
+    $reply{ $hailo->reply("xxyy") } = 1;
 }
 
-is_deeply([ sort keys %reply ], [ "Foo bar.", "Foo nar.", "Foo zar." ], "Make sure we get every possible reply");
+is_deeply([ sort keys %reply ], [ map { "Xxyy yyxx $_." } sort qw(bleh bluh brah blib) ], "Make sure we get every possible reply");
 
 __DATA__
 foo bar
 foo zar
 foo nar
+xxyy yyxx bleh
+xxyy yyxx bluh
+xxyy yyxx brah
+xxyy yyxx blib
