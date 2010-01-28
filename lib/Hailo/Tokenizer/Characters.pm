@@ -11,20 +11,20 @@ with 'Hailo::Tokenizer';
 sub make_tokens {
     my ($self, $line) = @_;
 
-    split //, $line;
+    return split //, $line;
 }
 
 # return a list of key tokens
 sub find_key_tokens {
     my $self = shift;
 
-    uniq(@_);
+    return uniq(@_);
 }
 
 # tokens -> output
 sub make_output {
     my $self = shift;
-    trim join '', @_;
+    return trim join '', @_;
 }
 
 __PACKAGE__->meta->make_immutable;

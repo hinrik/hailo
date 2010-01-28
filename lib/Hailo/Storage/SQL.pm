@@ -70,10 +70,9 @@ sub _sth_sections {
     my ($self) = @_;
     my %sections;
 
-    my @plain_sections = map { s[^query_][]; $_ }
-                         # () sections are magical
-                         grep { /^query_/ and not /\(.*?\)/ }
-                         $self->section_data_names;
+    # () sections are magical
+    my @plain_sections = grep { /^query_/ and not /\(.*?\)/ } $self->section_data_names;
+    s[^query_][] for @plain_sections;
 
     $sections{$_} = undef for @plain_sections;
 
@@ -336,7 +335,7 @@ sub save {
     # no op
 }
 
-1;
+__PACKAGE__->meta->make_immutable;
 
 =encoding utf8
 
