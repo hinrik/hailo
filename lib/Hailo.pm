@@ -301,6 +301,10 @@ sub reply {
         @current_expr = ($prev_token, @current_expr[0 .. $order-2]);
     }
 
+    # remove boundary tokens
+    shift @reply;
+    pop @reply;
+
     return $toke->make_output(@reply);
 }
 

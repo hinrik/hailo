@@ -39,7 +39,6 @@ sub find_key_tokens {
 sub make_output {
     my $self = shift;
     my $string = join '', @_;
-    $string =~ s/(?:^\n|\n$)//gs;
 
     # capitalize the first word
     $string =~ s/^$TERMINATOR?\s*$OPEN_QUOTE?\s*\K($WORD)/\u$1/;
