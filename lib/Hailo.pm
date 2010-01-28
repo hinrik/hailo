@@ -86,6 +86,16 @@ has boundary_token => (
     default       => "\012",
 );
 
+has token_separator => (
+    traits        => [qw(Getopt)],
+    cmd_aliases   => 'P',
+    cmd_flag      => 'separator',
+    documentation => "String used when joining an expression into a string",
+    isa           => Str,
+    is            => 'rw',
+    default       => "\t",
+);
+
 has storage_class => (
     traits        => [qw(Getopt)],
     cmd_aliases   => "S",
@@ -132,13 +142,17 @@ sub _build__storage_obj {
     eval "require $storage";
     die $@ if $@;
 
-    return $storage->new(
+    my $obj = $storage->new(
         (defined $self->brain_resource
             ? (brain => $self->brain_resource)
             : ()
         ),
+        token_separator => $self->token_separator,
         order => $self->order,
     );
+
+    $self->token_separator($obj->token_separator);
+    return $obj;
 }
 
 sub _build__tokenizer_obj {
@@ -237,6 +251,8 @@ sub learn {
     my $order    = $storage->order;
     my $boundary = $self->boundary_token;
 
+    $input = $self->_clean_input($input);
+
     # add boundary tokens
     $input = "$boundary$input$boundary";
     my @tokens = $self->_tokenizer_obj->make_tokens($input);
@@ -269,6 +285,7 @@ sub reply {
     my $toke     = $self->_tokenizer_obj;
     my $boundary = $self->boundary_token;
     
+    $input = $self->_clean_input($input);
     my @tokens = $toke->make_tokens($input);
     my @key_tokens = grep { $storage->token_exists($_) } $toke->find_key_tokens(@tokens);
     return if !@key_tokens;
@@ -306,6 +323,14 @@ sub reply {
     pop @reply;
 
     return $toke->make_output(@reply);
+}
+
+sub _clean_input {
+    my ($self, $input) = @_;
+    my $boundary = quotemeta $self->boundary_token;
+    my $separator = quotemeta $self->token_separator;
+    $input =~ s/(?:$boundary|$separator)//g;
+    return $input;
 }
 
 sub _pos_token {
@@ -383,7 +408,13 @@ The tokenizer to use. Default: 'Words';
 =head2 C<boundary_token>
 
 The token used to signify a paragraph boundary. Has to be something that
-would never appear in your inputs. Defaults to C<"\012">.
+would never appear in your inputs. Defaults to C<"\012"> (linefeed).
+
+=head2 C<token_separator>
+
+Storage backends may choose to store the tokens of an expression as a single
+string. If so, they will be joined them together with a separator. By default,
+this is C<"\t">.
 
 =head1 METHODS
 
@@ -417,6 +448,12 @@ Tells the underlying storage backend to save its state.
 =head1 ETYMOLOGY
 
 I<Hailo> is a portmanteau of I<Hal> and L<I<failo>|http://identi.ca/failo>
+
+=head1 CAVEATS
+
+L<C<boundary_token>|/boundary_token> and L<C<token_separator>|/token_separator>
+will be stripped from your input before it is processed, so make sure those
+are set to something that is unlikely to appear in it.
 
 =head1 AUTHORS
 

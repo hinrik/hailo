@@ -42,7 +42,12 @@ ATTRIBUTES
 
   "boundary_token"
     The token used to signify a paragraph boundary. Has to be something that
-    would never appear in your inputs. Defaults to "\012".
+    would never appear in your inputs. Defaults to "\012" (linefeed).
+
+  "token_separator"
+    Storage backends may choose to store the tokens of an expression as a
+    single string. If so, they will be joined them together with a
+    separator. By default, this is "\t".
 
 METHODS
   "new"
@@ -68,6 +73,11 @@ METHODS
 
 ETYMOLOGY
     *Hailo* is a portmanteau of *Hal* and <*failo*>
+
+CAVEATS
+    "boundary_token" and "token_separator" will be stripped from your input
+    before it is processed, so make sure those are set to something that is
+    unlikely to appear in it.
 
 AUTHORS
     Hinrik Örn Sigurðsson, hinrik.sig@gmail.com

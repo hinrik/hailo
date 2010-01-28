@@ -18,6 +18,12 @@ has order => (
     default => sub { shift->memory->{order} },
 );
 
+has token_separator => (
+    isa     => Str,
+    is      => 'ro',
+    default => sub { shift->_memory->{separator} },
+);
+
 has _memory => (
     isa        => HashRef,
     is         => 'ro',
@@ -42,6 +48,7 @@ sub _build__memory {
             next_token => { }, # $ehash => \%tokens_that_can_follow_this_expr
             prev_token => { }, # $ehash => \%tokens_that_can_precede_this_expr
             order      => $self->order,
+            separator  => $self->token_separator,
         };
     }
 }

@@ -26,6 +26,11 @@ has order => (
     is  => 'rw',
 );
 
+has token_separator => (
+    isa => Str,
+    is  => 'ro',
+);
+
 has _dbh => (
     isa        => 'DBI::db',
     is         => 'ro',
@@ -114,11 +119,19 @@ sub BUILD {
         $self->_sth->{get_order}->execute();
         my $order = $self->_sth->{get_order}->fetchrow_array();
         $self->order($order);
+
+        $self->_sth->{get_separator}->execute();
+        my $sep = $self->_sth->{get_separator}->fetchrow_array();
+        $self->token_separator($order);
     }
     else {
         $self->_create_db();
+
         my $order = $self->order;
         $self->_sth->{set_order}->execute($order);
+
+        my $sep = $self->token_separator;
+        $self->_sth->{set_separator}->execute($sep);
     }
 
     return;
@@ -400,8 +413,12 @@ CREATE INDEX next_token_expr_id ON next_token (expr_id);
 CREATE INDEX prev_token_expr_id ON prev_token (expr_id);
 __[ query_get_order ]__
 SELECT text FROM info WHERE attribute = 'markov_order';
+__[ query_get_separator ]__
+SELECT text FROM info WHERE attribute = 'token_separator';
 __[ query_set_order ]__
 INSERT INTO info (attribute, text) VALUES ('markov_order', ?);
+__[ query_set_separator ]__
+INSERT INTO info (attribute, text) VALUES ('token_separator', ?);
 __[ query_expr_id ]__
 SELECT expr_id FROM expr WHERE expr_text = ?;
 __[ query_expr_id_token(NUM)_id ]__

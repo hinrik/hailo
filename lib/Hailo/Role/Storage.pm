@@ -4,12 +4,7 @@ use Moose::Role;
 use MooseX::Types::Moose qw<Str>;
 use namespace::clean -except => 'meta';
 
-has token_separator => (
-    isa     => Str,
-    is      => 'ro',
-    default => "\t",
-);
-
+requires 'token_separator';
 requires 'brain';
 requires 'order';
 requires 'save';
