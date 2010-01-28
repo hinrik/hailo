@@ -18,6 +18,8 @@ requires 'random_expr';
 requires 'token_exists';
 requires 'next_tokens';
 requires 'prev_tokens';
+requires 'start_learning';
+requires 'stop_learning';
 requires 'start_training';
 requires 'stop_training';
 

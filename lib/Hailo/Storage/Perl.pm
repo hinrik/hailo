@@ -107,15 +107,10 @@ sub save {
     return;
 }
 
-sub start_training {
-    my ($self) = @_;
-    return;
-}
-
-sub stop_training {
-    my ($self) = @_;
-    return;
-}
+sub start_training { return }
+sub stop_training  { return }
+sub start_learning { return }
+sub stop_learning  { return }
 
 __PACKAGE__->meta->make_immutable;
 

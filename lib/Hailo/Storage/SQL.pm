@@ -126,20 +126,24 @@ sub BUILD {
 }
 
 sub start_training {
-    my ($self) = @_;
-
-    # start a transaction
-    $self->_dbh->begin_work;
-
+    shift->start_learning();
     return;
 }
 
 sub stop_training {
-    my ($self) = @_;
+    shift->stop_learning;
+    return;
+}
 
+sub start_learning {
+    # start a transaction
+    shift->_dbh->begin_work;
+    return;
+}
+
+sub stop_learning {
     # finish a transaction
-    $self->_dbh->commit;
-
+    shift->_dbh->commit;
     return;
 }
 
