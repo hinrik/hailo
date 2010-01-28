@@ -1,7 +1,6 @@
 package Hailo;
 
 use Moose;
-use MooseX::Types -declare => [qw(OrderInt)];
 use MooseX::Types::Moose qw/Int Str Bool/;
 use MooseX::Types::Path::Class qw(File);
 use Time::HiRes qw(gettimeofday tv_interval);
@@ -12,11 +11,6 @@ use namespace::clean -except => [ qw(meta
                                      tv_interval) ];
 
 our $VERSION = '0.01';
-
-subtype OrderInt,
-    as Int,
-    where { $_ > 0 and $_ < 50 },
-    message { "Order outside 1..50 will explode the database" };
 
 has help => (
     traits        => [qw(Getopt)],
@@ -89,7 +83,7 @@ has order => (
     cmd_aliases   => "o",
     cmd_flag      => "order",
     documentation => "Markov order",
-    isa           => OrderInt,
+    isa           => Int,
     is            => "ro",
     default       => 5,
 );
