@@ -38,7 +38,7 @@ ATTRIBUTES
     The storage backend to use. Default: 'SQLite'.
 
   "tokenizer"
-    The tokenizer to use. Default: 'Generic';
+    The tokenizer to use. Default: 'Words';
 
   "boundary_token"
     The token used to signify a paragraph boundary. Has to be something that

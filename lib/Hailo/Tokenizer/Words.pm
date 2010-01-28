@@ -1,4 +1,4 @@
-package Hailo::Tokenizer::Generic;
+package Hailo::Tokenizer::Words;
 use Moose;
 use List::MoreUtils qw<uniq>;
 use namespace::clean -except => 'meta';
@@ -69,7 +69,7 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Hailo::Tokenizer::Perl - A generic tokenizer for L<Hailo|Hailo>
+Hailo::Tokenizer::Word - A word tokenizer for L<Hailo|Hailo>
 
 =head1 DESCRIPTION
 

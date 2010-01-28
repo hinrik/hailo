@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use utf8;
 use Test::More;
-use Hailo::Tokenizer::Generic;
+use Hailo::Tokenizer::Words;
 
 binmode $_, ':encoding(utf8)' for (*STDIN, *STDOUT, *STDERR);
 
@@ -47,7 +47,7 @@ my @tokens = (
 
 plan tests => 2 * scalar @tokens;
 
-my $toke = Hailo::Tokenizer::Generic->new();
+my $toke = Hailo::Tokenizer::Words->new();
 
 for my $test (@tokens) {
     my $tokens = [$toke->make_tokens($test->[0])];

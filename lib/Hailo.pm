@@ -103,7 +103,7 @@ has tokenizer_class => (
     documentation => "Use tokenizer CLASS",
     isa           => Str,
     is            => "ro",
-    default       => "Generic",
+    default       => "Words",
 );
 
 has _storage_obj => (
@@ -374,7 +374,7 @@ The storage backend to use. Default: 'SQLite'.
 
 =head2 C<tokenizer>
 
-The tokenizer to use. Default: 'Generic';
+The tokenizer to use. Default: 'Words';
 
 =head2 C<boundary_token>
 

@@ -3,7 +3,7 @@ use utf8;
 use strict;
 use warnings;
 use Test::More tests => 1;
-use Hailo::Tokenizer::Generic;
+use Hailo::Tokenizer::Words;
 
 binmode $_, ':encoding(utf8)' for (*STDIN, *STDOUT, *STDERR);
 
@@ -13,7 +13,7 @@ subtest make_tokens => sub {
         my ($str, $tokens) = @_;
 
         is_deeply(
-            [ Hailo::Tokenizer::Generic::make_tokens(undef, $str) ],
+            [ Hailo::Tokenizer::Words::make_tokens(undef, $str) ],
             $tokens,
             "make_tokens: <<$str>> ==> " . (join ' ', map { qq[<<$_>>] } @$tokens) . ""
         );
@@ -30,7 +30,7 @@ subtest make_tokens => sub {
 
     # Apostrophe
     #use Data::Dump 'dump';
-    #say dump Hailo::Tokenizer::Generic::make_tokens(undef, "'foo' 'bar'");
+    #say dump Hailo::Tokenizer::Words::make_tokens(undef, "'foo' 'bar'");
     $t->("'foo' 'bar'", [ ("'", "foo", "'", " ", "'", "bar", "'") ]);
     $t->("’foo’ ’bar’", [ ("’", "foo", "’", " ", "’", "bar", "’") ]);
 
