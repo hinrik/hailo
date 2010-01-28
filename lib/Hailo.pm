@@ -8,7 +8,10 @@ use MooseX::Types::Path::Class qw(File);
 use Term::ProgressBar 2.00;
 use File::CountLines qw(count_lines);
 use Time::HiRes qw(gettimeofday tv_interval);
-use namespace::clean -except => 'meta';
+use namespace::clean -except => [ qw(meta
+                                     count_lines
+                                     gettimeofday
+                                     tv_interval) ];
 
 our $VERSION = '0.01';
 
@@ -312,12 +315,35 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Hailo - A conversation bot using Markov chains
+Hailo - A pluggable Markov engine analogous to MegaHAL
+
+=head1 SYNOPSIS
+
+    use 5.10.0;
+    use Hailo;
+
+    my $hailo = Hailo->new(
+        # Or SQLite, or Pg, ...
+        storage => 'Perl',
+        brain   => 'brain.storable'
+    );
+
+    while (<>) {
+        $hailo->learn($_);
+        say $hailo->reply($_);
+    }
 
 =head1 DESCRIPTION
 
-This is a chat bot which utilizes Markov chains. It is loosely based on a
-C program called MegaHAL.
+Hailo is a fast and pluggable markov engine intended to replace
+L<AI::MegaHAL>, it has a lightweight L<Moose>-based core with
+pluggable L<storage backends|Hailo::Storage> and
+L<tokenizers|Hailo::Storage>. It's faster than MegaHAL and can handle
+huge brains easily with the recommended L<SQLite
+backend|Hailo::Storage::SQLite>.
+
+It can be used, amongst other things, to implement IRC chat bots with
+L<POE::Component::IRC>.
 
 =head1 ATTRIBUTES
 
@@ -372,13 +398,19 @@ Takes a line of text and generates a reply that might be relevant.
 
 Tells the underlying storage backend to save its state.
 
-=head1 AUTHOR
+=head1 ETYMOLOGY
+
+I<Hailo> is a portmanteau of I<Hal> and I<L<failo|http://identi.ca/failo>>
+
+=head1 AUTHORS
 
 Hinrik E<Ouml>rn SigurE<eth>sson, hinrik.sig@gmail.com
 
+E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
+
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2010 Hinrik E<Ouml>rn SigurE<eth>sson
+Copyright 2010 Hinrik E<Ouml>rn SigurE<eth>sson and E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
 
 This program is free software, you can redistribute it and/or modify
 it under the same terms as Perl itself.
