@@ -6,8 +6,8 @@ SYNOPSIS
         use Hailo;
 
         my $hailo = Hailo->new(
-            # Or SQLite, or Pg, ...
-            storage => 'Perl',
+            # Or Pg, or Perl ...
+            storage_class => 'SQLite',
             brain   => 'brain.storable'
         );
 

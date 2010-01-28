@@ -93,7 +93,7 @@ has storage_class => (
     documentation => "Use storage CLASS",
     isa           => Str,
     is            => "ro",
-    default       => "Perl",
+    default       => "SQLite",
 );
 
 has tokenizer_class => (
@@ -334,8 +334,8 @@ Hailo - A pluggable Markov engine analogous to MegaHAL
     use Hailo;
 
     my $hailo = Hailo->new(
-        # Or SQLite, or Pg, ...
-        storage => 'Perl',
+        # Or Pg, or Perl ...
+        storage_class => 'SQLite',
         brain   => 'brain.storable'
     );
 
@@ -370,7 +370,7 @@ The default is 5.
 
 =head2 C<storage>
 
-The storage backend to use. Default: 'Perl'.
+The storage backend to use. Default: 'SQLite'.
 
 =head2 C<tokenizer>
 

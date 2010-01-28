@@ -16,7 +16,6 @@ resources      (Ratings => 'http://cpanratings.perl.org/d/Hailo');
 
 requires       ('Data::Section'              => '0');
 requires       ('DBD::SQLite'                => '0');
-requires       ('DBD::Pg'                    => '0');
 requires       ('File::CountLines'           => '0');
 requires       ('List::MoreUtils'            => '0');
 requires       ('Moose'                      => '0');
@@ -28,6 +27,7 @@ requires       ('namespace::clean'           => '0');
 requires       ('Template'                   => '0');
 requires       ('Term::ProgressBar'          => '2.00');
 requires       ('Text::Trim'                 => '0');
+recommends     ('DBD::Pg'                    => '0');
 
 tests_recursive();
 test_requires  ('Test::More'   => '0');

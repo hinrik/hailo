@@ -4,10 +4,10 @@ use Hailo;
 use Test::More tests => 4;
 
 for my $storage (qw(Perl SQLite)) {
-    my $hailo = Hailo->new_with_options(
-        storage => $storage,
+    my $hailo = Hailo->new(
+        storage_class => $storage,
         ($storage eq 'SQLite'
-            ? (file => ':memory:')
+            ? (brain_file => ':memory:')
             : ()
         ),
     );

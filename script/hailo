@@ -29,7 +29,7 @@ B<hailo> <options>
    -r LINE,  --reply=LINE       Reply to LINE
    -o INT,   --order=INT        Change Markov order from 5 to INT
    -b FILE,  --brain=FILE       Load/save brain to/from FILE
-   -S CLASS, --storage=CLASS    Use storage CLASS instead of 'Perl'
+   -S CLASS, --storage=CLASS    Use storage CLASS instead of 'SQLite'
    -T CLASS, --tokenizer=CLASS  Use tokenizer CLASS instead of 'Generic'
    -h,       --help             This help message
    -v,       --version          Print verion and exit
