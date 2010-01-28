@@ -1,30 +1,26 @@
 package Hailo::Storage::Pg;
-
 use Moose;
-
-extends 'Hailo::Storage::SQL';
 
 our $VERSION = '0.01';
 
-sub _build__dbh {
-    my ($self) = @_;
+extends 'Hailo::Storage::SQL';
 
-    return DBI->connect(
-        "dbi:Pg:dbname=".$self->brain,
-        '',
-        '',
-        {
-            pg_enable_utf8 => 1,
-            RaiseError => 1,
-        },
-    );
-}
+has '+dbd' => (
+    default => 'Pg',
+);
+
+has '+dbd_options' => (
+    default => sub { +{
+        pg_enable_utf8 => 1,
+        RaiseError => 1,
+    } },
+);
 
 sub _exists_db {
     my ($self) = @_;
 
-    $self->_sth->{exists_db}->execute();
-    return int $self->_sth->{exists_db}->fetchrow_array;
+    $self->sth->{exists_db}->execute();
+    return int $self->sth->{exists_db}->fetchrow_array;
 }
 
 # These two are optimized to use PostgreSQL >8.2's INSERT ... RETURNING 
@@ -32,17 +28,17 @@ sub _add_expr {
     my ($self, $token_ids, $can_start, $can_end, $expr_text) = @_;
 
     # add the expression
-    $self->_sth->{add_expr}->execute(@$token_ids, $can_start, $can_end, $expr_text);
+    $self->sth->{add_expr}->execute(@$token_ids, $can_start, $can_end, $expr_text);
 
     # get the new expr id
-    return $self->_sth->{add_expr}->fetchrow_array;
+    return $self->sth->{add_expr}->fetchrow_array;
 }
 
 sub _add_token {
     my ($self, $token) = @_;
 
-    $self->_sth->{add_token}->execute($token);
-    return $self->_sth->{add_token}->fetchrow_array;
+    $self->sth->{add_token}->execute($token);
+    return $self->sth->{add_token}->fetchrow_array;
 }
 
 __PACKAGE__->meta->make_immutable;

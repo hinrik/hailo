@@ -1,21 +1,20 @@
 package Hailo::Storage::SQLite;
-
 use Moose;
-
-extends 'Hailo::Storage::SQL';
 
 our $VERSION = '0.01';
 
-sub _build__dbh {
-    my ($self) = @_;
+extends 'Hailo::Storage::SQL';
 
-    return DBI->connect(
-        "dbi:SQLite:dbname=".$self->brain,
-        '',
-        '', 
-        { sqlite_unicode => 1, RaiseError => 1 },
-    );
-}
+has '+dbd' => (
+    default => 'SQLite',
+);
+
+has '+dbd_options' => (
+    default => sub { +{
+        sqlite_unicode => 1,
+        RaiseError => 1,
+    } },
+);
 
 before start_training => sub {
     shift->_dbh->do('PRAGMA synchronous=OFF;');
