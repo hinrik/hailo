@@ -206,13 +206,11 @@ sub save {
 sub train {
     my ($self) = @_;
 
-    $self->_storage_obj->start_training();
     my $filename = $self->train_file;
 
     open my $fh, '<:encoding(utf8)', $filename or die "Can't open file '$filename': $!\n";
     $self->_train_progress($fh, $filename);
     close $fh;
-    $self->_storage_obj->stop_training();
     return;
 }
 
