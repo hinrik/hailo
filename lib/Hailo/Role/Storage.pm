@@ -7,7 +7,6 @@ use namespace::clean -except => 'meta';
 has brain => (
     isa      => Str,
     is       => 'ro',
-    required => 1,
 );
 
 has order => (

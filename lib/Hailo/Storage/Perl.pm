@@ -9,20 +9,11 @@ our $VERSION = '0.01';
 
 with 'Hailo::Role::Storage';
 
-has brain => (
-    isa => Str,
-    is  => 'ro',
+has '+order' => (
+    default => sub { die "foo"; shift->_memory->{order} },
 );
 
-has 'order' => (
-    isa     => Int,
-    is      => 'ro',
-    default => sub { shift->_memory->{order} },
-);
-
-has 'token_separator' => (
-    isa     => Str,
-    is      => 'ro',
+has '+token_separator' => (
     default => sub { shift->_memory->{separator} },
 );
 
