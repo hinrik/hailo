@@ -395,15 +395,17 @@ Run the application according to the command line arguments.
 
 =head2 C<learn>
 
-Takes a line of next as input and learns from it.
+Takes a line of UTF-8 encoded text as input and learns from it.
 
 =head2 C<train>
 
-Takes a filename and calls L<C<learn>|/learn> on all its lines.
+Takes a filename and calls L<C<learn>|/learn> on all its lines. Lines are
+expected to be UTF-8 encoded.
 
 =head2 C<reply>
 
-Takes a line of text and generates a reply that might be relevant.
+Takes a line of text and generates a reply (UTF-8 encoded) that might be
+relevant.
 
 =head2 C<save>
 
@@ -421,7 +423,8 @@ E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2010 Hinrik E<Ouml>rn SigurE<eth>sson and E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
+Copyright 2010 Hinrik E<Ouml>rn SigurE<eth>sson and
+E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
 
 This program is free software, you can redistribute it and/or modify
 it under the same terms as Perl itself.
