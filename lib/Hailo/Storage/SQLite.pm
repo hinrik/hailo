@@ -17,12 +17,12 @@ has '+dbd_options' => (
 );
 
 before start_training => sub {
-    shift->_dbh->do('PRAGMA synchronous=OFF;');
+    shift->dbh->do('PRAGMA synchronous=OFF;');
     return;
 };
 
 after stop_training => sub {
-    shift->_dbh->do('PRAGMA synchronous=ON;');
+    shift->dbh->do('PRAGMA synchronous=ON;');
     return;
 };
 
