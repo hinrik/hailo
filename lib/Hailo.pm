@@ -297,7 +297,7 @@ sub reply {
     while (!$can_start) {
         my $prev_tokens = $storage->prev_tokens(\@expr);
         my $prev_token = $self->_pos_token($prev_tokens, \@current_key_tokens);
-        @reply = ($prev_token, @reply);
+        unshift @reply, $prev_token;
         @expr = ($prev_token, @expr[0 .. $order-2]);
         ($can_start, undef) = $storage->expr_can(@expr);
     }
