@@ -154,16 +154,27 @@ sub _build__tokenizer_obj {
 }
 
 sub run {
-    my $self = shift;
+    my ($self) = @_;
+    my $storage = $self->_storage_obj;
 
     if ($self->print_version) {
         say "hailo $VERSION";
         exit;
     }
 
-    $self->train($self->train_file) if $self->train_file;
-    $self->learn($self->learn_str)  if $self->learn_str;
-    $self->save()                   if $self->brain_file;
+    if (defined $self->train_file) {
+        $storage->start_training();
+        $self->train($self->train_file);
+        $storage->stop_training();
+    }
+
+    if (defined $self->learn_str) {
+        $storage->start_learning();
+        $self->learn($self->learn_str);
+        $storage->start_learning();
+    }
+
+    $self->save() if defined $self->brain_file;
 
     if (defined $self->reply_str) {
         my $answer = $self->reply($self->reply_str);

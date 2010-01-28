@@ -86,6 +86,16 @@ Takes an array reference of tokens arguments that make up an expression and
 returns a hash reference of tokens that may precede it. The value is the
 number of times the token has been seen preceding the expression.
 
+=head2 C<start_learning>
+
+Takes no arguments. This method is called by C<Hailo|Hailo> right before learning
+begins.
+
+=head2 C<stop_learning>
+
+Takes no arguments. This method is called by C<Hailo|Hailo> right after learning
+finishes.
+
 =head2 C<start_training>
 
 Takes no arguments. This method is called by C<Hailo|Hailo> right before training
