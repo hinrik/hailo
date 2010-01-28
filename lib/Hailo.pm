@@ -381,7 +381,7 @@ Hailo - A pluggable Markov engine analogous to MegaHAL
     my $hailo = Hailo->new(
         # Or Pg, or Perl ...
         storage_class  => 'SQLite',
-        brain_resource => 'brain.storable'
+        brain_resource => 'brain.db'
     );
 
     while (<>) {
