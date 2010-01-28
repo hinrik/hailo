@@ -384,8 +384,6 @@ CREATE TABLE token (
 __[ table_expr ]__
 CREATE TABLE expr (
     expr_id   INTEGER PRIMARY KEY AUTOINCREMENT,
-    can_start INTEGER,
-    can_end   INTEGER,
 [% FOREACH i IN orders %]
     token[% i %]_id INTEGER NOT NULL REFERENCES token (token_id),
 [% END %]
