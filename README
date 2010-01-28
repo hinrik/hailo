@@ -35,7 +35,7 @@ ATTRIBUTES
     default is 5.
 
   "storage"
-    The storage backend to use. Default: 'Perl'.
+    The storage backend to use. Default: 'SQLite'.
 
   "tokenizer"
     The tokenizer to use. Default: 'Generic';
@@ -54,19 +54,21 @@ METHODS
     Run the application according to the command line arguments.
 
   "learn"
-    Takes a line of next as input and learns from it.
+    Takes a line of UTF-8 encoded text as input and learns from it.
 
   "train"
-    Takes a filename and calls "learn" on all its lines.
+    Takes a filename and calls "learn" on all its lines. Lines are expected
+    to be UTF-8 encoded.
 
   "reply"
-    Takes a line of text and generates a reply that might be relevant.
+    Takes a line of text and generates a reply (UTF-8 encoded) that might be
+    relevant.
 
   "save"
     Tells the underlying storage backend to save its state.
 
 ETYMOLOGY
-    *Hailo* is a portmanteau of *Hal* and *failo <http://identi.ca/failo>*
+    *Hailo* is a portmanteau of *Hal* and <*failo*>
 
 AUTHORS
     Hinrik Örn Sigurðsson, hinrik.sig@gmail.com

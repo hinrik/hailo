@@ -413,7 +413,7 @@ Tells the underlying storage backend to save its state.
 
 =head1 ETYMOLOGY
 
-I<Hailo> is a portmanteau of I<Hal> and I<L<failo|http://identi.ca/failo>>
+I<Hailo> is a portmanteau of I<Hal> and L<I<failo>|http://identi.ca/failo>
 
 =head1 AUTHORS
 
