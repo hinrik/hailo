@@ -79,11 +79,11 @@ CREATE TABLE token (
 __[ table_expr ]__
 CREATE TABLE expr (
     expr_id   SERIAL UNIQUE,
+[% FOREACH i IN orders %]
+    token[% i %]_id INTEGER NOT NULL REFERENCES token (token_id),
+[% END %]
     expr_text TEXT NOT NULL UNIQUE
 );
-[% FOREACH i IN orders %]
-ALTER TABLE expr ADD token[% i %]_id INTEGER REFERENCES token (token_id);
-[% END %]
 __[ table_next_token ]__
 CREATE TABLE next_token (
     pos_token_id SERIAL UNIQUE,
