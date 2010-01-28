@@ -113,6 +113,17 @@ has token_separator => (
     default       => "\t",
 );
 
+# Working classes
+has engine_class => (
+    traits        => [qw(Getopt)],
+    cmd_aliases   => "E",
+    cmd_flag      => "engine",
+    documentation => "Use engine CLASS",
+    isa           => Str,
+    is            => "ro",
+    default       => "Default",
+);
+
 has storage_class => (
     traits        => [qw(Getopt)],
     cmd_aliases   => "S",
@@ -131,6 +142,15 @@ has tokenizer_class => (
     isa           => Str,
     is            => "ro",
     default       => "Words",
+);
+
+# Working objects
+has _engine_obj => (
+    traits      => [qw(NoGetopt)],
+    does        => 'Hailo::Role::Engine',
+    lazy_build  => 1,
+    is          => 'ro',
+    init_arg    => undef,
 );
 
 has _storage_obj => (
@@ -184,6 +204,21 @@ USAGE
     exit 1;
 }
 
+sub _build__engine_obj {
+    my ($self) = @_;
+
+    my $engine_class = $self->engine_class;
+
+    my $engine = "Hailo::Engine::$engine_class";
+    eval "require $engine";
+    die $@ if $@;
+
+    return $engine->new(
+        storage   => $self->_storage_obj,
+        tokenizer => $self->_tokenizer_obj,
+    );
+}
+
 sub _build__storage_obj {
     my ($self) = @_;
 
@@ -234,11 +269,11 @@ sub run {
     }
 
     if (defined $self->reply_str) {
-        my $answer = $self->reply($self->reply_str);
+        my $answer = $self->engine->reply($self->reply_str);
         die "I don't know enough to answer you yet.\n" if !defined $answer;
         print "$answer\n";
     }
-    
+
     $self->save() if defined $self->brain_resource;
     return;
 }
@@ -315,112 +350,20 @@ sub learn {
     my $storage = $self->_storage_obj;
 
     $storage->start_learning();
-    $self->_do_learn($input);
+    $self->_engine_obj->learn($input);
     $storage->stop_learning();
-    return;
-}
-
-sub _do_learn {
-    my ($self, $input) = @_;
-    my $storage  = $self->_storage_obj;
-    my $order    = $storage->order;
-
-    $input = $self->_clean_input($input);
-    my @tokens = $self->_tokenizer_obj->make_tokens($input);
-
-    # only learn from inputs which are long enough
-    return if @tokens < $order;
-
-    for my $i (0 .. @tokens - $order) {
-        my @expr = map { $tokens[$_] } ($i .. $i+$order-1);
-
-        my ($next_token, $prev_token);
-        $next_token = $tokens[$i+$order] if $i < @tokens - $order;
-        $prev_token = $tokens[$i-1] if $i > 0;
-
-        # store the current expression
-        $storage->add_expr(
-            tokens     => \@expr,
-            next_token => $next_token,
-            prev_token => $prev_token,
-            can_start  => ($i == 0 ? 1 : undef),
-            can_end    => ($i == @tokens-$order ? 1 : undef),
-        );
-    }
-
     return;
 }
 
 sub reply {
     my ($self, $input) = @_;
-    my $storage  = $self->_storage_obj;
-    my $order    = $storage->order;
-    my $toke     = $self->_tokenizer_obj;
-
-    $input = $self->_clean_input($input);
-    my @tokens = $toke->make_tokens($input);
-    my @key_tokens = grep { $storage->token_exists($_) } $toke->find_key_tokens(@tokens);
-    return if !@key_tokens;
-    my @current_key_tokens;
-    my $key_token = shift @key_tokens;
-
-    my ($can_start, $can_end, @middle_expr) = $storage->random_expr($key_token);
-    my @reply = @middle_expr;
-    my @expr = @middle_expr;
-
-    # construct the end of the reply
-    while (!$can_end) {
-        my $next_tokens = $storage->next_tokens(\@expr);
-        my $next_token = $self->_pos_token($next_tokens, \@current_key_tokens);
-        push @reply, $next_token;
-        @expr = (@expr[1 .. $order-1], $next_token);
-        (undef, $can_end) = $storage->expr_can(@expr);
-    }
-
-    # reuse the key tokens
-    @current_key_tokens = @key_tokens;
-
-    @expr = @middle_expr;
-
-    # construct the beginning of the reply
-    while (!$can_start) {
-        my $prev_tokens = $storage->prev_tokens(\@expr);
-        my $prev_token = $self->_pos_token($prev_tokens, \@current_key_tokens);
-        unshift @reply, $prev_token;
-        @expr = ($prev_token, @expr[0 .. $order-2]);
-        ($can_start, undef) = $storage->expr_can(@expr);
-    }
-
-    return $toke->make_output(@reply);
+    return $self->_engine_obj->reply($input);
 }
 
 sub learn_reply {
     my ($self, $input) = @_;
     $self->learn($input);
-    return $self->reply($input);
-}
-
-sub _clean_input {
-    my ($self, $input) = @_;
-    my $separator = quotemeta $self->token_separator;
-    $input =~ s/$separator//g;
-    return $input;
-}
-
-sub _pos_token {
-    my ($self, $next_tokens, $key_tokens) = @_;
-    my $storage = $self->_storage_obj;
-
-    for my $i (0 .. $#{ $key_tokens }) {
-        next if !exists $next_tokens->{ @$key_tokens[$i] };
-        return splice @$key_tokens, $i, 1;
-    }
-
-    my @novel_tokens;
-    while (my ($token, $count) = each %$next_tokens) {
-        push @novel_tokens, ($token) x $count;
-    }
-    return @novel_tokens[rand @novel_tokens];
+    return $self->_engine_obj->reply($input);
 }
 
 __PACKAGE__->meta->make_immutable;
