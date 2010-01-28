@@ -4,7 +4,7 @@ use List::MoreUtils qw<uniq>;
 
 our $VERSION = '0.01';
 
-with 'Hailo::Tokenizer';
+with 'Hailo::Role::Tokenizer';
 
 my $APOSTROPHE  = qr/['’]/;
 my $WORD        = qr/\w+(?:$APOSTROPHE\w+)*/;

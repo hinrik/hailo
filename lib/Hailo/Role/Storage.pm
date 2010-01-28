@@ -1,4 +1,4 @@
-package Hailo::Storage;
+package Hailo::Role::Storage;
 
 use Moose::Role;
 use MooseX::Types::Moose qw<Str>;
@@ -29,7 +29,7 @@ requires 'stop_training';
 
 =head1 NAME
 
-Hailo::Storage - A role representing a L<Hailo|Hailo> storage backend
+Hailo::Role::Storage - A role representing a L<Hailo|Hailo> storage backend
 
 =head1 ATTRIBUTES
 

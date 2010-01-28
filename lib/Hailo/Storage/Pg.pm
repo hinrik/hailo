@@ -55,9 +55,7 @@ L<DBD::Pg|DBD::Pg>
 
 =head1 DESCRIPTION
 
-This backend maintains information in a PostgreSQL database, the same
-caveats apply to it as
-L<Hailo::Storage::SQLite|Hailo::Storage::SQLite>.
+This backend maintains information in a PostgreSQL database.
 
 =head1 AUTHOR
 

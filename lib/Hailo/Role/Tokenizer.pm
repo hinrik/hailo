@@ -1,4 +1,4 @@
-package Hailo::Tokenizer;
+package Hailo::Role::Tokenizer;
 
 use Moose::Role;
 use namespace::clean -except => 'meta';
@@ -13,7 +13,7 @@ requires 'make_output';
 
 =head1 NAME
 
-Hailo::Tokenizer - A role representing a L<Hailo|Hailo> tokenizer
+Hailo::Role::Tokenizer - A role representing a L<Hailo|Hailo> tokenizer
 
 =head1 METHODS
 

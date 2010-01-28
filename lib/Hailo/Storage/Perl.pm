@@ -25,7 +25,7 @@ has _memory => (
     init_arg   => undef,
 );
 
-with 'Hailo::Storage';
+with 'Hailo::Role::Storage';
 
 sub _build__memory {
     my ($self) = @_;

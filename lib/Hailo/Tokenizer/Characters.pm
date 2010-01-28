@@ -5,7 +5,7 @@ use Text::Trim;
 
 our $VERSION = '0.01';
 
-with 'Hailo::Tokenizer';
+with 'Hailo::Role::Tokenizer';
 
 # output -> tokens
 sub make_tokens {

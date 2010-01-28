@@ -108,7 +108,7 @@ has tokenizer_class => (
 
 has _storage_obj => (
     traits      => [qw(NoGetopt)],
-    does        => 'Hailo::Storage',
+    does        => 'Hailo::Role::Storage',
     lazy_build  => 1,
     is          => 'ro',
     init_arg    => undef,
@@ -116,7 +116,7 @@ has _storage_obj => (
 
 has _tokenizer_obj => (
     traits      => [qw(NoGetopt)],
-    does        => 'Hailo::Tokenizer',
+    does        => 'Hailo::Role::Tokenizer',
     lazy_build  => 1,
     is          => 'ro',
     init_arg    => undef,
@@ -337,9 +337,9 @@ Hailo - A pluggable Markov engine analogous to MegaHAL
 
 Hailo is a fast and pluggable markov engine intended to replace
 L<AI::MegaHAL>, it has a lightweight L<Moose>-based core with
-pluggable L<storage backends|Hailo::Storage> and
-L<tokenizers|Hailo::Storage>. It's faster than MegaHAL and can handle
-huge brains easily with the recommended L<SQLite
+pluggable L<storage backends|Hailo::Role::Storage> and
+L<tokenizers|Hailo::Role::Tokenizer>. It's faster than MegaHAL and can
+handle huge brains easily with the recommended L<SQLite
 backend|Hailo::Storage::SQLite>.
 
 It can be used, amongst other things, to implement IRC chat bots with

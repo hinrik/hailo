@@ -38,7 +38,7 @@ has _sth => (
     lazy_build => 1,
 );
 
-with 'Hailo::Storage';
+with 'Hailo::Role::Storage';
 
 # our statement handlers
 sub _build__sth {
