@@ -56,6 +56,15 @@ has learn_str => (
     is            => "ro",
 );
 
+has learn_reply_str => (
+    traits        => [qw(Getopt)],
+    cmd_aliases   => "L",
+    cmd_flag      => "learn_reply",
+    documentation => "Learn from STRING and reply to it",
+    isa           => Str,
+    is            => "ro",
+);
+
 has train_file => (
     traits        => [qw(Getopt)],
     cmd_aliases   => "t",
@@ -216,27 +225,21 @@ sub run {
         exit;
     }
 
-    my $storage = $self->_storage_obj;
+    $self->train($self->train_file) if defined $self->train_file;
+    $self->learn($self->learn_str) if defined $self->learn_str;
 
-    if (defined $self->train_file) {
-        $storage->start_training();
-        $self->train($self->train_file);
-        $storage->stop_training();
+    if (defined $self->learn_reply_str) {
+        my $answer = $self->learn_reply($self->learn_reply_str);
+        print "$answer\n";
     }
-
-    if (defined $self->learn_str) {
-        $storage->start_learning();
-        $self->learn($self->learn_str);
-        $storage->stop_learning();
-    }
-
-    $self->save() if defined $self->brain_resource;
 
     if (defined $self->reply_str) {
         my $answer = $self->reply($self->reply_str);
         die "I don't know enough to answer you yet.\n" if !defined $answer;
         print "$answer\n";
     }
+    
+    $self->save() if defined $self->brain_resource;
     return;
 }
 
@@ -247,9 +250,9 @@ sub save {
 }
 
 sub train {
-    my ($self) = @_;
-
-    my $filename = $self->train_file;
+    my ($self, $filename) = @_;
+    my $storage = $self->storage_obj;
+    $storage->start_training();
 
     open my $fh, '<:encoding(utf8)', $filename or die "Can't open file '$filename': $!\n";
     if ($self->print_progress) {
@@ -257,10 +260,11 @@ sub train {
     } else {
         while (my $line = <$fh>) {
             chomp $line;
-            $self->learn($line);
+            $self->do_learn($line);
         }
     }
     close $fh;
+    $storage->stop_training();
     return;
 }
 
@@ -307,6 +311,16 @@ sub _train_progress {
 }
 
 sub learn {
+    my ($self, $input) = @_;
+    my $storage = $self->_storage_obj;
+
+    $storage->start_learning();
+    $self->_do_learn($input);
+    $storage->stop_learning();
+    return;
+}
+
+sub _do_learn {
     my ($self, $input) = @_;
     my $storage  = $self->_storage_obj;
     my $order    = $storage->order;
@@ -378,6 +392,12 @@ sub reply {
     }
 
     return $toke->make_output(@reply);
+}
+
+sub learn_reply {
+    my ($self, $input) = @_;
+    $self->learn($input);
+    return $self->reply($input);
 }
 
 sub _clean_input {
@@ -493,6 +513,11 @@ expected to be UTF-8 encoded.
 
 Takes a line of text and generates a reply (UTF-8 encoded) that might be
 relevant.
+
+=head2 C<learn_reply>
+
+Takes a line of text, learns from it, and generates a reply (UTF-8 encoded)
+that might be relevant.
 
 =head2 C<save>
 

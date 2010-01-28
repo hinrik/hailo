@@ -66,6 +66,10 @@ METHODS
     Takes a line of text and generates a reply (UTF-8 encoded) that might be
     relevant.
 
+  "learn_reply"
+    Takes a line of text, learns from it, and generates a reply (UTF-8
+    encoded) that might be relevant.
+
   "save"
     Tells the underlying storage backend to save its state.
 
