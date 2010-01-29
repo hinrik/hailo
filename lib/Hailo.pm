@@ -190,7 +190,7 @@ has _tokenizer_obj => (
     init_arg    => undef,
 );
 
-with qw(MooseX::Getopt);
+with qw(MooseX::Getopt::Dashes);
 
 sub _getopt_full_usage {
     my ($self, $usage) = @_;
