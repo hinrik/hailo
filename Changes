@@ -1,2 +1,5 @@
+0.02
+    - --reply on the command line didn't work
+
 0.01 Fri Jan 29 00:39:54 GMT 2010
     - First CPAN release

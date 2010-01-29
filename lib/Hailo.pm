@@ -262,7 +262,7 @@ sub run {
     }
 
     if (defined $self->reply_str) {
-        my $answer = $self->engine->reply($self->reply_str);
+        my $answer = $self->_engine_obj->reply($self->reply_str);
         die "I don't know enough to answer you yet.\n" if !defined $answer;
         print "$answer\n";
     }
