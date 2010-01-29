@@ -1,4 +1,4 @@
-0.02
+0.02 Fri Jan 29 03:54:32 GMT 2010
     - Fix typo in NAME in Hailo::Tokenizer::Words which caused the POD
       not to be displayed on search.cpan.org
     - Present options in --help output in reverse sort order
