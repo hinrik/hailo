@@ -7,7 +7,7 @@ SYNOPSIS
         my $hailo = Hailo->new(
             # Or Pg, or Perl ...
             storage_class  => 'SQLite',
-            brain_resource => 'brain.storable'
+            brain_resource => 'brain.db'
         );
 
         while (<>) {
@@ -16,16 +16,17 @@ SYNOPSIS
         }
 
 DESCRIPTION
-    Hailo is a fast and pluggable markov engine intended to replace
+    Hailo is a fast and lightweight markov engine intended to replace
     AI::MegaHAL. It has a lightweight Moose-based core with pluggable
-    storage backends and tokenizers. It's faster than MegaHAL and can handle
-    huge brains easily with the recommended SQLite backend.
+    storage, tokenizerand engine backends.
 
-    It can be used, amongst other things, to implement IRC chat bots with
-    POE::Component::IRC.
+    It's faster than MegaHAL and can handle huge brains easily with the
+    default SQLite backend. It can be used, amongst other things, to
+    implement IRC chat bots with POE::Component::IRC.
 
   Etymology
-    *Hailo* is a portmanteau of *HAL* (as in MegaHAL) and <*failo*>
+    *Hailo* is a portmanteau of *HAL* (as in MegaHAL) and *failo*
+    <http://identi.ca/failo>
 
 ATTRIBUTES
   "brain_resource"
