@@ -1,4 +1,5 @@
 0.02
+    - Fix spelling error in Hailo's POD
     - --reply on the command line didn't work
 
 0.01 Fri Jan 29 00:39:54 GMT 2010
