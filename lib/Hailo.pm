@@ -420,6 +420,10 @@ The storage backend to use. Default: 'SQLite'.
 
 The tokenizer to use. Default: 'Words';
 
+=head2 C<engine_class>
+
+The engine to use. Default: 'Default';
+
 =head2 C<token_separator>
 
 Storage backends may choose to store the tokens of an expression as a single
