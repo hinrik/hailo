@@ -1,7 +1,7 @@
 package Hailo;
 
 use Moose;
-use MooseX::Types::Moose qw/Int Str Bool/;
+use MooseX::Types::Moose qw/Int Str Bool HashRef/;
 use MooseX::Types::Path::Class qw(File);
 use Time::HiRes qw(gettimeofday tv_interval);
 use IO::Interactive qw(is_interactive);
@@ -138,6 +138,33 @@ has tokenizer_class => (
     default       => "Words",
 );
 
+# Object arguments
+has engine_args => (
+    traits        => [qw(Getopt)],
+    documentation => "Arguments for the Engine class",
+    isa           => HashRef,
+    coerce        => 1,
+    is            => "ro",
+    default       => sub { +{} },
+);
+
+has storage_args => (
+    traits        => [qw(Getopt)],
+    documentation => "Arguments for the Storage class",
+    isa           => HashRef,
+    coerce        => 1,
+    is            => "ro",
+    default       => sub { +{} },
+);
+
+has tokenizer_args => (
+    traits        => [qw(Getopt)],
+    documentation => "Arguments for the Tokenizer class",
+    isa           => HashRef,
+    is            => "ro",
+    default       => sub { +{} },
+);
+
 # Working objects
 has _engine_obj => (
     traits      => [qw(NoGetopt)],
@@ -210,6 +237,7 @@ sub _build__engine_obj {
     return $engine->new(
         storage   => $self->_storage_obj,
         tokenizer => $self->_tokenizer_obj,
+        arguments => $self->engine_args,
     );
 }
 
@@ -227,7 +255,8 @@ sub _build__storage_obj {
             : ()
         ),
         token_separator => $self->token_separator,
-        order => $self->order,
+        order           => $self->order,
+        arguments       => $self->storage_args,
     );
 
     return $obj;
@@ -242,7 +271,9 @@ sub _build__tokenizer_obj {
     eval "require $tokenizer";
     die $@ if $@;
 
-    return $tokenizer->new();
+    return $tokenizer->new(
+        arguments => $self->tokenizer_args
+    );
 }
 
 sub run {
@@ -423,6 +454,15 @@ The tokenizer to use. Default: 'Words';
 =head2 C<engine_class>
 
 The engine to use. Default: 'Default';
+
+=head2 C<storage_args>
+
+=head2 C<tokenizer_args>
+
+=head2 C<engine_args>
+
+A C<HashRef> of arguments storage/tokenizer/engine backends. See the
+documentation for the backends for what sort of arguments they accept.
 
 =head2 C<token_separator>
 

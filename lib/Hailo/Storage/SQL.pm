@@ -14,7 +14,8 @@ use namespace::clean -except => [ qw(meta
 
 our $VERSION = '0.01';
 
-with 'Hailo::Role::Storage';
+with qw(Hailo::Role::Generic
+        Hailo::Role::Storage);
 
 has dbh => (
     isa        => 'DBI::db',
@@ -38,12 +39,6 @@ sub _build_dbh {
     return DBI->connect(@options);
 }
 
-has sth => (
-    isa        => HashRef,
-    is         => 'ro',
-    lazy_build => 1,
-);
-
 has dbd => (
     isa => Str,
     is  => 'ro',
@@ -53,6 +48,12 @@ has dbd_options => (
     isa => HashRef,
     is => 'ro',
     default => sub { +{} },
+);
+
+has sth => (
+    isa        => HashRef,
+    is         => 'ro',
+    lazy_build => 1,
 );
 
 # our statement handlers

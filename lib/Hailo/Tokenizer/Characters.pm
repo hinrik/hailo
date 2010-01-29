@@ -7,7 +7,8 @@ use namespace::clean -except => 'meta';
 
 our $VERSION = '0.01';
 
-with 'Hailo::Role::Tokenizer';
+with qw(Hailo::Role::Generic
+        Hailo::Role::Tokenizer);
 
 # output -> tokens
 sub make_tokens {

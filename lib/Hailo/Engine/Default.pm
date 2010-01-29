@@ -1,7 +1,8 @@
 package Hailo::Engine::Default;
 use Moose;
 
-with 'Hailo::Role::Engine';
+with qw(Hailo::Role::Generic
+        Hailo::Role::Engine);
 
 has storage => (
     required => 1,
