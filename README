@@ -26,7 +26,8 @@ DESCRIPTION
     a POE::Component::IRC plugin for just that purpose.
 
   Etymology
-    *Hailo* is a portmanteau of *HAL* (as in MegaHAL) and <*failo*>
+    *Hailo* is a portmanteau of *HAL* (as in MegaHAL) and *failo*
+    <http://identi.ca/failo>
 
 ATTRIBUTES
   "brain_resource"
