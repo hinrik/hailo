@@ -33,6 +33,7 @@ t/01_compile.t
 t/02_chat.t
 t/03_sanity.t
 t/storage/all.t
+t/storage/Pg.t
 t/tokenizer/Characters.t
 t/tokenizer/Words.t
 t/usage/basic.t

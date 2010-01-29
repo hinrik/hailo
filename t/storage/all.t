@@ -38,6 +38,11 @@ for my $backend (qw(Perl Pg SQLite)) {
         skip "Didn't create PostgreSQL db, can't test it", 2 if $skip_all;
         my $hailo = Hailo->new(
             storage_class  => $backend,
+            # For Pg
+            storage_args   => {
+                dbname => $filename,
+            },
+            # For SQLite
             brain_resource => $filename,
         );
 

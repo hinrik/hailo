@@ -16,6 +16,28 @@ has '+dbd_options' => (
     } },
 );
 
+sub _build_dbi_options {
+    my ($self) = @_;
+    my $dbd = $self->dbd;
+    my $dbd_options = $self->dbd_options;
+    my $args = $self->arguments;
+
+    my $conn_line = "dbi:$dbd";
+    $conn_line .= ":dbname=$args->{dbname}"  if exists $args->{dbname};
+    $conn_line .= ";host=$args->{host}"    if exists $args->{host};
+    $conn_line .= ";port=$args->{port}"    if exists $args->{port};
+    $conn_line .= ";options=$args->{options}" if exists $args->{options};
+
+    my @options = (
+        $conn_line,
+        ($args->{username} || ''),
+        ($args->{password} || ''),
+        $dbd_options,
+    );
+
+    return \@options;
+}
+
 sub _exists_db {
     my ($self) = @_;
 
@@ -49,6 +71,39 @@ __PACKAGE__->meta->make_immutable;
 
 Hailo::Storage::Pg - A storage backend for L<Hailo|Hailo> using
 L<DBD::Pg|DBD::Pg>
+
+=head1 SYNOPSIS
+
+As a module:
+
+    my $hailo = Hailo->new(
+        train_file    => 'hailo.trn',
+        storage_class => 'Pg',
+        storage_args  => {
+            dbname    => 'hailo',
+            host      => 'localhost',
+            port      => '5432',
+            options   => '...',
+            username  => 'hailo',
+            password  => 'hailo'
+        },
+    );
+
+From the command line:
+
+    hailo --train        hailo.trn \
+          --storage      Pg \
+          --storage-args dbname=hailo \
+          --storage-args host=localhost \
+          --storage-args port=5432 \
+          --storage-args options=... \
+          --storage-args username=hailo \
+          --storage-args password=hailo
+
+Almost all of these options can be omitted, see L<DBD::Pg's
+documentation|DBD::Pg/"connect"> for the default values.
+
+See L<Hailo's documentation|Hailo> for other non-Pg specific options.
 
 =head1 DESCRIPTION
 

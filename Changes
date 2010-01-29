@@ -1,7 +1,8 @@
 0.02
     - Present options in --help output in reverse sort order
     - Add facility to pass arguments to storage/engine/tokenizer from
-      the command line or via Hailo->new()
+      the command line or via Hailo->new(). Make Hailo::Storage::Pg
+      use this facility for its database connection arguments.
     - Fix spelling error in Hailo's POD
     - --reply on the command line didn't work
 

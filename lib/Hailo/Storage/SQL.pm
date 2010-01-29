@@ -1,7 +1,7 @@
 package Hailo::Storage::SQL;
 
 use Moose;
-use MooseX::Types::Moose qw<HashRef Int Str Bool>;
+use MooseX::Types::Moose qw<ArrayRef HashRef Int Str Bool>;
 use DBI;
 use List::Util qw<shuffle>;
 use Data::Section qw(-setup);
@@ -23,14 +23,27 @@ has dbh => (
     lazy_build => 1,
 );
 
-has _engaged => (
-    isa           => Bool,
-    is            => 'rw',
-    default       => 0,
-    documentation => "Have we done setup work to get this database going?",
+has dbd => (
+    isa           => Str,
+    is            => 'ro',
+    documentation => "The DBD::* driver we're using",
 );
 
 sub _build_dbh {
+    my ($self) = @_;
+    my $dbd_options = $self->dbi_options;
+
+    return DBI->connect($self->dbi_options);
+}
+
+has dbi_options => (
+    isa => ArrayRef,
+    is => 'ro',
+    auto_deref => 1,
+    lazy_build => 1,
+);
+
+sub _build_dbi_options {
     my ($self) = @_;
     my $dbd = $self->dbd;
     my $dbd_options = $self->dbd_options;
@@ -43,18 +56,20 @@ sub _build_dbh {
         $dbd_options,
     );
 
-    return DBI->connect(@options);
+    return \@options;
 }
-
-has dbd => (
-    isa => Str,
-    is  => 'ro',
-);
 
 has dbd_options => (
     isa => HashRef,
     is => 'ro',
     default => sub { +{} },
+);
+
+has _engaged => (
+    isa           => Bool,
+    is            => 'rw',
+    default       => 0,
+    documentation => "Have we done setup work to get this database going?",
 );
 
 has sth => (
