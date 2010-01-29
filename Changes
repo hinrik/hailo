@@ -1,4 +1,5 @@
 0.02
+    - Present options in --help output in reverse sort order
     - Add facility to pass arguments to storage/engine/tokenizer from
       the command line or via Hailo->new()
     - Fix spelling error in Hailo's POD

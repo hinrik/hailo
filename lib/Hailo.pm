@@ -194,10 +194,13 @@ with qw(MooseX::Getopt);
 
 sub _getopt_full_usage {
     my ($self, $usage) = @_;
-    my $options = do {
+    my ($use, $options) = do {
         my $out = $usage->text;
-        $out  =~ s/\n+$//s;
-        $out;
+
+        # The default getopt order sucks, use reverse sort order
+        chomp(my @out = split /^/, $out);
+        my $opt = join "\n", sort { $b cmp $a } @out[1 .. $#out];
+        ($out[0], $opt);
     };
     my $synopsis = do {
         require Pod::Usage;
@@ -217,6 +220,7 @@ sub _getopt_full_usage {
     };
 
     print <<"USAGE";
+$use
 $options
 \tNote: All input/output and files are assumed to be UTF-8 encoded.
 $synopsis
