@@ -12,7 +12,7 @@ use namespace::clean -except => [ qw(meta
                                      gettimeofday
                                      tv_interval) ];
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 has help => (
     traits        => [qw(Getopt)],
