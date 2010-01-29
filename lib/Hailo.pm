@@ -334,7 +334,7 @@ sub train {
     } else {
         while (my $line = <$fh>) {
             chomp $line;
-            $self->_do_learn($line);
+            $self->_engine_obj->learn($line);
         }
     }
     close $fh;
