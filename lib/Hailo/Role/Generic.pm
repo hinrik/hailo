@@ -14,7 +14,7 @@ has arguments => (
 
 =head1 NAME
 
-Hailo::Role::Tokenizer - A role used by all other L<Hailo|Hailo> roles
+Hailo::Role::Generic - A role used by all other L<Hailo|Hailo> roles
 
 =head1 ATTRIBUTES
 
