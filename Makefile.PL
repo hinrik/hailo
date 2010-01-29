@@ -8,7 +8,7 @@ author         ('Hinrik Örn Sigurðsson <hinrik.sig@gmail.com>');
 abstract_from  ('lib/Hailo.pm');
 version_from   ('lib/Hailo.pm');
 install_script ('script/hailo');
-no_index       ('utils');
+no_index       (directory => 'utils');
 license        ('perl');
 homepage       ('http://search.cpan.org/dist/Hailo');
 githubmeta     ();
