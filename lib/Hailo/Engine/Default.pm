@@ -1,7 +1,7 @@
 package Hailo::Engine::Default;
 use Moose;
 use MooseX::Types::Moose qw(Int);
-use List::Util qw(min);
+use List::Util qw(min shuffle);
 use List::MoreUtils qw(uniq);
 use namespace::clean -except => 'meta';
 
@@ -38,9 +38,9 @@ sub reply {
 
     $input = $self->_clean_input($input);
     my @tokens = $toke->make_tokens($input);
-    my @key_tokens = grep { $storage->token_exists($_) } $toke->find_key_tokens(@tokens);
+    my @key_tokens = shuffle grep { $storage->token_exists($_) }
+                             $toke->find_key_tokens(@tokens);
     return if !@key_tokens;
-    my @current_key_tokens;
     my $key_token = shift @key_tokens;
 
     my ($can_start, $can_end, @middle_expr) = $storage->random_expr($key_token);
@@ -57,16 +57,13 @@ sub reply {
             last;
         }
         my $next_tokens = $storage->next_tokens(\@expr);
-        my $next_token = $self->_pos_token($next_tokens, \@current_key_tokens);
+        my $next_token = $self->_pos_token($next_tokens, \@key_tokens);
         push @reply, $next_token;
         @expr = (@expr[1 .. $order-1], $next_token);
         (undef, $can_end) = $storage->expr_can(@expr);
     } continue {
         $i++;
     }
-
-    # reuse the key tokens
-    @current_key_tokens = @key_tokens;
 
     @expr = @middle_expr;
 
@@ -78,7 +75,7 @@ sub reply {
             last;
         }
         my $prev_tokens = $storage->prev_tokens(\@expr);
-        my $prev_token = $self->_pos_token($prev_tokens, \@current_key_tokens);
+        my $prev_token = $self->_pos_token($prev_tokens, \@key_tokens);
         unshift @reply, $prev_token;
         @expr = ($prev_token, @expr[0 .. $order-2]);
         ($can_start, undef) = $storage->expr_can(@expr);

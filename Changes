@@ -1,3 +1,7 @@
+0.05
+    - Shuffle key tokens and don't reuse them. Should make for more random
+      replies.
+
 0.04 Fri Jan 29 17:48:49 GMT 2010
     - You know that bug we talked about being fixed in 0.03? It was
       still there now it's actually fixed.
