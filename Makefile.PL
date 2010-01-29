@@ -35,9 +35,11 @@ requires       ('Text::Trim'                 => '0');
 recommends     ('DBD::Pg'                    => '0');
 
 tests_recursive();
-test_requires  ('Test::More'   => '0');
-test_requires  ('Test::Script' => '0');
-test_requires  ('Data::Random' => '0');
+test_requires  ('Test::More'      => '0');
+test_requires  ('Test::Output'    => '0.16');
+test_requires  ('Test::Exception' => '0.29');
+test_requires  ('Data::Random'    => '0');
+test_requires  ('Test::Exit'      => '0.03');
 
 author_requires('Perl::Critic'        => '1.098');
 # uncomment when the distro becomes installable via cpanp(1)
