@@ -18,15 +18,15 @@ SYNOPSIS
 DESCRIPTION
     Hailo is a fast and lightweight markov engine intended to replace
     AI::MegaHAL. It has a lightweight Moose-based core with pluggable
-    storage, tokenizerand engine backends.
+    storage, tokenizer and engine backends.
 
     It's faster than MegaHAL and can handle huge brains easily with the
     default SQLite backend. It can be used, amongst other things, to
-    implement IRC chat bots with POE::Component::IRC.
+    implement IRC chat bots with POE::Component::IRC. In fact, there exists
+    a POE::Component::IRC plugin for just that purpose.
 
   Etymology
-    *Hailo* is a portmanteau of *HAL* (as in MegaHAL) and *failo*
-    <http://identi.ca/failo>
+    *Hailo* is a portmanteau of *HAL* (as in MegaHAL) and <*failo*>
 
 ATTRIBUTES
   "brain_resource"
@@ -42,6 +42,15 @@ ATTRIBUTES
 
   "tokenizer_class"
     The tokenizer to use. Default: 'Words';
+
+  "engine_class"
+    The engine to use. Default: 'Default';
+
+  "storage_args"
+  "tokenizer_args"
+  "engine_args"
+    A "HashRef" of arguments storage/tokenizer/engine backends. See the
+    documentation for the backends for what sort of arguments they accept.
 
   "token_separator"
     Storage backends may choose to store the tokens of an expression as a
