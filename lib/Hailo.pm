@@ -1,4 +1,6 @@
 package Hailo;
+
+use 5.010;
 use Class::MOP;
 use Moose;
 use MooseX::Types::Moose qw/Int Str Bool HashRef/;
@@ -301,13 +303,15 @@ sub run {
 
     if (defined $self->learn_reply_str) {
         my $answer = $self->learn_reply($self->learn_reply_str);
-        print "$answer\n";
+        say $answer;
     }
 
     if (defined $self->reply_str) {
-        my $answer = $self->_engine_obj->reply($self->reply_str);
-        die "I don't know enough to answer you yet.\n" if !defined $answer;
-        print "$answer\n";
+        for (1..10000) {
+            my $answer = $self->_engine_obj->reply($self->reply_str);
+            die "I don't know enough to answer you yet.\n" if !defined $answer;
+            say $answer;
+        }
     }
 
     $self->save() if defined $self->brain_resource;

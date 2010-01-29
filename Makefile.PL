@@ -3,7 +3,7 @@ use warnings;
 use inc::Module::Install '0.92';
 
 name           ('Hailo');
-perl_version   ('5.008001');
+perl_version   ('5.010');
 author         ('Hinrik Örn Sigurðsson <hinrik.sig@gmail.com>');
 abstract_from  ('lib/Hailo.pm');
 version_from   ('lib/Hailo.pm');

@@ -85,8 +85,8 @@ sub _build_sth {
     my $sections = $self->_sth_sections();
     my %state;
     while (my ($name, $options) = each %$sections) {
-        my $section = defined $options->{section} ? $options->{section} : $name;
-        my %options = %{ defined $options->{options} ? $options->{options} : {} };
+        my $section = $options->{section} // $name;
+        my %options = %{ $options->{options} // {} };
         my $template = $self->section_data("query_$section");
         my $sql;
         Template->new->process(
