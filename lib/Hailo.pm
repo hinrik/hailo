@@ -445,7 +445,7 @@ L<plugin|POE::Component::IRC::Plugin::Hailo> for just that purpose.
 =head2 Etymology
 
 I<Hailo> is a portmanteau of I<HAL> (as in MegaHAL) and
-L<I<failo>|http://identi.ca/failo>
+L<failo|http://identi.ca/failo>.
 
 =head1 ATTRIBUTES
 
