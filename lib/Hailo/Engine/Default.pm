@@ -51,7 +51,9 @@ sub reply {
 
     # construct the end of the reply
     my $i = 0; while (!$can_end) {
-        if (($i % $order) == 0 and $i >= $repeat_limit and uniq(@reply) < $order) {
+        if (($i % $order) == 0 and
+            (($i >= $repeat_limit and uniq(@reply) <= $order) ||
+             ($i >= $repeat_limit * 3))) {
             last;
         }
         my $next_tokens = $storage->next_tokens(\@expr);
@@ -59,6 +61,7 @@ sub reply {
         push @reply, $next_token;
         @expr = (@expr[1 .. $order-1], $next_token);
         (undef, $can_end) = $storage->expr_can(@expr);
+    } continue {
         $i++;
     }
 
@@ -68,12 +71,19 @@ sub reply {
     @expr = @middle_expr;
 
     # construct the beginning of the reply
-    while (!$can_start) {
+    my $i = 0; while (!$can_start) {
+        if (($i % $order) == 0 and
+            (($i >= $repeat_limit and uniq(@reply) <= $order) ||
+             ($i >= $repeat_limit * 3))) {
+            last;
+        }
         my $prev_tokens = $storage->prev_tokens(\@expr);
         my $prev_token = $self->_pos_token($prev_tokens, \@current_key_tokens);
         unshift @reply, $prev_token;
         @expr = ($prev_token, @expr[0 .. $order-2]);
         ($can_start, undef) = $storage->expr_can(@expr);
+    } continue {
+        $i++;
     }
 
     return $toke->make_output(@reply);
