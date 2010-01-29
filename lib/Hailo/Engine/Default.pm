@@ -71,7 +71,7 @@ sub reply {
     @expr = @middle_expr;
 
     # construct the beginning of the reply
-    my $i = 0; while (!$can_start) {
+    $i = 0; while (!$can_start) {
         if (($i % $order) == 0 and
             (($i >= $repeat_limit and uniq(@reply) <= $order) ||
              ($i >= $repeat_limit * 3))) {
