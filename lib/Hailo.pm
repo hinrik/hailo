@@ -307,11 +307,9 @@ sub run {
     }
 
     if (defined $self->reply_str) {
-        for (1..10000) {
-            my $answer = $self->_engine_obj->reply($self->reply_str);
-            die "I don't know enough to answer you yet.\n" if !defined $answer;
-            say $answer;
-        }
+        my $answer = $self->_engine_obj->reply($self->reply_str);
+        die "I don't know enough to answer you yet.\n" if !defined $answer;
+        say $answer;
     }
 
     $self->save() if defined $self->brain_resource;
