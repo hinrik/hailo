@@ -2,17 +2,17 @@
     - Use Class::MOP::load_class() instead of eval { require $str } to load plugins
 
 0.03 Fri Jan 29 14:37:17 GMT 2010
-     - Fixed a fatal error in Hailo::Engine::Default that would
-       inevitable occur on any large brain. When Hailo was given
-       repeating input with such as [ qw(badger ! badger !) ] where
-       the probability of all the given token following each other was
-       100% (i.e. there's nothing to break the loop) it would start
-       generating infinitely long replies.
-
-       This was fixed by adding a guard clause in
-       Hailo::Engine::Default which breaks the loop if we're up to
-       C<$order * 10> and the number of unique tokens in the reply is
-       less than the model C<$order>.
+    - Fixed a fatal error in Hailo::Engine::Default that would
+      inevitable occur on any large brain. When Hailo was given
+      repeating input with such as [ qw(badger ! badger !) ] where
+      the probability of all the given token following each other was
+      100% (i.e. there's nothing to break the loop) it would start
+      generating infinitely long replies.
+  
+      This was fixed by adding a guard clause in Hailo::Engine::Default
+      which breaks the loop if we're up to C<$order * 10> and the
+      number of unique tokens in the reply is less than the model
+      C<$order>.
 
 0.02 Fri Jan 29 03:54:32 GMT 2010
     - Fix typo in NAME in Hailo::Tokenizer::Words which caused the POD
