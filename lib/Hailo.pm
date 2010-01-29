@@ -1,5 +1,5 @@
 package Hailo;
-
+use Class::MOP;
 use Moose;
 use MooseX::Types::Moose qw/Int Str Bool HashRef/;
 use MooseX::Types::Path::Class qw(File);
@@ -232,52 +232,60 @@ USAGE
 sub _build__engine_obj {
     my ($self) = @_;
 
-    my $engine_class = $self->engine_class;
-
-    my $engine = "Hailo::Engine::$engine_class";
-    eval "require $engine";
-    die $@ if $@;
-
-    return $engine->new(
-        storage   => $self->_storage_obj,
-        tokenizer => $self->_tokenizer_obj,
-        arguments => $self->engine_args,
+    my $obj = $self->_new_class(
+        "Engine",
+        $self->engine_class,
+        {
+            storage   => $self->_storage_obj,
+            tokenizer => $self->_tokenizer_obj,
+            arguments => $self->engine_args,
+        },
     );
+
+    return $obj;
 }
 
 sub _build__storage_obj {
     my ($self) = @_;
 
-    my $storage_class = $self->storage_class;
-    my $storage = "Hailo::Storage::$storage_class";
-    eval "require $storage";
-    die $@ if $@;
-
-    my $obj = $storage->new(
-        (defined $self->brain_resource
-            ? (brain => $self->brain_resource)
-            : ()
-        ),
-        token_separator => $self->token_separator,
-        order           => $self->order,
-        arguments       => $self->storage_args,
+    my $obj = $self->_new_class(
+        "Storage",
+        $self->storage_class,
+        {
+            (defined $self->brain_resource
+             ? (brain => $self->brain_resource)
+             : ()),
+            token_separator => $self->token_separator,
+            order           => $self->order,
+            arguments       => $self->storage_args,
+        }
     );
-
+    
     return $obj;
 }
 
 sub _build__tokenizer_obj {
     my ($self) = @_;
 
-    my $tokenizer_class = $self->tokenizer_class;
+    my $obj = $self->_new_class(
+        "Tokenizer",
+        $self->tokenizer_class,
+        {
+            arguments => $self->tokenizer_args,
+        },
+    );
 
-    my $tokenizer = "Hailo::Tokenizer::$tokenizer_class";
-    eval "require $tokenizer";
+    return $obj;
+}
+
+sub _new_class {
+    my ($self, $type, $class, $args) = @_;
+
+    my $pkg = "Hailo::${type}::${class}";
+    eval { Class::MOP::load_class($pkg) };
     die $@ if $@;
 
-    return $tokenizer->new(
-        arguments => $self->tokenizer_args
-    );
+    return $pkg->new(%$args);
 }
 
 sub run {

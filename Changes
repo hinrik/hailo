@@ -1,3 +1,6 @@
+0.04
+    - Use Class::MOP::load_class() instead of eval { require $str } to load plugins
+
 0.03 Fri Jan 29 14:37:17 GMT 2010
      - Fixed a fatal error in Hailo::Engine::Default that would
        inevitable occur on any large brain. When Hailo was given
