@@ -15,6 +15,7 @@ githubmeta     ();
 bugtracker     ('http://github.com/hinrik/hailo/issues');
 resources      (Ratings => 'http://cpanratings.perl.org/d/Hailo');
 
+requires       ('autodie'                    => '0');
 requires       ('Pod::Usage'                 => '0');
 requires       ('Data::Section'              => '0.100270');
 requires       ('DBD::SQLite'                => '0');

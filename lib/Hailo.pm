@@ -1,6 +1,7 @@
 package Hailo;
 
 use 5.010;
+use autodie qw(open close);
 use Class::MOP;
 use Moose;
 use MooseX::Types::Moose qw/Int Str Bool HashRef/;
@@ -207,7 +208,7 @@ sub _getopt_full_usage {
     my $synopsis = do {
         require Pod::Usage;
         my $out;
-        open my $fh, '>', \$out or die "Can't open in-memory filehandle";
+        open my $fh, '>', \$out;
         Pod::Usage::pod2usage(
             -sections => 'SYNOPSIS',
             -output   => $fh,
@@ -327,7 +328,7 @@ sub train {
     my $storage = $self->_storage_obj;
     $storage->start_training();
 
-    open my $fh, '<:encoding(utf8)', $filename or die "Can't open file '$filename': $!\n";
+    open my $fh, '<:encoding(utf8)', $filename;
     if ($self->print_progress) {
         $self->_train_progress($fh, $filename);
     } else {
