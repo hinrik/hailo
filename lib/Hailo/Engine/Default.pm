@@ -1,5 +1,9 @@
 package Hailo::Engine::Default;
 use Moose;
+use MooseX::Types::Moose qw(Int);
+use List::Util qw(min);
+use List::MoreUtils qw(uniq);
+use namespace::clean -except => 'meta';
 
 with qw(Hailo::Role::Generic
         Hailo::Role::Engine);
@@ -12,6 +16,18 @@ has storage => (
 has tokenizer => (
     required => 1,
     is       => 'ro',
+);
+
+has _repeat_limit => (
+    isa       => Int,
+    is        => 'ro',
+    lazy      => 1,
+    default   => sub {
+        my ($self) = @_;
+        my $order = $self->storage->order;
+
+        return min(($order * 10), 50);
+    },
 );
 
 sub reply {
@@ -31,13 +47,19 @@ sub reply {
     my @reply = @middle_expr;
     my @expr = @middle_expr;
 
+    my $repeat_limit = $self->_repeat_limit;
+
     # construct the end of the reply
-    while (!$can_end) {
+    my $i = 0; while (!$can_end) {
+        if (($i % $order) == 0 and $i >= $repeat_limit and uniq(@reply) < $order) {
+            last;
+        }
         my $next_tokens = $storage->next_tokens(\@expr);
         my $next_token = $self->_pos_token($next_tokens, \@current_key_tokens);
         push @reply, $next_token;
         @expr = (@expr[1 .. $order-1], $next_token);
         (undef, $can_end) = $storage->expr_can(@expr);
+        $i++;
     }
 
     # reuse the key tokens

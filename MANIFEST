@@ -32,6 +32,7 @@ script/hailo
 t/01_compile.t
 t/02_chat.t
 t/03_sanity.t
+t/bug/tokens-repeat.t
 t/storage/all.t
 t/storage/Pg.t
 t/tokenizer/Characters.t
