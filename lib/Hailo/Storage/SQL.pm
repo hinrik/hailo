@@ -1,7 +1,7 @@
 package Hailo::Storage::SQL;
 
 use Moose;
-use MooseX::Types::Moose qw<HashRef Int Str>;
+use MooseX::Types::Moose qw<HashRef Int Str Bool>;
 use DBI;
 use List::Util qw<shuffle>;
 use Data::Section qw(-setup);
@@ -21,6 +21,13 @@ has dbh => (
     isa        => 'DBI::db',
     is         => 'ro',
     lazy_build => 1,
+);
+
+has _engaged => (
+    isa           => Bool,
+    is            => 'rw',
+    default       => 0,
+    documentation => "Have we done setup work to get this database going?",
 );
 
 sub _build_dbh {
@@ -123,7 +130,7 @@ sub _sth_sections {
     return \%sections;
 }
 
-sub BUILD {
+sub _engage {
     my ($self) = @_;
 
     if ($self->_exists_db) {
@@ -159,8 +166,16 @@ sub stop_training {
 }
 
 sub start_learning {
+    my ($self) = @_;
+
+    if (not $self->_engaged()) {
+        # Engage!
+        $self->_engage();
+        $self->_engaged(1);
+    }
+
     # start a transaction
-    shift->dbh->begin_work;
+    $self->dbh->begin_work;
     return;
 }
 
