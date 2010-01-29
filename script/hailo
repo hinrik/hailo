@@ -1,16 +1,20 @@
-#!/usr/bin/perl
-
+#!/usr/bin/env perl
 use Moose;
 use Encode qw(decode);
 use Hailo;
 use namespace::clean -except => 'meta';
 
+# Nothing to see here
 __PACKAGE__->meta->make_immutable;
 
 # use utf8 everywhere
 $_ = decode('utf8', $_) for @ARGV;
 binmode $_, ':encoding(utf8)' for (*STDIN, *STDOUT, *STDERR);
 
+# Set programname
+$0 = 'hailo';
+
+# Hailing frequencies open
 Hailo->new_with_options->run;
 
 =encoding utf8
