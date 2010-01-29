@@ -109,6 +109,13 @@ See L<Hailo's documentation|Hailo> for other non-Pg specific options.
 
 This backend maintains information in a PostgreSQL database.
 
+=head1 CAVEATS
+
+It's around 8x-10x slower than L<the SQLite
+backend|Hailo::Storage::SQLite> in my tests. Maybe this is due to an
+unoptimal PostgreSQL configuration (I used the Debian defaults) or
+perhaps the schema we're using simply suits SQLite better.
+
 =head1 AUTHOR
 
 E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
