@@ -47,7 +47,7 @@ sub _build_dbi_options {
     my ($self) = @_;
     my $dbd = $self->dbd;
     my $dbd_options = $self->dbd_options;
-    my $db = $self->brain;
+    my $db = $self->brain // '';
 
     my @options = (
         "dbi:$dbd:dbname=$db",

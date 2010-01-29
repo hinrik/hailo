@@ -28,7 +28,7 @@ after stop_training => sub {
 
 sub _exists_db {
     my ($self) = @_;
-    return -s $self->brain;
+    return defined $self->brain and -s $self->brain;
 }
 
 __PACKAGE__->meta->make_immutable;
