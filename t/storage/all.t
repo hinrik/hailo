@@ -1,7 +1,7 @@
 use utf8;
 use strict;
 use warnings;
-use Test::More tests => 42;
+use Test::More tests => 55;
 use Hailo;
 use Data::Random qw(:all);
 use File::Temp qw(tempfile tempdir);
@@ -11,7 +11,7 @@ binmode $_, ':encoding(utf8)' for (*STDIN, *STDOUT, *STDERR);
 # Suppress PostgreSQL notices
 $SIG{__WARN__} = sub { print STDERR @_ if $_[0] !~ m/NOTICE:\s*CREATE TABLE/; };
 
-for my $backend (qw(Perl Pg SQLite)) {
+for my $backend (qw(Perl Pg SQLite mysql)) {
     # Skip all tests for this backend?
     my $skip_all;
 
@@ -21,6 +21,17 @@ for my $backend (qw(Perl Pg SQLite)) {
 
     my ($fh, $filename) = tempfile( DIR => $dir, SUFFIX => '.db' );
     ok($filename, "Got temporary file $filename");
+
+    if ($backend eq "mysql") {
+        # It doesn't use the file to store data obviously, it's just a convenient random token.
+        if (!$ENV{HAILO_TEST_MYSQL} or
+            system qq[echo "SELECT DATABASE();" | mysql -u'hailo' -p'hailo' 'hailo' >/dev/null 2>&1]) {
+            $skip_all = 1;
+            pass("Skipping mysql tests, can't connect to database named 'hailo'");
+        } else {
+            pass("Connected to mysql 'hailo' database");
+        }
+    }
 
     if ($backend eq "Pg") {
         # It doesn't use the file to store data obviously, it's just a convenient random token.
@@ -34,16 +45,32 @@ for my $backend (qw(Perl Pg SQLite)) {
 
     my $prev_brain;
     for my $i (1 .. 5) {
+        my %connect_opts;
+        if ($backend eq 'SQLite'or $backend eq "Perl") {
+            %connect_opts = (
+                brain_resource => $filename,
+            );
+        } elsif ($backend eq 'Pg') {
+            %connect_opts = (
+                storage_args => {
+                    dbname => $filename,
+                },
+            );
+        } elsif ($backend eq 'mysql') {
+            %connect_opts = (
+                storage_args => {
+                    database => 'hailo',
+                    host => 'localhost',
+                    username => 'hailo',
+                    password => 'hailo',
+                },
+            );
+        }
       SKIP: {
-        skip "Didn't create PostgreSQL db, can't test it", 2 if $skip_all;
+        skip "Didn't create $backend db, can't test it", 2 if $skip_all;
         my $hailo = Hailo->new(
             storage_class  => $backend,
-            # For Pg
-            storage_args   => {
-                dbname => $filename,
-            },
-            # For SQLite
-            brain_resource => $filename,
+            %connect_opts,
         );
 
         if ($backend eq "Perl") {

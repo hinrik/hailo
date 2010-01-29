@@ -3,6 +3,7 @@
       still there now it's actually fixed.
     - Use Class::MOP::load_class() instead of eval { require $str } to load plugins
     - Depend on Perl 5.10
+    - Added MySQL storage backend, don't use it.
 
 0.03 Fri Jan 29 14:37:17 GMT 2010
     - Fixed a fatal error in Hailo::Engine::Default that would
