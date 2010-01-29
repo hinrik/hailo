@@ -10,7 +10,7 @@ our $VERSION = '0.01';
 with 'Hailo::Role::Storage';
 
 has '+order' => (
-    default => sub { die "foo"; shift->_memory->{order} },
+    default => sub { shift->_memory->{order} },
 );
 
 has '+token_separator' => (
