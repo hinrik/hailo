@@ -1,4 +1,6 @@
 0.02
+    - Fix typo in NAME in Hailo::Tokenizer::Words which caused the POD
+      not to be displayed on search.cpan.org
     - Present options in --help output in reverse sort order
     - Add facility to pass arguments to storage/engine/tokenizer from
       the command line or via Hailo->new(). Make Hailo::Storage::Pg

@@ -76,7 +76,7 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Hailo::Tokenizer::Word - A word tokenizer for L<Hailo|Hailo>
+Hailo::Tokenizer::Words - A word tokenizer for L<Hailo|Hailo>
 
 =head1 DESCRIPTION
 
