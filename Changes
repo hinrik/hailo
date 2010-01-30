@@ -5,6 +5,7 @@
     - Use autodie to catch open/close errors
     - Hailo->learn() was broken when print_progress was false
     - Add tests for Hailo invocation
+    - Use MooseX::StrictConstructor
 
 0.04 Fri Jan 29 17:48:49 GMT 2010
     - You know that bug we talked about being fixed in 0.03? It was

@@ -1,7 +1,7 @@
 use 5.10.0;
 use strict;
 use List::MoreUtils qw(uniq);
-use Test::More tests => 33;
+use Test::More tests => 34;
 use Test::Exception;
 use Test::Output;
 use Test::Exit;
@@ -52,3 +52,6 @@ dies_ok { Hailo->new( order => "foo" ) } "Str order";
 for (my $i = 1; $i <= 10e10; $i += $i * 2) {
     cmp_ok( Hailo->new( order => $i )->order, '==', $i, "The order is what we put in ($i)" );
 }
+
+# new
+dies_ok { Hailo->new( qw( a b c d ) ) } "Hailo dies on unknown arguments";

@@ -1,6 +1,7 @@
 package Hailo::Engine::Default;
 use 5.10.0;
 use Moose;
+use MooseX::StrictConstructor;
 use MooseX::Types::Moose qw(Int);
 use List::Util qw(min shuffle);
 use List::MoreUtils qw(uniq);

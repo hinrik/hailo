@@ -1,6 +1,7 @@
 package Hailo::Storage::mysql;
 use 5.10.0;
 use Moose;
+use MooseX::StrictConstructor;
 
 our $VERSION = '0.01';
 

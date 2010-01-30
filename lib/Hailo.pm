@@ -4,6 +4,7 @@ use 5.010;
 use autodie qw(open close);
 use Class::MOP;
 use Moose;
+use MooseX::StrictConstructor;
 use MooseX::Types::Moose qw/Int Str Bool HashRef/;
 use MooseX::Types::Path::Class qw(File);
 use Time::HiRes qw(gettimeofday tv_interval);

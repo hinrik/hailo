@@ -27,6 +27,7 @@ requires       ('MooseX::Getopt'             => '0');
 requires       ('MooseX::Types::Path::Class' => '0');
 requires       ('MooseX::Types'              => '0');
 requires       ('MooseX::Types::Moose'       => '0');
+requires       ('use MooseX::StrictConstructor' => '0.08');
 requires       ('namespace::clean'           => '0');
 requires       ('Template'                   => '0');
 requires       ('IO::Interactive'            => '0');

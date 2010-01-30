@@ -1,13 +1,15 @@
 package Hailo::Storage::Perl;
 use 5.10.0;
 use Moose;
+use MooseX::StrictConstructor;
 use MooseX::Types::Moose qw<HashRef Int Str>;
 use Storable;
 use namespace::clean -except => 'meta';
 
 our $VERSION = '0.01';
 
-with 'Hailo::Role::Storage';
+with qw(Hailo::Role::Generic
+        Hailo::Role::Storage);
 
 has '+order' => (
     default => sub { shift->_memory->{order} },
