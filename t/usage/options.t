@@ -7,6 +7,8 @@ use Test::Output;
 use Test::Exit;
 use Hailo;
 
+$SIG{__WARN__} = sub { print STDERR @_ if $_[0] !~ m/for database handle being DESTROY/ };
+
 # --version
 stdout_like(
     sub {
