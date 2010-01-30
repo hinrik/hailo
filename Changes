@@ -1,4 +1,4 @@
-0.05
+0.05 Sat Jan 30 13:55:18 GMT 2010
     - Shuffle key tokens and don't reuse them. Should make for more random
       replies.
     - Check for definedness of $self->brain in Hailo::Storage::*
