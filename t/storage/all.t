@@ -98,6 +98,7 @@ for my $backend (qw(Perl Pg SQLite mysql)) {
         }
 
         $hailo->save();
+        $hailo->_storage_obj->dbh->disconnect if $backend eq "SQLite";
         undef $hailo;
       }
     }
