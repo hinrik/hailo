@@ -1,4 +1,5 @@
 #!/usr/bin/env perl
+use 5.10.0;
 use Moose;
 use Encode qw(decode);
 use Hailo;
@@ -13,6 +14,9 @@ binmode $_, ':encoding(utf8)' for (*STDIN, *STDOUT, *STDERR);
 
 # Set programname
 $0 = 'hailo';
+
+# Show help if run without arguments
+@ARGV = qw(--help) unless @ARGV;
 
 # Hailing frequencies open
 Hailo->new_with_options->run;

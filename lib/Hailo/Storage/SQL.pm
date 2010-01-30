@@ -1,5 +1,5 @@
 package Hailo::Storage::SQL;
-
+use 5.10.0;
 use Moose;
 use MooseX::Types::Moose qw<ArrayRef HashRef Int Str Bool>;
 use DBI;

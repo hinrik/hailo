@@ -1,4 +1,5 @@
 package Hailo::Engine::Default;
+use 5.10.0;
 use Moose;
 use MooseX::Types::Moose qw(Int);
 use List::Util qw(min shuffle);
