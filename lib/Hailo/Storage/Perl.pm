@@ -11,14 +11,6 @@ our $VERSION = '0.01';
 with qw(Hailo::Role::Generic
         Hailo::Role::Storage);
 
-has '+order' => (
-    default => sub { shift->_memory->{order} },
-);
-
-has '+token_separator' => (
-    default => sub { shift->_memory->{separator} },
-);
-
 has _memory => (
     isa        => HashRef,
     is         => 'ro',
