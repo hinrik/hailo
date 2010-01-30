@@ -1,7 +1,11 @@
-0.06
+0.06 Sat Jan 30 19:21:28 GMT 2010
     - Construct SQL's dbd_options with lazy_build, not default. This
       makes it easy to add additional options in the individual
       storage engines.
+    - Remove some dead code in Hailo::Storage::Perl
+    - Explicitly disconnect sqlite's dbh / sth handles. This should
+      fix some cpantesters FAILs we're getting which print "database
+      is locked" errors.
 
 0.05 Sat Jan 30 13:55:18 GMT 2010
     - Shuffle key tokens and don't reuse them. Should make for more random
