@@ -61,10 +61,16 @@ sub _build_dbi_options {
 }
 
 has dbd_options => (
-    isa => HashRef,
-    is => 'ro',
-    default => sub { +{} },
+    isa        => HashRef,
+    is         => 'ro',
+    lazy_build => 1,
 );
+
+sub _build_dbd_options {
+    return {
+        RaiseError => 1
+    };
+}
 
 has _engaged => (
     isa           => Bool,

@@ -11,12 +11,12 @@ has '+dbd' => (
     default => 'mysql',
 );
 
-has '+dbd_options' => (
-    default => sub { +{
+override _build_dbd_options => sub {
+    return {
+        %{ super() },
         mysql_enable_utf8 => 1,
-        RaiseError => 1,
-    } },
-);
+    };
+};
 
 sub _build_dbi_options {
     my ($self) = @_;

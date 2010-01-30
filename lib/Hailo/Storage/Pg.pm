@@ -11,12 +11,12 @@ has '+dbd' => (
     default => 'Pg',
 );
 
-has '+dbd_options' => (
-    default => sub { +{
+override _build_dbd_options => sub {
+    return {
+        %{ super() },
         pg_enable_utf8 => 1,
-        RaiseError => 1,
-    } },
-);
+    };
+};
 
 sub _build_dbi_options {
     my ($self) = @_;

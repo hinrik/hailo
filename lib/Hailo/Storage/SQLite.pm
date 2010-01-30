@@ -11,12 +11,12 @@ has '+dbd' => (
     default => 'SQLite',
 );
 
-has '+dbd_options' => (
-    default => sub { +{
+override _build_dbd_options => sub {
+    return {
+        %{ super() },
         sqlite_unicode => 1,
-        RaiseError => 1,
-    } },
-);
+    };
+};
 
 before start_training => sub {
     shift->dbh->do('PRAGMA synchronous=OFF;');

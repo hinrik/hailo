@@ -1,3 +1,8 @@
+0.06
+    - Construct SQL's dbd_options with lazy_build, not default. This
+      makes it easy to add additional options in the individual
+      storage engines.
+
 0.05 Sat Jan 30 13:55:18 GMT 2010
     - Shuffle key tokens and don't reuse them. Should make for more random
       replies.
