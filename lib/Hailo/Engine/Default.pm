@@ -1,14 +1,12 @@
 package Hailo::Engine::Default;
 use 5.10.0;
 use Moose;
+use MooseX::Method::Signatures;
 use MooseX::StrictConstructor;
 use MooseX::Types::Moose qw(Int);
 use List::Util qw(min shuffle);
 use List::MoreUtils qw(uniq);
 use namespace::clean -except => 'meta';
-
-with qw(Hailo::Role::Generic
-        Hailo::Role::Engine);
 
 has storage => (
     required => 1,
@@ -32,8 +30,7 @@ has _repeat_limit => (
     },
 );
 
-sub reply {
-    my ($self, $input) = @_;
+method reply($self: Str $input) {
     my $storage  = $self->storage;
     my $order    = $storage->order;
     my $toke     = $self->tokenizer;
@@ -41,7 +38,7 @@ sub reply {
     $input = $self->_clean_input($input);
     my @tokens = $toke->make_tokens($input);
     my @key_tokens = shuffle grep { $storage->token_exists($_) }
-                             $toke->find_key_tokens(@tokens);
+                             $toke->find_key_tokens(\@tokens);
     return if !@key_tokens;
     my $key_token = shift @key_tokens;
 
@@ -62,7 +59,7 @@ sub reply {
         my $next_token = $self->_pos_token($next_tokens, \@key_tokens);
         push @reply, $next_token;
         @expr = (@expr[1 .. $order-1], $next_token);
-        (undef, $can_end) = $storage->expr_can(@expr);
+        (undef, $can_end) = $storage->expr_can(\@expr);
     } continue {
         $i++;
     }
@@ -80,16 +77,15 @@ sub reply {
         my $prev_token = $self->_pos_token($prev_tokens, \@key_tokens);
         unshift @reply, $prev_token;
         @expr = ($prev_token, @expr[0 .. $order-2]);
-        ($can_start, undef) = $storage->expr_can(@expr);
+        ($can_start, undef) = $storage->expr_can(\@expr);
     } continue {
         $i++;
     }
 
-    return $toke->make_output(@reply);
+    return $toke->make_output(\@reply);
 }
 
-sub learn {
-    my ($self, $input) = @_;
+method learn($self: Str $input) {
     my $storage  = $self->storage;
     my $order    = $storage->order;
 
@@ -107,20 +103,19 @@ sub learn {
         $prev_token = $tokens[$i-1] if $i > 0;
 
         # store the current expression
-        $storage->add_expr(
+        $storage->add_expr( {
             tokens     => \@expr,
             next_token => $next_token,
             prev_token => $prev_token,
             can_start  => ($i == 0 ? 1 : undef),
             can_end    => ($i == @tokens-$order ? 1 : undef),
-        );
+        } );
     }
 
     return;
 }
 
-sub _pos_token {
-    my ($self, $next_tokens, $key_tokens) = @_;
+method _pos_token($self: HashRef $next_tokens, ArrayRef $key_tokens) {
     my $storage = $self->storage;
 
     for my $i (0 .. $#{ $key_tokens }) {
@@ -135,12 +130,14 @@ sub _pos_token {
     return @novel_tokens[rand @novel_tokens];
 }
 
-sub _clean_input {
-    my ($self, $input) = @_;
+method _clean_input($self: Str $input) {
     my $separator = quotemeta $self->storage->token_separator;
     $input =~ s/$separator//g;
     return $input;
 }
+
+with qw(Hailo::Role::Generic
+        Hailo::Role::Engine);
 
 =encoding utf8
 

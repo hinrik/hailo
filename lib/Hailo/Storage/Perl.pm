@@ -1,15 +1,13 @@
 package Hailo::Storage::Perl;
 use 5.10.0;
 use Moose;
+use MooseX::Method::Signatures;
 use MooseX::StrictConstructor;
 use MooseX::Types::Moose qw<HashRef Int Str>;
 use Storable;
 use namespace::clean -except => 'meta';
 
 our $VERSION = '0.01';
-
-with qw(Hailo::Role::Generic
-        Hailo::Role::Storage);
 
 has _memory => (
     isa        => HashRef,
@@ -18,9 +16,7 @@ has _memory => (
     init_arg   => undef,
 );
 
-sub _build__memory {
-    my ($self) = @_;
-
+method _build__memory {
     if (defined $self->brain && -s $self->brain) {
         return retrieve($self->brain);
     }
@@ -38,82 +34,77 @@ sub _build__memory {
     }
 }
 
-sub add_expr {
-    my ($self, %args) = @_;
+method add_expr($self: HashRef $args) {
     my $mem = $self->_memory;
 
-    my $ehash = $self->_hash_tokens($args{tokens});
+    my $ehash = $self->_hash_tokens($args->{tokens});
 
     if (!exists $mem->{expr}{$ehash}) {
         $mem->{expr}{$ehash} = {
-            tokens    => $args{tokens},
-            can_start => $args{can_start},
-            can_end   => $args{can_end},
+            tokens    => $args->{tokens},
+            can_start => $args->{can_start},
+            can_end   => $args->{can_end},
         };
 
-        for my $token (@{ $args{tokens} }) {
+        for my $token (@{ $args->{tokens} }) {
             $mem->{token}{$token} = [ ] if !exists $mem->{token}{$token};
             push @{ $mem->{token}{$token} }, $ehash;
         }
     }
 
     for my $pos_token (qw(next_token prev_token)) {
-        if (defined $args{$pos_token}) {
-            $mem->{$pos_token}{$ehash}{ $args{$pos_token} }++;
+        if (defined $args->{$pos_token}) {
+            $mem->{$pos_token}{$ehash}{ $args->{$pos_token} }++;
         }
     }
 
     return;
 }
 
-sub token_exists {
-    my ($self, $token) = @_;
+method token_exists($self: Str $token) {
     return 1 if exists $self->_memory->{token}{$token};
     return;
 }
 
-sub random_expr {
-    my ($self, $token) = @_;
+method random_expr($self: Str $token) {
     my @ehash = @{ $self->_memory->{token}{$token} };
     my $expr = $self->_memory->{expr}{ $ehash[rand @ehash] };
     return ($expr->{can_start}, $expr->{can_end}, @{ $expr->{tokens} });
 }
 
-sub expr_can {
-    my ($self, @tokens) = @_;
-    my $ehash = $self->_hash_tokens(\@tokens);
+method expr_can($self: ArrayRef $tokens) {
+    my $ehash = $self->_hash_tokens($tokens);
     return @{ $self->_memory->{expr}{$ehash} }{qw(can_start can_end)};
 }
 
-sub next_tokens {
-    my ($self, $expr) = @_;
-    my $ehash = $self->_hash_tokens($expr);
+method next_tokens($self: ArrayRef $tokens) {
+    my $ehash = $self->_hash_tokens($tokens);
     return $self->_memory->{next_token}{ $ehash };
 }
 
-sub prev_tokens {
-    my ($self, $expr) = @_;
-    my $ehash = $self->_hash_tokens($expr);
+method prev_tokens($self: ArrayRef $tokens) {
+    my $ehash = $self->_hash_tokens($tokens);
     return $self->_memory->{prev_token}{ $ehash };
 }
 
 # concatenate contents of an expression for unique identification
-sub _hash_tokens {
-    my ($self, $tokens) = @_;
+method _hash_tokens($self: ArrayRef $tokens) {
     my $ehash = join $self->token_separator, @$tokens;
     return $ehash;
 }
 
-sub save {
-    my ($self) = @_;
+method save {
     store($self->_memory, $self->brain);
     return;
 }
 
-sub start_training { return }
-sub stop_training  { return }
-sub start_learning { return }
-sub stop_learning  { return }
+method start_training { return }
+method stop_training  { return }
+method start_learning { return }
+method stop_learning  { return }
+
+with qw(Hailo::Role::Generic
+        Hailo::Role::Storage);
 
 __PACKAGE__->meta->make_immutable;
 

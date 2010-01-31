@@ -1,6 +1,7 @@
 package Hailo::Storage::Pg;
 use 5.10.0;
 use Moose;
+use MooseX::Method::Signatures;
 use MooseX::StrictConstructor;
 
 our $VERSION = '0.01';
@@ -18,8 +19,7 @@ override _build_dbd_options => sub {
     };
 };
 
-sub _build_dbi_options {
-    my ($self) = @_;
+method _build_dbi_options {
     my $dbd = $self->dbd;
     my $dbd_options = $self->dbd_options;
     my $args = $self->arguments;
@@ -40,17 +40,13 @@ sub _build_dbi_options {
     return \@options;
 }
 
-sub _exists_db {
-    my ($self) = @_;
-
+method _exists_db {
     $self->sth->{exists_db}->execute();
     return int $self->sth->{exists_db}->fetchrow_array;
 }
 
 # These two are optimized to use PostgreSQL >8.2's INSERT ... RETURNING 
-sub _add_expr {
-    my ($self, $token_ids, $can_start, $can_end, $expr_text) = @_;
-
+method _add_expr($self: ArrayRef $token_ids, Bool $can_start, Bool $can_end, Str $expr_text) {
     # add the expression
     $self->sth->{add_expr}->execute(@$token_ids, $can_start, $can_end, $expr_text);
 
@@ -58,9 +54,7 @@ sub _add_expr {
     return $self->sth->{add_expr}->fetchrow_array;
 }
 
-sub _add_token {
-    my ($self, $token) = @_;
-
+method _add_token($self: Str $token) {
     $self->sth->{add_token}->execute($token);
     return $self->sth->{add_token}->fetchrow_array;
 }

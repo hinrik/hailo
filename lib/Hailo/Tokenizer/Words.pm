@@ -1,14 +1,12 @@
 package Hailo::Tokenizer::Words;
 use 5.10.0;
 use Moose;
+use MooseX::Method::Signatures;
 use MooseX::StrictConstructor;
 use List::MoreUtils qw<uniq>;
 use namespace::clean -except => 'meta';
 
 our $VERSION = '0.01';
-
-with qw(Hailo::Role::Generic
-        Hailo::Role::Tokenizer);
 
 my $APOSTROPHE    = qr/['’]/;
 my $DOTTED_WORD   = qr/\w+(?:\.\w+)?/;
@@ -27,8 +25,7 @@ my $DOTTED_STRICT = qr/\w+(?:\.(?:\d+|\w{2,}))?/;
 my $WORD_STRICT   = qr/$DOTTED_STRICT(?:$APOSTROPHE$DOTTED_STRICT)*/;
 
 # input -> tokens
-sub make_tokens {
-    my ($self, $line) = @_;
+method make_tokens($self: Str $line) {
     my (@tokens) = $line =~ /($TOKEN)/gs;
 
     # lower-case tokens except those which are ALL UPPERCASE
@@ -37,17 +34,14 @@ sub make_tokens {
 }
 
 # return a list of key tokens
-sub find_key_tokens {
-    my $self = shift;
-    
+method find_key_tokens($self: ArrayRef $tokens) {
     # remove duplicates and return the interesting ones
-    return grep { /$INTERESTING/ } uniq(@_);
+    return grep { /$INTERESTING/ } uniq(@$tokens);
 }
 
 # tokens -> output
-sub make_output {
-    my $self = shift;
-    my $string = join '', @_;
+method make_output($self: ArrayRef $reply) {
+    my $string = join '', @$reply;
 
     # capitalize the first word
     $string =~ s/^$TERMINATOR?\s*$OPEN_QUOTE?\s*\K($WORD)/\u$1/;
@@ -70,6 +64,9 @@ sub make_output {
 
     return $string;
 }
+
+with qw(Hailo::Role::Generic
+        Hailo::Role::Tokenizer);
 
 __PACKAGE__->meta->make_immutable;
 

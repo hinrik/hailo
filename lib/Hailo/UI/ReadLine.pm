@@ -1,22 +1,19 @@
 package Hailo::UI::ReadLine;
 use 5.10.0;
 use Moose;
+use MooseX::Method::Signatures;
 use MooseX::StrictConstructor;
+use Hailo;
 use Term::ReadLine;
 
-with qw(Hailo::Role::Generic
-        Hailo::Role::UI);
-
 # Use Gnu readline
-sub BUILD {
+method BUILD {
     require Term::ReadLine::Gnu;
     $ENV{PERL_RL} = 'Gnu';
     return;
 }
 
-sub run {
-    my ($self, $hailo) = @_;
-
+method run($self: Hailo $hailo) {
     my $name = ref $hailo;
     my $term = Term::ReadLine->new($name);
 
@@ -29,6 +26,9 @@ sub run {
         }
     }
 }
+
+with qw(Hailo::Role::Generic
+        Hailo::Role::UI);
 
 __PACKAGE__->meta->make_immutable;
 

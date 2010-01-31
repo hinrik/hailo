@@ -1,6 +1,7 @@
 package Hailo::Storage::SQL;
 use 5.10.0;
 use Moose;
+use MooseX::Method::Signatures;
 use MooseX::StrictConstructor;
 use MooseX::Types::Moose qw<ArrayRef HashRef Int Str Bool>;
 use DBI;
@@ -15,9 +16,6 @@ use namespace::clean -except => [ qw(meta
 
 our $VERSION = '0.01';
 
-with qw(Hailo::Role::Generic
-        Hailo::Role::Storage);
-
 has dbh => (
     isa        => 'DBI::db',
     is         => 'ro',
@@ -30,12 +28,11 @@ has dbd => (
     documentation => "The DBD::* driver we're using",
 );
 
-sub _build_dbh {
-    my ($self) = @_;
+method _build_dbh {
     my $dbd_options = $self->dbi_options;
 
     return DBI->connect($self->dbi_options);
-}
+};
 
 has dbi_options => (
     isa => ArrayRef,
@@ -44,8 +41,7 @@ has dbi_options => (
     lazy_build => 1,
 );
 
-sub _build_dbi_options {
-    my ($self) = @_;
+method _build_dbi_options {
     my $dbd = $self->dbd;
     my $dbd_options = $self->dbd_options;
     my $db = $self->brain // '';
@@ -66,7 +62,7 @@ has dbd_options => (
     lazy_build => 1,
 );
 
-sub _build_dbd_options {
+method _build_dbd_options {
     return {
         RaiseError => 1
     };
@@ -86,9 +82,7 @@ has sth => (
 );
 
 # our statement handlers
-sub _build_sth {
-    my ($self) = @_;
-
+method _build_sth {
     my $sections = $self->_sth_sections();
     my %state;
     while (my ($name, $options) = each %$sections) {
@@ -111,8 +105,7 @@ sub _build_sth {
     return \%state;
 }
 
-sub _sth_sections {
-    my ($self) = @_;
+method _sth_sections {
     my %sections;
 
     # () sections are magical
@@ -152,9 +145,7 @@ sub _sth_sections {
     return \%sections;
 }
 
-sub _engage {
-    my ($self) = @_;
-
+method _engage {
     if ($self->_exists_db) {
         $self->sth->{get_order}->execute();
         my $order = $self->sth->{get_order}->fetchrow_array();
@@ -177,19 +168,17 @@ sub _engage {
     return;
 }
 
-sub start_training {
-    shift->start_learning();
+method start_training {
+    $self->start_learning();
     return;
 }
 
-sub stop_training {
-    shift->stop_learning();
+method stop_training {
+    $self->stop_learning();
     return;
 }
 
-sub start_learning {
-    my ($self) = @_;
-
+method start_learning {
     if (not $self->_engaged()) {
         # Engage!
         $self->_engage();
@@ -201,15 +190,13 @@ sub start_learning {
     return;
 }
 
-sub stop_learning {
+method stop_learning {
     # finish a transaction
-    shift->dbh->commit;
+    $self->dbh->commit;
     return;
 }
 
-sub _create_db {
-    my ($self) = @_;
-
+method _create_db {
     my @statements = $self->_get_create_db_sql;
 
     $self->dbh->do($_) for @statements;
@@ -217,8 +204,7 @@ sub _create_db {
     return;
 }
 
-sub _get_create_db_sql {
-    my ($self) = @_;
+method _get_create_db_sql {
     my $sql;
 
     for my $section (qw(info token expr next_token prev_token indexes)) {
@@ -235,15 +221,13 @@ sub _get_create_db_sql {
     return ($sql =~ /\s*(.*?);/gs);
 }
 
-sub _expr_text {
-    my ($self, $tokens) = @_;
+method _expr_text($self: ArrayRef $tokens) {
     return join $self->token_separator, @$tokens;
 }
 
 # add a new expression to the database
-sub add_expr {
-    my ($self, %args) = @_;
-    my $tokens    = $args{tokens};
+method add_expr($self: HashRef $args) {
+    my $tokens    = $args->{tokens};
     my $expr_text = $self->_expr_text($tokens);
     my $expr_id   = $self->_expr_id($expr_text);
 
@@ -251,13 +235,13 @@ sub add_expr {
         # add the tokens
         my @token_ids = $self->_add_tokens($tokens);
 
-        $expr_id = $self->_add_expr(\@token_ids, $args{can_start}, $args{can_end}, $expr_text);
+        $expr_id = $self->_add_expr(\@token_ids, $args->{can_start}, $args->{can_end}, $expr_text);
     }
 
     # add next/previous tokens for this expression, if any
     for my $pos_token (qw(next_token prev_token)) {
-        next if !defined $args{$pos_token};
-        my $token_id = $self->_add_tokens($args{$pos_token});
+        next if !defined $args->{$pos_token};
+        my $token_id = $self->_add_tokens([$args->{$pos_token}]);
 
         my $get_count = "${pos_token}_count";
         $self->sth->{$get_count}->execute($expr_id, $token_id);
@@ -277,9 +261,7 @@ sub add_expr {
     return;
 }
 
-sub _add_expr {
-    my ($self, $token_ids, $can_start, $can_end, $expr_text) = @_;
-
+method _add_expr($self: ArrayRef $token_ids, Bool $can_start, Bool $can_end, Str $expr_text) {
     # add the expression
     $self->sth->{add_expr}->execute(@$token_ids, $can_start, $can_end, $expr_text);
 
@@ -289,23 +271,19 @@ sub _add_expr {
 }
 
 # look up an expression id based on tokens
-sub _expr_id {
-    my ($self, $expr_text) = @_;
+method _expr_id($self: Str $expr_text) {
     $self->sth->{expr_id}->execute($expr_text);
     return scalar $self->sth->{expr_id}->fetchrow_array();
 }
 
-sub expr_can {
-    my ($self, @tokens) = @_;
-    my $expr_text = $self->_expr_text(\@tokens);
+method expr_can($self: ArrayRef $tokens) {
+    my $expr_text = $self->_expr_text($tokens);
     $self->sth->{expr_can}->execute($expr_text);
     return $self->sth->{expr_can}->fetchrow_array();
 }
 
 # add tokens and/or return their ids
-sub _add_tokens {
-    my ($self) = shift;
-    my $tokens = ref $_[0] eq 'ARRAY' ? shift : [@_];
+method _add_tokens($self: ArrayRef $tokens) {
     my @token_ids;
 
     for my $token (@$tokens) {
@@ -323,33 +301,27 @@ sub _add_tokens {
     return @token_ids > 1 ? @token_ids : $token_ids[0];
 }
 
-sub _add_token {
-    my ($self, $token) = @_;
-
+method _add_token($self: Str $token) {
     $self->sth->{add_token}->execute($token);
     $self->sth->{last_token_rowid}->execute();
     return $self->sth->{last_token_rowid}->fetchrow_array;
 }
 
-sub token_exists {
-    my ($self, $token) = @_;
-
+method token_exists($self: Str $token) {
     $self->sth->{token_id}->execute($token);
     return defined $self->sth->{token_id}->fetchrow_array();
 }
 
-sub _split_expr {
-    my ($self, $expr) = @_;
+method _split_expr($self:Str $expr) {
     my $sep = quotemeta $self->token_separator;
     return split /$sep/, $expr;
 }
 
 # return a random expression containing the given token
-sub random_expr {
-    my ($self, $token) = @_;
+method random_expr($self: Str $token) {
     my $dbh = $self->dbh;
 
-    my $token_id = $self->_add_tokens($token);
+    my $token_id = $self->_add_tokens([$token]);
     my @expr;
 
     # try the positions in a random order
@@ -375,18 +347,15 @@ sub random_expr {
     return @expr;
 }
 
-sub next_tokens {
-    my ($self, $tokens) = @_;
+method next_tokens($self: ArrayRef $tokens) {
     return $self->_pos_tokens('next_token', $tokens);
 }
 
-sub prev_tokens {
-    my ($self, $tokens) = @_;
+method prev_tokens($self: ArrayRef $tokens) {
     return $self->_pos_tokens('prev_token', $tokens);
 }
 
-sub _pos_tokens {
-    my ($self, $pos_table, $tokens) = @_;
+method _pos_tokens($self: Str $pos_table, ArrayRef $tokens) {
     my $dbh = $self->dbh;
 
     my $expr_text = $self->_expr_text($tokens);
@@ -398,9 +367,12 @@ sub _pos_tokens {
     return \%clean_hash;
 }
 
-sub save {
+method save {
     # no op
 }
+
+with qw(Hailo::Role::Generic
+        Hailo::Role::Storage);
 
 __PACKAGE__->meta->make_immutable;
 

@@ -13,7 +13,7 @@ subtest make_tokens => sub {
         my ($str, $tokens) = @_;
 
         is_deeply(
-            [ Hailo::Tokenizer::Characters::make_tokens(undef, $str) ],
+            [ Hailo::Tokenizer::Characters::make_tokens(Hailo::Tokenizer::Characters->new, $str) ],
             $tokens,
             "make_tokens: <<$str>> ==> " . (join ' ', map { qq[<<$_>>] } @$tokens) . ""
         );
@@ -37,7 +37,11 @@ subtest make_output => sub {
         my ($str, $output) = @_;
 
         is_deeply(
-            [ Hailo::Tokenizer::Characters::make_output(undef, Hailo::Tokenizer::Characters::make_tokens(undef, $str)) ],
+            [
+                Hailo::Tokenizer::Characters::make_output(
+                    Hailo::Tokenizer::Characters->new,
+                    [ Hailo::Tokenizer::Characters::make_tokens(Hailo::Tokenizer::Characters->new, $str) ])
+              ],
             $output,
             "make_output: <<$str>> ==> " . (join ' ', map { qq[<<$_>>] } @$output) . ""
         );

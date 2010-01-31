@@ -1,6 +1,7 @@
 package Hailo::Storage::mysql;
 use 5.10.0;
 use Moose;
+use MooseX::Method::Signatures;
 use MooseX::StrictConstructor;
 
 our $VERSION = '0.01';
@@ -18,8 +19,7 @@ override _build_dbd_options => sub {
     };
 };
 
-sub _build_dbi_options {
-    my ($self) = @_;
+method _build_dbi_options {
     my $dbd = $self->dbd;
     my $dbd_options = $self->dbd_options;
     my $args = $self->arguments;
@@ -39,9 +39,7 @@ sub _build_dbi_options {
     return \@options;
 }
 
-sub _exists_db {
-    my ($self) = @_;
-
+method _exists_db {
     $self->sth->{exists_db}->execute();
     return defined $self->sth->{exists_db}->fetchrow_array;
 }
