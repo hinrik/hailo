@@ -382,16 +382,7 @@ method train ($self: Path::Class::File $filename) {
     return;
 }
 
-before _train_progress => sub {
-    require Term::ProgressBar;
-    Term::ProgressBar->import(2.00);
-    require File::CountLines;
-    File::CountLines->import('count_lines');
-    return;
-};
-
-sub _train_progress {
-    my ($self, $fh, $filename) = @_;
+method _train_progress($self: $fh, Str $filename) {
     my $lines = count_lines($filename);
     my $progress = Term::ProgressBar->new({
         name => "training from $filename",
@@ -422,6 +413,14 @@ sub _train_progress {
 
     return;
 }
+
+before _train_progress => sub {
+    require Term::ProgressBar;
+    Term::ProgressBar->import(2.00);
+    require File::CountLines;
+    File::CountLines->import('count_lines');
+    return;
+};
 
 method learn($self: Str $input) {
     my $storage = $self->_storage_obj;
