@@ -225,7 +225,7 @@ has _ui_obj => (
 
 with qw(MooseX::Getopt::Dashes);
 
-method _getopt_full_usage($self: $usage) {
+method _getopt_full_usage($usage) {
     my ($use, $options) = do {
         my $out = $usage->text;
 
@@ -318,7 +318,7 @@ method _build__ui_obj {
     return $obj;
 }
 
-method _new_class($self: Str $type, Str $class, HashRef $args) {
+method _new_class(Str $type, Str $class, HashRef $args) {
     my $pkg = "Hailo::${type}::${class}";
     eval { Class::MOP::load_class($pkg) };
     die $@ if $@;
@@ -364,7 +364,7 @@ method save {
     return;
 }
 
-method train ($self: Str|Path::Class::File $filename) {
+method train (Str|Path::Class::File $filename) {
     my $storage = $self->_storage_obj;
     $storage->start_training();
 
@@ -382,7 +382,7 @@ method train ($self: Str|Path::Class::File $filename) {
     return;
 }
 
-method _train_progress($self: $fh, Str|Path::Class::File $filename) {
+method _train_progress($fh, Str|Path::Class::File $filename) {
     my $lines = count_lines($filename);
     my $progress = Term::ProgressBar->new({
         name => "training from $filename",
@@ -422,7 +422,7 @@ before _train_progress => sub {
     return;
 };
 
-method learn($self: Str $input) {
+method learn(Str $input) {
     my $storage = $self->_storage_obj;
 
     $storage->start_learning();
@@ -431,11 +431,11 @@ method learn($self: Str $input) {
     return;
 }
 
-method reply($self: Str $input) {
+method reply(Str $input) {
     return $self->_engine_obj->reply($input);
 }
 
-method learn_reply($self: Str $input) {
+method learn_reply(Str $input) {
     $self->learn($input);
     return $self->_engine_obj->reply($input);
 }

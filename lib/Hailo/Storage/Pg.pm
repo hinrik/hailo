@@ -46,7 +46,7 @@ method _exists_db {
 }
 
 # These two are optimized to use PostgreSQL >8.2's INSERT ... RETURNING 
-method _add_expr($self: ArrayRef $token_ids, Bool $can_start, Bool $can_end, Str $expr_text) {
+method _add_expr(ArrayRef $token_ids, Bool $can_start, Bool $can_end, Str $expr_text) {
     # add the expression
     $self->sth->{add_expr}->execute(@$token_ids, $can_start, $can_end, $expr_text);
 
@@ -54,7 +54,7 @@ method _add_expr($self: ArrayRef $token_ids, Bool $can_start, Bool $can_end, Str
     return $self->sth->{add_expr}->fetchrow_array;
 }
 
-method _add_token($self: Str $token) {
+method _add_token(Str $token) {
     $self->sth->{add_token}->execute($token);
     return $self->sth->{add_token}->fetchrow_array;
 }
