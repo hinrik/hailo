@@ -7,6 +7,7 @@ use Moose;
 use MooseX::StrictConstructor;
 use MooseX::Types::Moose qw/Int Str Bool HashRef/;
 use MooseX::Types::Path::Class qw(File);
+use Term::ReadLine;
 use Time::HiRes qw(gettimeofday tv_interval);
 use IO::Interactive qw(is_interactive);
 use namespace::clean -except => [ qw(meta
@@ -298,6 +299,26 @@ sub run {
     if ($self->print_version) {
         print "hailo $VERSION\n";
         exit;
+    }
+
+    if (is_interactive() and
+        defined $self->brain_resource and
+        not defined $self->train_file and
+        not defined $self->learn_str and
+        not defined $self->learn_reply_str and
+        not defined $self->reply_str) {
+
+        my $name =__PACKAGE__;
+        my $term = Term::ReadLine->new($name);
+
+        while (defined (my $line = $term->readline(lc($name) . '> '))) {
+            my $answer = $self->reply($line);
+            if (defined $answer) {
+                say $answer;
+            } else {
+                say "I don't know enough to answer you yet.";
+            }
+        }
     }
 
     $self->train($self->train_file) if defined $self->train_file;

@@ -1,3 +1,7 @@
+0.07
+    - Issue #13: `hailo -b brain' will launch an interactive ReadLine
+      terminal
+
 0.06 Sat Jan 30 19:21:28 GMT 2010
     - Construct SQL's dbd_options with lazy_build, not default. This
       makes it easy to add additional options in the individual
