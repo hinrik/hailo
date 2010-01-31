@@ -6,8 +6,10 @@ verbose  = 3
 # or inhibit backwards-compatability
 [-RegularExpressions::RequireExtendedFormatting]
 
+[-ValuesAndExpressions::ProhibitCommaSeparatedStatements]
 [-ValuesAndExpressions::ProhibitConstantPragma]
 [-ValuesAndExpressions::ProhibitImplicitNewlines]
+[-ValuesAndExpressions::ProhibitVersionStrings]
 
 [-Variables::ProhibitPackageVars]
 [-Variables::RequireLocalizedPunctuationVars]
