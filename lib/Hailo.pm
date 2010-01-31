@@ -9,6 +9,8 @@ use MooseX::Types::Moose qw/Int Str Bool HashRef/;
 use MooseX::Types::Path::Class qw(File);
 use Time::HiRes qw(gettimeofday tv_interval);
 use IO::Interactive qw(is_interactive);
+use FindBin qw($Bin $Script);
+use File::Spec::Functions qw(catfile);
 use namespace::clean -except => [ qw(meta
                                      count_lines
                                      gettimeofday
@@ -236,7 +238,9 @@ sub _getopt_full_usage {
         require Pod::Usage;
         my $out;
         open my $fh, '>', \$out;
+
         Pod::Usage::pod2usage(
+            -input => catfile($Bin, $Script),
             -sections => 'SYNOPSIS',
             -output   => $fh,
             -exitval  => 'noexit',
