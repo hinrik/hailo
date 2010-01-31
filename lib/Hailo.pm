@@ -364,7 +364,7 @@ method save {
     return;
 }
 
-method train ($self: Path::Class::File $filename) {
+method train ($self: Str|Path::Class::File $filename) {
     my $storage = $self->_storage_obj;
     $storage->start_training();
 
@@ -382,7 +382,7 @@ method train ($self: Path::Class::File $filename) {
     return;
 }
 
-method _train_progress($self: $fh, Str $filename) {
+method _train_progress($self: $fh, Str|Path::Class::File $filename) {
     my $lines = count_lines($filename);
     my $progress = Term::ProgressBar->new({
         name => "training from $filename",
