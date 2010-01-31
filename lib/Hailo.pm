@@ -298,7 +298,7 @@ sub run {
 
     if ($self->print_version) {
         print "hailo $VERSION\n";
-        exit;
+        return;
     }
 
     if (is_interactive() and

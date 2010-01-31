@@ -12,7 +12,7 @@ $SIG{__WARN__} = sub { print STDERR @_ if $_[0] !~ m/for database handle being D
 # --version
 stdout_like(
     sub {
-        exits_ok( sub { Hailo->new( print_version => 1)->run }, "exiting exits")
+        never_exits_ok( sub { Hailo->new( print_version => 1)->run }, "exiting exits")
     },
     qr/^hailo [0-9.]+$/,
     "Hailo prints its version",
