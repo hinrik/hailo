@@ -7,7 +7,6 @@ use Moose;
 use MooseX::StrictConstructor;
 use MooseX::Types::Moose qw/Int Str Bool HashRef/;
 use MooseX::Types::Path::Class qw(File);
-use Term::ReadLine;
 use Time::HiRes qw(gettimeofday tv_interval);
 use IO::Interactive qw(is_interactive);
 use namespace::clean -except => [ qw(meta
@@ -143,6 +142,16 @@ has tokenizer_class => (
     default       => "Words",
 );
 
+has ui_class => (
+    traits        => [qw(Getopt)],
+    cmd_aliases   => "u",
+    cmd_flag      => "ui",
+    documentation => "Use UI CLASS",
+    isa           => Str,
+    is            => "ro",
+    default       => "ReadLine",
+);
+
 # Object arguments
 has engine_args => (
     traits        => [qw(Getopt)],
@@ -170,6 +179,14 @@ has tokenizer_args => (
     default       => sub { +{} },
 );
 
+has ui_args => (
+    traits        => [qw(Getopt)],
+    documentation => "Arguments for the UI class",
+    isa           => HashRef,
+    is            => "ro",
+    default       => sub { +{} },
+);
+
 # Working objects
 has _engine_obj => (
     traits      => [qw(NoGetopt)],
@@ -190,6 +207,14 @@ has _storage_obj => (
 has _tokenizer_obj => (
     traits      => [qw(NoGetopt)],
     does        => 'Hailo::Role::Tokenizer',
+    lazy_build  => 1,
+    is          => 'ro',
+    init_arg    => undef,
+);
+
+has _ui_obj => (
+    traits      => [qw(NoGetopt)],
+    does        => 'Hailo::Role::UI',
     lazy_build  => 1,
     is          => 'ro',
     init_arg    => undef,
@@ -283,6 +308,20 @@ sub _build__tokenizer_obj {
     return $obj;
 }
 
+sub _build__ui_obj {
+    my ($self) = @_;
+
+    my $obj = $self->_new_class(
+        "UI",
+        $self->ui_class,
+        {
+            arguments => $self->ui_args,
+        },
+    );
+
+    return $obj;
+}
+
 sub _new_class {
     my ($self, $type, $class, $args) = @_;
 
@@ -308,17 +347,7 @@ sub run {
         not defined $self->learn_reply_str and
         not defined $self->reply_str) {
 
-        my $name =__PACKAGE__;
-        my $term = Term::ReadLine->new($name);
-
-        while (defined (my $line = $term->readline(lc($name) . '> '))) {
-            my $answer = $self->reply($line);
-            if (defined $answer) {
-                say $answer;
-            } else {
-                say "I don't know enough to answer you yet.";
-            }
-        }
+        $self->_ui_obj->run($self);
     }
 
     $self->train($self->train_file) if defined $self->train_file;
@@ -331,8 +360,7 @@ sub run {
 
     if (defined $self->reply_str) {
         my $answer = $self->_engine_obj->reply($self->reply_str);
-        die "I don't know enough to answer you yet.\n" if !defined $answer;
-        say $answer;
+        say $answer // "I don't know enough to answer you yet.";
     }
 
     $self->save() if defined $self->brain_resource;
@@ -493,14 +521,21 @@ The tokenizer to use. Default: 'Words';
 
 The engine to use. Default: 'Default';
 
+=head2 C<engine_class>
+
+The UI to use. Default: 'ReadLine';
+
 =head2 C<storage_args>
 
 =head2 C<tokenizer_args>
 
 =head2 C<engine_args>
 
-A C<HashRef> of arguments storage/tokenizer/engine backends. See the
-documentation for the backends for what sort of arguments they accept.
+=head2 C<ui_args>
+
+A C<HashRef> of arguments storage/tokenizer/engine/ui backends. See
+the documentation for the backends for what sort of arguments they
+accept.
 
 =head2 C<token_separator>
 

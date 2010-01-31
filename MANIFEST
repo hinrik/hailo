@@ -17,6 +17,7 @@ lib/Hailo/Role/Engine.pm
 lib/Hailo/Role/Generic.pm
 lib/Hailo/Role/Storage.pm
 lib/Hailo/Role/Tokenizer.pm
+lib/Hailo/Role/UI.pm
 lib/Hailo/Storage/mysql.pm
 lib/Hailo/Storage/Perl.pm
 lib/Hailo/Storage/Pg.pm
@@ -24,6 +25,7 @@ lib/Hailo/Storage/SQL.pm
 lib/Hailo/Storage/SQLite.pm
 lib/Hailo/Tokenizer/Characters.pm
 lib/Hailo/Tokenizer/Words.pm
+lib/Hailo/UI/ReadLine.pm
 Makefile.PL
 MANIFEST
 MANIFEST.SKIP
@@ -39,6 +41,7 @@ t/storage/inheritance.t
 t/storage/Pg.t
 t/tokenizer/Characters.t
 t/tokenizer/Words.t
+t/ui/readline.t
 t/usage/basic.t
 t/usage/options.t
 utils/crunchbase-companies
