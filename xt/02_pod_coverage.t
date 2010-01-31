@@ -6,4 +6,4 @@ my @modules = grep { $_ !~ /^Hailo::(?:Tokenizer|Storage|Engine)::/ } all_module
 
 plan tests => scalar @modules;
 
-pod_coverage_ok($_) for @modules;
+pod_coverage_ok($_, { also_private => [ qr/^[A-Z_]+$/ ] }) for @modules;
