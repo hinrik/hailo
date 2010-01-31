@@ -318,7 +318,7 @@ method _build__ui_obj {
     return $obj;
 }
 
-method _new_class(Str $type, Str $class, HashRef $args) {
+method _new_class($type, $class, $args) {
     my $pkg = "Hailo::${type}::${class}";
     eval { Class::MOP::load_class($pkg) };
     die $@ if $@;
@@ -364,7 +364,7 @@ method save {
     return;
 }
 
-method train (Str|Path::Class::File $filename) {
+method train ($filename) {
     my $storage = $self->_storage_obj;
     $storage->start_training();
 
@@ -382,7 +382,7 @@ method train (Str|Path::Class::File $filename) {
     return;
 }
 
-method _train_progress($fh, Str|Path::Class::File $filename) {
+method _train_progress($fh, $filename) {
     my $lines = count_lines($filename);
     my $progress = Term::ProgressBar->new({
         name => "training from $filename",
@@ -422,7 +422,7 @@ before _train_progress => sub {
     return;
 };
 
-method learn(Str $input) {
+method learn($input) {
     my $storage = $self->_storage_obj;
 
     $storage->start_learning();
@@ -431,11 +431,11 @@ method learn(Str $input) {
     return;
 }
 
-method reply(Str $input) {
+method reply($input) {
     return $self->_engine_obj->reply($input);
 }
 
-method learn_reply(Str $input) {
+method learn_reply($input) {
     $self->learn($input);
     return $self->_engine_obj->reply($input);
 }

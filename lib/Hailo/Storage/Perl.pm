@@ -34,7 +34,7 @@ method _build__memory {
     }
 }
 
-method add_expr(HashRef $args) {
+method add_expr($args) {
     my $mem = $self->_memory;
 
     my $ehash = $self->_hash_tokens($args->{tokens});
@@ -61,34 +61,34 @@ method add_expr(HashRef $args) {
     return;
 }
 
-method token_exists(Str $token) {
+method token_exists($token) {
     return 1 if exists $self->_memory->{token}{$token};
     return;
 }
 
-method random_expr(Str $token) {
+method random_expr($token) {
     my @ehash = @{ $self->_memory->{token}{$token} };
     my $expr = $self->_memory->{expr}{ $ehash[rand @ehash] };
     return ($expr->{can_start}, $expr->{can_end}, @{ $expr->{tokens} });
 }
 
-method expr_can(ArrayRef $tokens) {
+method expr_can($tokens) {
     my $ehash = $self->_hash_tokens($tokens);
     return @{ $self->_memory->{expr}{$ehash} }{qw(can_start can_end)};
 }
 
-method next_tokens(ArrayRef $tokens) {
+method next_tokens($tokens) {
     my $ehash = $self->_hash_tokens($tokens);
     return $self->_memory->{next_token}{ $ehash };
 }
 
-method prev_tokens(ArrayRef $tokens) {
+method prev_tokens($tokens) {
     my $ehash = $self->_hash_tokens($tokens);
     return $self->_memory->{prev_token}{ $ehash };
 }
 
 # concatenate contents of an expression for unique identification
-method _hash_tokens(ArrayRef $tokens) {
+method _hash_tokens($tokens) {
     my $ehash = join $self->token_separator, @$tokens;
     return $ehash;
 }

@@ -13,7 +13,7 @@ method BUILD {
     return;
 }
 
-method run(Hailo $hailo) {
+method run($hailo) {
     my $name = ref $hailo;
     my $term = Term::ReadLine->new($name);
 
