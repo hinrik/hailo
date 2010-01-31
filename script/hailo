@@ -32,14 +32,20 @@ hailo - Command-line interface to the L<Hailo|Hailo> Markov bot
 Train in-memory from fortune files and reply:
 
     for i in {1..1000}; do fortune >> /tmp/fortune.trn; done
-    hailo --brain ":memory:" --train /tmp/fortune.trn --reply "art"
+    hailo --brain :memory: --train /tmp/fortune.trn --reply art
     # ==> He hath eaten me out of an art deeper than we ourselves.
 
 Create an on-disk brain for later use:
 
-    hailo --brain "hailo.brn" --train /tmp/fortune.trn
-    hailo --brain "hailo.brn" --reply "is"
+    hailo --brain hailo.brn --train /tmp/fortune.trn
+    hailo --brain hailo.brn --reply "is"
     # ==> Earth is ballasted with bones of millions of dollars.
+
+Interact with the brain using readline:
+
+    hailo --brain hailo.brn
+    hailo> hello there
+    # ==> Wife asked "what have you got there?" replied he, "just my cup of fur".
 
 =head1 DESCRIPTION
 
