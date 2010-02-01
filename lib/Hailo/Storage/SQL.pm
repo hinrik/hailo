@@ -107,11 +107,7 @@ sub _build_sth {
         $state{$name} = $sql;
     }
 
-    #$state{$_} = $self->dbh->prepare($state{$_}) for keys %state;
-    for my $f (keys %state) {
-        say $f;
-        $state{$f} = $self->dbh->prepare($state{$f})
-    }
+    $state{$_} = $self->dbh->prepare($state{$_}) for keys %state;
     return \%state;
 }
 
