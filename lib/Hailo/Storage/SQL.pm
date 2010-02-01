@@ -107,7 +107,11 @@ sub _build_sth {
         $state{$name} = $sql;
     }
 
-    $state{$_} = $self->dbh->prepare($state{$_}) for keys %state;
+    #$state{$_} = $self->dbh->prepare($state{$_}) for keys %state;
+    for my $f (keys %state) {
+        say $f;
+        $state{$f} = $self->dbh->prepare($state{$f})
+    }
     return \%state;
 }
 
@@ -429,35 +433,34 @@ CREATE TABLE info (
 );
 __[ table_token ]__
 CREATE TABLE token (
-    token_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    text     TEXT NOT NULL
+    id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    text TEXT NOT NULL UNIQUE
 );
 __[ table_expr ]__
 CREATE TABLE expr (
-    expr_id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    id        INTEGER PRIMARY KEY AUTOINCREMENT,
     can_start BOOL,
     can_end   BOOL,
 [% FOREACH i IN orders %]
-    token[% i %]_id INTEGER NOT NULL REFERENCES token (token_id),
+    token[% i %]_id INTEGER NOT NULL REFERENCES token (id),
 [% END %]
-    expr_text TEXT NOT NULL UNIQUE
+    text      TEXT NOT NULL UNIQUE
 );
 __[ table_next_token ]__
 CREATE TABLE next_token (
-    pos_token_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    expr_id      INTEGER NOT NULL REFERENCES expr (expr_id),
-    token_id     INTEGER NOT NULL REFERENCES token (token_id),
-    count        INTEGER NOT NULL
+    id       INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    expr_id  INTEGER NOT NULL REFERENCES expr (id),
+    token_id INTEGER NOT NULL REFERENCES token (id),
+    count    INTEGER NOT NULL
 );
 __[ table_prev_token ]__
 CREATE TABLE prev_token (
-    pos_token_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    expr_id      INTEGER NOT NULL REFERENCES expr (expr_id),
-    token_id     INTEGER NOT NULL REFERENCES token (token_id),
-    count        INTEGER NOT NULL
+    id       INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    expr_id  INTEGER NOT NULL REFERENCES expr (id),
+    token_id INTEGER NOT NULL REFERENCES token (id),
+    count    INTEGER NOT NULL
 );
 __[ table_indexes ]__
-CREATE INDEX token_text ON token (text);
 [% FOREACH i IN orders %]
 CREATE INDEX expr_token[% i %]_id on expr (token[% i %]_id);
 [% END %]
@@ -472,21 +475,21 @@ INSERT INTO info (attribute, text) VALUES ('markov_order', ?);
 __[ query_set_separator ]__
 INSERT INTO info (attribute, text) VALUES ('token_separator', ?);
 __[ query_expr_id ]__
-SELECT expr_id FROM expr WHERE expr_text = ?;
+SELECT id FROM expr WHERE text = ?;
 __[ query_expr_id_token(NUM)_id ]__
-SELECT expr_id FROM expr WHERE [% column %] = ?;
+SELECT id FROM expr WHERE [% column %] = ?;
 __[ query_expr_by_id ]__
-SELECT can_start, can_end, expr_text FROM expr WHERE expr_id = ?;
+SELECT can_start, can_end, text FROM expr WHERE id = ?;
 __[ query_expr_can ]__
-SELECT can_start, can_end FROM expr WHERE expr_text = ?;
+SELECT can_start, can_end FROM expr WHERE text = ?;
 __[ query_token_id ]__
-SELECT token_id FROM token WHERE text = ?;
+SELECT id FROM token WHERE text = ?;
 __[ query_add_token ]__
 INSERT INTO token (text) VALUES (?);
 __[ query_last_expr_rowid ]_
-SELECT expr_id  FROM expr  ORDER BY expr_id  DESC LIMIT 1;
+SELECT id FROM expr ORDER BY id DESC LIMIT 1;
 __[ query_last_token_rowid ]__
-SELECT token_id FROM token ORDER BY token_id DESC LIMIT 1;
+SELECT id FROM token ORDER BY id DESC LIMIT 1;
 __[ query_(next_token|prev_token)_count ]__
 SELECT count FROM [% table %] WHERE expr_id = ? AND token_id = ?;
 __[ query_(next_token|prev_token)_inc ]__
@@ -497,7 +500,7 @@ __[ query_(next_token|prev_token)_get ]__
 SELECT t.text, p.count
   FROM token t
 INNER JOIN [% table %] p
-        ON p.token_id = t.token_id
+        ON p.token_id = t.id
      WHERE p.expr_id = ?;
 __[ query_(add_expr) ]__
-INSERT INTO expr ([% columns %], can_start, can_end, expr_text) VALUES ([% ids %], ?, ?, ?);
+INSERT INTO expr ([% columns %], can_start, can_end, text) VALUES ([% ids %], ?, ?, ?);

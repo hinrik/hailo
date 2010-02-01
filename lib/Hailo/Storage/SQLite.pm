@@ -72,13 +72,13 @@ it under the same terms as Perl itself.
 __DATA__
 __[ table_expr ]__
 CREATE TABLE expr (
-    expr_id   INTEGER PRIMARY KEY AUTOINCREMENT,
-    can_start BOOL,
-    can_end   BOOL,
+    id        INTEGER PRIMARY KEY AUTOINCREMENT,
+    can_start INTEGER,
+    can_end   INTEGER,
 [% FOREACH i IN orders %]
-    token[% i %]_id INTEGER NOT NULL REFERENCES token (token_id),
+    token[% i %]_id INTEGER NOT NULL REFERENCES token (id),
 [% END %]
-    expr_text TEXT NOT NULL UNIQUE
+    text TEXT NOT NULL UNIQUE
 );
 __[ query_last_expr_rowid ]_
 SELECT last_insert_rowid();

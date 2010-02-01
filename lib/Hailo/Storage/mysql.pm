@@ -125,38 +125,32 @@ CREATE TABLE info (
 );
 __[ table_token ]__
 CREATE TABLE token (
-    token_id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    text     TEXT NOT NULL
+    id   INTEGER PRIMARY KEY AUTO_INCREMENT,
+    text TEXT NOT NULL
 );
 __[ table_expr ]__
 CREATE TABLE expr (
-    expr_id   INTEGER PRIMARY KEY AUTO_INCREMENT,
+    id        INTEGER PRIMARY KEY AUTO_INCREMENT,
     can_start BOOL,
     can_end   BOOL,
 [% FOREACH i IN orders %]
-    token[% i %]_id INTEGER NOT NULL REFERENCES token (token_id),
+    token[% i %]_id INTEGER NOT NULL REFERENCES token (id),
 [% END %]
-    expr_text TEXT NOT NULL
+    text      TEXT NOT NULL
 );
 __[ table_next_token ]__
 CREATE TABLE next_token (
-    pos_token_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    expr_id      INTEGER NOT NULL REFERENCES expr (expr_id),
-    token_id     INTEGER NOT NULL REFERENCES token (token_id),
-    count        INTEGER NOT NULL
+    id       INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    expr_id  INTEGER NOT NULL REFERENCES expr (id),
+    token_id INTEGER NOT NULL REFERENCES token (id),
+    count    INTEGER NOT NULL
 );
 __[ table_prev_token ]__
 CREATE TABLE prev_token (
-    pos_token_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    expr_id      INTEGER NOT NULL REFERENCES expr (expr_id),
-    token_id     INTEGER NOT NULL REFERENCES token (token_id),
-    count        INTEGER NOT NULL
+    id       INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    expr_id  INTEGER NOT NULL REFERENCES expr (id),
+    token_id INTEGER NOT NULL REFERENCES token (id),
+    count    INTEGER NOT NULL
 );
-__[ table_indexes ]__
-[% FOREACH i IN orders %]
-CREATE INDEX expr_token[% i %]_id on expr (token[% i %]_id);
-[% END %]
-CREATE INDEX next_token_expr_id ON next_token (expr_id);
-CREATE INDEX prev_token_expr_id ON prev_token (expr_id);
 __[ query_exists_db ]__
 SHOW TABLES;
