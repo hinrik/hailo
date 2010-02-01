@@ -29,7 +29,8 @@ after stop_training => sub {
     return;
 };
 
-method _exists_db {
+sub _exists_db {
+    my ($self) = @_;
     my $brain = $self->brain;
     return unless defined $self->brain;
     return -s $self->brain;

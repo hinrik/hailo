@@ -16,7 +16,8 @@ has _memory => (
     init_arg   => undef,
 );
 
-method _build__memory {
+sub _build__memory {
+    my ($self) = @_;
     if (defined $self->brain && -s $self->brain) {
         return retrieve($self->brain);
     }
@@ -93,14 +94,17 @@ method _hash_tokens($tokens) {
     return $ehash;
 }
 
-method save {
+sub save {
+    my ($self) = @_;
     store($self->_memory, $self->brain);
     return;
 }
 
-method start_training { return }
+sub start_training {
+    my ($self) = @_; return }
 method stop_training  { return }
-method start_learning { return }
+sub start_learning {
+    my ($self) = @_; return }
 method stop_learning  { return }
 
 with qw(Hailo::Role::Generic

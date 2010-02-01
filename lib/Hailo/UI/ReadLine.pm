@@ -7,7 +7,8 @@ use Hailo;
 use Term::ReadLine;
 
 # Use Gnu readline
-method BUILD {
+sub BUILD {
+    my ($self) = @_;
     require Term::ReadLine::Gnu;
     $ENV{PERL_RL} = 'Gnu';
     return;

@@ -28,7 +28,8 @@ has dbd => (
     documentation => "The DBD::* driver we're using",
 );
 
-method _build_dbh {
+sub _build_dbh {
+    my ($self) = @_;
     my $dbd_options = $self->dbi_options;
 
     return DBI->connect($self->dbi_options);
@@ -41,7 +42,8 @@ has dbi_options => (
     lazy_build => 1,
 );
 
-method _build_dbi_options {
+sub _build_dbi_options {
+    my ($self) = @_;
     my $dbd = $self->dbd;
     my $dbd_options = $self->dbd_options;
     my $db = $self->brain // '';
@@ -62,7 +64,8 @@ has dbd_options => (
     lazy_build => 1,
 );
 
-method _build_dbd_options {
+sub _build_dbd_options {
+    my ($self) = @_;
     return {
         RaiseError => 1
     };
@@ -82,7 +85,8 @@ has sth => (
 );
 
 # our statement handlers
-method _build_sth {
+sub _build_sth {
+    my ($self) = @_;
     my $sections = $self->_sth_sections();
     my %state;
     while (my ($name, $options) = each %$sections) {
@@ -105,7 +109,8 @@ method _build_sth {
     return \%state;
 }
 
-method _sth_sections {
+sub _sth_sections {
+    my ($self) = @_;
     my %sections;
 
     # () sections are magical
@@ -145,7 +150,8 @@ method _sth_sections {
     return \%sections;
 }
 
-method _engage {
+sub _engage {
+    my ($self) = @_;
     if ($self->_exists_db) {
         $self->sth->{get_order}->execute();
         my $order = $self->sth->{get_order}->fetchrow_array();
@@ -168,17 +174,20 @@ method _engage {
     return;
 }
 
-method start_training {
+sub start_training {
+    my ($self) = @_;
     $self->start_learning();
     return;
 }
 
-method stop_training {
+sub stop_training {
+    my ($self) = @_;
     $self->stop_learning();
     return;
 }
 
-method start_learning {
+sub start_learning {
+    my ($self) = @_;
     if (not $self->_engaged()) {
         # Engage!
         $self->_engage();
@@ -190,13 +199,15 @@ method start_learning {
     return;
 }
 
-method stop_learning {
+sub stop_learning {
+    my ($self) = @_;
     # finish a transaction
     $self->dbh->commit;
     return;
 }
 
-method _create_db {
+sub _create_db {
+    my ($self) = @_;
     my @statements = $self->_get_create_db_sql;
 
     $self->dbh->do($_) for @statements;
@@ -204,7 +215,8 @@ method _create_db {
     return;
 }
 
-method _get_create_db_sql {
+sub _get_create_db_sql {
+    my ($self) = @_;
     my $sql;
 
     for my $section (qw(info token expr next_token prev_token indexes)) {
@@ -367,7 +379,8 @@ method _pos_tokens($pos_table, $tokens) {
     return \%clean_hash;
 }
 
-method save {
+sub save {
+    my ($self) = @_;
     # no op
 }
 

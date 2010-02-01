@@ -19,7 +19,8 @@ override _build_dbd_options => sub {
     };
 };
 
-method _build_dbi_options {
+sub _build_dbi_options {
+    my ($self) = @_;
     my $dbd = $self->dbd;
     my $dbd_options = $self->dbd_options;
     my $args = $self->arguments;
@@ -40,7 +41,8 @@ method _build_dbi_options {
     return \@options;
 }
 
-method _exists_db {
+sub _exists_db {
+    my ($self) = @_;
     $self->sth->{exists_db}->execute();
     return int $self->sth->{exists_db}->fetchrow_array;
 }
