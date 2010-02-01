@@ -4,7 +4,6 @@ use 5.010;
 use autodie qw(open close);
 use Class::MOP;
 use Moose;
-use MooseX::Method::Signatures;
 use MooseX::StrictConstructor;
 use MooseX::Types::Moose qw/Int Str Bool HashRef/;
 use MooseX::Types::Path::Class qw(File);
@@ -225,7 +224,8 @@ has _ui_obj => (
 
 with qw(MooseX::Getopt::Dashes);
 
-method _getopt_full_usage($usage) {
+sub _getopt_full_usage {
+    my ($self, $usage) = @_;
     my ($use, $options) = do {
         my $out = $usage->text;
 
@@ -263,7 +263,8 @@ USAGE
     exit 1;
 }
 
-method _build__engine_obj {
+sub _build__engine_obj {
+    my ($self) = @_;
     my $obj = $self->_new_class(
         "Engine",
         $self->engine_class,
@@ -277,7 +278,8 @@ method _build__engine_obj {
     return $obj;
 }
 
-method _build__storage_obj {
+sub _build__storage_obj {
+    my ($self) = @_;
     my $obj = $self->_new_class(
         "Storage",
         $self->storage_class,
@@ -294,7 +296,8 @@ method _build__storage_obj {
     return $obj;
 }
 
-method _build__tokenizer_obj {
+sub _build__tokenizer_obj {
+    my ($self) = @_;
     my $obj = $self->_new_class(
         "Tokenizer",
         $self->tokenizer_class,
@@ -306,7 +309,8 @@ method _build__tokenizer_obj {
     return $obj;
 }
 
-method _build__ui_obj {
+sub _build__ui_obj {
+    my ($self) = @_;
     my $obj = $self->_new_class(
         "UI",
         $self->ui_class,
@@ -318,7 +322,8 @@ method _build__ui_obj {
     return $obj;
 }
 
-method _new_class($type, $class, $args) {
+sub _new_class {
+    my ($self, $type, $class, $args) = @_;
     my $pkg = "Hailo::${type}::${class}";
     eval { Class::MOP::load_class($pkg) };
     die $@ if $@;
@@ -326,7 +331,9 @@ method _new_class($type, $class, $args) {
     return $pkg->new(%$args);
 }
 
-method run {
+sub run {
+    my ($self) = @_;
+
     if ($self->print_version) {
         print "hailo $VERSION\n";
         return;
@@ -359,12 +366,14 @@ method run {
     return;
 }
 
-method save {
+sub save {
+    my ($self) = @_;
     $self->_storage_obj->save();
     return;
 }
 
-method train ($filename) {
+sub train {
+    my ($self, $filename) = @_;
     my $storage = $self->_storage_obj;
     $storage->start_training();
 
@@ -382,7 +391,16 @@ method train ($filename) {
     return;
 }
 
-method _train_progress($fh, $filename) {
+before _train_progress => sub {
+    require Term::ProgressBar;
+    Term::ProgressBar->import(2.00);
+    require File::CountLines;
+    File::CountLines->import('count_lines');
+    return;
+};
+
+sub _train_progress{ 
+    my ($self, $fh, $filename) = @_;
     my $lines = count_lines($filename);
     my $progress = Term::ProgressBar->new({
         name => "training from $filename",
@@ -414,15 +432,8 @@ method _train_progress($fh, $filename) {
     return;
 }
 
-before _train_progress => sub {
-    require Term::ProgressBar;
-    Term::ProgressBar->import(2.00);
-    require File::CountLines;
-    File::CountLines->import('count_lines');
-    return;
-};
-
-method learn($input) {
+sub learn {
+    my ($self, $input) = @_;
     my $storage = $self->_storage_obj;
 
     $storage->start_learning();
@@ -431,11 +442,13 @@ method learn($input) {
     return;
 }
 
-method reply($input) {
+sub reply {
+    my ($self, $input) = @_;
     return $self->_engine_obj->reply($input);
 }
 
-method learn_reply($input) {
+sub learn_reply {
+    my ($self, $input) = @_;
     $self->learn($input);
     return $self->_engine_obj->reply($input);
 }
