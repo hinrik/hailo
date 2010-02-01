@@ -30,7 +30,8 @@ has _repeat_limit => (
     },
 );
 
-method reply($input) {
+sub reply {
+    my ($self, $input) = @_;
     my $storage  = $self->storage;
     my $order    = $storage->order;
     my $toke     = $self->tokenizer;
@@ -85,7 +86,8 @@ method reply($input) {
     return $toke->make_output(\@reply);
 }
 
-method learn($input) {
+sub learn {
+    my ($self, $input) = @_;
     my $storage  = $self->storage;
     my $order    = $storage->order;
 
@@ -115,7 +117,8 @@ method learn($input) {
     return;
 }
 
-method _pos_token($next_tokens, $key_tokens) {
+sub _pos_token {
+    my ($self, $next_tokens, $key_tokens) = @_;
     my $storage = $self->storage;
 
     for my $i (0 .. $#{ $key_tokens }) {
@@ -130,7 +133,8 @@ method _pos_token($next_tokens, $key_tokens) {
     return @novel_tokens[rand @novel_tokens];
 }
 
-method _clean_input($input) {
+sub _clean_input {
+    my ($self, $input) = @_;
     my $separator = quotemeta $self->storage->token_separator;
     $input =~ s/$separator//g;
     return $input;

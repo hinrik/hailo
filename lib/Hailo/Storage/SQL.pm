@@ -233,12 +233,14 @@ sub _get_create_db_sql {
     return ($sql =~ /\s*(.*?);/gs);
 }
 
-method _expr_text($tokens) {
+sub _expr_text {
+    my ($self, $tokens) = @_;
     return join $self->token_separator, @$tokens;
 }
 
 # add a new expression to the database
-method add_expr($args) {
+sub add_expr {
+    my ($self, $args) = @_;
     my $tokens    = $args->{tokens};
     my $expr_text = $self->_expr_text($tokens);
     my $expr_id   = $self->_expr_id($expr_text);
@@ -273,7 +275,8 @@ method add_expr($args) {
     return;
 }
 
-method _add_expr($token_ids, Any $can_start, Any $can_end, $expr_text) {
+sub _add_expr {
+    my ($self, $token_ids, $can_start, $can_end, $expr_text) = @_;
     # add the expression
     $self->sth->{add_expr}->execute(@$token_ids, $can_start, $can_end, $expr_text);
 
@@ -283,19 +286,22 @@ method _add_expr($token_ids, Any $can_start, Any $can_end, $expr_text) {
 }
 
 # look up an expression id based on tokens
-method _expr_id($expr_text) {
+sub _expr_id {
+    my ($self, $expr_text) = @_;
     $self->sth->{expr_id}->execute($expr_text);
     return scalar $self->sth->{expr_id}->fetchrow_array();
 }
 
-method expr_can($tokens) {
+sub expr_can {
+    my ($self, $tokens) = @_;
     my $expr_text = $self->_expr_text($tokens);
     $self->sth->{expr_can}->execute($expr_text);
     return $self->sth->{expr_can}->fetchrow_array();
 }
 
 # add tokens and/or return their ids
-method _add_tokens($tokens) {
+sub _add_tokens {
+    my ($self, $tokens) = @_;
     my @token_ids;
 
     for my $token (@$tokens) {
@@ -313,24 +319,28 @@ method _add_tokens($tokens) {
     return @token_ids > 1 ? @token_ids : $token_ids[0];
 }
 
-method _add_token($token) {
+sub _add_token {
+    my ($self, $token) = @_;
     $self->sth->{add_token}->execute($token);
     $self->sth->{last_token_rowid}->execute();
     return $self->sth->{last_token_rowid}->fetchrow_array;
 }
 
-method token_exists($token) {
+sub token_exists {
+    my ($self, $token) = @_;
     $self->sth->{token_id}->execute($token);
     return defined $self->sth->{token_id}->fetchrow_array();
 }
 
-method _split_expr($self:Str $expr) {
+sub _split_expr {
+    my ($self, $expr) = @_;
     my $sep = quotemeta $self->token_separator;
     return split /$sep/, $expr;
 }
 
 # return a random expression containing the given token
-method random_expr($token) {
+sub random_expr {
+    my ($self, $token) = @_;
     my $dbh = $self->dbh;
 
     my $token_id = $self->_add_tokens([$token]);
@@ -359,15 +369,18 @@ method random_expr($token) {
     return @expr;
 }
 
-method next_tokens($tokens) {
+sub next_tokens {
+    my ($self, $tokens) = @_;
     return $self->_pos_tokens('next_token', $tokens);
 }
 
-method prev_tokens($tokens) {
+sub prev_tokens {
+    my ($self, $tokens) = @_;
     return $self->_pos_tokens('prev_token', $tokens);
 }
 
-method _pos_tokens($pos_table, $tokens) {
+sub _pos_tokens {
+    my ($self, $pos_table, $tokens) = @_;
     my $dbh = $self->dbh;
 
     my $expr_text = $self->_expr_text($tokens);

@@ -10,17 +10,20 @@ use namespace::clean -except => 'meta';
 our $VERSION = '0.01';
 
 # output -> tokens
-method make_tokens($line) {
+sub make_tokens {
+    my ($self, $line) = @_;
     return split //, $line;
 }
 
 # return a list of key tokens
-method find_key_tokens($tokens) {
+sub find_key_tokens {
+    my ($self, $tokens) = @_;
     return uniq(@$tokens);
 }
 
 # tokens -> output
-method make_output($reply) {
+sub make_output {
+    my ($self, $reply) = @_;
     return trim join '', @$reply;
 }
 

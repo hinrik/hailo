@@ -14,7 +14,8 @@ sub BUILD {
     return;
 }
 
-method run($hailo) {
+sub run {
+    my ($self, $hailo) = @_;
     my $name = ref $hailo;
     my $term = Term::ReadLine->new($name);
 

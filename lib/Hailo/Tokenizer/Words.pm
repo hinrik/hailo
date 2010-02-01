@@ -25,7 +25,8 @@ my $DOTTED_STRICT = qr/\w+(?:\.(?:\d+|\w{2,}))?/;
 my $WORD_STRICT   = qr/$DOTTED_STRICT(?:$APOSTROPHE$DOTTED_STRICT)*/;
 
 # input -> tokens
-method make_tokens($line) {
+sub make_tokens {
+    my ($self, $line) = @_;
     my (@tokens) = $line =~ /($TOKEN)/gs;
 
     # lower-case tokens except those which are ALL UPPERCASE
@@ -34,13 +35,15 @@ method make_tokens($line) {
 }
 
 # return a list of key tokens
-method find_key_tokens($tokens) {
+sub find_key_tokens {
+    my ($self, $tokens) = @_;
     # remove duplicates and return the interesting ones
     return grep { /$INTERESTING/ } uniq(@$tokens);
 }
 
 # tokens -> output
-method make_output($reply) {
+sub make_output {
+    my ($self, $reply) = @_;
     my $string = join '', @$reply;
 
     # capitalize the first word
