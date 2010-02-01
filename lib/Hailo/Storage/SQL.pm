@@ -397,6 +397,7 @@ sub _pos_tokens {
 sub save {
     my ($self) = @_;
     # no op
+    return;
 }
 
 __PACKAGE__->meta->make_immutable;
