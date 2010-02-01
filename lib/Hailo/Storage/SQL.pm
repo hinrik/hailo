@@ -173,6 +173,8 @@ sub _engage {
         $self->sth->{set_separator}->execute($sep);
     }
 
+    $self->_engaged(1);
+
     return;
 }
 
@@ -190,11 +192,7 @@ sub stop_training {
 
 sub start_learning {
     my ($self) = @_;
-    if (not $self->_engaged()) {
-        # Engage!
-        $self->_engage();
-        $self->_engaged(1);
-    }
+    $self->_engage() if !$self->_engaged();
 
     # start a transaction
     $self->dbh->begin_work;
