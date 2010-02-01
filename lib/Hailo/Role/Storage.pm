@@ -4,6 +4,8 @@ use Moose::Role;
 use MooseX::Types::Moose qw<Str Int>;
 use namespace::clean -except => 'meta';
 
+our $VERSION = '0.01';
+
 has brain => (
     isa      => Str,
     is       => 'ro',

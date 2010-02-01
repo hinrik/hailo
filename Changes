@@ -2,7 +2,8 @@
     - Issue #13: `hailo -b brain' will launch an interactive ReadLine
       terminal
     - Don't exit() on print_version=> in run(), just return()
-    - Use MooseX::Method::Signatures for subroutine declarations
+    - Add $VERSION to all .pm files
+    - Use namespace::clean everywhere
 
 0.06 Sat Jan 30 19:21:28 GMT 2010
     - Construct SQL's dbd_options with lazy_build, not default. This

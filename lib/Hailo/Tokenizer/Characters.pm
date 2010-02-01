@@ -7,6 +7,9 @@ use namespace::clean -except => 'meta';
 
 our $VERSION = '0.01';
 
+with qw(Hailo::Role::Generic
+        Hailo::Role::Tokenizer);
+
 # output -> tokens
 sub make_tokens {
     my ($self, $line) = @_;
@@ -24,9 +27,6 @@ sub make_output {
     my ($self, $reply) = @_;
     return trim join '', @$reply;
 }
-
-with qw(Hailo::Role::Generic
-        Hailo::Role::Tokenizer);
 
 __PACKAGE__->meta->make_immutable;
 

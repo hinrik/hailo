@@ -4,6 +4,12 @@ use Moose;
 use MooseX::StrictConstructor;
 use Hailo;
 use Term::ReadLine;
+use namespace::clean -except => 'meta';
+
+our $VERSION = '0.01';
+
+with qw(Hailo::Role::Generic
+        Hailo::Role::UI);
 
 # Use Gnu readline
 sub BUILD {
@@ -29,9 +35,6 @@ sub run {
 
     return;
 }
-
-with qw(Hailo::Role::Generic
-        Hailo::Role::UI);
 
 __PACKAGE__->meta->make_immutable;
 

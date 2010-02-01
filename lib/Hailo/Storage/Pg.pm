@@ -2,6 +2,7 @@ package Hailo::Storage::Pg;
 use 5.10.0;
 use Moose;
 use MooseX::StrictConstructor;
+use namespace::clean -except => 'meta';
 
 our $VERSION = '0.01';
 

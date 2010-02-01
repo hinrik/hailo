@@ -7,6 +7,11 @@ use List::Util qw(min shuffle);
 use List::MoreUtils qw(uniq);
 use namespace::clean -except => 'meta';
 
+our $VERSION = '0.01';
+
+with qw(Hailo::Role::Generic
+        Hailo::Role::Engine);
+
 has storage => (
     required => 1,
     is       => 'ro',
@@ -138,9 +143,6 @@ sub _clean_input {
     $input =~ s/$separator//g;
     return $input;
 }
-
-with qw(Hailo::Role::Generic
-        Hailo::Role::Engine);
 
 =encoding utf8
 

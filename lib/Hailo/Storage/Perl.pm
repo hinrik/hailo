@@ -8,6 +8,9 @@ use namespace::clean -except => 'meta';
 
 our $VERSION = '0.01';
 
+with qw(Hailo::Role::Generic
+        Hailo::Role::Storage);
+
 has _memory => (
     isa        => HashRef,
     is         => 'ro',
@@ -110,9 +113,6 @@ sub start_training { return }
 sub stop_training  { return }
 sub start_learning { return }
 sub stop_learning  { return }
-
-with qw(Hailo::Role::Generic
-        Hailo::Role::Storage);
 
 __PACKAGE__->meta->make_immutable;
 

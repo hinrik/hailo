@@ -2,25 +2,34 @@ use 5.10.0;
 use strict;
 use warnings;
 use File::Spec::Functions 'catfile';
-use Test::More tests => 16;
+use Test::More tests => 31;
 use Test::Script;
 
-# find lib -type f|perl -pe 's/lib.//; s[/][::]g; s[.pm][]; s[^]{use ok q[}; s[$]{];}'|sort
-use_ok q[Hailo];
-use_ok q[Hailo::Engine::Default];
-use_ok q[Hailo::Role::Engine];
-use_ok q[Hailo::Role::Generic];
-use_ok q[Hailo::Role::Storage];
-use_ok q[Hailo::Role::Tokenizer];
-use_ok q[Hailo::Role::UI];
-use_ok q[Hailo::Storage::mysql];
-use_ok q[Hailo::Storage::Perl];
-use_ok q[Hailo::Storage::Pg];
-use_ok q[Hailo::Storage::SQL];
-use_ok q[Hailo::Storage::SQLite];
-use_ok q[Hailo::Tokenizer::Characters];
-use_ok q[Hailo::Tokenizer::Words];
-use_ok q[Hailo::UI::ReadLine];
+# find lib -type f | perl -pe 's[^lib/][    ]; s[.pm$][]; s[/][::]g'
+my @classes = qw(
+  Hailo
+  Hailo::Storage::SQLite
+  Hailo::Storage::mysql
+  Hailo::Storage::Pg
+  Hailo::Storage::Perl
+  Hailo::Storage::SQL
+  Hailo::Role::Engine
+  Hailo::Role::Generic
+  Hailo::Role::UI
+  Hailo::Role::Storage
+  Hailo::Role::Tokenizer
+  Hailo::UI::ReadLine
+  Hailo::Engine::Default
+  Hailo::Tokenizer::Characters
+  Hailo::Tokenizer::Words
+);
+
+use_ok $_ for @classes;
+
+{
+    no strict 'refs';
+    like(${"${_}::VERSION"}, qr/^[0-9.]+$/, "$_ has a \$VERSION that makes sense") for @classes;
+}
 
 SKIP: {
     skip "There's no blib", 1 unless -d "blib" and -f catfile qw(blib script hailo);

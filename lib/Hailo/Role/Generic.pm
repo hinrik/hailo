@@ -2,6 +2,9 @@ package Hailo::Role::Generic;
 use 5.10.0;
 use Moose::Role;
 use MooseX::Types::Moose qw/HashRef/;
+use namespace::clean -except => 'meta';
+
+our $VERSION = '0.01';
 
 has arguments => (
     isa           => HashRef,

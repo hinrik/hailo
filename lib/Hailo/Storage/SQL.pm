@@ -15,6 +15,9 @@ use namespace::clean -except => [ qw(meta
 
 our $VERSION = '0.01';
 
+with qw(Hailo::Role::Generic
+        Hailo::Role::Storage);
+
 has dbh => (
     isa        => 'DBI::db',
     is         => 'ro',
@@ -395,9 +398,6 @@ sub save {
     my ($self) = @_;
     # no op
 }
-
-with qw(Hailo::Role::Generic
-        Hailo::Role::Storage);
 
 __PACKAGE__->meta->make_immutable;
 

@@ -7,6 +7,9 @@ use namespace::clean -except => 'meta';
 
 our $VERSION = '0.01';
 
+with qw(Hailo::Role::Generic
+        Hailo::Role::Tokenizer);
+
 my $APOSTROPHE    = qr/['’]/;
 my $DOTTED_WORD   = qr/\w+(?:\.\w+)?/;
 my $WORD          = qr/$DOTTED_WORD(?:$APOSTROPHE$DOTTED_WORD)*/;
@@ -65,9 +68,6 @@ sub make_output {
 
     return $string;
 }
-
-with qw(Hailo::Role::Generic
-        Hailo::Role::Tokenizer);
 
 __PACKAGE__->meta->make_immutable;
 
