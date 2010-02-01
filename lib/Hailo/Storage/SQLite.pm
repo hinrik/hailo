@@ -1,7 +1,6 @@
 package Hailo::Storage::SQLite;
 use 5.10.0;
 use Moose;
-use MooseX::Method::Signatures;
 use MooseX::StrictConstructor;
 
 our $VERSION = '0.01';

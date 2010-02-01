@@ -1,7 +1,6 @@
 package Hailo::Storage::Perl;
 use 5.10.0;
 use Moose;
-use MooseX::Method::Signatures;
 use MooseX::StrictConstructor;
 use MooseX::Types::Moose qw<HashRef Int Str>;
 use Storable;

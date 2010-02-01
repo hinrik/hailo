@@ -1,7 +1,6 @@
 package Hailo::Tokenizer::Words;
 use 5.10.0;
 use Moose;
-use MooseX::Method::Signatures;
 use MooseX::StrictConstructor;
 use List::MoreUtils qw<uniq>;
 use namespace::clean -except => 'meta';

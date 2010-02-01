@@ -1,8 +1,6 @@
 package Hailo::Tokenizer::Characters;
 use 5.10.0;
 use Moose;
-use MooseX::Method::Signatures;
-use MooseX::StrictConstructor;
 use List::MoreUtils qw<uniq>;
 use Text::Trim;
 use namespace::clean -except => 'meta';
