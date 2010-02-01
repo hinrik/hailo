@@ -1,6 +1,7 @@
 package Hailo::Storage::Pg;
 use 5.10.0;
 use Moose;
+use MooseX::Method::Signatures;
 use MooseX::StrictConstructor;
 
 our $VERSION = '0.01';
@@ -42,7 +43,6 @@ sub _build_dbi_options {
 
 sub _exists_db {
     my ($self) = @_;
-
     $self->sth->{exists_db}->execute();
     return int $self->sth->{exists_db}->fetchrow_array;
 }
@@ -50,7 +50,6 @@ sub _exists_db {
 # These two are optimized to use PostgreSQL >8.2's INSERT ... RETURNING 
 sub _add_expr {
     my ($self, $token_ids, $can_start, $can_end, $expr_text) = @_;
-
     # add the expression
     $self->sth->{add_expr}->execute(@$token_ids, $can_start, $can_end, $expr_text);
 
@@ -60,7 +59,6 @@ sub _add_expr {
 
 sub _add_token {
     my ($self, $token) = @_;
-
     $self->sth->{add_token}->execute($token);
     return $self->sth->{add_token}->fetchrow_array;
 }

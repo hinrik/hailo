@@ -1,14 +1,12 @@
 package Hailo::Engine::Default;
 use 5.10.0;
 use Moose;
+use MooseX::Method::Signatures;
 use MooseX::StrictConstructor;
 use MooseX::Types::Moose qw(Int);
 use List::Util qw(min shuffle);
 use List::MoreUtils qw(uniq);
 use namespace::clean -except => 'meta';
-
-with qw(Hailo::Role::Generic
-        Hailo::Role::Engine);
 
 has storage => (
     required => 1,
@@ -41,7 +39,7 @@ sub reply {
     $input = $self->_clean_input($input);
     my @tokens = $toke->make_tokens($input);
     my @key_tokens = shuffle grep { $storage->token_exists($_) }
-                             $toke->find_key_tokens(@tokens);
+                             $toke->find_key_tokens(\@tokens);
     return if !@key_tokens;
     my $key_token = shift @key_tokens;
 
@@ -62,7 +60,7 @@ sub reply {
         my $next_token = $self->_pos_token($next_tokens, \@key_tokens);
         push @reply, $next_token;
         @expr = (@expr[1 .. $order-1], $next_token);
-        (undef, $can_end) = $storage->expr_can(@expr);
+        (undef, $can_end) = $storage->expr_can(\@expr);
     } continue {
         $i++;
     }
@@ -80,12 +78,12 @@ sub reply {
         my $prev_token = $self->_pos_token($prev_tokens, \@key_tokens);
         unshift @reply, $prev_token;
         @expr = ($prev_token, @expr[0 .. $order-2]);
-        ($can_start, undef) = $storage->expr_can(@expr);
+        ($can_start, undef) = $storage->expr_can(\@expr);
     } continue {
         $i++;
     }
 
-    return $toke->make_output(@reply);
+    return $toke->make_output(\@reply);
 }
 
 sub learn {
@@ -107,13 +105,13 @@ sub learn {
         $prev_token = $tokens[$i-1] if $i > 0;
 
         # store the current expression
-        $storage->add_expr(
+        $storage->add_expr( {
             tokens     => \@expr,
             next_token => $next_token,
             prev_token => $prev_token,
             can_start  => ($i == 0 ? 1 : undef),
             can_end    => ($i == @tokens-$order ? 1 : undef),
-        );
+        } );
     }
 
     return;
@@ -141,6 +139,9 @@ sub _clean_input {
     $input =~ s/$separator//g;
     return $input;
 }
+
+with qw(Hailo::Role::Generic
+        Hailo::Role::Engine);
 
 =encoding utf8
 

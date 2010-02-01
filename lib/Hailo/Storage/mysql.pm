@@ -1,6 +1,7 @@
 package Hailo::Storage::mysql;
 use 5.10.0;
 use Moose;
+use MooseX::Method::Signatures;
 use MooseX::StrictConstructor;
 
 our $VERSION = '0.01';
@@ -41,7 +42,6 @@ sub _build_dbi_options {
 
 sub _exists_db {
     my ($self) = @_;
-
     $self->sth->{exists_db}->execute();
     return defined $self->sth->{exists_db}->fetchrow_array;
 }

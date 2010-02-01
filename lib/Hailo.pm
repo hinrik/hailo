@@ -265,7 +265,6 @@ USAGE
 
 sub _build__engine_obj {
     my ($self) = @_;
-
     my $obj = $self->_new_class(
         "Engine",
         $self->engine_class,
@@ -281,7 +280,6 @@ sub _build__engine_obj {
 
 sub _build__storage_obj {
     my ($self) = @_;
-
     my $obj = $self->_new_class(
         "Storage",
         $self->storage_class,
@@ -300,7 +298,6 @@ sub _build__storage_obj {
 
 sub _build__tokenizer_obj {
     my ($self) = @_;
-
     my $obj = $self->_new_class(
         "Tokenizer",
         $self->tokenizer_class,
@@ -314,7 +311,6 @@ sub _build__tokenizer_obj {
 
 sub _build__ui_obj {
     my ($self) = @_;
-
     my $obj = $self->_new_class(
         "UI",
         $self->ui_class,
@@ -328,7 +324,6 @@ sub _build__ui_obj {
 
 sub _new_class {
     my ($self, $type, $class, $args) = @_;
-
     my $pkg = "Hailo::${type}::${class}";
     eval { Class::MOP::load_class($pkg) };
     die $@ if $@;
@@ -404,9 +399,8 @@ before _train_progress => sub {
     return;
 };
 
-sub _train_progress {
+sub _train_progress{ 
     my ($self, $fh, $filename) = @_;
-
     my $lines = count_lines($filename);
     my $progress = Term::ProgressBar->new({
         name => "training from $filename",
