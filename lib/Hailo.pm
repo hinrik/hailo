@@ -581,6 +581,10 @@ All occurences of L<C<token_separator>|/token_separator> will be stripped
 from your input before it is processed, so make sure it's set to something
 that is unlikely to appear in it.
 
+=head1 SUPPORT
+
+You can join the IRC channel I<#hailo> on FreeNode if you have questions.
+
 =head1 AUTHORS
 
 Hinrik E<Ouml>rn SigurE<eth>sson, hinrik.sig@gmail.com

@@ -46,10 +46,14 @@ ATTRIBUTES
   "engine_class"
     The engine to use. Default: 'Default';
 
+  "engine_class"
+    The UI to use. Default: 'ReadLine';
+
   "storage_args"
   "tokenizer_args"
   "engine_args"
-    A "HashRef" of arguments storage/tokenizer/engine backends. See the
+  "ui_args"
+    A "HashRef" of arguments storage/tokenizer/engine/ui backends. See the
     documentation for the backends for what sort of arguments they accept.
 
   "token_separator"
@@ -87,6 +91,9 @@ CAVEATS
     All occurences of "token_separator" will be stripped from your input
     before it is processed, so make sure it's set to something that is
     unlikely to appear in it.
+
+SUPPORT
+    You can join the IRC channel *#hailo* on FreeNode if you have questions.
 
 AUTHORS
     Hinrik Örn Sigurðsson, hinrik.sig@gmail.com
