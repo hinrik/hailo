@@ -106,12 +106,10 @@ sub save {
     return;
 }
 
-sub start_training {
-    my ($self) = @_; return }
-method stop_training  { return }
-sub start_learning {
-    my ($self) = @_; return }
-method stop_learning  { return }
+sub start_training { return }
+sub stop_training  { return }
+sub start_learning { return }
+sub stop_learning  { return }
 
 with qw(Hailo::Role::Generic
         Hailo::Role::Storage);
