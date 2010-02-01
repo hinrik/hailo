@@ -11,10 +11,7 @@ use Time::HiRes qw(gettimeofday tv_interval);
 use IO::Interactive qw(is_interactive);
 use FindBin qw($Bin $Script);
 use File::Spec::Functions qw(catfile);
-use namespace::clean -except => [ qw(meta
-                                     count_lines
-                                     gettimeofday
-                                     tv_interval) ];
+use namespace::clean -except => 'meta';
 
 our $VERSION = '0.06';
 
