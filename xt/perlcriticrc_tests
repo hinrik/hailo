@@ -28,3 +28,4 @@ verbose  = 3
 [-Modules::RequireExplicitPackage]
 [-Modules::RequireFilenameMatchesPackage]
 [-Subroutines::RequireFinalReturn]
+[-TestingAndDebugging::ProhibitNoStrict]
