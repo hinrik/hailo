@@ -97,6 +97,15 @@ subtest make_output => sub {
             ],
             "On example.com? Yes.",
         ],
+        [
+            "sá ''karlkyns'' aðili í [[hjónaband]]i tveggja lesbía?",
+            [
+                'sá', ' ', "'", "'", 'karlkyns', "'", "'", ' ', 'aðili', ' ',
+                'í', ' ', '[', '[', 'hjónaband', ']', ']', 'i', ' ',
+                'tveggja', ' ', 'lesbía', '?',
+            ],
+            "Sá ''karlkyns'' aðili í [[hjónaband]]i tveggja lesbía?",
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();

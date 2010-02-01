@@ -64,9 +64,8 @@ sub make_output {
     # end paragraphs with a period when it makes sense
     $string =~ s/ $WORD\K$/./;
 
-    # capitalize the word 'I' between word boundaries
-    # except after an apostrophe
-    $string =~ s{(?<!$APOSTROPHE)\bi\b}{I}g;
+    # capitalize the word 'I'
+    $string =~ s{(?<= )\bi\b}{I}g;
 
     return $string;
 }
