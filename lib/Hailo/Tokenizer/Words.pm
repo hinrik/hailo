@@ -3,6 +3,7 @@ use 5.10.0;
 use Moose;
 use MooseX::StrictConstructor;
 use List::MoreUtils qw<uniq>;
+use Text::Trim;
 use namespace::clean -except => 'meta';
 
 our $VERSION = '0.01';
@@ -30,6 +31,9 @@ my $WORD_STRICT   = qr/$DOTTED_STRICT(?:$APOSTROPHE$DOTTED_STRICT)*/;
 sub make_tokens {
     my ($self, $line) = @_;
     my (@tokens) = $line =~ /($TOKEN)/gs;
+
+    # compress whitespace
+    s/ +/ / for @tokens;
 
     # lower-case tokens except those which are ALL UPPERCASE
     @tokens = map { $_ ne uc($_) ? lc($_) : $_ } @tokens;
@@ -66,7 +70,7 @@ sub make_output {
     # capitalize the word 'I'
     $string =~ s{(?<= )\bi\b}{I}g;
 
-    return $string;
+    return trim($string);
 }
 
 __PACKAGE__->meta->make_immutable;
