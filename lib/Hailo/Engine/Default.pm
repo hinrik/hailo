@@ -46,43 +46,36 @@ sub reply {
                              $toke->find_key_tokens(\@tokens);
     return if !@key_tokens;
     my $key_token = shift @key_tokens;
-
-    my ($can_start, $can_end, @middle_expr) = $storage->random_expr($key_token);
-    my @reply = @middle_expr;
-    my @expr = @middle_expr;
-
+    my @reply = $storage->random_expr($key_token);
     my $repeat_limit = $self->_repeat_limit;
 
     # construct the end of the reply
-    my $i = 0; while (!$can_end) {
+    my $i = 0;
+    while (1) {
         if (($i % $order) == 0 and
             (($i >= $repeat_limit and uniq(@reply) <= $order) ||
              ($i >= $repeat_limit * 3))) {
             last;
         }
-        my $next_tokens = $storage->next_tokens(\@expr);
+        my $next_tokens = $storage->next_tokens([@reply[-$order..-1]]);
         my $next_token = $self->_pos_token($next_tokens, \@key_tokens);
+        last if !defined $next_token;
         push @reply, $next_token;
-        @expr = (@expr[1 .. $order-1], $next_token);
-        (undef, $can_end) = $storage->expr_can(\@expr);
     } continue {
         $i++;
     }
 
-    @expr = @middle_expr;
-
     # construct the beginning of the reply
-    $i = 0; while (!$can_start) {
+    $i = 0; while (1) {
         if (($i % $order) == 0 and
             (($i >= $repeat_limit and uniq(@reply) <= $order) ||
              ($i >= $repeat_limit * 3))) {
             last;
         }
-        my $prev_tokens = $storage->prev_tokens(\@expr);
+        my $prev_tokens = $storage->prev_tokens([@reply[0..$order-1]]);
         my $prev_token = $self->_pos_token($prev_tokens, \@key_tokens);
+        last if !defined $prev_token;
         unshift @reply, $prev_token;
-        @expr = ($prev_token, @expr[0 .. $order-2]);
-        ($can_start, undef) = $storage->expr_can(\@expr);
     } continue {
         $i++;
     }

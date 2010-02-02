@@ -86,6 +86,12 @@ has sth => (
     lazy_build => 1,
 );
 
+has _boundary_token_id => (
+    isa     => Int,
+    is      => 'rw',
+    default => 1,
+);
+
 # our statement handlers
 sub _build_sth {
     my ($self) = @_;
@@ -162,6 +168,10 @@ sub _engage {
         $self->sth->{get_separator}->execute();
         my $sep = $self->sth->{get_separator}->fetchrow_array();
         $self->token_separator($sep);
+
+        $self->sth->{token_id_null}->execute();
+        my $id = $self->sth->{token_id_null}->fetchrow_array;
+        $self->_boundary_token_id($id);
     }
     else {
         $self->_create_db();
@@ -171,6 +181,12 @@ sub _engage {
 
         my $sep = $self->token_separator;
         $self->sth->{set_separator}->execute($sep);
+
+        $self->sth->{add_token}->execute(undef);
+        $self->sth->{last_token_rowid}->execute();
+        my $id = $self->sth->{last_token_rowid}->fetchrow_array();
+        $self->_boundary_token_id($id);
+
     }
 
     $self->_engaged(1);
@@ -249,36 +265,46 @@ sub add_expr {
         # add the tokens
         my @token_ids = $self->_add_tokens($tokens);
 
-        $expr_id = $self->_add_expr(\@token_ids, $args->{can_start}, $args->{can_end}, $expr_text);
+        # add the expression
+        $expr_id = $self->_add_expr(\@token_ids, $expr_text);
     }
 
     # add next/previous tokens for this expression, if any
     for my $pos_token (qw(next_token prev_token)) {
         next if !defined $args->{$pos_token};
         my $token_id = $self->_add_tokens([$args->{$pos_token}]);
+        $self->_inc_link($pos_token, $expr_id, $token_id);
+    }
 
-        my $get_count = "${pos_token}_count";
-        $self->sth->{$get_count}->execute($expr_id, $token_id);
-        my $count = $self->sth->{$get_count}->fetchrow_array;
+    # add boundary tokens if appropriate
+    my $boundary = $self->_boundary_token_id;
+    $self->_inc_link('prev_token', $expr_id, $boundary) if $args->{can_start};
+    $self->_inc_link('next_token', $expr_id, $boundary) if $args->{can_end};
 
-        if (defined $count) {
-            my $new_count = $count++;
-            my $inc_count = "${pos_token}_inc";
-            $self->sth->{$inc_count}->execute($new_count, $expr_id, $token_id);
-        }
-        else {
-            my $add_count = "${pos_token}_add";
-            $self->sth->{$add_count}->execute($expr_id, $token_id);
-        }
+    return;
+}
+
+sub _inc_link {
+    my ($self, $type, $expr_id, $token_id) = @_;
+
+    $self->sth->{"${type}_count"}->execute($expr_id, $token_id);
+    my $count = $self->sth->{"${type}_count"}->fetchrow_array;
+
+    if (defined $count) {
+        my $new_count = $count++;
+        $self->sth->{"${type}_inc"}->execute($new_count, $expr_id, $token_id);
+    }
+    else {
+        $self->sth->{"${type}_add"}->execute($expr_id, $token_id);
     }
 
     return;
 }
 
 sub _add_expr {
-    my ($self, $token_ids, $can_start, $can_end, $expr_text) = @_;
+    my ($self, $token_ids, $expr_text) = @_;
     # add the expression
-    $self->sth->{add_expr}->execute(@$token_ids, $can_start, $can_end, $expr_text);
+    $self->sth->{add_expr}->execute(@$token_ids, $expr_text);
 
     # get the new expr id
     $self->sth->{last_expr_rowid}->execute();
@@ -290,13 +316,6 @@ sub _expr_id {
     my ($self, $expr_text) = @_;
     $self->sth->{expr_id}->execute($expr_text);
     return scalar $self->sth->{expr_id}->fetchrow_array();
-}
-
-sub expr_can {
-    my ($self, $tokens) = @_;
-    my $expr_text = $self->_expr_text($tokens);
-    $self->sth->{expr_can}->execute($expr_text);
-    return $self->sth->{expr_can}->fetchrow_array();
 }
 
 # add tokens and/or return their ids
@@ -361,8 +380,8 @@ sub random_expr {
         # we found some, let's pick a random one and return it
         my $expr_id = $expr_ids->[rand @$expr_ids];
         $self->sth->{expr_by_id}->execute($expr_id);
-        my ($can_start, $can_end, $expr_text) = $self->sth->{expr_by_id}->fetchrow_array();
-        @expr = ($can_start, $can_end, $self->_split_expr($expr_text));
+        my $expr_text = $self->sth->{expr_by_id}->fetchrow_array();
+        @expr = $self->_split_expr($expr_text);
 
         last;
     }
@@ -430,13 +449,11 @@ CREATE TABLE info (
 __[ table_token ]__
 CREATE TABLE token (
     id   INTEGER PRIMARY KEY AUTOINCREMENT,
-    text TEXT NOT NULL UNIQUE
+    text TEXT UNIQUE
 );
 __[ table_expr ]__
 CREATE TABLE expr (
     id        INTEGER PRIMARY KEY AUTOINCREMENT,
-    can_start BOOL,
-    can_end   BOOL,
 [% FOREACH i IN orders %]
     token[% i %]_id INTEGER NOT NULL REFERENCES token (id),
 [% END %]
@@ -475,11 +492,11 @@ SELECT id FROM expr WHERE text = ?;
 __[ query_expr_id_token(NUM)_id ]__
 SELECT id FROM expr WHERE [% column %] = ?;
 __[ query_expr_by_id ]__
-SELECT can_start, can_end, text FROM expr WHERE id = ?;
-__[ query_expr_can ]__
-SELECT can_start, can_end FROM expr WHERE text = ?;
+SELECT text FROM expr WHERE id = ?;
 __[ query_token_id ]__
 SELECT id FROM token WHERE text = ?;
+__[ query_token_id_null ]__
+SELECT id FROM token WHERE text IS NULL;
 __[ query_add_token ]__
 INSERT INTO token (text) VALUES (?);
 __[ query_last_expr_rowid ]_
@@ -499,4 +516,4 @@ INNER JOIN [% table %] p
         ON p.token_id = t.id
      WHERE p.expr_id = ?;
 __[ query_(add_expr) ]__
-INSERT INTO expr ([% columns %], can_start, can_end, text) VALUES ([% ids %], ?, ?, ?);
+INSERT INTO expr ([% columns %], text) VALUES ([% ids %], ?);
