@@ -47,7 +47,7 @@ subtest make_output => sub {
                 'bar', '"', ',', ' ', 'e.g', '.', ' ', 'bla', ' ', '.',
                 '.', '.', ' ', 'yes',
             ],
-            ' " Why hello there. «Yes». "Foo is a bar", e.g. bla ... yes.',
+            '" Why hello there. «Yes». "Foo is a bar", e.g. bla ... yes.',
         ],
         [
             "someone: how're you?",
