@@ -27,6 +27,7 @@ requires       ('List::MoreUtils'               => '0');
 requires       ('Class::MOP'                    => '0');
 requires       ('Moose'                         => '0');
 requires       ('MooseX::Getopt'                => '0');
+requires       ('MooseX::Getopt::Dashes'        => '0');
 requires       ('MooseX::Types::Path::Class'    => '0');
 requires       ('MooseX::Types'                 => '0');
 requires       ('MooseX::Types::Moose'          => '0');
@@ -51,6 +52,7 @@ author_requires('Perl::Critic'        => '1.098');
 author_requires('Test::Perl::Critic'  => '0');
 author_requires('Test::Pod'           => '1.41');
 author_requires('Test::Pod::Coverage' => '1.08');
+author_requires('Test::Script'        => '0');
 author_tests   ('xt') unless $ENV{USER} eq "avar";
 
 WriteAll();
