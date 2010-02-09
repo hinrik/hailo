@@ -5,6 +5,7 @@
       mysql.pm into macros in SQL.pm
     - Use of $. in Hailo.pm broke file-based backends such as Cache.pm
     - Make MySQL docs copy-pasteable 
+    - Add a benchmark script as utils/hailo-benchmark
 
 0.07 Tue Feb  9 15:23:44 GMT 2010
     - Note: The storage backends for this release have been changed in such

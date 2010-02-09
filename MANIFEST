@@ -45,6 +45,7 @@ t/ui/readline.t
 t/usage/basic.t
 t/usage/options.t
 utils/crunchbase-companies
+utils/hailo-benchmark
 xt/01_pod.t
 xt/02_pod_coverage.t
 xt/03_perl_critic.t

@@ -1,0 +1,111 @@
+0#!/usr/bin/env perl
+use 5.10.0;
+use autodie qw(open close);
+use Modern::Perl;
+use Hailo;
+use Benchmark qw(:all);
+use Data::Random qw(:all);
+use File::Temp qw(tempfile tempdir);
+use namespace::clean -except => 'meta';
+
+die "Usage: utils/hailo-benchmark count test-lines test-words-per-line" unless @ARGV == 3;
+
+my $count = $ARGV[0] // 10;
+my $lines = $ARGV[1] // 500;
+my $words = $ARGV[2] // 20;
+
+# Dir to store our training file / brains
+my $dir = tempdir( CLEANUP => 1 );
+
+# Generate a training file
+my ($tfh, $tfilename) = tempfile( DIR => $dir, SUFFIX => '.trn' );
+
+
+for my $i (1 .. $lines) {
+    my @random_words = rand_words( size => $words );
+    say $tfh "@random_words";
+}
+say STDERR "Wrote to $tfilename" if $ENV{DEBUG};
+
+# Create databases
+my @pg = map {
+    system "dropdb 'hailo-$_'";
+    system "createdb 'hailo-$_'" and die "Can't create db: $!";
+    "hailo-$_";
+} 1 .. $count;
+
+sub spawn_hailo {
+    my $i = shift;
+    my (%args) = @_;
+    say STDERR "Spawning ($i/$count) '$args{storage_class}' database" if $ENV{DEBUG};
+    my $hailo = Hailo->new(
+        train_file => $tfilename,
+        print_progress => 1,
+        %args,
+    )->run;
+}
+
+# Kill Pg notices
+$SIG{__WARN__} = sub { print STDERR @_ if $_[0] !~ m/NOTICE:\s*CREATE TABLE/; };
+
+my %backends = (
+    Perl => sub {
+        state $i = 1;
+        spawn_hailo(
+            $i++,
+            storage_class => 'Perl',
+        );
+    },
+    SQLite => sub {
+        state $i = 1;
+        spawn_hailo(
+            $i++,
+            storage_class => 'SQLite',
+        );
+    },
+    # Cache => sub {
+    #     state $i = 1;
+    #     spawn_hailo(
+    #         $i++,
+    #         storage_class => 'Cache',
+    #     );
+    # },
+    MySQL => sub {
+        state $i = 1;
+        spawn_hailo(
+            $i++,
+            storage_class => 'mysql',
+            storage_args => {
+                database => 'hailo',
+                host => 'localhost',
+                username => 'hailo',
+                password => 'hailo',
+            },
+        );
+        system q[echo 'drop table info; drop table token; drop table expr; drop table next_token; drop table prev_token;' | mysql -u hailo -p'hailo' hailo];
+    },
+    PostgreSQL => sub {
+        state $i = 1;
+
+        spawn_hailo(
+            $i,
+            storage_class => 'Pg',
+            storage_args => {
+                dbname => $pg[$i-1],
+            },
+        );
+
+        $i++;
+    },
+);
+
+cmpthese($count, \%backends);
+
+system "dropdb '$_'" and die "Can't drop db: $!" for @pg;
+
+__END__
+       s/iter     Pg  mysql SQLite   Perl
+Pg       19.2     --    -7%   -70%   -96%
+mysql    17.8     8%     --   -67%   -95%
+SQLite   5.82   230%   206%     --   -85%
+Perl    0.853  2154%  1985%   582%     --
