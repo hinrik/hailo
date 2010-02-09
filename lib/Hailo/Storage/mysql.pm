@@ -99,10 +99,10 @@ MySQL sucks.
 Here's how I create a MySQL database for Hailo:
 
     mysql -u root -p
-    mysql> CREATE DATABASE hailo;
-    mysql> GRANT USAGE ON *.* TO hailo@localhost IDENTIFIED BY 'hailo';
-    mysql> GRANT ALL ON hailo.* TO hailo@localhost IDENTIFIED BY 'hailo';
-    mysql> FLUSH PRIVILEGES;
+    CREATE DATABASE hailo;
+    GRANT USAGE ON *.* TO hailo@localhost IDENTIFIED BY 'hailo';
+    GRANT ALL ON hailo.* TO hailo@localhost IDENTIFIED BY 'hailo';
+    FLUSH PRIVILEGES;
 
 =head1 AUTHOR
 
