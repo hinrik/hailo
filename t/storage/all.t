@@ -12,7 +12,7 @@ binmode $_, ':encoding(utf8)' for (*STDIN, *STDOUT, *STDERR);
 # Suppress PostgreSQL notices
 $SIG{__WARN__} = sub { print STDERR @_ if $_[0] !~ m/NOTICE:\s*CREATE TABLE/; };
 
-for my $backend (qw(Perl Pg SQLite mysql)) {
+for my $backend (qw(Perl mysql SQLite Pg)) {
     # Skip all tests for this backend?
     my $skip_all;
 
