@@ -7,7 +7,7 @@ use List::Util qw(min shuffle);
 use List::MoreUtils qw(uniq);
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.01';
+our $VERSION = '0.07';
 
 with qw(Hailo::Role::Generic
         Hailo::Role::Engine);

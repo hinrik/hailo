@@ -3,7 +3,7 @@ use 5.10.0;
 use Moose::Role;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.01';
+our $VERSION = '0.07';
 
 requires 'find_key_tokens';
 requires 'make_tokens';
