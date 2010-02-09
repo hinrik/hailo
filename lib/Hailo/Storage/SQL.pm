@@ -169,8 +169,8 @@ sub _engage {
         my $sep = $self->sth->{get_separator}->fetchrow_array();
         $self->token_separator($sep);
 
-        $self->sth->{token_id_null}->execute();
-        my $id = $self->sth->{token_id_null}->fetchrow_array;
+        $self->sth->{token_id}->execute('');
+        my $id = $self->sth->{token_id}->fetchrow_array;
         $self->_boundary_token_id($id);
     }
     else {
@@ -182,7 +182,7 @@ sub _engage {
         my $sep = $self->token_separator;
         $self->sth->{set_separator}->execute($sep);
 
-        $self->sth->{add_token}->execute(undef);
+        $self->sth->{add_token}->execute('');
         $self->sth->{last_token_rowid}->execute();
         my $id = $self->sth->{last_token_rowid}->fetchrow_array();
         $self->_boundary_token_id($id);
@@ -449,7 +449,7 @@ CREATE TABLE info (
 __[ table_token ]__
 CREATE TABLE token (
     id   INTEGER PRIMARY KEY AUTOINCREMENT,
-    text TEXT UNIQUE
+    text TEXT NOT NULL UNIQUE
 );
 __[ table_expr ]__
 CREATE TABLE expr (
@@ -495,8 +495,6 @@ __[ query_expr_by_id ]__
 SELECT text FROM expr WHERE id = ?;
 __[ query_token_id ]__
 SELECT id FROM token WHERE text = ?;
-__[ query_token_id_null ]__
-SELECT id FROM token WHERE text IS NULL;
 __[ query_add_token ]__
 INSERT INTO token (text) VALUES (?);
 __[ query_last_expr_rowid ]_

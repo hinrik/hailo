@@ -1,4 +1,6 @@
 0.07
+    - Note: The storage backends for this release have been changed in such
+      a way that it is incompatible with brains created by older releases
     - Add missing dependencies on Test::Script/MX::Getopt::Dashes
     - The Words tokenizer now compresses whitespace when tokenizing as
       well as whitespace-trimming the output it produces
