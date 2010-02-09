@@ -33,7 +33,7 @@ use_ok $_ for @classes;
 
 {
     no strict 'refs';
-    cmp_ok($Hailo::VERSION, '==', ${"${_}::VERSION"}, "$_\::VERSION matches \$Hailo::VERSION") for @classes[1 .. $#classes];
+    cmp_ok(${"${_}::VERSION"}, '==', $Hailo::VERSION, "$_\::VERSION matches \$Hailo::VERSION") for @classes[1 .. $#classes];
 }
 
 SKIP: {
