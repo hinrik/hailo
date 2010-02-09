@@ -49,9 +49,9 @@ sub _exists_db {
 
 # These two are optimized to use PostgreSQL >8.2's INSERT ... RETURNING 
 sub _add_expr {
-    my ($self, $token_ids, $can_start, $can_end, $expr_text) = @_;
+    my ($self, $token_ids, $expr_text) = @_;
     # add the expression
-    $self->sth->{add_expr}->execute(@$token_ids, $can_start, $can_end, $expr_text);
+    $self->sth->{add_expr}->execute(@$token_ids, $expr_text);
 
     # get the new expr id
     return $self->sth->{add_expr}->fetchrow_array;
@@ -138,8 +138,6 @@ CREATE TABLE token (
 __[ table_expr ]__
 CREATE TABLE expr (
     id        SERIAL UNIQUE,
-    can_start BOOL,
-    can_end   BOOL,
 [% FOREACH i IN orders %]
     token[% i %]_id INTEGER NOT NULL REFERENCES token (id),
 [% END %]
@@ -162,6 +160,6 @@ CREATE TABLE prev_token (
 __[ query_add_token ]__
 INSERT INTO token (text) VALUES (?) RETURNING id;
 __[ query_(add_expr) ]__
-INSERT INTO expr ([% columns %], can_start, can_end, text) VALUES ([% ids %], ?, ?, ?) RETURNING id;
+INSERT INTO expr ([% columns %], text) VALUES ([% ids %], ?) RETURNING id;
 __[ query_exists_db ]__
 SELECT count(*) FROM information_schema.columns WHERE table_name ='info';

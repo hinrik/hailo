@@ -131,8 +131,6 @@ CREATE TABLE token (
 __[ table_expr ]__
 CREATE TABLE expr (
     id        INTEGER PRIMARY KEY AUTO_INCREMENT,
-    can_start BOOL,
-    can_end   BOOL,
 [% FOREACH i IN orders %]
     token[% i %]_id INTEGER NOT NULL REFERENCES token (id),
 [% END %]
