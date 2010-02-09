@@ -31,6 +31,7 @@ for my $backend (qw(Perl mysql SQLite Pg)) {
             pass("Skipping mysql tests, can't connect to database named 'hailo'");
         } else {
             pass("Connected to mysql 'hailo' database");
+            system q[echo 'drop table info; drop table token; drop table expr; drop table next_token; drop table prev_token;' | mysql -u hailo -p'hailo' hailo];
         }
     }
 
