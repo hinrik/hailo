@@ -492,14 +492,6 @@ L<plugin|POE::Component::IRC::Plugin::Hailo> for just that purpose.
 I<Hailo> is a portmanteau of I<HAL> (as in MegaHAL) and
 L<failo|http://identi.ca/failo>.
 
-=head1 Storage backends
-
-               s/iter PostgreSQL      MySQL     SQLite       Perl
-    PostgreSQL   12.2         --        -9%       -69%       -95%
-    MySQL        11.0        10%         --       -66%       -94%
-    SQLite       3.79       222%       191%         --       -84%
-    Perl        0.624      1853%      1669%       507%         --
-
 =head1 ATTRIBUTES
 
 =head2 C<brain_resource>
