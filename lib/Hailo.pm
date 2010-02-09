@@ -508,6 +508,18 @@ The default is 5.
 
 The storage backend to use. Default: 'SQLite'.
 
+This gives you an idea of approximately how the backends compare in
+speed:
+
+               s/iter PostgreSQL      MySQL     SQLite       Perl
+    PostgreSQL   5.86         --        -2%       -71%       -96%
+    MySQL        5.72         2%         --       -70%       -96%
+    SQLite       1.70       245%       236%         --       -85%
+    Perl        0.250      2243%      2187%       580%         --
+
+To run your own test try running F<utils/hailo-benchmark> in the Hailo
+distribution.
+
 =head2 C<tokenizer_class>
 
 The tokenizer to use. Default: 'Words';
