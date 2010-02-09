@@ -106,6 +106,7 @@ sub _build_sth {
             $template,
             {
                 orders => [ 0 .. $self->order-1 ],
+                dbd    => $self->dbd,
                 %options,
             },
             \$sql,
@@ -226,7 +227,9 @@ sub _create_db {
     my ($self) = @_;
     my @statements = $self->_get_create_db_sql;
 
-    $self->dbh->do($_) for @statements;
+    for (@statements) {
+        $self->dbh->do($_);
+    }
 
     return;
 }
@@ -241,6 +244,7 @@ sub _get_create_db_sql {
             $template,
             {
                 orders => [ 0 .. $self->order-1 ],
+                dbd    => $self->dbd,
             },
             \$sql,
         );
@@ -443,32 +447,50 @@ it under the same terms as Perl itself.
 __DATA__
 __[ table_info ]__
 CREATE TABLE info (
-    attribute TEXT NOT NULL UNIQUE PRIMARY KEY,
+    attribute [% SWITCH dbd %][% CASE 'mysql' %]TEXT NOT NULL,
+                              [% CASE DEFAULT %]TEXT NOT NULL UNIQUE PRIMARY KEY,
+                              [% END %]
     text      TEXT NOT NULL
 );
 __[ table_token ]__
 CREATE TABLE token (
-    id   INTEGER PRIMARY KEY AUTOINCREMENT,
-    text TEXT NOT NULL UNIQUE
+    id   [% SWITCH dbd %][% CASE 'Pg'      %]SERIAL UNIQUE,
+                         [% CASE 'mysql'   %]INTEGER PRIMARY KEY AUTO_INCREMENT,
+                         [% CASE DEFAULT   %]INTEGER PRIMARY KEY AUTOINCREMENT,
+                         [% END %]
+    text [% SWITCH dbd %][% CASE 'mysql' %]TEXT NOT NULL
+                         [% CASE DEFAULT %]TEXT NOT NULL UNIQUE
+                         [% END %]
 );
 __[ table_expr ]__
 CREATE TABLE expr (
-    id        INTEGER PRIMARY KEY AUTOINCREMENT,
+    id        [% SWITCH dbd %][% CASE 'Pg' %]SERIAL UNIQUE,
+                              [% CASE 'mysql'   %]INTEGER PRIMARY KEY AUTO_INCREMENT,
+                              [% CASE DEFAULT   %]INTEGER PRIMARY KEY AUTOINCREMENT,
+                              [% END %]
 [% FOREACH i IN orders %]
     token[% i %]_id INTEGER NOT NULL REFERENCES token (id),
 [% END %]
-    text      TEXT NOT NULL UNIQUE
+    text       [% SWITCH dbd %][% CASE 'mysql' %]TEXT NOT NULL
+                               [% CASE DEFAULT %]TEXT NOT NULL UNIQUE
+                               [% END %]
 );
 __[ table_next_token ]__
 CREATE TABLE next_token (
-    id       INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    id       [% SWITCH dbd %][% CASE 'Pg' %]SERIAL UNIQUE,
+                             [% CASE 'mysql'   %]INTEGER PRIMARY KEY AUTO_INCREMENT,
+                             [% CASE DEFAULT   %]INTEGER PRIMARY KEY AUTOINCREMENT,
+                             [% END %]
     expr_id  INTEGER NOT NULL REFERENCES expr (id),
     token_id INTEGER NOT NULL REFERENCES token (id),
     count    INTEGER NOT NULL
 );
 __[ table_prev_token ]__
 CREATE TABLE prev_token (
-    id       INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    id       [% SWITCH dbd %][% CASE 'Pg' %]SERIAL UNIQUE,
+                             [% CASE 'mysql'   %]INTEGER PRIMARY KEY AUTO_INCREMENT,
+                             [% CASE DEFAULT   %]INTEGER PRIMARY KEY AUTOINCREMENT,
+                             [% END %]
     expr_id  INTEGER NOT NULL REFERENCES expr (id),
     token_id INTEGER NOT NULL REFERENCES token (id),
     count    INTEGER NOT NULL
@@ -496,7 +518,7 @@ SELECT text FROM expr WHERE id = ?;
 __[ query_token_id ]__
 SELECT id FROM token WHERE text = ?;
 __[ query_add_token ]__
-INSERT INTO token (text) VALUES (?);
+INSERT INTO token (text) VALUES (?)[% IF dbd == 'Pg' %] RETURNING id[% END %];
 __[ query_last_expr_rowid ]_
 SELECT id FROM expr ORDER BY id DESC LIMIT 1;
 __[ query_last_token_rowid ]__
@@ -514,4 +536,4 @@ INNER JOIN [% table %] p
         ON p.token_id = t.id
      WHERE p.expr_id = ?;
 __[ query_(add_expr) ]__
-INSERT INTO expr ([% columns %], text) VALUES ([% ids %], ?);
+INSERT INTO expr ([% columns %], text) VALUES ([% ids %], ?)[% IF dbd == 'Pg' %] RETURNING id[% END %];

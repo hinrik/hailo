@@ -1,5 +1,8 @@
 0.08
     - 0.07 broke the PostgreSQL and MySQL backend. Fixed them.
+    - Made it less likely that non-SQLite backends will be broken in
+      the future by moving the DB-specific SQL out of Pg.pm and
+      mysql.pm into macros in SQL.pm
     - Use of $. in Hailo.pm broke file-based backends such as Cache.pm
     - Make MySQL docs copy-pasteable 
 

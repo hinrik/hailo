@@ -130,36 +130,5 @@ it under the same terms as Perl itself.
 =cut
 
 __DATA__
-__[ table_token ]__
-CREATE TABLE token (
-    id   SERIAL UNIQUE,
-    text TEXT NOT NULL UNIQUE
-);
-__[ table_expr ]__
-CREATE TABLE expr (
-    id        SERIAL UNIQUE,
-[% FOREACH i IN orders %]
-    token[% i %]_id INTEGER NOT NULL REFERENCES token (id),
-[% END %]
-    text TEXT NOT NULL UNIQUE
-);
-__[ table_next_token ]__
-CREATE TABLE next_token (
-    id       SERIAL UNIQUE,
-    expr_id  INTEGER NOT NULL REFERENCES expr (id),
-    token_id INTEGER NOT NULL REFERENCES token (id),
-    count    INTEGER NOT NULL
-);
-__[ table_prev_token ]__
-CREATE TABLE prev_token (
-    id       SERIAL UNIQUE,
-    expr_id  INTEGER NOT NULL REFERENCES expr (id),
-    token_id INTEGER NOT NULL REFERENCES token (id),
-    count    INTEGER NOT NULL
-);
-__[ query_add_token ]__
-INSERT INTO token (text) VALUES (?) RETURNING id;
-__[ query_(add_expr) ]__
-INSERT INTO expr ([% columns %], text) VALUES ([% ids %], ?) RETURNING id;
 __[ query_exists_db ]__
 SELECT count(*) FROM information_schema.columns WHERE table_name ='info';

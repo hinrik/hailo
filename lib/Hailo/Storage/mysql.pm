@@ -118,37 +118,5 @@ it under the same terms as Perl itself.
 =cut
 
 __DATA__
-__[ table_info ]__
-CREATE TABLE info (
-    attribute TEXT NOT NULL,
-    text      TEXT NOT NULL
-);
-__[ table_token ]__
-CREATE TABLE token (
-    id   INTEGER PRIMARY KEY AUTO_INCREMENT,
-    text TEXT NOT NULL
-);
-__[ table_expr ]__
-CREATE TABLE expr (
-    id        INTEGER PRIMARY KEY AUTO_INCREMENT,
-[% FOREACH i IN orders %]
-    token[% i %]_id INTEGER NOT NULL REFERENCES token (id),
-[% END %]
-    text      TEXT NOT NULL
-);
-__[ table_next_token ]__
-CREATE TABLE next_token (
-    id       INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    expr_id  INTEGER NOT NULL REFERENCES expr (id),
-    token_id INTEGER NOT NULL REFERENCES token (id),
-    count    INTEGER NOT NULL
-);
-__[ table_prev_token ]__
-CREATE TABLE prev_token (
-    id       INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    expr_id  INTEGER NOT NULL REFERENCES expr (id),
-    token_id INTEGER NOT NULL REFERENCES token (id),
-    count    INTEGER NOT NULL
-);
 __[ query_exists_db ]__
 SHOW TABLES;
