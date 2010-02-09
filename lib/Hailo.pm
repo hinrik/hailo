@@ -396,7 +396,7 @@ before _train_progress => sub {
     return;
 };
 
-sub _train_progress{ 
+sub _train_progress {
     my ($self, $fh, $filename) = @_;
     my $lines = count_lines($filename);
     my $progress = Term::ProgressBar->new({
@@ -409,18 +409,18 @@ sub _train_progress{
     my $next_update = 0;
     my $start_time = [gettimeofday()];
 
-    while (my $line = <$fh>) {
+    my $i = 1; while (my $line = <$fh>) {
         chomp $line;
         $self->_engine_obj->learn($line);
-        if ($. >= $next_update) {
+        if ($i >= $next_update) {
             $next_update = $progress->update($.);
 
             # The default Term::ProgressBar estimate for next updates
             # is way too concervative. With a ~200k line file we only
             # update every ~2k lines which is 10 seconds or so.
-            $next_update = (($next_update-$.) / 10) + $.;
+            $next_update = (($next_update-$i) / 10) + $i;
         }
-    }
+    } continue { $i++ }
 
     $progress->update($lines) if $lines >= $next_update;
     my $elapsed = tv_interval($start_time);
@@ -491,6 +491,14 @@ L<plugin|POE::Component::IRC::Plugin::Hailo> for just that purpose.
 
 I<Hailo> is a portmanteau of I<HAL> (as in MegaHAL) and
 L<failo|http://identi.ca/failo>.
+
+=head1 Storage backends
+
+               s/iter PostgreSQL      MySQL     SQLite       Perl
+    PostgreSQL   12.2         --        -9%       -69%       -95%
+    MySQL        11.0        10%         --       -66%       -94%
+    SQLite       3.79       222%       191%         --       -84%
+    Perl        0.624      1853%      1669%       507%         --
 
 =head1 ATTRIBUTES
 
