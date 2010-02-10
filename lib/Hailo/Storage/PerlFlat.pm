@@ -77,9 +77,10 @@ sub token_exists {
 
 sub random_expr {
     my ($self, $token) = @_;
-    my @ehash = map { $self->_memory->{"token-$token-$_" } } 0 .. $self->_memory->{"token-$token"};
-    my $ehash = $ehash[rand @ehash];
-    my @tokens = map { $self->_memory->{"expr-$ehash-$_" } } 0 .. $self->_memory->{"expr-$ehash"};
+    my $mem = $self->_memory;
+    my $token_num = int rand $mem->{"token-$token"};
+    my $ehash     = $mem->{"token-$token-$token_num"};
+    my @tokens    = map { $mem->{"expr-$ehash-$_" } } 0 .. $mem->{"expr-$ehash"};
     return @tokens;
 }
 
