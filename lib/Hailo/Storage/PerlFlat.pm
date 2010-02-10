@@ -2,7 +2,6 @@ package Hailo::Storage::PerlFlat;
 use 5.10.0;
 use Moose;
 use MooseX::StrictConstructor;
-use Storable;
 use Digest::MD4 qw(md4_hex);
 use List::MoreUtils qw(uniq);
 use namespace::clean -except => 'meta';
@@ -14,13 +13,10 @@ extends 'Hailo::Storage::Perl';
 with qw(Hailo::Role::Generic
         Hailo::Role::Storage);
 
-sub _build__memory {
-    my ($self) = @_;
-    if (defined $self->brain && -s $self->brain) {
-        return retrieve($self->brain);
-    } else {
-        return {};
-    }
+sub _build__memory_area {
+    # The hash we store all our data in
+    my %memory;
+    return \%memory;
 }
 
 sub add_expr {

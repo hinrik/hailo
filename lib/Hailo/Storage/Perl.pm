@@ -24,17 +24,32 @@ sub _build__memory {
         return retrieve($self->brain);
     }
     else {
-        # TODO: these data structures aren't very normalized, so they take up
-        # much more memory than necessary
-        return {
-            token      => { }, # $token => \@ehash_of_exprs_that_contain_it
-            expr       => { }, # $ehash => \@tokens_it_contains
-            next_token => { }, # $ehash => \%tokens_that_can_follow_this_expr
-            prev_token => { }, # $ehash => \%tokens_that_can_precede_this_expr
-            order      => $self->order,
-            separator  => $self->token_separator,
-        };
+        return $self->_memory_area;
     }
+}
+
+has _memory_area => (
+    isa        => HashRef,
+    is         => 'ro',
+    lazy_build => 1,
+    init_arg   => undef,
+);
+
+sub _build__memory_area {
+    my ($self) = @_;
+
+    # TODO: these data structures aren't very normalized, so they take up
+    # much more memory than necessary
+    my %mem = (
+        token      => { }, # $token => \@ehash_of_exprs_that_contain_it
+        expr       => { }, # $ehash => \@tokens_it_contains
+        next_token => { }, # $ehash => \%tokens_that_can_follow_this_expr
+        prev_token => { }, # $ehash => \%tokens_that_can_precede_this_expr
+        order      => $self->order,
+        separator  => $self->token_separator,
+    );
+
+    return \%mem;
 }
 
 sub add_expr {
