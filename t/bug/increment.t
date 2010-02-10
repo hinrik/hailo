@@ -1,7 +1,6 @@
 use 5.10.0;
 use strict;
 use warnings;
-use Hailo;
 use Test::More tests => 36;
 
 my @give = (undef, 1 .. 4);
