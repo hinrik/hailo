@@ -9,7 +9,8 @@ use namespace::clean -except => 'meta';
 our $VERSION = '0.08';
 
 with qw(Hailo::Role::Generic
-        Hailo::Role::Storage);
+        Hailo::Role::Storage
+        Hailo::Role::Log);
 
 has _memory => (
     isa        => HashRef,

@@ -40,6 +40,8 @@ requires       ('IO::Interactive'               => '0');
 requires       ('Term::ProgressBar'             => '2.00');
 requires       ('Text::Trim'                    => '0');
 requires       ('Digest::MD4'                   => '0');
+requires       ('CHI'                           => '0');
+requires       ('CHI::Driver::Memory'           => '0');
 recommends     ('DBD::Pg'                       => '0');
 
 tests_recursive();

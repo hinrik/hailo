@@ -230,7 +230,7 @@ sub _create_db {
 
     for (@statements) {
         if ($self->meh->is_trace()) {
-            $self->meh->trace( sprintf "Creating database table for '%s': %s", $self->dbd, $_ );
+            #$self->meh->trace( sprintf "Creating database table for '%s': %s", $self->dbd, $_ );
         }
         $self->dbh->do($_);
     }
