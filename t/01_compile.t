@@ -2,7 +2,7 @@ use 5.10.0;
 use strict;
 use warnings;
 use File::Spec::Functions 'catfile';
-use Test::More tests => 45;
+use Test::More tests => 48;
 use Test::Script;
 
 # find lib -type f | perl -pe 's[^lib/][    ]; s[.pm$][]; s[/][::]g'
@@ -12,6 +12,7 @@ my @classes = qw(
   Hailo::Storage::mysql
   Hailo::Storage::Pg
   Hailo::Storage::Perl
+  Hailo::Storage::PerlFlat
   Hailo::Storage::SQL
   Hailo::Role::Engine
   Hailo::Role::Generic
