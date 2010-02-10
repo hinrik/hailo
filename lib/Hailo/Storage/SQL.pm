@@ -16,7 +16,8 @@ use namespace::clean -except => [ qw(meta
 our $VERSION = '0.08';
 
 with qw(Hailo::Role::Generic
-        Hailo::Role::Storage);
+        Hailo::Role::Storage
+        Hailo::Role::Log);
 
 has dbh => (
     isa        => 'DBI::db',
@@ -228,6 +229,9 @@ sub _create_db {
     my @statements = $self->_get_create_db_sql;
 
     for (@statements) {
+        if ($self->l->is_trace()) {
+            $self->l->trace( sprintf "Creating database table for '%s': %s", $self->dbd, $_ );
+        }
         $self->dbh->do($_);
     }
 
