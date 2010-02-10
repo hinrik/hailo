@@ -2,7 +2,7 @@ use 5.10.0;
 use strict;
 use warnings;
 use Hailo;
-use Test::More tests => 6;
+use Test::More tests => 8;
 
 for my $storage (qw(Perl PerlFlat CHI SQLite)) {
     my $hailo = Hailo->new(

@@ -63,19 +63,19 @@ sub _get {
     return $v;
 }
 
-# XXX: This is broken somehow!
 sub _increment {
     my ($self, $k) = @_;
     my $mem = $self->_memory;
 
     $self->meh->trace("Incrementing $k");
 
-    if ($self->_exists($k)) {
-        my $now = $self->_get($k);
-        return $self->_set($k, $now + 1);
-    } else {
-        $self->_set($k, 0);
+    if (not $self->_exists($k)) {
+        $self->_set($k, 1);
         return 0;
+    } else {
+        my $was = $self->_get($k);;
+        $self->_set($k, $was + 1);
+        return $was;
     }
 }
 
