@@ -20,12 +20,16 @@ override _build_dbd_options => sub {
 };
 
 before start_training => sub {
-    shift->dbh->do('PRAGMA synchronous=OFF;');
+    my $dbh = shift->dbh;
+    $dbh->do('PRAGMA synchronous=OFF;');
+    $dbh->do('PRAGMA journal_mode=OFF;');
     return;
 };
 
 after stop_training => sub {
-    shift->dbh->do('PRAGMA synchronous=ON;');
+    my $dbh = shift->dbh;
+    $dbh->do('PRAGMA journal_mode=DELETE;');
+    $dbh->do('PRAGMA synchronous=ON;');
     return;
 };
 
