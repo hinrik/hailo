@@ -2,7 +2,10 @@ package Hailo::Storage::PerlFlat;
 use 5.10.0;
 use Moose;
 use MooseX::StrictConstructor;
+use Storable;
 use Digest::MD4 qw(md4_hex);
+use List::MoreUtils qw(uniq);
+use Data::Dump 'dump';
 use namespace::clean -except => 'meta';
 
 our $VERSION = '0.08';
@@ -13,10 +16,15 @@ with qw(Hailo::Role::Generic
         Hailo::Role::Storage
         Hailo::Role::Log);
 
-after _build__memory => sub {
+
+sub _build__memory {
     my ($self) = @_;
-    $self->{_memory} = {};
-};
+    if (defined $self->brain && -s $self->brain) {
+        return retrieve($self->brain);
+    } else {
+        return {}
+    }
+}
 
 sub add_expr {
     my ($self, $args) = @_;
@@ -44,12 +52,24 @@ sub add_expr {
 
     for my $pos_token (qw(next_token prev_token)) {
         if (defined $args->{$pos_token}) {
+            my $count = 0;
+            if (exists $mem->{"x$pos_token-$ehash"}) {
+                $count = $mem->{"x$pos_token-$ehash"} + 1;
+                $mem->{"x$pos_token-$ehash"} = $count;
+            } else {
+                $mem->{"x$pos_token-$ehash"} = $count;
+            }
+
+            $mem->{"x$pos_token-$ehash"} = $count;
+            $mem->{"x$pos_token-$ehash-$count"} = $args->{$pos_token};
+            $mem->{"x$pos_token-$ehash-token-$args->{$pos_token}"}++;
+
             $mem->{$pos_token}{$ehash}{ $args->{$pos_token} }++;
         }
     }
 
-    $mem->{"prev_token-$ehash-"}++ if $args->{can_start};
-    $mem->{"next_token-$ehash-"}++ if $args->{can_end};
+    $mem->{"prev_token-$ehash-token-"}++ if $args->{can_start};
+    $mem->{"next_token-$ehash-token-"}++ if $args->{can_end};
 
     return;
 }
@@ -70,8 +90,22 @@ sub random_expr {
 
 sub next_tokens {
     my ($self, $tokens) = @_;
+    my $mem = $self->_memory;
     my $ehash = $self->_hash_tokens($tokens);
-    return $self->_memory->{next_token}{ $ehash };
+    my $key = "xnext_token-$ehash";
+
+    return unless exists $mem->{$key};
+
+    my $num_toke = $mem->{"xnext_token-$ehash"};
+    if (defined $num_toke) {
+        my @tokes = map { $mem->{"xnext_token-$ehash-$_"} } 0 .. $num_toke;
+        my %ret;
+        $ret{$_} = $mem->{"xnext_token-$ehash-token-$_"} for @tokes;
+        return \%ret;
+    }
+
+#    say STDERR dump { toke => $toke};
+    die "meh";
 }
 
 sub prev_tokens {
@@ -80,11 +114,10 @@ sub prev_tokens {
     return $self->_memory->{prev_token}{ $ehash };
 }
 
-# concatenate contents of an expression for unique identification
 sub _hash_tokens {
-    my ($self, $tokens) = @_;
-    my $ehash = md4_hex("@$tokens");
-    return substr $ehash, 0, 10;
+     my ($self, $tokens) = @_;
+     my $ehash = md4_hex("@$tokens");
+     return substr $ehash, 0, 10;
 }
 
 __PACKAGE__->meta->make_immutable;
