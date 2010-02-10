@@ -10,7 +10,7 @@ crunchbase-companies - Fetch company names from L<http://crunchbase.com>
 =head1 SYNOPSIS
 
     perl utils/crunchbase-companies > utils/companies.txt
-    perl -Ilib -I/home/avar/src/data-section/lib script/hailo --storage SQLite --tokenizer Characters --train utils/companies.txt --brain utils/companies.db
+    perl -Ilib -I/home/avar/src/data-section/lib script/hailo --storage SQLite --tokenizer Chars --train utils/companies.txt --brain utils/companies.db
 
 =head1 DESCRIPTION
 

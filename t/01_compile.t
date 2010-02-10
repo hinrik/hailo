@@ -21,7 +21,7 @@ my @classes = qw(
   Hailo::Role::Tokenizer
   Hailo::UI::ReadLine
   Hailo::Engine::Default
-  Hailo::Tokenizer::Characters
+  Hailo::Tokenizer::Chars
   Hailo::Tokenizer::Words
 );
 

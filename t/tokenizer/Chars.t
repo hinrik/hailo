@@ -3,7 +3,7 @@ use utf8;
 use strict;
 use warnings;
 use Test::More tests => 2;
-use Hailo::Tokenizer::Characters;
+use Hailo::Tokenizer::Chars;
 use Data::Random qw(:all);
 
 binmode $_, ':encoding(utf8)' for (*STDIN, *STDOUT, *STDERR);
@@ -13,7 +13,7 @@ subtest make_tokens => sub {
         my ($str, $tokens) = @_;
 
         is_deeply(
-            [ Hailo::Tokenizer::Characters::make_tokens(Hailo::Tokenizer::Characters->new, $str) ],
+            [ Hailo::Tokenizer::Chars::make_tokens(Hailo::Tokenizer::Chars->new, $str) ],
             $tokens,
             "make_tokens: <<$str>> ==> " . (join ' ', map { qq[<<$_>>] } @$tokens) . ""
         );
@@ -38,9 +38,9 @@ subtest make_output => sub {
 
         is_deeply(
             [
-                Hailo::Tokenizer::Characters::make_output(
-                    Hailo::Tokenizer::Characters->new,
-                    [ Hailo::Tokenizer::Characters::make_tokens(Hailo::Tokenizer::Characters->new, $str) ])
+                Hailo::Tokenizer::Chars::make_output(
+                    Hailo::Tokenizer::Chars->new,
+                    [ Hailo::Tokenizer::Chars::make_tokens(Hailo::Tokenizer::Chars->new, $str) ])
               ],
             $output,
             "make_output: <<$str>> ==> " . (join ' ', map { qq[<<$_>>] } @$output) . ""
