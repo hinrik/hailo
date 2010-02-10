@@ -1,6 +1,6 @@
 package Hailo::Role::Storage;
 use 5.10.0;
-use Moose::Role;
+use MooseX::Role::Strict;
 use MooseX::Types::Moose qw<Str Int>;
 use namespace::clean -except => 'meta';
 

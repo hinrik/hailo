@@ -26,6 +26,7 @@ requires       ('File::CountLines'              => '0');
 requires       ('List::MoreUtils'               => '0');
 requires       ('Class::MOP'                    => '0');
 requires       ('Moose'                         => '0');
+requires       ('MooseX::Role::Strict'          => '0.03');
 requires       ('MooseX::Getopt'                => '0');
 requires       ('MooseX::Getopt::Dashes'        => '0');
 requires       ('MooseX::Types::Path::Class'    => '0');

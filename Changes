@@ -1,3 +1,6 @@
+0.09
+    - Use MooseX::Role::Strict instead of Moose::Role
+
 0.08 Wed Feb 10 00:06:20 GMT 2010
     - 0.07 broke the PostgreSQL and MySQL backend. Fixed them.
     - Made it less likely that non-SQLite backends will be broken in

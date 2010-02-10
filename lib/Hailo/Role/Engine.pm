@@ -1,6 +1,6 @@
 package Hailo::Role::Engine;
 use 5.10.0;
-use Moose::Role;
+use MooseX::Role::Strict;
 use namespace::clean -except => 'meta';
 
 our $VERSION = '0.08';
