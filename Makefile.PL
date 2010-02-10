@@ -53,6 +53,6 @@ author_requires('Test::Perl::Critic'  => '0');
 author_requires('Test::Pod'           => '1.41');
 author_requires('Test::Pod::Coverage' => '1.08');
 author_requires('Test::Script'        => '0');
-author_tests   ('xt') unless $ENV{USER} eq "avar";
+author_tests   ('xt');
 
 WriteAll();
