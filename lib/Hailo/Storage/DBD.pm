@@ -1,4 +1,4 @@
-package Hailo::Storage::SQL;
+package Hailo::Storage::DBD;
 use 5.10.0;
 use Moose;
 use MooseX::StrictConstructor;
@@ -431,7 +431,7 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Hailo::Storage::SQL - A skeleton SQL backend meant to be subclassed
+Hailo::Storage::DBD - A skeleton DBD backend meant to be subclassed
 
 =head1 AUTHOR
 

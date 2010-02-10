@@ -11,9 +11,9 @@ my @classes = qw(
   Hailo::Storage::DBD::SQLite
   Hailo::Storage::DBD::mysql
   Hailo::Storage::DBD::Pg
+  Hailo::Storage::DBD
   Hailo::Storage::Perl
   Hailo::Storage::PerlFlat
-  Hailo::Storage::SQL
   Hailo::Role::Engine
   Hailo::Role::Generic
   Hailo::Role::UI
