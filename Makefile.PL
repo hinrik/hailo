@@ -39,6 +39,7 @@ requires       ('Template'                      => '0');
 requires       ('IO::Interactive'               => '0');
 requires       ('Term::ProgressBar'             => '2.00');
 requires       ('Text::Trim'                    => '0');
+requires       ('Digest::MD4'                   => '0');
 recommends     ('DBD::Pg'                       => '0');
 
 tests_recursive();
