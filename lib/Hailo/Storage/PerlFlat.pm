@@ -13,16 +13,14 @@ our $VERSION = '0.08';
 extends 'Hailo::Storage::Perl';
 
 with qw(Hailo::Role::Generic
-        Hailo::Role::Storage
-        Hailo::Role::Log);
-
+        Hailo::Role::Storage);
 
 sub _build__memory {
     my ($self) = @_;
     if (defined $self->brain && -s $self->brain) {
         return retrieve($self->brain);
     } else {
-        return {}
+        return {};
     }
 }
 
@@ -53,18 +51,16 @@ sub add_expr {
     for my $pos_token (qw(next_token prev_token)) {
         if (defined $args->{$pos_token}) {
             my $count = 0;
-            if (exists $mem->{"x$pos_token-$ehash"}) {
-                $count = $mem->{"x$pos_token-$ehash"} + 1;
-                $mem->{"x$pos_token-$ehash"} = $count;
+            if (exists $mem->{"$pos_token-$ehash"}) {
+                $count = $mem->{"$pos_token-$ehash"} + 1;
+                $mem->{"$pos_token-$ehash"} = $count;
             } else {
-                $mem->{"x$pos_token-$ehash"} = $count;
+                $mem->{"$pos_token-$ehash"} = $count;
             }
 
-            $mem->{"x$pos_token-$ehash"} = $count;
-            $mem->{"x$pos_token-$ehash-$count"} = $args->{$pos_token};
-            $mem->{"x$pos_token-$ehash-token-$args->{$pos_token}"}++;
-
-            $mem->{$pos_token}{$ehash}{ $args->{$pos_token} }++;
+            $mem->{"$pos_token-$ehash"} = $count;
+            $mem->{"$pos_token-$ehash-$count"} = $args->{$pos_token};
+            $mem->{"$pos_token-$ehash-token-$args->{$pos_token}"}++;
         }
     }
 
@@ -90,29 +86,33 @@ sub random_expr {
 
 sub next_tokens {
     my ($self, $tokens) = @_;
-    my $mem = $self->_memory;
     my $ehash = $self->_hash_tokens($tokens);
-    my $key = "xnext_token-$ehash";
 
-    return unless exists $mem->{$key};
-
-    my $num_toke = $mem->{"xnext_token-$ehash"};
-    if (defined $num_toke) {
-        my @tokes = map { $mem->{"xnext_token-$ehash-$_"} } 0 .. $num_toke;
-        my %ret;
-        $ret{$_} = $mem->{"xnext_token-$ehash-token-$_"} for @tokes;
-        return \%ret;
-    }
-
-#    say STDERR dump { toke => $toke};
-    die "meh";
+    return $self->_x_tokens("next_token", $ehash);
 }
 
 sub prev_tokens {
     my ($self, $tokens) = @_;
     my $ehash = $self->_hash_tokens($tokens);
-    return $self->_memory->{prev_token}{ $ehash };
+    return $self->_x_tokens("prev_token", $ehash);
 }
+
+sub _x_tokens {
+    my ($self, $pos_token, $ehash) = @_;
+    my $mem = $self->_memory;
+    my $key = "$pos_token-$ehash";
+
+    if (exists $mem->{$key}) {
+        my $count = $mem->{$key};
+
+        my @tokes = map { $mem->{"$key-$_"} } 0 .. $count;
+        my %ret;
+        $ret{$_} = $mem->{"$key-token-$_"} for @tokes;
+        return \%ret;
+    }
+    return;
+}
+
 
 sub _hash_tokens {
      my ($self, $tokens) = @_;
@@ -126,22 +126,20 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Hailo::Storage::PerlFlat - A storage backend for L<Hailo|Hailo> using Perl structures
+Hailo::Storage::PerlFlat - A storage backend for L<Hailo|Hailo> using flat Perl structures
 
 =head1 DESCRIPTION
 
-This backend maintains information in a Perl hash, with an option to
-save to/load from a file with L<Storable|Storable>.
-
-It is fast, but uses a lot of memory.
+This backend maintains information in a flat Perl hash, with an option
+to save to/load from a file with L<Storable|Storable>.
 
 =head1 AUTHOR
 
-Hinrik E<Ouml>rn SigurE<eth>sson, hinrik.sig@gmail.com
+E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2010 Hinrik E<Ouml>rn SigurE<eth>sson
+Copyright 2010 E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason
 
 This program is free software, you can redistribute it and/or modify
 it under the same terms as Perl itself.
