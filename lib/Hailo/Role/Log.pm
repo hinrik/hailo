@@ -15,7 +15,7 @@ my @methods = qw(
     logcarp logcluck logcroak logconfess
 );
 
-has 'l' => (
+has 'meh' => (
     is         => 'ro',
     isa        => 'Log::Log4perl::Logger',
     lazy_build => 1,
@@ -38,7 +38,7 @@ around $_ => sub {
 
 } for @methods;
 
-sub _build_l
+sub _build_meh
 {
     my ($self) = @_;
 
@@ -72,7 +72,7 @@ it under the same terms as Perl itself.
 =cut
 
 __DATA__
-log4perl.rootLogger = TRACE, Console
+log4perl.rootLogger = INFO, Console
 
 log4perl.appender.Console        = Log::Log4perl::Appender::Screen
 log4perl.appender.Console.utf8   = 1

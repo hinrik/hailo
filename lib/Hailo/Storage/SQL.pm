@@ -229,8 +229,8 @@ sub _create_db {
     my @statements = $self->_get_create_db_sql;
 
     for (@statements) {
-        if ($self->l->is_trace()) {
-            $self->l->trace( sprintf "Creating database table for '%s': %s", $self->dbd, $_ );
+        if ($self->meh->is_trace()) {
+            $self->meh->trace( sprintf "Creating database table for '%s': %s", $self->dbd, $_ );
         }
         $self->dbh->do($_);
     }
