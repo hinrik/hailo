@@ -3,7 +3,7 @@ use 5.10.0;
 use Moose::Role;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 requires 'run';
 

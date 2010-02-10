@@ -13,7 +13,7 @@ use FindBin qw($Bin $Script);
 use File::Spec::Functions qw(catfile);
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 has help => (
     traits        => [qw(Getopt)],
