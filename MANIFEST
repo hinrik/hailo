@@ -21,6 +21,7 @@ lib/Hailo/Role/Tokenizer.pm
 lib/Hailo/Role/UI.pm
 lib/Hailo/Storage/mysql.pm
 lib/Hailo/Storage/Perl.pm
+lib/Hailo/Storage/PerlFlat.pm
 lib/Hailo/Storage/Pg.pm
 lib/Hailo/Storage/SQL.pm
 lib/Hailo/Storage/SQLite.pm

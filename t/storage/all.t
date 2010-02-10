@@ -2,7 +2,7 @@ use 5.10.0;
 use utf8;
 use strict;
 use warnings;
-use Test::More tests => 55;
+use Test::More tests => 71;
 use Hailo;
 use Data::Random qw(:all);
 use File::Temp qw(tempfile tempdir);
@@ -12,7 +12,7 @@ binmode $_, ':encoding(utf8)' for (*STDIN, *STDOUT, *STDERR);
 # Suppress PostgreSQL notices
 $SIG{__WARN__} = sub { print STDERR @_ if $_[0] !~ m/NOTICE:\s*CREATE TABLE/; };
 
-for my $backend (qw(Perl mysql SQLite Pg)) {
+for my $backend (qw(Perl PerlFlat mysql SQLite Pg)) {
     # Skip all tests for this backend?
     my $skip_all;
 
@@ -48,7 +48,7 @@ for my $backend (qw(Perl mysql SQLite Pg)) {
     my $prev_brain;
     for my $i (1 .. 5) {
         my %connect_opts;
-        if ($backend eq 'SQLite'or $backend eq "Perl") {
+        if ($backend eq 'SQLite'or $backend =~ /Perl/) {
             %connect_opts = (
                 brain_resource => $filename,
             );
@@ -75,7 +75,7 @@ for my $backend (qw(Perl mysql SQLite Pg)) {
             %connect_opts,
         );
 
-        if ($backend eq "Perl") {
+        if ($backend =~ /Perl/) {
             if ($prev_brain) {
                 my $this_brain = $hailo->_storage_obj->_memory;
                 is_deeply($prev_brain, $this_brain, "$backend: Our previous $backend brain matches the new one, try $i");
@@ -93,7 +93,7 @@ for my $backend (qw(Perl mysql SQLite Pg)) {
         # Hailo replies
         cmp_ok(length($hailo->reply($random_words[5])) * 2, '>', length($random_words[5]), "Hailo knows how to babble, try $i");
 
-        if ($backend eq "Perl") {
+        if ($backend =~ /Perl/) {
             # Save this brain for the next iteration
             $prev_brain = $hailo->_storage_obj->_memory;
         }
