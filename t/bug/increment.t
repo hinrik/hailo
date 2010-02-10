@@ -2,9 +2,9 @@ use 5.10.0;
 use strict;
 use warnings;
 use Hailo;
-use Test::More tests => 24;
+use Test::More tests => 36;
 
-my @expect = (0 .. 3);
+my @give = (undef, 1 .. 4);
 
 my %incs = (
     clever => sub {
@@ -35,7 +35,7 @@ my %incs = (
 while (my ($k, $v) = each %incs) {
     my %hash;
 
-    for my $i (@expect) {
+    for (my $i = 0; $i <= @give; $i++) {
         my $ret = $v->(\%hash, "akey");
         pass("Return value is $ret");
         cmp_ok(
