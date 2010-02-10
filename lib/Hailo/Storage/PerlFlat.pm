@@ -3,7 +3,6 @@ use 5.10.0;
 use Moose;
 use MooseX::StrictConstructor;
 use Digest::MD4 qw(md4_hex);
-use List::MoreUtils qw(uniq);
 use namespace::clean -except => 'meta';
 
 our $VERSION = '0.08';
