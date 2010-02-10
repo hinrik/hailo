@@ -35,28 +35,14 @@ sub add_expr {
         $mem->{"expr-$ehash-$_"} = $args->{tokens}->[$_] for 0 .. $count;
 
         for my $token (@{ $args->{tokens} }) {
-            my $count = 0;
-            if (exists $mem->{"token-$token"}) {
-                $count = $mem->{"token-$token"} + 1;
-                $mem->{"token-$token"} = $count;
-            } else {
-                $mem->{"token-$token"} = $count;
-            }
-
+            my $count = $mem->{"token-$token"}++;
             $mem->{"token-$token-$count"} = $ehash;
         }
     }
 
     for my $pos_token (qw(next_token prev_token)) {
         if (defined $args->{$pos_token}) {
-            my $count = 0;
-            if (exists $mem->{"$pos_token-$ehash"}) {
-                $count = $mem->{"$pos_token-$ehash"} + 1;
-                $mem->{"$pos_token-$ehash"} = $count;
-            } else {
-                $mem->{"$pos_token-$ehash"} = $count;
-            }
-
+            my $count = $mem->{"$pos_token-$ehash"}++;
             $mem->{"$pos_token-$ehash"} = $count;
             $mem->{"$pos_token-$ehash-$count"} = $args->{$pos_token};
             $mem->{"$pos_token-$ehash-token-$args->{$pos_token}"}++;
