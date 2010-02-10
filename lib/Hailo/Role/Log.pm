@@ -15,7 +15,7 @@ my @methods = qw(
     logcarp logcluck logcroak logconfess
 );
 
-has 'squeak' => (
+has 'l' => (
     is         => 'ro',
     isa        => 'Log::Log4perl::Logger',
     lazy_build => 1,
@@ -38,7 +38,7 @@ around $_ => sub {
 
 } for @methods;
 
-sub _build_squeak
+sub _build_l
 {
     my ($self) = @_;
 
@@ -75,6 +75,7 @@ __DATA__
 log4perl.rootLogger = TRACE, Console
 
 log4perl.appender.Console        = Log::Log4perl::Appender::Screen
+log4perl.appender.Console.utf8   = 1
 log4perl.appender.Console.stderr = 1
 log4perl.appender.Console.layout = Log::Log4perl::Layout::PatternLayout
 log4perl.appender.Console.layout.ConversionPattern = %p [%c] [%M] %m%n

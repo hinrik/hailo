@@ -425,7 +425,7 @@ sub _train_progress {
 
     $progress->update($lines) if $lines >= $next_update;
     my $elapsed = tv_interval($start_time);
-    $self->squeak->trace("Imported in $elapsed seconds");
+    $self->l->trace("Imported in $elapsed seconds");
 
     return;
 }
