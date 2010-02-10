@@ -33,6 +33,7 @@ sub _exists_db {
     my ($self) = @_;
     my $brain = $self->brain;
     return unless defined $self->brain;
+    return if $self->brain eq ':memory:';
     return -s $self->brain;
 }
 
