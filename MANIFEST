@@ -15,6 +15,7 @@ lib/Hailo.pm
 lib/Hailo/Engine/Default.pm
 lib/Hailo/Role/Engine.pm
 lib/Hailo/Role/Generic.pm
+lib/Hailo/Role/Log.pm
 lib/Hailo/Role/Storage.pm
 lib/Hailo/Role/Tokenizer.pm
 lib/Hailo/Role/UI.pm

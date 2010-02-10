@@ -219,7 +219,8 @@ has _ui_obj => (
     init_arg    => undef,
 );
 
-with qw(MooseX::Getopt::Dashes);
+with qw(MooseX::Getopt::Dashes
+        Hailo::Role::Log);
 
 sub _getopt_full_usage {
     my ($self, $usage) = @_;
@@ -424,7 +425,7 @@ sub _train_progress {
 
     $progress->update($lines) if $lines >= $next_update;
     my $elapsed = tv_interval($start_time);
-    print "Imported in $elapsed seconds\n";
+    $self->squeak->trace("Imported in $elapsed seconds");
 
     return;
 }

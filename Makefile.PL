@@ -33,6 +33,7 @@ requires       ('MooseX::Types::Path::Class'    => '0');
 requires       ('MooseX::Types'                 => '0');
 requires       ('MooseX::Types::Moose'          => '0');
 requires       ('MooseX::StrictConstructor'     => '0.08');
+requires       ('Log::Log4perl'                 => '0');
 requires       ('namespace::clean'              => '0');
 requires       ('Template'                      => '0');
 requires       ('IO::Interactive'               => '0');
