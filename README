@@ -26,7 +26,8 @@ DESCRIPTION
     a POE::Component::IRC plugin for just that purpose.
 
   Etymology
-    *Hailo* is a portmanteau of *HAL* (as in MegaHAL) and <failo>.
+    *Hailo* is a portmanteau of *HAL* (as in MegaHAL) and failo
+    <http://identi.ca/failo>.
 
 ATTRIBUTES
   "brain_resource"
@@ -39,6 +40,18 @@ ATTRIBUTES
 
   "storage_class"
     The storage backend to use. Default: 'SQLite'.
+
+    This gives you an idea of approximately how the backends compare in
+    speed:
+
+                   s/iter PostgreSQL      MySQL     SQLite       Perl
+        PostgreSQL   5.86         --        -2%       -71%       -96%
+        MySQL        5.72         2%         --       -70%       -96%
+        SQLite       1.70       245%       236%         --       -85%
+        Perl        0.250      2243%      2187%       580%         --
+
+    To run your own test try running utils/hailo-benchmark in the Hailo
+    distribution.
 
   "tokenizer_class"
     The tokenizer to use. Default: 'Words';
