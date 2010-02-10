@@ -4,6 +4,7 @@ use Moose;
 use MooseX::StrictConstructor;
 use Digest::MD4 qw(md4_hex);
 use Data::Dump 'dump';
+use Test::More tests => 54;
 use namespace::clean -except => 'meta';
 
 our $VERSION = '0.08';
@@ -55,17 +56,54 @@ sub _increment {
     $self->meh->trace("Incrementing $k");
 
     # This works:
-    #return $mem->{$k}++;
+    return $mem->{$k}++;
+}
+
+sub _increment_1 {
+    my ($self, $k) = @_;
+    my $mem = $self->_memory;
+
+    # This works:
+    return $mem->{$k}++;
+}
+
+sub _increment_2 {
+    my ($self, $k) = @_;
+    my $mem = $self->_memory;
+
+#    return $mem->{$k}++;
 
     # Why doesn't this (or the other stuff passing tests in
     # t/bug/increment.t):
 
-    no warnings 'uninitialized';
-    my $now = $mem->{$k};
-    my $after = defined $now ? $now + 1 : int $now;
-    $mem->{$k} = $after;
-    return $after;
+    if (not exists $mem->{$k}) {
+        $mem->{$k} = 1;
+        return 0;
+    } else {
+        $mem->{$k} += 1;
+        return $mem->{$k} - 1;
+    }
 }
+
+around '_increment' => sub {
+      my ($next, $self, $k) = @_;
+
+      my %mem = %{ $self->{_memory} };
+
+      my $ret2_e = exists $self->{_memory}->{$k};
+      my $ret2 = $self->_increment_2($k);
+      my $got = [ ret => $ret2, key => $k, set_to => $self->{_memory}->{$k}, exists => $ret2_e ];
+      %{ $self->{_memory} } = %mem;
+
+      my $ret_e = exists $self->{_memory}->{$k};
+      my $ret  = $self->_increment_1($k);
+      my $expect = [ ret => $ret, key => $k, set_to => $self->{_memory}->{$k}, exists => $ret_e ];
+      %{ $self->{_memory} } = %mem;
+
+      is_deeply($got, $expect);#, dump({ got => $got, expect => $expect}) );
+
+      return $self->$next($k);
+};
 
 sub _expr_exists {
     my ($self, $ehash) = @_;
