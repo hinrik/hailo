@@ -14,6 +14,7 @@ with qw(Hailo::Role::Generic
         Hailo::Role::Storage
         Hailo::Role::Log);
 
+# XXX: Nuke this from Hash*
 has _memory => (
     isa        => HashRef,
     is         => 'ro',
@@ -26,6 +27,7 @@ sub _build__memory {
  
     return $self->_memory_area;
 }
+# /XXX
 
 has 'chi' => (
     is         => 'ro',
@@ -35,13 +37,26 @@ has 'chi' => (
 sub _build_chi {
     my ($self) = @_;
 
-    # XXX: Hardcoded for now
     my $cache = CHI->new(
-        driver => 'Memory',
-        global => 1
+        $self->chi_options,
     );
 
     return $cache;
+}
+
+has chi_options => (
+    isa        => HashRef,
+    is         => 'ro',
+    auto_deref => 1,
+    lazy_build => 1,
+);
+
+sub _build_chi_options {
+    return {
+        namespace => __PACKAGE__,
+        on_get_error => "die",
+        on_set_error => "die",
+    };
 }
 
 sub _exists {
