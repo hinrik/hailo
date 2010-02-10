@@ -6,7 +6,7 @@ use namespace::clean -except => 'meta';
 
 our $VERSION = '0.08';
 
-extends 'Hailo::Storage::DBD';
+extends 'Hailo::Storage::Mixin::DBD';
 
 has '+dbd' => (
     default => 'Pg',
@@ -112,8 +112,8 @@ This backend maintains information in a PostgreSQL database.
 =head1 CAVEATS
 
 It's around 8x-10x slower than L<the SQLite
-backend|Hailo::Storage::SQLite> in my tests. Maybe this is due to an
-unoptimal PostgreSQL configuration (I used the Debian defaults) or
+backend|Hailo::Storage::DBD::SQLite> in my tests. Maybe this is due to
+an unoptimal PostgreSQL configuration (I used the Debian defaults) or
 perhaps the schema we're using simply suits SQLite better.
 
 =head1 AUTHOR

@@ -497,7 +497,7 @@ L<tokenizer|Hailo::Role::Tokenizer> and L<engine|Hailo::Role::Engine>
 backends.
 
 It's faster than MegaHAL and can handle huge brains easily with the
-default L<SQLite backend|Hailo::Storage::SQLite>. It can be used,
+default L<SQLite backend|Hailo::Storage::DBD::SQLite>. It can be used,
 amongst other things, to implement IRC chat bots with
 L<POE::Component::IRC>. In fact, there exists a L<POE::Component::IRC>
 L<plugin|POE::Component::IRC::Plugin::Hailo> for just that purpose.

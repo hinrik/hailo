@@ -2,27 +2,32 @@ use 5.10.0;
 use strict;
 use warnings;
 use File::Spec::Functions 'catfile';
-use Test::More tests => 48;
+use Test::More tests => 63;
 use Test::Script;
 
 # find lib -type f | perl -pe 's[^lib/][    ]; s[.pm$][]; s[/][::]g'
 my @classes = qw(
-  Hailo
-  Hailo::Storage::DBD::SQLite
-  Hailo::Storage::DBD::mysql
-  Hailo::Storage::DBD::Pg
-  Hailo::Storage::DBD
-  Hailo::Storage::Perl
-  Hailo::Storage::PerlFlat
-  Hailo::Role::Engine
-  Hailo::Role::Generic
-  Hailo::Role::UI
-  Hailo::Role::Storage
-  Hailo::Role::Tokenizer
-  Hailo::UI::ReadLine
-  Hailo::Engine::Default
-  Hailo::Tokenizer::Chars
-  Hailo::Tokenizer::Words
+    Hailo
+    Hailo::Storage::Mixin::DBD
+    Hailo::Storage::Mixin::Hash::Flat
+    Hailo::Storage::Mixin::Hash
+    Hailo::Storage::Mixin::Storable
+    Hailo::Storage::CHI
+    Hailo::Storage::Perl
+    Hailo::Storage::Perl::Flat
+    Hailo::Storage::DBD::SQLite
+    Hailo::Storage::DBD::mysql
+    Hailo::Storage::DBD::Pg
+    Hailo::Role::Engine
+    Hailo::Role::Generic
+    Hailo::Role::UI
+    Hailo::Role::Storage
+    Hailo::Role::Log
+    Hailo::Role::Tokenizer
+    Hailo::UI::ReadLine
+    Hailo::Engine::Default
+    Hailo::Tokenizer::Words
+    Hailo::Tokenizer::Chars
 );
 
 use_ok $_ for @classes;

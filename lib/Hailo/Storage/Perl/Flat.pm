@@ -1,4 +1,4 @@
-package Hailo::Storage::Perl;
+package Hailo::Storage::Perl::Flat;
 use 5.10.0;
 use Moose;
 use MooseX::StrictConstructor;
@@ -8,7 +8,7 @@ use namespace::clean -except => 'meta';
 
 our $VERSION = '0.08';
 
-extends qw(Hailo::Storage::Mixin::Hash
+extends qw(Hailo::Storage::Mixin::Hash::Flat
            Hailo::Storage::Mixin::Storable);
 
 with qw(Hailo::Role::Generic
@@ -20,14 +20,12 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Hailo::Storage::Perl - A storage backend for L<Hailo|Hailo> using Perl structures
+Hailo::Storage::Perl::Flat - A storage backend for L<Hailo|Hailo> using flat Perl structures
 
 =head1 DESCRIPTION
 
-This backend maintains information in a Perl hash, with an option to
+This backend maintains information in a flat Perl hash, with an option to
 save to/load from a file with L<Storable|Storable>.
-
-It is fast, but uses a lot of memory.
 
 =head1 AUTHOR
 

@@ -2,16 +2,30 @@ package Hailo::Storage::CHI;
 use 5.10.0;
 use Moose;
 use MooseX::StrictConstructor;
+use MooseX::Types::Moose qw<HashRef>;
 use CHI;
 use namespace::clean -except => 'meta';
 
 our $VERSION = '0.08';
 
-extends 'Hailo::Storage::PerlFlat';
+extends qw(Hailo::Storage::Mixin::Hash::Flat);
 
 with qw(Hailo::Role::Generic
         Hailo::Role::Storage
         Hailo::Role::Log);
+
+has _memory => (
+    isa        => HashRef,
+    is         => 'ro',
+    lazy_build => 1,
+    init_arg   => undef,
+);
+
+sub _build__memory {
+    my ($self) = @_;
+ 
+    return $self->_memory_area;
+}
 
 has 'chi' => (
     is         => 'ro',
@@ -65,7 +79,6 @@ sub _get {
 
 sub _increment {
     my ($self, $k) = @_;
-    my $mem = $self->_memory;
 
     $self->meh->trace("Incrementing $k");
 
@@ -78,6 +91,8 @@ sub _increment {
         return $was;
     }
 }
+
+sub save {}
 
 __PACKAGE__->meta->make_immutable;
 

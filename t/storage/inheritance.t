@@ -3,15 +3,15 @@ use strict;
 use warnings;
 use Test::More tests => 4;
 use Hailo;
-use Hailo::Storage::SQL;
-use Hailo::Storage::Pg;
-use Hailo::Storage::SQLite;
-use Hailo::Storage::mysql;
+use Hailo::Storage::Mixin::DBD;
+use Hailo::Storage::DBD::Pg;
+use Hailo::Storage::DBD::SQLite;
+use Hailo::Storage::DBD::mysql;
 
-my $sql    = Hailo::Storage::SQL->new;
-my $pg     = Hailo::Storage::Pg->new;
-my $sqlite = Hailo::Storage::SQLite->new;
-my $mysql  = Hailo::Storage::mysql->new;
+my $sql    = Hailo::Storage::Mixin::DBD->new;
+my $pg     = Hailo::Storage::DBD::Pg->new;
+my $sqlite = Hailo::Storage::DBD::SQLite->new;
+my $mysql  = Hailo::Storage::DBD::mysql->new;
 
 # SQL
 is_deeply(

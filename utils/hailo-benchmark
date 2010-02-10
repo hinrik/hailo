@@ -13,7 +13,7 @@ die "Usage: utils/hailo-benchmark count test-lines test-words-per-line" if @ARGV
 my $count = $ARGV[0] // 10;
 my $lines = $ARGV[1] // 500;
 my $words = $ARGV[2] // 20;
-my @tests = split /,/, ($ARGV[3] // 'Perl,PerlFlat,SQLite,Pg,mysql');
+my @tests = split /,/, ($ARGV[3] // 'Perl,Perl::Flat,SQLite,Pg,mysql');
 my %tests = map { $_ => 1 } @tests;
 
 # Dir to store our training file / brains
@@ -61,12 +61,12 @@ my %backends = (
             storage_class => 'Perl',
         );
     }) : (),
-    $tests{PerlFlat} ?
-    (PerlFlat => sub {
+    $tests{Perl::Flat} ?
+    ('Perl::Flat' => sub {
         state $i = 1;
         spawn_hailo(
             $i++,
-            storage_class => 'PerlFlat',
+            storage_class => 'Perl::Flat',
         );
     }) : (),
     $tests{SQLite} ?

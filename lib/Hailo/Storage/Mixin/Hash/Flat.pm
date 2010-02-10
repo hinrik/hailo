@@ -1,16 +1,14 @@
-package Hailo::Storage::PerlFlat;
+package Hailo::Storage::Mixin::Hash::Flat;
 use 5.10.0;
 use Moose;
 use MooseX::StrictConstructor;
-use Digest::MD4 qw(md4_hex);
 use namespace::clean -except => 'meta';
 
 our $VERSION = '0.08';
 
-extends 'Hailo::Storage::Perl';
+extends 'Hailo::Storage::Mixin::Hash';
 
-with qw(Hailo::Role::Generic
-        Hailo::Role::Storage);
+with 'Hailo::Role::Log';
 
 sub _build__memory_area {
     # The hash we store all our data in
@@ -149,24 +147,19 @@ sub _x_tokens {
     return \%tokens;
 }
 
-sub _hash_tokens {
-     my ($self, $tokens) = @_;
-     my $ehash = md4_hex("@$tokens");
-     return substr $ehash, 0, 10;
-}
-
 __PACKAGE__->meta->make_immutable;
 
 =encoding utf8
 
 =head1 NAME
 
-Hailo::Storage::PerlFlat - A storage backend for L<Hailo|Hailo> using flat Perl structures
+Hailo::Storage::Mixin::Hash::Flat - A mixin class for L<storage|Hailo::Role::Storage> classes using a flat C<HashRef>
 
 =head1 DESCRIPTION
 
-This backend maintains information in a flat Perl hash, with an option
-to save to/load from a file with L<Storable|Storable>.
+This skeleton mixin backend maintains information in a flat Perl
+C<HashRef>. It's meant to be subclassed for use by key-value stores
+which can't handle keys that are C<HashRef> or C<ArrayRef>.
 
 =head1 AUTHOR
 

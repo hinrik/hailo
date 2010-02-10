@@ -1,4 +1,4 @@
-package Hailo::Storage::DBD;
+package Hailo::Storage::Mixin::DBD;
 use 5.10.0;
 use Moose;
 use MooseX::StrictConstructor;
@@ -431,17 +431,17 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Hailo::Storage::DBD - A skeleton DBD backend meant to be subclassed
+Hailo::Storage::Mixin::DBD - A mixin class for L<Hailo> DBD L<storage|Hailo::Role::Storage> backends
 
 =head1 AUTHOR
 
-Hinrik E<Ouml>rn SigurE<eth>sson, hinrik.sig@gmail.com
-
 E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
+
+Hinrik E<Ouml>rn SigurE<eth>sson, hinrik.sig@gmail.com
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2010 Hinrik E<Ouml>rn SigurE<eth>sson and E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason
+Copyright 2010 E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason and Hinrik E<Ouml>rn SigurE<eth>sson
 
 This program is free software, you can redistribute it and/or modify
 it under the same terms as Perl itself.

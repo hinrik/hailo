@@ -4,7 +4,7 @@ use warnings;
 use Hailo;
 use Test::More tests => 8;
 
-for my $storage (qw(Perl PerlFlat CHI DBD::SQLite)) {
+for my $storage (qw(Perl Perl::Flat CHI DBD::SQLite)) {
     my $hailo = Hailo->new(
         storage_class => $storage,
         ($storage eq 'SQLite'
