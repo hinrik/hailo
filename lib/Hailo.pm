@@ -11,10 +11,10 @@ use Time::HiRes qw(gettimeofday tv_interval);
 use IO::Interactive qw(is_interactive);
 use FindBin qw($Bin $Script);
 use File::Spec::Functions qw(catfile);
-use Module::Pluggable (search_path => [ qw(Hailo::Engine
-                                           Hailo::Storage
-                                           Hailo::Tokenizer
-                                           Hail::UI) ]);
+use Module::Pluggable (
+    search_path => [ map { "Hailo::$_" } qw(Engine Storage Tokenizer UI) ],
+    except      => qr[Mixin],
+);
 use List::Util qw(first);
 use namespace::clean -except => [ qw(meta plugins) ];
 
