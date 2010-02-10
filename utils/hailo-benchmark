@@ -20,7 +20,6 @@ my $dir = tempdir( CLEANUP => 1 );
 # Generate a training file
 my ($tfh, $tfilename) = tempfile( DIR => $dir, SUFFIX => '.trn' );
 
-
 for my $i (1 .. $lines) {
     my @random_words = rand_words( size => $words );
     say $tfh "@random_words";
@@ -54,6 +53,13 @@ my %backends = (
         spawn_hailo(
             $i++,
             storage_class => 'Perl',
+        );
+    },
+    PerlFlat => sub {
+        state $i = 1;
+        spawn_hailo(
+            $i++,
+            storage_class => 'PerlFlat',
         );
     },
     SQLite => sub {
