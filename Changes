@@ -6,6 +6,7 @@
       hash where key and value are both Str. It can be subclassed to
       store data in e.g. BerkeleyDB, Cache or other key-value
       backends.
+    - Use Module::Pluggable for finding plugins
 
 0.08 Wed Feb 10 00:06:20 GMT 2010
     - 0.07 broke the PostgreSQL and MySQL backend. Fixed them.

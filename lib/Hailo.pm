@@ -11,7 +11,12 @@ use Time::HiRes qw(gettimeofday tv_interval);
 use IO::Interactive qw(is_interactive);
 use FindBin qw($Bin $Script);
 use File::Spec::Functions qw(catfile);
-use namespace::clean -except => 'meta';
+use Module::Pluggable (search_path => [ qw(Hailo::Engine
+                                           Hailo::Storage
+                                           Hailo::Tokenizer
+                                           Hail::UI) ]);
+use List::Util qw(first);
+use namespace::clean -except => [ qw(meta plugins) ];
 
 our $VERSION = '0.08';
 
@@ -322,7 +327,16 @@ sub _build__ui_obj {
 
 sub _new_class {
     my ($self, $type, $class, $args) = @_;
-    my $pkg = "Hailo::${type}::${class}";
+
+    # Be fuzzy about includes, e.g. DBD::SQLite or SQLite or sqlite will go
+    my $pkg = first { / $type : .* : $class /ix } $self->plugins;
+
+    unless ($pkg) {
+        local $" = ', ';
+        my @plugins = grep { /$type/ } $self->plugins;
+        die "Couldn't find a class name matching '$class' in plugins '@plugins'";
+    }
+
     eval { Class::MOP::load_class($pkg) };
     die $@ if $@;
 

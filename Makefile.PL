@@ -42,6 +42,7 @@ requires       ('Text::Trim'                    => '0');
 requires       ('Digest::MD4'                   => '0');
 requires       ('CHI'                           => '0');
 requires       ('CHI::Driver::Memory'           => '0');
+requires       ('Module::Pluggable'             => '0');
 recommends     ('DBD::Pg'                       => '0');
 
 tests_recursive();
