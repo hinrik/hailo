@@ -48,7 +48,7 @@ sub _exists {
     my ($self, $k) = @_;
     my $chi = $self->chi;
 
-    $self->meh->trace("Checking if '$k' exists");
+    # $self->meh->trace("Checking if '$k' exists");
 
     my $v = $self->_get($k);
     if (defined $v) {
@@ -62,7 +62,7 @@ sub _set {
     my ($self, $k, $v) = @_;
     my $chi = $self->chi;
 
-    $self->meh->trace("Setting '$k' = '$v'");
+    # $self->meh->trace("Setting '$k' = '$v'");
 
     $chi->set($k, $v, "never");
 }
@@ -71,16 +71,16 @@ sub _get {
     my ($self, $k) = @_;
     my $chi = $self->chi;
 
-    $self->meh->trace("Getting '$k'");
+    # $self->meh->trace("Getting '$k'");
     my $v = $chi->get($k);
-    $self->meh->trace("Value for '$k' is '" . ($v // 'undef') . "'");
+    # $self->meh->trace("Value for '$k' is '" . ($v // 'undef') . "'");
     return $v;
 }
 
 sub _increment {
     my ($self, $k) = @_;
 
-    $self->meh->trace("Incrementing $k");
+    # $self->meh->trace("Incrementing $k");
 
     if (not $self->_exists($k)) {
         $self->_set($k, 1);
