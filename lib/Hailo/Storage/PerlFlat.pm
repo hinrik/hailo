@@ -5,7 +5,6 @@ use MooseX::StrictConstructor;
 use Storable;
 use Digest::MD4 qw(md4_hex);
 use List::MoreUtils qw(uniq);
-use Data::Dump 'dump';
 use namespace::clean -except => 'meta';
 
 our $VERSION = '0.08';
@@ -112,7 +111,6 @@ sub _x_tokens {
     }
     return;
 }
-
 
 sub _hash_tokens {
      my ($self, $tokens) = @_;
