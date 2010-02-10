@@ -58,24 +58,56 @@ sub add_expr {
 
     my $ehash = $self->_hash_tokens($args->{tokens});
 
-    if (!exists $mem->{expr}{$ehash}) {
-        $mem->{expr}{$ehash} = $args->{tokens};
+    if (!$self->_expr_exists($ehash)) {
+        $self->_expr_add_tokens($ehash, $args->{tokens});
 
         for my $token (@{ $args->{tokens} }) {
-            $mem->{token}{$token} = [ ] if !exists $mem->{token}{$token};
-            push @{ $mem->{token}{$token} }, $ehash;
+            $self->_token_push_ehash($token, $ehash);
         }
     }
 
     for my $pos_token (qw(next_token prev_token)) {
         if (defined $args->{$pos_token}) {
-            $mem->{$pos_token}{$ehash}{ $args->{$pos_token} }++;
+            my $token = $args->{$pos_token};
+            $self->_pos_token_ehash_increment($pos_token, $ehash, $token);
         }
     }
 
-    $mem->{prev_token}{$ehash}{''}++ if $args->{can_start};
-    $mem->{next_token}{$ehash}{''}++ if $args->{can_end};
+    $self->_pos_token_ehash_increment('prev_token', $ehash, '') if $args->{can_start};
+    $self->_pos_token_ehash_increment('next_token', $ehash, '') if $args->{can_end};
 
+    return;
+}
+
+sub _expr_exists {
+    my ($self, $ehash) = @_;
+    my $mem = $self->_memory;
+
+    return exists $mem->{expr}{$ehash};
+}
+
+sub _expr_add_tokens {
+    my ($self, $ehash, $tokens) = @_;
+    my $mem = $self->_memory;
+
+    $mem->{expr}{$ehash} = $tokens;
+    return;
+}
+
+sub _token_push_ehash {
+    my ($self, $token, $ehash) = @_;
+    my $mem = $self->_memory;
+
+    $mem->{token}{$token} = [ ] if !exists $mem->{token}{$token};
+    push @{ $mem->{token}{$token} }, $ehash;
+    return;
+}
+
+sub _pos_token_ehash_increment {
+    my ($self, $pos_token, $ehash, $token) = @_;
+    my $mem = $self->_memory;
+
+    $mem->{$pos_token}{$ehash}{ $token }++;
     return;
 }
 

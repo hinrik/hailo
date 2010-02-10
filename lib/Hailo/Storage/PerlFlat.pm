@@ -18,34 +18,43 @@ sub _build__memory_area {
     return \%memory;
 }
 
-sub add_expr {
-    my ($self, $args) = @_;
+sub _expr_exists {
+    my ($self, $ehash) = @_;
     my $mem = $self->_memory;
 
-    my $ehash = $self->_hash_tokens($args->{tokens});
+    return exists $mem->{"expr-$ehash"};
+}
 
-    if (!exists $mem->{"expr-$ehash"}) {
-        my $count = $#{ $args->{tokens} };
-        $mem->{"expr-$ehash"} = $count;
-        $mem->{"expr-$ehash-$_"} = $args->{tokens}->[$_] for 0 .. $count;
+sub _expr_add_tokens {
+    my ($self, $ehash, $tokens) = @_;
+    my $mem = $self->_memory;
 
-        for my $token (@{ $args->{tokens} }) {
-            my $count = $mem->{"token-$token"}++;
-            $mem->{"token-$token-$count"} = $ehash;
-        }
-    }
+    my $count = $#{ $tokens };
+    $mem->{"expr-$ehash"} = $count;
+    $mem->{"expr-$ehash-$_"} = $tokens->[$_] for 0 .. $count;
 
-    for my $pos_token (qw(next_token prev_token)) {
-        if (defined $args->{$pos_token}) {
-            my $count = $mem->{"$pos_token-$ehash"}++;
-            $mem->{"$pos_token-$ehash"} = $count;
-            $mem->{"$pos_token-$ehash-$count"} = $args->{$pos_token};
-            $mem->{"$pos_token-$ehash-token-$args->{$pos_token}"}++;
-        }
-    }
+    return;
+}
 
-    $mem->{"prev_token-$ehash-token-"}++ if $args->{can_start};
-    $mem->{"next_token-$ehash-token-"}++ if $args->{can_end};
+sub _token_push_ehash {
+    my ($self, $token, $ehash) = @_;
+    my $mem = $self->_memory;
+
+    my $count = $mem->{"token-$token"}++;
+    $mem->{"token-$token-$count"} = $ehash;
+
+    return;
+}
+
+sub _pos_token_ehash_increment {
+    my ($self, $pos_token, $ehash, $token) = @_;
+    my $mem = $self->_memory;
+
+    # XXX: Do we increment the count when the '' token gets added?
+    my $count = $mem->{"$pos_token-$ehash"}++;
+    $mem->{"$pos_token-$ehash"} = $count;
+    $mem->{"$pos_token-$ehash-$count"} = $token;
+    $mem->{"$pos_token-$ehash-token-$token"}++;
 
     return;
 }
