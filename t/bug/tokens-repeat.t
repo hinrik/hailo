@@ -5,7 +5,7 @@ use Hailo;
 use Test::More tests => 55;
 
 my $hailo = Hailo->new(
-    storage_class => "SQLite",
+    storage_class => "DBD::SQLite",
     brain_resource => ':memory:',
 );
 

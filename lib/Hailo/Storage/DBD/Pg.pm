@@ -1,4 +1,4 @@
-package Hailo::Storage::Pg;
+package Hailo::Storage::DBD::Pg;
 use 5.10.0;
 use Moose;
 use MooseX::StrictConstructor;
@@ -69,7 +69,7 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Hailo::Storage::Pg - A storage backend for L<Hailo|Hailo> using
+Hailo::Storage::DBD::Pg - A storage backend for L<Hailo|Hailo> using
 L<DBD::Pg|DBD::Pg>
 
 =head1 SYNOPSIS

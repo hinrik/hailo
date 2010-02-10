@@ -1,4 +1,4 @@
-package Hailo::Storage::SQLite;
+package Hailo::Storage::DBD::SQLite;
 use 5.10.0;
 use Moose;
 use MooseX::StrictConstructor;
@@ -43,7 +43,7 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Hailo::Storage::SQLite - A storage backend for L<Hailo|Hailo> using
+Hailo::Storage::DBD::SQLite - A storage backend for L<Hailo|Hailo> using
 L<DBD::SQLite|DBD::SQLite>
 
 =head1 DESCRIPTION

@@ -12,7 +12,7 @@ binmode $_, ':encoding(utf8)' for (*STDIN, *STDOUT, *STDERR);
 # Suppress PostgreSQL notices
 $SIG{__WARN__} = sub { print STDERR @_ if $_[0] !~ m/NOTICE:\s*CREATE TABLE/; };
 
-for my $backend (qw(Perl PerlFlat CHI mysql SQLite Pg)) {
+for my $backend (qw(Perl PerlFlat CHI DBD::mysql DBD::SQLite DBD::Pg)) {
     # Skip all tests for this backend?
     my $skip_all;
 
@@ -23,7 +23,7 @@ for my $backend (qw(Perl PerlFlat CHI mysql SQLite Pg)) {
     my ($fh, $filename) = tempfile( DIR => $dir, SUFFIX => '.db' );
     ok($filename, "Got temporary file $filename");
 
-    if ($backend eq "mysql") {
+    if ($backend =~ /mysql/) {
         # It doesn't use the file to store data obviously, it's just a convenient random token.
         if (!$ENV{HAILO_TEST_MYSQL} or
             system qq[echo "SELECT DATABASE();" | mysql -u'hailo' -p'hailo' 'hailo' >/dev/null 2>&1]) {
@@ -35,7 +35,7 @@ for my $backend (qw(Perl PerlFlat CHI mysql SQLite Pg)) {
         }
     }
 
-    if ($backend eq "Pg") {
+    if ($backend =~ /Pg/) {
         # It doesn't use the file to store data obviously, it's just a convenient random token.
         if (system "createdb '$filename' >/dev/null 2>&1") {
             $skip_all = 1;
@@ -48,17 +48,17 @@ for my $backend (qw(Perl PerlFlat CHI mysql SQLite Pg)) {
     my $prev_brain;
     for my $i (1 .. 5) {
         my %connect_opts;
-        if ($backend eq 'SQLite'or $backend =~ /Perl|CHI/) {
+        if ($backend =~ /SQLite/ or $backend =~ /Perl|CHI/) {
             %connect_opts = (
                 brain_resource => $filename,
             );
-        } elsif ($backend eq 'Pg') {
+        } elsif ($backend =~ /Pg/) {
             %connect_opts = (
                 storage_args => {
                     dbname => $filename,
                 },
             );
-        } elsif ($backend eq 'mysql') {
+        } elsif ($backend =~ /mysql/) {
             %connect_opts = (
                 storage_args => {
                     database => 'hailo',
@@ -99,7 +99,7 @@ for my $backend (qw(Perl PerlFlat CHI mysql SQLite Pg)) {
         }
 
         $hailo->save();
-        if ($backend eq "SQLite") {
+        if ($backend =~ /SQLite/) {
             $_->finish for values %{ $hailo->_storage_obj->sth };
             $hailo->_storage_obj->dbh->disconnect;
         }
@@ -107,7 +107,7 @@ for my $backend (qw(Perl PerlFlat CHI mysql SQLite Pg)) {
       }
     }
 
-    if ($backend eq "Pg") {
+    if ($backend =~ /Pg/) {
       SKIP: {
         skip "Didn't create PostgreSQL db, no need to drop it", 1 if $skip_all;
         system "dropdb '$filename'" and die "Couldn't drop temporary PostgreSQL database '$filename': $!";

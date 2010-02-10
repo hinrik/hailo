@@ -8,9 +8,9 @@ use Test::Script;
 # find lib -type f | perl -pe 's[^lib/][    ]; s[.pm$][]; s[/][::]g'
 my @classes = qw(
   Hailo
-  Hailo::Storage::SQLite
-  Hailo::Storage::mysql
-  Hailo::Storage::Pg
+  Hailo::Storage::DBD::SQLite
+  Hailo::Storage::DBD::mysql
+  Hailo::Storage::DBD::Pg
   Hailo::Storage::Perl
   Hailo::Storage::PerlFlat
   Hailo::Storage::SQL
