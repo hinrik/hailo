@@ -30,8 +30,6 @@ sub add_expr {
         $mem->{"expr-$ehash-$_"} = $args->{tokens}->[$_] for 0 .. $count;
 
         for my $token (@{ $args->{tokens} }) {
-            $mem->{token}{$token} = [ ] if !exists $mem->{token}{$token};
-
             my $count = 0;
             if (exists $mem->{"token-$token"}) {
                 $count = $mem->{"token-$token"} + 1;
@@ -40,7 +38,6 @@ sub add_expr {
                 $mem->{"token-$token"} = $count;
             }
 
-            push @{ $mem->{token}{$token} }, $ehash;
             $mem->{"token-$token-$count"} = $ehash;
         }
     }
@@ -65,7 +62,7 @@ sub token_exists {
 
 sub random_expr {
     my ($self, $token) = @_;
-    my @ehash = @{ $self->_memory->{token}{$token} };
+    my @ehash = map { $self->_memory->{"token-$token-$_" } } 0 .. $self->_memory->{"token-$token"};
     my $ehash = $ehash[rand @ehash];
     my @tokens = map { $self->_memory->{"expr-$ehash-$_" } } 0 .. $self->_memory->{"expr-$ehash"};
     return @tokens;
