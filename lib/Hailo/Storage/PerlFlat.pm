@@ -59,7 +59,7 @@ sub add_expr {
 
 sub token_exists {
     my ($self, $token) = @_;
-    return 1 if exists $self->_memory->{token}{$token};
+    return 1 if exists $self->_memory->{"token-$token"};
     return;
 }
 
