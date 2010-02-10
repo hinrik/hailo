@@ -101,15 +101,18 @@ sub _x_tokens {
     my $mem = $self->_memory;
     my $key = "$pos_token-$ehash";
 
-    if (exists $mem->{$key}) {
-        my $count = $mem->{$key};
+    return unless exists $mem->{$key};
 
-        my @tokes = map { $mem->{"$key-$_"} } 0 .. $count;
-        my %ret;
-        $ret{$_} = $mem->{"$key-token-$_"} for @tokes;
-        return \%ret;
-    }
-    return;
+    my $count = $mem->{$key};
+
+    my %tokens = (
+        map {
+            my $k = $mem->{"$key-$_"};
+            $k => $mem->{"$key-token-$k"}
+        } 0 .. $count,
+    );
+
+    return \%tokens;
 }
 
 sub _hash_tokens {
