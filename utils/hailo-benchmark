@@ -8,11 +8,13 @@ use Data::Random qw(:all);
 use File::Temp qw(tempfile tempdir);
 use namespace::clean -except => 'meta';
 
-die "Usage: utils/hailo-benchmark count test-lines test-words-per-line" unless @ARGV == 3;
+die "Usage: utils/hailo-benchmark count test-lines test-words-per-line" if @ARGV < 3;
 
 my $count = $ARGV[0] // 10;
 my $lines = $ARGV[1] // 500;
 my $words = $ARGV[2] // 20;
+my @tests = split /,/, ($ARGV[3] // 'Perl,PerlFlat,SQLite,Pg,mysql');
+my %tests = map { $_ => 1 } @tests;
 
 # Dir to store our training file / brains
 my $dir = tempdir( CLEANUP => 1 );
@@ -27,11 +29,14 @@ for my $i (1 .. $lines) {
 say STDERR "Wrote to $tfilename" if $ENV{DEBUG};
 
 # Create databases
-my @pg = map {
-    system "dropdb 'hailo-$_'";
-    system "createdb 'hailo-$_'" and die "Can't create db: $!";
-    "hailo-$_";
-} 1 .. $count;
+my @pg;
+if ($tests{Pg}) {
+    @pg = map {
+        system "dropdb 'hailo-$_'";
+        system "createdb 'hailo-$_'" and die "Can't create db: $!";
+        "hailo-$_";
+    } 1 .. $count;
+}
 
 sub spawn_hailo {
     my $i = shift;
@@ -48,27 +53,30 @@ sub spawn_hailo {
 $SIG{__WARN__} = sub { print STDERR @_ if $_[0] !~ m/NOTICE:\s*CREATE TABLE/; };
 
 my %backends = (
-    Perl => sub {
+    $tests{Perl} ?
+    (Perl => sub {
         state $i = 1;
         spawn_hailo(
             $i++,
             storage_class => 'Perl',
         );
-    },
-    PerlFlat => sub {
+    }) : (),
+    $tests{PerlFlat} ?
+    (PerlFlat => sub {
         state $i = 1;
         spawn_hailo(
             $i++,
             storage_class => 'PerlFlat',
         );
-    },
-    SQLite => sub {
+    }) : (),
+    $tests{SQLite} ?
+    (SQLite => sub {
         state $i = 1;
         spawn_hailo(
             $i++,
             storage_class => 'SQLite',
         );
-    },
+    }) : (),
     # Cache => sub {
     #     state $i = 1;
     #     spawn_hailo(
@@ -76,7 +84,8 @@ my %backends = (
     #         storage_class => 'Cache',
     #     );
     # },
-    MySQL => sub {
+    $tests{mysql} ?
+    (MySQL => sub {
         state $i = 1;
         spawn_hailo(
             $i++,
@@ -89,8 +98,9 @@ my %backends = (
             },
         );
         system q[echo 'drop table info; drop table token; drop table expr; drop table next_token; drop table prev_token;' | mysql -u hailo -p'hailo' hailo];
-    },
-    PostgreSQL => sub {
+    }) : (),
+    $tests{Pg} ? 
+    (PostgreSQL => sub {
         state $i = 1;
 
         spawn_hailo(
@@ -102,12 +112,14 @@ my %backends = (
         );
 
         $i++;
-    },
+    }) : (),
 );
 
 cmpthese($count, \%backends);
 
-system "dropdb '$_'" and die "Can't drop db: $!" for @pg;
+if ($tests{Pg}) {
+    system "dropdb '$_'" and die "Can't drop db: $!" for @pg;
+}
 
 __END__
        s/iter     Pg  mysql SQLite   Perl
