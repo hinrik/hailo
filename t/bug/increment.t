@@ -1,7 +1,7 @@
 use 5.10.0;
 use strict;
 use warnings;
-use Test::More tests => 36;
+use Test::More tests => 48;
 
 my @give = (undef, 1 .. 4);
 
@@ -29,6 +29,17 @@ my %incs = (
             return 0;
         }
     },
+    works => sub {
+        my ($mem, $k) = @_;
+
+        if (not exists $mem->{$k}) {
+            $mem->{$k} = 1;
+            return 0;
+        } else {
+            $mem->{$k} += 1;
+            return $mem->{$k} - 1;
+        }
+    }
 );
 
 while (my ($k, $v) = each %incs) {
