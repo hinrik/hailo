@@ -21,7 +21,7 @@ my %incs = (
     },
     normal => sub {
         my ($hash, $k) = @_;
-        my $now = $hash->{$k};
+
         if (exists $hash->{$k}) {
             $hash->{$k}++;
             return $hash->{$k};
