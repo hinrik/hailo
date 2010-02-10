@@ -33,7 +33,12 @@ use_ok $_ for @classes;
 
 {
     no strict 'refs';
-    cmp_ok(${"${_}::VERSION"}, '==', $Hailo::VERSION, "$_\::VERSION matches \$Hailo::VERSION") for @classes[1 .. $#classes];
+    cmp_ok(
+        ${"${_}::VERSION"},
+        '==',
+        $Hailo::VERSION,
+        qq[$_\::VERSION matches \$Hailo::VERSION. If not use perl-reversion --current ${"${_}::VERSION"} -bump]
+    ) for @classes[1 .. $#classes];
 }
 
 SKIP: {
