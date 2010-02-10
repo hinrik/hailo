@@ -1,33 +1,12 @@
 use 5.10.0;
 use strict;
 use warnings;
-use Test::More tests => 48;
-
-my @give = (undef, 1 .. 4);
+use Test::More tests => 16;
 
 my %incs = (
     clever => sub {
         my ($hash, $k) = @_;
         $hash->{$k}++;
-    },
-    not_clever => sub {
-        my ($hash, $k) = @_;
-        no warnings 'uninitialized';
-        my $now = $hash->{$k};
-        my $after = defined $now ? $now + 1 : int $now;
-        $hash->{$k} = $after;
-        return $after;
-    },
-    normal => sub {
-        my ($hash, $k) = @_;
-
-        if (exists $hash->{$k}) {
-            $hash->{$k}++;
-            return $hash->{$k};
-        } else {
-            $hash->{$k} = 0;
-            return 0;
-        }
     },
     works => sub {
         my ($mem, $k) = @_;
@@ -42,17 +21,21 @@ my %incs = (
     }
 );
 
-while (my ($k, $v) = each %incs) {
+my @test = (
+    [ 1, 0 ],
+    [ 2, 1 ],
+    [ 3, 2 ],
+    [ 4, 3 ]
+);
+
+while (my ($subname, $sub) = each %incs) {
     my %hash;
 
-    for (my $i = 0; $i <= @give; $i++) {
-        my $ret = $v->(\%hash, "akey");
-        pass("Return value is $ret");
-        cmp_ok(
-            $ret,
-            '==',
-            $i,
-            "Incrementing with $k went as expected"
-        );
+    for my $test (@test) {
+        my ($should_be, $should_get) = @$test;
+
+        my $my_got = $sub->(\%hash, "akey");
+        is($should_get, $my_got, "$subname: return value is '" . ($my_got // 'undef') . "', should be '" . ($should_get // 'undef') . "'");
+        is($hash{akey}, $should_be, "$subname: Value after calling is '" . ($hash{akey} // 'undef') . "', should be '" . ($should_be // 'undef') . "'");
     }
 }
