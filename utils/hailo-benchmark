@@ -14,7 +14,7 @@ use namespace::clean -except => 'meta';
 
 my $count = $ARGV[0] // 10;
 my $times = $ARGV[1] // 1;
-my $again = $ARGV[2] // 5;
+my $lines = $ARGV[2] // 10;
 my @tests = split /,/, ($ARGV[3] // 'Perl,Perl::Flat,SQLite,mysql,Pg,CHI::Memory,CHI::Memory,CHI::File,CHI::BerkeleyDB');
 my %tests = map { $_ => 1 } @tests;
 
@@ -22,7 +22,7 @@ my %tests = map { $_ => 1 } @tests;
 my $dir = tempdir( CLEANUP => 1 );
 
 my @DATA = map { chomp; $_ } split /^/, join '', <DATA>;
-@DATA = @DATA[0..10];
+@DATA = @DATA[0 .. $lines];
 my $words = Hailo::Tokenizer::Words->new;
 my @DATA_words = map { $words->make_tokens($_) } @DATA;
 my @words = shuffle(@DATA_words);
