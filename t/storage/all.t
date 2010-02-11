@@ -103,7 +103,11 @@ for my $backend (qw(Perl Perl::Flat CHI::Memory CHI::File CHI::BerkeleyDB DBD::m
         is(scalar @random_words, $size, "$backend: Got $size words to train on, try $i");
 
         # Learn from it
-        $hailo->learn("@random_words");
+        eval {
+            $hailo->learn("@random_words");
+        };
+
+        skip "Couldn't load backend $backend: $@", 1 if $@;
 
         # Hailo replies
         cmp_ok(length($hailo->reply($random_words[5])) * 2, '>', length($random_words[5]), "Hailo knows how to babble, try $i");
