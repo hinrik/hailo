@@ -19,16 +19,24 @@ lib/Hailo/Role/Log.pm
 lib/Hailo/Role/Storage.pm
 lib/Hailo/Role/Tokenizer.pm
 lib/Hailo/Role/UI.pm
-lib/Hailo/Storage/CHI.pm
+lib/Hailo/Storage/CHI/BerkeleyDB.pm
+lib/Hailo/Storage/CHI/File.pm
+lib/Hailo/Storage/CHI/Memory.pm
 lib/Hailo/Storage/DBD/mysql.pm
 lib/Hailo/Storage/DBD/Pg.pm
 lib/Hailo/Storage/DBD/SQLite.pm
+lib/Hailo/Storage/Mixin/CHI.pm
+lib/Hailo/Storage/Mixin/DBD.pm
+lib/Hailo/Storage/Mixin/Hash.pm
+lib/Hailo/Storage/Mixin/Hash/Flat.pm
+lib/Hailo/Storage/Mixin/Storable.pm
 lib/Hailo/Storage/Perl.pm
+lib/Hailo/Storage/Perl/Flat.pm
 lib/Hailo/Tokenizer/Chars.pm
 lib/Hailo/Tokenizer/Words.pm
 lib/Hailo/UI/ReadLine.pm
 Makefile.PL
-MANIFEST
+MANIFEST			This list of files
 MANIFEST.SKIP
 META.yml
 README
@@ -41,6 +49,7 @@ t/bug/tokens-repeat.t
 t/storage/all.t
 t/storage/inheritance.t
 t/storage/Pg.t
+t/tokenizer/Chars.t
 t/tokenizer/Words.t
 t/ui/readline.t
 t/usage/basic.t
