@@ -6,7 +6,7 @@ use Hailo;
 use Benchmark qw(:all);
 use Data::Random qw(:all);
 use Hailo::Tokenizer::Words;
-use List::Util qw(shuffle);
+use List::Util qw(shuffle min);
 use File::Temp qw(tempfile tempdir);
 use namespace::clean -except => 'meta';
 
@@ -22,7 +22,7 @@ my %tests = map { $_ => 1 } @tests;
 my $dir = tempdir( CLEANUP => 1 );
 
 my @DATA = map { chomp; $_ } split /^/, join '', <DATA>;
-@DATA = @DATA[0 .. $lines];
+@DATA = @DATA[0 .. min(scalar(@DATA), $lines)];
 my $words = Hailo::Tokenizer::Words->new;
 my @DATA_words = map { $words->make_tokens($_) } @DATA;
 my @words = shuffle(@DATA_words);
