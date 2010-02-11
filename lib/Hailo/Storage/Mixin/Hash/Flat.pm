@@ -97,13 +97,13 @@ sub _pos_token_ehash_increment {
     return;
 }
 
-sub token_exists {
+sub _token_exists {
     my ($self, $token) = @_;
     return 1 if $self->_exists("token-$token");
     return;
 }
 
-sub random_expr {
+sub _random_expr {
     my ($self, $token) = @_;
     my $token_k = "token-$token";
     my $token_v = $self->_get($token_k);
@@ -114,17 +114,24 @@ sub random_expr {
     return @tokens;
 }
 
-sub next_tokens {
-    my ($self, $tokens) = @_;
-    my $ehash = $self->_hash_tokens($tokens);
+sub _pos_token {
+    my ($self, $pos, $tokens, $key_tokens) = @_;
 
-    return $self->_x_tokens("next_token", $ehash);
-}
-
-sub prev_tokens {
-    my ($self, $tokens) = @_;
     my $ehash = $self->_hash_tokens($tokens);
-    return $self->_x_tokens("prev_token", $ehash);
+    my $pos_tokens = $self->_x_tokens("${pos}_token", $ehash);
+
+    if (defined $key_tokens) {
+        for my $i (0 .. $#{ $key_tokens }) {
+            next if !exists $pos_tokens->{ @$key_tokens[$i] };
+            return splice @$key_tokens, $i, 1;
+        }
+    }
+
+    my @novel_tokens;
+    for my $token (keys %$pos_tokens) {
+        push @novel_tokens, ($token) x $pos_tokens->{$token};
+    }
+    return @novel_tokens[rand @novel_tokens];
 }
 
 sub _x_tokens {
