@@ -21,9 +21,16 @@ theme    = moose || core
 [-Modules::RequireEndWithOne]
 
 [-BuiltinFunctions::ProhibitStringyEval]
+[-BuiltinFunctions::ProhibitComplexMappings]
 
 [-Subroutines::ProhibitBuiltinHomonyms]
 [-Subroutines::RequireArgUnpacking]
 
 [-ErrorHandling::RequireCarping]
 [-ErrorHandling::RequireCheckingReturnValueOfEval]
+
+[TestingAndDebugging::RequireUseStrict]
+equivalent_modules = MooseX::Role::Strict
+
+[TestingAndDebugging::RequireUseWarnings]
+equivalent_modules = MooseX::Role::Strict

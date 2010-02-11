@@ -81,7 +81,7 @@ sub _set {
 
     # $self->meh->trace("Setting '$k' = '$v'");
 
-    $chi->set($k, $v, "never");
+    return $chi->set($k, $v, "never");
 }
 
 sub _get {
@@ -118,9 +118,9 @@ sub _hash_tokens {
 }
 
 # CHI moronically insists on a seralizer even though we don't need it
-sub serialize { $_[1] }
-sub deserialize { $_[1] }
-sub serializer { 'YouSuck' }
+sub serialize { return $_[1] }
+sub deserialize { return $_[1] }
+sub serializer { return 'YouSuck' }
 
 __PACKAGE__->meta->make_immutable;
 

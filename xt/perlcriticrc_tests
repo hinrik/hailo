@@ -15,6 +15,7 @@ verbose  = 3
 [-Variables::RequireLocalizedPunctuationVars]
 
 [-BuiltinFunctions::ProhibitStringyEval]
+[-BuiltinFunctions::ProhibitComplexMappings]
 
 [-Subroutines::ProhibitBuiltinHomonyms]
 [-Subroutines::RequireArgUnpacking]
@@ -29,3 +30,9 @@ verbose  = 3
 [-Modules::RequireFilenameMatchesPackage]
 [-Subroutines::RequireFinalReturn]
 [-TestingAndDebugging::ProhibitNoStrict]
+
+[TestingAndDebugging::RequireUseStrict]
+equivalent_modules = MooseX::Role::Strict
+
+[TestingAndDebugging::RequireUseWarnings]
+equivalent_modules = MooseX::Role::Strict

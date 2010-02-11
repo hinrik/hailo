@@ -43,7 +43,7 @@ sub _build_meh
     my ($self) = @_;
 
     unless (Log::Log4perl::initialized()) {
-        my $conf = join '', <DATA>;
+        my $conf = do { local $/ = undef; <DATA> };
         Log::Log4perl->init(\$conf);
     }
 

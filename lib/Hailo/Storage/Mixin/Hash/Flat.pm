@@ -31,7 +31,7 @@ sub _set {
 
     # $self->meh->trace("Setting '$k' = '$v'");
 
-    $mem->{$k} = $v;
+    return $mem->{$k} = $v;
 }
 
 sub _get {
