@@ -3,6 +3,7 @@ use 5.10.0;
 use Moose;
 use MooseX::StrictConstructor;
 use MooseX::Types::Moose qw<HashRef>;
+use Data::Dump 'ddx';
 use namespace::clean -except => 'meta';
 
 our $VERSION = '0.09';
@@ -31,30 +32,80 @@ sub _build__memory_area {
     return \%mem;
 }
 
-sub add_expr {
-    my ($self, $args) = @_;
+sub learn_tokens {
+    my ($self, $tokens) = @_;
+    my $order = $self->order;
 
-    my $ehash = $self->_hash_tokens($args->{tokens});
+    for my $i (0 .. @$tokens - $order) {
+        my @expr = map { $tokens->[$_] } ($i .. $i+$order-1);
+        my $ehash = $self->_hash_tokens(\@expr);
 
-    if (!$self->_expr_exists($ehash)) {
-        $self->_expr_add_tokens($ehash, $args->{tokens});
+        if (!$self->_expr_exists($ehash)) {
+            $self->_expr_add_tokens($ehash, \@expr);
 
-        for my $token (@{ $args->{tokens} }) {
-            $self->_token_push_ehash($token, $ehash);
+            for my $token (@expr) {
+                $self->_token_push_ehash($token, $ehash);
+            }
         }
-    }
 
-    for my $pos_token (qw(next_token prev_token)) {
-        if (defined $args->{$pos_token}) {
-            my $token = $args->{$pos_token};
-            $self->_pos_token_ehash_increment($pos_token, $ehash, $token);
+        # add next token for this expression, if any
+        if ($i < @$tokens - $order) {
+            my $next = $tokens->[$i+$order];
+            $self->_pos_token_ehash_increment('next_token', $ehash, $next);
         }
-    }
 
-    $self->_pos_token_ehash_increment('prev_token', $ehash, '') if $args->{can_start};
-    $self->_pos_token_ehash_increment('next_token', $ehash, '') if $args->{can_end};
+        # add previous token for this expression, if any
+        if ($i > 0) {
+            my $prev = $tokens->[$i-1];
+            $self->_pos_token_ehash_increment('prev_token', $ehash, $prev);
+        }
+
+        $self->_pos_token_ehash_increment('prev_token', $ehash, '') if $i == 0;
+        $self->_pos_token_ehash_increment('next_token', $ehash, '') if $i == @$tokens-$order;
+    }
 
     return;
+}
+
+sub make_reply {
+    my ($self, $key_tokens) = @_;
+    my $order = $self->order;
+
+    my @keys = grep { $self->_token_exists($_) } @$key_tokens;
+    return if !@keys;
+    my @reply = $self->_random_expr(shift @keys);
+    my $repeat_limit = $self->repeat_limit;
+
+    #ddx \@reply;
+    my $i = 0;
+    while (1) {
+        if (($i % $order) == 0 and
+            (($i >= $repeat_limit and uniq(@reply) <= $order) ||
+             ($i >= $repeat_limit * 3))) {
+            last;
+        }
+        my $next_token = $self->_pos_token('next', [@reply[-$order..-1]], \@keys);
+        last if $next_token eq '';
+        push @reply, $next_token;
+    } continue {
+        $i++;
+    }
+
+    $i = 0;
+    while (1) {
+        if (($i % $order) == 0 and 
+            (($i >= $repeat_limit and uniq(@reply) <= $order) ||
+             ($i >= $repeat_limit * 3))) {
+            last;
+        }   
+        my $prev_token = $self->_pos_token('prev', [@reply[0..$order-1]], \@keys);
+        last if $prev_token eq ''; 
+        unshift @reply, $prev_token;
+    } continue {
+        $i++;
+    }
+
+    return \@reply;
 }
 
 sub _expr_exists {
@@ -89,28 +140,36 @@ sub _pos_token_ehash_increment {
     return;
 }
 
-sub token_exists {
+sub _token_exists {
     my ($self, $token) = @_;
     return 1 if exists $self->_memory->{token}{$token};
     return;
 }
 
-sub random_expr {
+sub _random_expr {
     my ($self, $token) = @_;
     my @ehash = @{ $self->_memory->{token}{$token} };
     return @{ $self->_memory->{expr}{ $ehash[rand @ehash] } };
 }
 
-sub next_tokens {
-    my ($self, $tokens) = @_;
-    my $ehash = $self->_hash_tokens($tokens);
-    return $self->_memory->{next_token}{ $ehash };
-}
+sub _pos_token {
+    my ($self, $pos, $tokens, $key_tokens) = @_;
 
-sub prev_tokens {
-    my ($self, $tokens) = @_;
     my $ehash = $self->_hash_tokens($tokens);
-    return $self->_memory->{prev_token}{ $ehash };
+    my $pos_tokens = $self->_memory->{"${pos}_token"}{ $ehash };
+
+    if (defined $key_tokens) {
+        for my $i (0 .. $#{ $key_tokens }) {
+            next if !exists $pos_tokens->{ @$key_tokens[$i] };
+            return splice @$key_tokens, $i, 1;
+        }   
+    }   
+
+    my @novel_tokens;
+    for my $token (keys %$pos_tokens) {
+        push @novel_tokens, ($token) x $pos_tokens->{$token};
+    }   
+    return @novel_tokens[rand @novel_tokens];
 }
 
 # concatenate contents of an expression for unique identification
