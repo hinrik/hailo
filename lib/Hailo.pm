@@ -286,7 +286,8 @@ sub _new_class {
     my ($self, $type, $class, $args) = @_;
 
     # Be fuzzy about includes, e.g. DBD::SQLite or SQLite or sqlite will go
-    my $pkg = first { / $type : .* : $class /ix } $self->plugins;
+    my $pkg = first { / $type : .* : $class /ix }
+              sort { length $a <=> length $b } $self->plugins;
 
     unless ($pkg) {
         local $" = ', ';
