@@ -15,21 +15,6 @@ with qw(Hailo::Role::Generic
         Hailo::Role::Storage
         Hailo::Role::Log);
 
-# XXX: Nuke this from Hash*
-has _memory => (
-    isa        => HashRef,
-    is         => 'ro',
-    lazy_build => 1,
-    init_arg   => undef,
-);
-
-sub _build__memory {
-    my ($self) = @_;
- 
-    return $self->_memory_area;
-}
-# /XXX
-
 has 'chi' => (
     is         => 'ro',
     lazy_build => 1,

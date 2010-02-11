@@ -33,7 +33,6 @@ sub _build__memory_area {
 
 sub add_expr {
     my ($self, $args) = @_;
-    my $mem = $self->_memory;
 
     my $ehash = $self->_hash_tokens($args->{tokens});
 

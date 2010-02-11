@@ -68,7 +68,6 @@ sub _expr_exists {
 
 sub _expr_add_tokens {
     my ($self, $ehash, $tokens) = @_;
-    my $mem = $self->_memory;
 
     my $count = $#{ $tokens };
     $self->_set("expr-$ehash", $count);
@@ -79,7 +78,6 @@ sub _expr_add_tokens {
 
 sub _token_push_ehash {
     my ($self, $token, $ehash) = @_;
-    my $mem = $self->_memory;
 
     my $count = $self->_increment("token-$token");
     $self->_set("token-$token-$count", $ehash);
