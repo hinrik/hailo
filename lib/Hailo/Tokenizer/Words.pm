@@ -6,7 +6,7 @@ use List::MoreUtils qw<uniq>;
 use Text::Trim;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 with qw(Hailo::Role::Generic
         Hailo::Role::Tokenizer);
