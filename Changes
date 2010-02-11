@@ -1,14 +1,14 @@
 0.09
-    - Use MooseX::Role::Strict instead of Moose::Role
-    - Use Log::Log4perl for logging
-    - SQLite broke if using a :memory: brain if a :memory: file existed
-    - Add PerlFlat backend which keeps things in a simple key-value
+    - Disable SQLite's journal while training. Speeds up long imports.
+    - Add Perl::Flat backend which keeps things in a simple key-value
       hash where key and value are both Str. It can be subclassed to
       store data in e.g. BerkeleyDB, Cache or other key-value
       backends.
-    - Use Module::Pluggable for finding plugins
-    - Disable SQLite's journal while training. Speeds up long imports.
     - Add CHI backend with File, Memory, BerkeleyDB etc. backends
+    - Use MooseX::Role::Strict instead of Moose::Role
+    - Use Log::Log4perl for logging
+    - SQLite broke if using a :memory: brain if a :memory: file existed
+    - Use Module::Pluggable for finding plugins
 
 0.08 Wed Feb 10 00:06:20 GMT 2010
     - 0.07 broke the PostgreSQL and MySQL backend. Fixed them.
