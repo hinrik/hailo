@@ -471,7 +471,8 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Hailo::Storage::Mixin::DBD - A mixin class for L<Hailo> DBD L<storage|Hailo::Role::Storage> backends
+Hailo::Storage::Mixin::DBD - A mixin class for L<Hailo> DBD
+L<storage|Hailo::Role::Storage> backends
 
 =head1 AUTHOR
 
@@ -481,7 +482,8 @@ Hinrik E<Ouml>rn SigurE<eth>sson, hinrik.sig@gmail.com
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2010 E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason and Hinrik E<Ouml>rn SigurE<eth>sson
+Copyright 2010 E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason and
+Hinrik E<Ouml>rn SigurE<eth>sson
 
 This program is free software, you can redistribute it and/or modify
 it under the same terms as Perl itself.

@@ -28,6 +28,11 @@ has repeat_limit => (
     }
 );
 
+has token_separator => (
+    isa => Str,
+    is  => 'rw',
+);
+
 requires 'save';
 requires 'learn_tokens';
 requires 'make_reply';
