@@ -105,16 +105,6 @@ has brain_resource => (
     is            => "ro",
 );
 
-has token_separator => (
-    traits        => [qw(Getopt)],
-    cmd_aliases   => 'P',
-    cmd_flag      => 'separator',
-    documentation => "String used when joining an expression into a string",
-    isa           => Str,
-    is            => 'rw',
-    default       => "\t",
-);
-
 # Working classes
 has engine_class => (
     traits        => [qw(Getopt)],
@@ -290,7 +280,6 @@ sub _build__storage_obj {
             (defined $self->brain_resource
              ? (brain => $self->brain_resource)
              : ()),
-            token_separator => $self->token_separator,
             order           => $self->order,
             arguments       => $self->storage_args,
         }
@@ -563,12 +552,6 @@ A C<HashRef> of arguments storage/tokenizer/engine/ui backends. See
 the documentation for the backends for what sort of arguments they
 accept.
 
-=head2 C<token_separator>
-
-Storage backends may choose to store the tokens of an expression as a single
-string. If so, they will be joined them together with a separator. By default,
-this is C<"\t">.
-
 =head1 METHODS
 
 =head2 C<new>
@@ -602,12 +585,6 @@ that might be relevant.
 =head2 C<save>
 
 Tells the underlying storage backend to save its state.
-
-=head1 CAVEATS
-
-All occurences of L<C<token_separator>|/token_separator> will be stripped
-from your input before it is processed, so make sure it's set to something
-that is unlikely to appear in it.
 
 =head1 SUPPORT
 

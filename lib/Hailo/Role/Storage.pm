@@ -2,6 +2,7 @@ package Hailo::Role::Storage;
 use 5.10.0;
 use MooseX::Role::Strict;
 use MooseX::Types::Moose qw<Str Int>;
+use List::Util qw<min>;
 use namespace::clean -except => 'meta';
 
 our $VERSION = '0.09';
@@ -16,17 +17,20 @@ has order => (
     is  => 'rw',
 );
 
-has token_separator => (
-    isa => Str,
-    is  => 'rw',
+has repeat_limit => (
+    isa     => Int,
+    is      => 'rw',
+    lazy    => 1,
+    default => sub {
+        my ($self) = @_;
+        my $order = $self->order;
+        return min(($order * 10), 50);
+    }
 );
 
 requires 'save';
-requires 'add_expr';
-requires 'random_expr';
-requires 'token_exists';
-requires 'next_tokens';
-requires 'prev_tokens';
+requires 'learn_tokens';
+requires 'make_reply';
 requires 'start_learning';
 requires 'stop_learning';
 requires 'start_training';
@@ -61,39 +65,20 @@ L</ATTRIBUTES>.
 
 Saves the current state.
 
-=head2 C<add_expr>
+=head2 C<learn_tokens>
 
-Adds a new expression. Takes the follwing arguments:
+Learns from a sequence of tokens. Takes an array ref of strings.
 
-B<'tokens'>, an array reference of the tokens that make up the expression.
-The number of elements should be equal to the value returned by
-C<order|/order>.
-
-B<'next_token'>, the token that succeeds this expression, if any.
-
-B<'next_token'>, the token that precedes this expression, if any.
-
-=head2 C<random_expr>
+=head2 C<make_reply>
 
 Takes a single token as an argument and returns a randomly picked expression
 which contains it.
 
-=head2 C<token_exists>
+=head2 C<make_reply>
 
-Takes a single token as an argument and returns a true value if the token
-exists.
-
-=head2 C<next_tokens>
-
-Takes an array reference of tokens arguments that make up an expression and
-returns a hash reference of tokens that may succeed it. The value is the
-number of times the token has been seen succeeding the expression.
-
-=head2 C<prev_tokens>
-
-Takes an array reference of tokens arguments that make up an expression and
-returns a hash reference of tokens that may precede it. The value is the
-number of times the token has been seen preceding the expression.
+Takes an array reference of tokens and returns a reply (arrayref of tokens)
+that might be relevant. If none of the supplied tokens are known, nothing is
+returned.
 
 =head2 C<start_learning>
 
