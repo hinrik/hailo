@@ -2,7 +2,7 @@ use 5.10.0;
 use utf8;
 use strict;
 use warnings;
-use Test::More tests => 87;
+use Test::More tests => 107;
 use Hailo;
 use Data::Random qw(:all);
 use File::Temp qw(tempfile tempdir);
@@ -12,7 +12,7 @@ binmode $_, ':encoding(utf8)' for (*STDIN, *STDOUT, *STDERR);
 # Suppress PostgreSQL notices
 $SIG{__WARN__} = sub { print STDERR @_ if $_[0] !~ m/NOTICE:\s*CREATE TABLE/; };
 
-for my $backend (qw(Perl Perl::Flat CHI DBD::mysql DBD::SQLite DBD::Pg)) {
+for my $backend (qw(Perl Perl::Flat CHI::Memory CHI::File CHI::BerkeleyDB DBD::mysql DBD::SQLite DBD::Pg)) {
     # Skip all tests for this backend?
     my $skip_all;
 
@@ -48,7 +48,7 @@ for my $backend (qw(Perl Perl::Flat CHI DBD::mysql DBD::SQLite DBD::Pg)) {
     my $prev_brain;
     for my $i (1 .. 5) {
         my %connect_opts;
-        if ($backend =~ /SQLite/ or $backend =~ /Perl|CHI/) {
+        if ($backend =~ /SQLite/ or $backend =~ /Perl/) {
             %connect_opts = (
                 brain_resource => $filename,
             );
@@ -67,15 +67,30 @@ for my $backend (qw(Perl Perl::Flat CHI DBD::mysql DBD::SQLite DBD::Pg)) {
                     password => 'hailo',
                 },
             );
+        } elsif ($backend =~ /CHI::BerkeleyDB/) {
+            my $chidir = tempdir( DIR => $dir );
+            %connect_opts = (
+                storage_args => {
+                    root_dir => $chidir,
+                },
+            );
+        } elsif ($backend =~ /CHI::File/) {
+            my $chidir = tempdir( DIR => $dir );
+            %connect_opts = (
+                storage_args => {
+                    root_dir => $chidir,
+                },
+            );
         }
       SKIP: {
         skip "Didn't create $backend db, can't test it", 2 if $skip_all;
+
         my $hailo = Hailo->new(
             storage_class  => $backend,
             %connect_opts,
         );
 
-        if ($backend =~ /Perl|CHI/) {
+        if ($backend =~ /Perl/) {
             if ($prev_brain) {
                 my $this_brain = $hailo->_storage_obj->_memory;
                 is_deeply($prev_brain, $this_brain, "$backend: Our previous $backend brain matches the new one, try $i");
@@ -93,7 +108,7 @@ for my $backend (qw(Perl Perl::Flat CHI DBD::mysql DBD::SQLite DBD::Pg)) {
         # Hailo replies
         cmp_ok(length($hailo->reply($random_words[5])) * 2, '>', length($random_words[5]), "Hailo knows how to babble, try $i");
 
-        if ($backend =~ /Perl|CHI/) {
+        if ($backend =~ /Perl/) {
             # Save this brain for the next iteration
             $prev_brain = $hailo->_storage_obj->_memory;
         }

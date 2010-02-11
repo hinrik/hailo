@@ -2,17 +2,20 @@ use 5.10.0;
 use strict;
 use warnings;
 use File::Spec::Functions 'catfile';
-use Test::More tests => 63;
+use Test::More tests => 72;
 use Test::Script;
 
 # find lib -type f | perl -pe 's[^lib/][    ]; s[.pm$][]; s[/][::]g'
 my @classes = qw(
     Hailo
     Hailo::Storage::Mixin::DBD
+    Hailo::Storage::Mixin::CHI
     Hailo::Storage::Mixin::Hash::Flat
     Hailo::Storage::Mixin::Hash
     Hailo::Storage::Mixin::Storable
-    Hailo::Storage::CHI
+    Hailo::Storage::CHI::BerkeleyDB
+    Hailo::Storage::CHI::File
+    Hailo::Storage::CHI::Memory
     Hailo::Storage::Perl
     Hailo::Storage::Perl::Flat
     Hailo::Storage::DBD::SQLite

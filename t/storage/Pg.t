@@ -18,7 +18,7 @@ my $hailo = Hailo->new(
     storage_args  => $arguments,
 );
 
-is_deeply($hailo->_storage_obj->arguments, $arguments, "Arguments were passed to Pg");
+is_deeply(scalar $hailo->_storage_obj->arguments, $arguments, "Arguments were passed to Pg");
 
 my $conn_line = $hailo->_storage_obj->dbi_options->[0];
 while (my ($k, $v) = each %$arguments) {

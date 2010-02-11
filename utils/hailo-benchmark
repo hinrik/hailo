@@ -22,6 +22,7 @@ my %tests = map { $_ => 1 } @tests;
 my $dir = tempdir( CLEANUP => 1 );
 
 my @DATA = map { chomp; $_ } split /^/, join '', <DATA>;
+@DATA = @DATA[0..30];
 my $words = Hailo::Tokenizer::Words->new;
 my @DATA_words = map { $words->make_tokens($_) } @DATA;
 my @words = shuffle(@DATA_words);
@@ -70,14 +71,40 @@ sub spawn_hailo {
 $SIG{__WARN__} = sub { print STDERR @_ if $_[0] !~ m/NOTICE:\s*CREATE TABLE/; };
 
 my %backends = (
-    $tests{CHI} ?
-    (CHI => sub {
+    $tests{'CHI::BerkeleyDB'} ?
+    ('CHI::BerkeleyDB' => sub {
         state $i = 1;
         spawn_hailo(
             $i++,
-            storage_class => 'CHI',
+            storage_class => 'CHI::BerkeleyDB',
+            storage_args => {
+                root_dir => $dir,
+            },
         );
     }) : (),
+
+    $tests{'CHI::Memory'} ?
+    ('CHI::Memory' => sub {
+        state $i = 1;
+        spawn_hailo(
+            $i++,
+            storage_class => 'CHI::Memory',
+        );
+    }) : (),
+
+    $tests{'CHI::File'} ?
+    ('CHI::File' => sub {
+        state $i = 1;
+        spawn_hailo(
+            $i++,
+            storage_class => 'CHI::File',
+            storage_args => {
+                depth => 3,
+                root_dir => $dir,
+            },
+        );
+    }) : (),
+
     $tests{Perl} ?
     (Perl => sub {
         state $i = 1;
@@ -86,6 +113,7 @@ my %backends = (
             storage_class => 'Perl',
         );
     }) : (),
+
     $tests{'Perl::Flat'} ?
     ('Perl::Flat' => sub {
         state $i = 1;
@@ -94,6 +122,7 @@ my %backends = (
             storage_class => 'Perl::Flat',
         );
     }) : (),
+
     $tests{SQLite} ?
     (SQLite => sub {
         state $i = 1;
@@ -102,13 +131,7 @@ my %backends = (
             storage_class => 'SQLite',
         );
     }) : (),
-    # Cache => sub {
-    #     state $i = 1;
-    #     spawn_hailo(
-    #         $i++,
-    #         storage_class => 'Cache',
-    #     );
-    # },
+
     $tests{mysql} ?
     (MySQL => sub {
         state $i = 1;
@@ -124,6 +147,7 @@ my %backends = (
         );
         system q[echo 'drop table info; drop table token; drop table expr; drop table next_token; drop table prev_token;' | mysql -u hailo -p'hailo' hailo];
     }) : (),
+
     $tests{Pg} ? 
     (PostgreSQL => sub {
         state $i = 1;

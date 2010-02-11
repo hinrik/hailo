@@ -20,7 +20,7 @@ sub _exists {
     my ($self, $k) = @_;
     my $mem = $self->_memory;
 
-    $self->meh->trace("Checking if '$k' exists");
+    # $self->meh->trace("Checking if '$k' exists");
 
     return exists $mem->{$k};
 }
@@ -29,7 +29,7 @@ sub _set {
     my ($self, $k, $v) = @_;
     my $mem = $self->_memory;
 
-    $self->meh->trace("Setting '$k' = '$v'");
+    # $self->meh->trace("Setting '$k' = '$v'");
 
     $mem->{$k} = $v;
 }
@@ -38,9 +38,9 @@ sub _get {
     my ($self, $k) = @_;
     my $mem = $self->_memory;
 
-    $self->meh->trace("Getting '$k'");
+    # $self->meh->trace("Getting '$k'");
     my $v = $mem->{$k};
-    $self->meh->trace("Value for '$k' is '$v'");
+    # $self->meh->trace("Value for '$k' is '$v'");
     return $v;
 }
 
@@ -48,7 +48,7 @@ sub _increment {
     my ($self, $k) = @_;
     my $mem = $self->_memory;
 
-    $self->meh->trace("Incrementing $k");
+    # $self->meh->trace("Incrementing $k");
 
     if (not exists $mem->{$k}) {
         $mem->{$k} = 1;
@@ -62,7 +62,7 @@ sub _increment {
 sub _expr_exists {
     my ($self, $ehash) = @_;
 
-    $self->meh->trace("expr_exists: Checking if 'expr-$ehash' exists");
+    # $self->meh->trace("expr_exists: Checking if 'expr-$ehash' exists");
     return $self->_exists("expr-$ehash");
 }
 
@@ -110,7 +110,7 @@ sub random_expr {
     my $token_k = "token-$token";
     my $token_v = $self->_get($token_k);
     my $token_num = int rand $token_v;
-    $self->meh->trace("Got token num '$token_num' for k/v '$token_k'/'$token_v' ");
+    # $self->meh->trace("Got token num '$token_num' for k/v '$token_k'/'$token_v' ");
     my $ehash     = $self->_get("$token_k-$token_num");
     my @tokens    = map { $self->_get("expr-$ehash-$_") } 0 .. $self->_get("expr-$ehash");
     return @tokens;

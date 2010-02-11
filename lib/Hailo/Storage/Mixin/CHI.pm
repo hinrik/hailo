@@ -1,9 +1,10 @@
-package Hailo::Storage::CHI;
+package Hailo::Storage::Mixin::CHI;
 use 5.10.0;
 use Moose;
 use MooseX::StrictConstructor;
 use MooseX::Types::Moose qw<HashRef>;
 use CHI;
+use Digest::MD4 qw(md4_hex);
 use namespace::clean -except => 'meta';
 
 our $VERSION = '0.08';
@@ -109,13 +110,19 @@ sub _increment {
 
 sub save {}
 
+sub _hash_tokens {
+    my ($self, $tokens) = @_;
+    my $ehash = md4_hex("@$tokens");
+    return substr $ehash, 0, 12;
+}
+
 __PACKAGE__->meta->make_immutable;
 
 =encoding utf8
 
 =head1 NAME
 
-Hailo::Storage::CHI - A storage backend for L<Hailo|Hailo> using L<CHI>
+Hailo::Storage::Mixin::CHI - A mixin class for L<Hailo> L<storage|Hailo::Role::Storage> backends using L<CHI>
 
 =head1 AUTHOR
 
