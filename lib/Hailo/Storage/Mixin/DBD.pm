@@ -496,7 +496,7 @@ CREATE TABLE info (
     attribute [% SWITCH dbd %][% CASE 'mysql' %]TEXT NOT NULL,
                               [% CASE DEFAULT %]TEXT NOT NULL UNIQUE PRIMARY KEY,
                               [% END %]
-    text      TEXT NOT NULL
+    text [% IF dbd == 'SQLite' %] TEXT [% ELSE %] VARCHAR(255) [% END %] NOT NULL
 );
 __[ table_token ]__
 CREATE TABLE token (
@@ -504,7 +504,7 @@ CREATE TABLE token (
                          [% CASE 'mysql' %]INTEGER PRIMARY KEY AUTO_INCREMENT,
                          [% CASE DEFAULT %]INTEGER PRIMARY KEY AUTOINCREMENT,
                          [% END %]
-    text TEXT NOT NULL
+    text [% IF dbd == 'SQLite' %] TEXT [% ELSE %] VARCHAR(255) [% END %] NOT NULL
 );
 __[ table_expr ]__
 CREATE TABLE expr (
