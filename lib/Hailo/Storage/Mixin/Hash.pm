@@ -3,7 +3,6 @@ use 5.10.0;
 use Moose;
 use MooseX::StrictConstructor;
 use MooseX::Types::Moose qw<HashRef>;
-use Data::Dump 'ddx';
 use namespace::clean -except => 'meta';
 
 our $VERSION = '0.09';
@@ -76,7 +75,6 @@ sub make_reply {
     my @reply = $self->_random_expr(shift @keys);
     my $repeat_limit = $self->repeat_limit;
 
-    #ddx \@reply;
     my $i = 0;
     while (1) {
         if (($i % $order) == 0 and
