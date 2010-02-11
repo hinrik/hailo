@@ -139,14 +139,16 @@ This skeleton mixin backend maintains information in a Perl C<HashRef>.
 
 =head1 AUTHOR
 
+Hinrik E<Ouml>rn SigurE<eth>sson, hinrik.sig@gmail.com
+
 E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2010 E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason
+Copyright 010 Hinrik E<Ouml>rn SigurE<eth>sson and
+E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
 
 This program is free software, you can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut
-
