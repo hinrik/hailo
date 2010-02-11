@@ -1,7 +1,8 @@
 #!/usr/bin/env perl
+use strict;
+use warnings;
 use 5.10.0;
 use autodie qw(open close);
-use Modern::Perl;
 use Hailo;
 use Benchmark qw(:all);
 use Data::Random qw(:all);
