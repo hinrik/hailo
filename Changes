@@ -1,4 +1,4 @@
-0.09
+0.09 Thu Feb 11 02:36:49 GMT 2010
     - Disable SQLite's journal while training. Speeds up long imports.
     - Add Perl::Flat backend which keeps things in a simple key-value
       hash where key and value are both Str. It can be subclassed to
