@@ -55,6 +55,7 @@ has chi_options => (
 sub _build_chi_options {
     return {
         namespace => __PACKAGE__,
+        serializer => __PACKAGE__->new,
         on_get_error => "die",
         on_set_error => "die",
     };
@@ -115,6 +116,11 @@ sub _hash_tokens {
     my $ehash = md4_hex("@$tokens");
     return substr $ehash, 0, 12;
 }
+
+# CHI moronically insists on a seralizer even though we don't need it
+sub serialize { $_[1] }
+sub deserialize { $_[1] }
+sub serializer { 'YouSuck' }
 
 __PACKAGE__->meta->make_immutable;
 
