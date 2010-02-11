@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use Class::MOP;
 use File::Spec::Functions 'catfile';
-use Test::More tests => 49;
+use Test::More;
 use Test::Script;
 
 # find lib -type f | perl -pe 's[^lib/][    ]; s[.pm$][]; s[/][::]g'
@@ -22,17 +22,17 @@ my @classes = qw(
     Hailo::Storage::DBD::SQLite
     Hailo::Storage::DBD::mysql
     Hailo::Storage::DBD::Pg
-    Hailo::Role::Engine
     Hailo::Role::Generic
     Hailo::Role::UI
     Hailo::Role::Storage
     Hailo::Role::Log
     Hailo::Role::Tokenizer
     Hailo::UI::ReadLine
-    Hailo::Engine::Default
     Hailo::Tokenizer::Words
     Hailo::Tokenizer::Chars
 );
+
+plan tests => scalar(@classes) * 2 + 1;
 
 my $i = 1; for (@classes) {
   SKIP: {

@@ -12,7 +12,7 @@ use IO::Interactive qw(is_interactive);
 use FindBin qw($Bin $Script);
 use File::Spec::Functions qw(catfile);
 use Module::Pluggable (
-    search_path => [ map { "Hailo::$_" } qw(Engine Storage Tokenizer UI) ],
+    search_path => [ map { "Hailo::$_" } qw(Storage Tokenizer UI) ],
     except      => qr[Mixin],
 );
 use List::Util qw(first);
@@ -105,17 +105,6 @@ has brain_resource => (
     is            => "ro",
 );
 
-# Working classes
-has engine_class => (
-    traits        => [qw(Getopt)],
-    cmd_aliases   => "E",
-    cmd_flag      => "engine",
-    documentation => "Use engine CLASS",
-    isa           => Str,
-    is            => "ro",
-    default       => "Default",
-);
-
 has storage_class => (
     traits        => [qw(Getopt)],
     cmd_aliases   => "S",
@@ -147,15 +136,6 @@ has ui_class => (
 );
 
 # Object arguments
-has engine_args => (
-    traits        => [qw(Getopt)],
-    documentation => "Arguments for the Engine class",
-    isa           => HashRef,
-    coerce        => 1,
-    is            => "ro",
-    default       => sub { +{} },
-);
-
 has storage_args => (
     traits        => [qw(Getopt)],
     documentation => "Arguments for the Storage class",
@@ -182,14 +162,6 @@ has ui_args => (
 );
 
 # Working objects
-has _engine_obj => (
-    traits      => [qw(NoGetopt)],
-    does        => 'Hailo::Role::Engine',
-    lazy_build  => 1,
-    is          => 'ro',
-    init_arg    => undef,
-);
-
 has _storage_obj => (
     traits      => [qw(NoGetopt)],
     does        => 'Hailo::Role::Storage',
@@ -254,21 +226,6 @@ $synopsis
 USAGE
 
     exit 1;
-}
-
-sub _build__engine_obj {
-    my ($self) = @_;
-    my $obj = $self->_new_class(
-        "Engine",
-        $self->engine_class,
-        {
-            storage   => $self->_storage_obj,
-            tokenizer => $self->_tokenizer_obj,
-            arguments => $self->engine_args,
-        },
-    );
-
-    return $obj;
 }
 
 sub _build__storage_obj {
@@ -359,7 +316,7 @@ sub run {
     }
 
     if (defined $self->reply_str) {
-        my $answer = $self->_engine_obj->reply($self->reply_str);
+        my $answer = $self->reply($self->reply_str);
         say $answer // "I don't know enough to answer you yet.";
     }
 
@@ -384,7 +341,7 @@ sub train {
     } else {
         while (my $line = <$fh>) {
             chomp $line;
-            $self->_engine_obj->learn($line);
+            $self->_learn_one($line);
         }
     }
     close $fh;
@@ -415,7 +372,7 @@ sub _train_progress {
 
     my $i = 1; while (my $line = <$fh>) {
         chomp $line;
-        $self->_engine_obj->learn($line);
+        $self->_learn_one($line);
         if ($i >= $next_update) {
             $next_update = $progress->update($.);
 
@@ -438,20 +395,43 @@ sub learn {
     my $storage = $self->_storage_obj;
 
     $storage->start_learning();
-    $self->_engine_obj->learn($input);
+    $self->_learn_one($input);
     $storage->stop_learning();
     return;
 }
 
-sub reply {
+sub _learn_one {
     my ($self, $input) = @_;
-    return $self->_engine_obj->reply($input);
+    my $storage = $self->_storage_obj;
+    my $order   = $storage->order;
+
+    my @tokens = $self->_tokenizer_obj->make_tokens($input);
+
+    # only learn from inputs which are long enough
+    return if @tokens < $order;
+
+    $storage->learn_tokens(\@tokens);
+    return;
 }
 
 sub learn_reply {
     my ($self, $input) = @_;
     $self->learn($input);
-    return $self->_engine_obj->reply($input);
+    return $self->reply($input);
+}
+
+sub reply {
+    my ($self, $input) = @_;
+    my $storage = $self->_storage_obj;
+    my $toke    = $self->_tokenizer_obj;
+
+    my @tokens = $toke->make_tokens($input);
+    my @key_tokens = $toke->find_key_tokens(\@tokens);
+    return if !@key_tokens;
+
+    my $reply = $storage->make_reply(\@key_tokens);
+    return if !defined $reply;
+    return $toke->make_output($reply);
 }
 
 __PACKAGE__->meta->make_immutable;

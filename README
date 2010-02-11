@@ -72,6 +72,11 @@ ATTRIBUTES
     A "HashRef" of arguments storage/tokenizer/engine/ui backends. See the
     documentation for the backends for what sort of arguments they accept.
 
+  "token_separator"
+    Storage backends may choose to store the tokens of an expression as a
+    single string. If so, they will be joined them together with a
+    separator. By default, this is "\t".
+
 METHODS
   "new"
     This is the constructor. It accept the attributes specified in
@@ -97,6 +102,11 @@ METHODS
 
   "save"
     Tells the underlying storage backend to save its state.
+
+CAVEATS
+    All occurences of "token_separator" will be stripped from your input
+    before it is processed, so make sure it's set to something that is
+    unlikely to appear in it.
 
 SUPPORT
     You can join the IRC channel *#hailo* on FreeNode if you have questions.

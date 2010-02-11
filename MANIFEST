@@ -12,8 +12,6 @@ inc/Module/Install/Scripts.pm
 inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
 lib/Hailo.pm
-lib/Hailo/Engine/Default.pm
-lib/Hailo/Role/Engine.pm
 lib/Hailo/Role/Generic.pm
 lib/Hailo/Role/Log.pm
 lib/Hailo/Role/Storage.pm

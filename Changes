@@ -1,6 +1,8 @@
 0.10
     - Normalized the SQL schema some more. This breaks compatability with old
       brains of course, but training/learning is quite a bit faster now.
+    - Removed Hailo::Engine and moved most of its logic into the storage
+      backends
 
 0.09 Thu Feb 11 02:36:49 GMT 2010
     - Disable SQLite's journal while training. Speeds up long imports.
