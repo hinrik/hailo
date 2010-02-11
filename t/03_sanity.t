@@ -2,9 +2,9 @@ use 5.10.0;
 use strict;
 use warnings;
 use Hailo;
-use Test::More tests => 8;
+use Test::More tests => 6;
 
-for my $storage (qw(Perl Perl::Flat CHI DBD::SQLite)) {
+for my $storage (qw(Perl Perl::Flat DBD::SQLite)) {
     my $hailo = Hailo->new(
         storage_class => $storage,
         ($storage eq 'SQLite'
