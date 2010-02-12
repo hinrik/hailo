@@ -58,12 +58,6 @@ command-line with only a C<--brain> argument:
 Presents a ReadLine interface using L<Term::ReadLine>, the
 L<Term::ReadLine::Gnu> frontend will be used.
 
-=head1 METHODS
-
-=head2 C<run>
-
-Run the UI.
-
 =head1 AUTHOR
 
 E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>

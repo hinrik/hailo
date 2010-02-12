@@ -52,22 +52,24 @@ L<DBD::SQLite|DBD::SQLite>
 
 =head1 DESCRIPTION
 
-This backend maintains information in an SQLite database. It can handle
-pretty large datasets.
+This backend maintains information in an SQLite database. It is the default
+storage backend.
 
-For some example numbers, I have a 5th-order database built from a 204k line
-(7.2MB) IRC channel log file (7.2MB). On my laptop (Core 2 Duo 2.53 GHz) it
-took 10 minutes and 42 seconds (317 lines/sec) to create the 290MB database.
-Furthermore, it can generate 166 replies per second from it. Since this is
-just an SQL database, there is very little RAM usage.
+For some example numbers, I have a 5th-order database built from a ~210k line
+(7.4MB) IRC channel log file. On my laptop (Core 2 Duo 2.53 GHz) it took 8
+minutes and 50 seconds (~400 lines/sec) to create the 229MB database.
+Furthermore, it can generate about 90 replies per second from it.
 
 =head1 AUTHOR
 
 E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
 
+Hinrik E<Ouml>rn SigurE<eth>sson, hinrik.sig@gmail.com
+
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2010 E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason.
+Copyright 2010 E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason and
+Hinrik E<Ouml>rn SigurE<eth>sson
 
 This program is free software, you can redistribute it and/or modify
 it under the same terms as Perl itself.

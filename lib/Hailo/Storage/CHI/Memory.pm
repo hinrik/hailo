@@ -22,7 +22,8 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Hailo::Storage::CHI::Memory - A L<memory|CHI::Driver::Memory> storage backend for L<Hailo|Hailo> using L<CHI>
+Hailo::Storage::CHI::Memory - A L<memory|CHI::Driver::Memory> storage
+backend for L<Hailo|Hailo> using L<CHI>
 
 =head1 AUTHOR
 
@@ -36,4 +37,3 @@ This program is free software, you can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut
-

@@ -467,32 +467,37 @@ Hailo - A pluggable Markov engine analogous to MegaHAL
 
 =head1 SYNOPSIS
 
-    use Hailo;
+ use strict;
+ use warnings;
+ use Hailo;
 
-    my $hailo = Hailo->new(
-        # Or Pg, or Perl ...
-        storage_class  => 'SQLite',
-        brain_resource => 'brain.db'
-    );
+ my $hailo = Hailo->new(
+     # Or Pg, or Perl ...
+     storage_class  => 'SQLite',
+     brain_resource => 'brain.db'
+ );
 
-    while (<>) {
-        $hailo->learn($_);
-        print $hailo->reply($_), "\n";
-    }
+ while (<>) {
+     $hailo->learn($_);
+     print $hailo->reply($_), "\n";
+ }
 
 =head1 DESCRIPTION
 
 Hailo is a fast and lightweight markov engine intended to replace
-L<AI::MegaHAL>. It has a lightweight L<Moose>-based core with
-pluggable L<storage|Hailo::Role::Storage>,
-L<tokenizer|Hailo::Role::Tokenizer> and L<engine|Hailo::Role::Engine>
-backends.
+L<AI::MegaHAL|AI::MegaHAL>. It has a lightweight L<Moose|Moose>-based core
+with pluggable L<storage|Hailo::Role::Storage> and
+L<tokenizer|Hailo::Role::Tokenizer> backends.
 
-It's faster than MegaHAL and can handle huge brains easily with the
-default L<SQLite backend|Hailo::Storage::DBD::SQLite>. It can be used,
-amongst other things, to implement IRC chat bots with
-L<POE::Component::IRC>. In fact, there exists a L<POE::Component::IRC>
-L<plugin|POE::Component::IRC::Plugin::Hailo> for just that purpose.
+It is similar to MegaHAL in functionality, the main difference being (with
+the default storage/tokenizer backends) better scalability, drastically less
+memory usage, and an improved tokenizer.
+
+With this distribution, you can create, modify, and query Hailo brains. To
+use Hailo in asynchronous applications, you can use the
+L<POE::Component::Hailo|POE::Component::Hailo> wrapper. One example is
+L<POE::Component::IRC::Plugin::Hailo|POE::Component::IRC::Plugin::Hailo>,
+which implements and IRC chat bot.
 
 =head2 Etymology
 
@@ -518,15 +523,15 @@ The storage backend to use. Default: 'SQLite'.
 This gives you an idea of approximately how the backends compare in
 speed:
 
-                    s/iter CHI::File CHI::BerkeleyDB PostgreSQL MySQL CHI::Memory SQLite Perl Perl::Flat
-    CHI::File         15.1        --            -51%       -72%  -75%        -82%   -91% -95%       -95%
-    CHI::BerkeleyDB   7.43      103%              --       -42%  -49%        -64%   -81% -90%       -91%
-    PostgreSQL        4.30      252%             73%         --  -11%        -37%   -67% -83%       -84%
-    MySQL             3.83      295%             94%        12%    --        -29%   -63% -81%       -82%
-    CHI::Memory       2.70      460%            176%        59%   42%          --   -48% -73%       -75%
-    SQLite            1.41      972%            427%       205%  171%         91%     -- -48%       -52%
-    Perl             0.735     1957%            911%       485%  420%        267%    92%   --        -7%
-    Perl::Flat       0.683     2114%            988%       529%  460%        295%   106%   8%         --
+                 s/iter CHI::File CHI::BerkeleyDB PostgreSQL MySQL CHI::Memory SQLite Perl Perl::Flat
+ CHI::File         15.1        --            -51%       -72%  -75%        -82%   -91% -95%       -95%
+ CHI::BerkeleyDB   7.43      103%              --       -42%  -49%        -64%   -81% -90%       -91%
+ PostgreSQL        4.30      252%             73%         --  -11%        -37%   -67% -83%       -84%
+ MySQL             3.83      295%             94%        12%    --        -29%   -63% -81%       -82%
+ CHI::Memory       2.70      460%            176%        59%   42%          --   -48% -73%       -75%
+ SQLite            1.41      972%            427%       205%  171%         91%     -- -48%       -52%
+ Perl             0.735     1957%            911%       485%  420%        267%    92%   --        -7%
+ Perl::Flat       0.683     2114%            988%       529%  460%        295%   106%   8%         --
 
 To run your own test try running F<utils/hailo-benchmark> in the Hailo
 distribution.
@@ -535,19 +540,13 @@ distribution.
 
 The tokenizer to use. Default: 'Words';
 
-=head2 C<engine_class>
-
-The engine to use. Default: 'Default';
-
-=head2 C<engine_class>
+=head2 C<ui_class>
 
 The UI to use. Default: 'ReadLine';
 
 =head2 C<storage_args>
 
 =head2 C<tokenizer_args>
-
-=head2 C<engine_args>
 
 =head2 C<ui_args>
 
@@ -565,7 +564,7 @@ this is C<"\t">.
 
 =head2 C<new>
 
-This is the constructor. It accept the attributes specified in
+This is the constructor. It accepts the attributes specified in
 L</ATTRIBUTES>.
 
 =head2 C<run>
@@ -578,18 +577,17 @@ Takes a line of UTF-8 encoded text as input and learns from it.
 
 =head2 C<train>
 
-Takes a filename and calls L<C<learn>|/learn> on all its lines. Lines are
-expected to be UTF-8 encoded.
+Takes a filename and calls L<C<learn>|/learn> on all its lines. The file is
+assumed to be UTF-8 encoded.
 
 =head2 C<reply>
 
-Takes a line of text and generates a reply (UTF-8 encoded) that might be
-relevant.
+Takes an optional line of text and generates a reply that might be relevant.
 
 =head2 C<learn_reply>
 
-Takes a line of text, learns from it, and generates a reply (UTF-8 encoded)
-that might be relevant.
+Takes a line of text, learns from it, and generates a reply that might be
+relevant.
 
 =head2 C<save>
 

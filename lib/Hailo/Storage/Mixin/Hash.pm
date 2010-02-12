@@ -195,7 +195,8 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Hailo::Storage::Mixin::Hash - A mixin class for L<storage|Hailo::Role::Storage> classes using a C<HashRef>
+Hailo::Storage::Mixin::Hash - A mixin class for
+L<storage|Hailo::Role::Storage> classes using a C<HashRef>
 
 =head1 DESCRIPTION
 

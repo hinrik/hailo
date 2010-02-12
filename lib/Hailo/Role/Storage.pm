@@ -76,14 +76,8 @@ Learns from a sequence of tokens. Takes an array ref of strings.
 
 =head2 C<make_reply>
 
-Takes a single token as an argument and returns a randomly picked expression
-which contains it.
-
-=head2 C<make_reply>
-
 Takes an array reference of tokens and returns a reply (arrayref of tokens)
-that might be relevant. If none of the supplied tokens are known, nothing is
-returned.
+that might be relevant.
 
 =head2 C<start_learning>
 
