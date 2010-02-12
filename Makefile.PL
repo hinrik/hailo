@@ -16,10 +16,7 @@ bugtracker     ('http://github.com/hinrik/hailo/issues');
 resources      (Ratings => 'http://cpanratings.perl.org/d/Hailo');
 
 requires       ('Term::ReadLine::Gnu'           => '0');
-requires       ('FindBin'                       => '0');
-requires       ('File::Spec::Functions'         => '0');
 requires       ('autodie'                       => '0');
-requires       ('Pod::Usage'                    => '0');
 requires       ('Data::Section'                 => '0.100270');
 requires       ('DBD::SQLite'                   => '0');
 requires       ('File::CountLines'              => '0');
