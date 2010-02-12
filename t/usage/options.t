@@ -1,7 +1,7 @@
 use 5.10.0;
 use strict;
 use List::MoreUtils qw(uniq);
-use Test::More tests => 34;
+use Test::More tests => 35;
 use Test::Exception;
 use Test::Output;
 use Test::Exit;

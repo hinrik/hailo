@@ -301,6 +301,23 @@ sub _new_class {
     return $pkg->new(%$args);
 }
 
+# Check validity of options
+before run => sub {
+    my ($self) = @_;
+
+    if (defined $self->reply_str and
+        not defined $self->brain_resource and
+        not defined $self->train_file and
+        not defined $self->learn_str and
+        not defined $self->learn_reply_str) {
+        # TODO: Make this spew out the --help reply just like hailo
+        # with invalid options does usually
+        die "A bare reply_str without a brain doesn't work";
+    }
+
+    return;
+};
+
 sub run {
     my ($self) = @_;
 
