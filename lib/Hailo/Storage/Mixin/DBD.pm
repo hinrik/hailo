@@ -89,9 +89,8 @@ has sth => (
 );
 
 has _boundary_token_id => (
-    isa     => Int,
-    is      => 'rw',
-    default => 1,
+    isa => Int,
+    is  => 'rw',
 );
 
 # our statement handlers
