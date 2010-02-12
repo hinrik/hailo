@@ -1,6 +1,6 @@
 package Hailo;
 
-use 5.010;
+use 5.10.0;
 use autodie qw(open close);
 use Class::MOP;
 use Moose;
@@ -305,7 +305,7 @@ sub run {
     my ($self) = @_;
 
     if ($self->print_version) {
-        print "hailo $VERSION\n";
+        say "hailo $VERSION";
         return;
     }
 

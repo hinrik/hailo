@@ -8,8 +8,8 @@ use namespace::clean -except => 'meta';
 our $VERSION = '0.10';
 
 has brain => (
-    isa      => Str,
-    is       => 'ro',
+    isa => Str,
+    is  => 'ro',
 );
 
 has order => (
