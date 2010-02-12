@@ -18,7 +18,7 @@ use Module::Pluggable (
 use List::Util qw(first);
 use namespace::clean -except => [ qw(meta plugins) ];
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 has help => (
     traits        => [qw(Getopt)],

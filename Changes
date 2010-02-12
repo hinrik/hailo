@@ -1,4 +1,4 @@
-0.11
+0.11 Fri Feb 12 09:44:13 GMT 2010
     - Corrected outdated documentation in some places
     - Fixed a problem with the SQLite backend not reading some information
       from an existing brain if reply() is called first
