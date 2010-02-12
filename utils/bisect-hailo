@@ -1,0 +1,20 @@
+#!/usr/bin/env perl
+use strict;
+
+if (!@ARGV or $ARGV[0] =~ /help/) {
+die <<EOF
+rm -rf /tmp/hailo; mkdir -p /tmp/hailo/t
+cp -Rvp t/usage/options.t /tmp/hailo/t/
+cp utils/bisect-hailo /tmp/hailo/
+git bisect start
+git bisect bad
+git bisect good 0.09
+git bisect run /tmp/hailo/bisect-hailo /tmp/hailo/t
+EOF
+}
+
+die `pwd` unless `pwd` =~ /hailo$/;
+
+my $ret = system "prove -Ilib -r $ARGV[1]";
+
+exit $ret
