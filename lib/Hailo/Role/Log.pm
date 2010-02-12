@@ -18,6 +18,7 @@ my @methods = qw(
 has 'meh' => (
     is         => 'ro',
     isa        => 'Log::Log4perl::Logger',
+    traits     => [qw(NoGetopt)],
     lazy_build => 1,
     handles    => \@methods,
 );
