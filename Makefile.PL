@@ -40,7 +40,9 @@ requires       ('IO::Interactive'               => '0');
 requires       ('Term::ProgressBar'             => '2.00');
 requires       ('Text::Trim'                    => '0');
 requires       ('Module::Pluggable'             => '0');
-requires       ('Digest::MD4'                   => '0');
+
+# for the optional backends
+recommends     ('Digest::MD4'                   => '0');
 recommends     ('CHI'                           => '0.34');
 recommends     ('CHI::Driver::Memory'           => '0');
 recommends     ('CHI::Driver::File'             => '0');
