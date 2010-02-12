@@ -39,6 +39,11 @@ is( sub {
     "Hailo learns / replies",
 );
 
+# reply
+dies_ok {
+    my $hailo = Hailo->new( reply_str => "foo ")->run
+} "reply_str with no other options should fail";
+
 # learn_reply_str
 is( sub {
         my $hailo = Hailo->new;
