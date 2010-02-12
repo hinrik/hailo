@@ -494,10 +494,10 @@ the default storage/tokenizer backends) better scalability, drastically less
 memory usage, and an improved tokenizer.
 
 With this distribution, you can create, modify, and query Hailo brains. To
-use Hailo in asynchronous applications, you can use the
+use Hailo in event-driven POE applications, you can use the
 L<POE::Component::Hailo|POE::Component::Hailo> wrapper. One example is
 L<POE::Component::IRC::Plugin::Hailo|POE::Component::IRC::Plugin::Hailo>,
-which implements and IRC chat bot.
+which implements an IRC chat bot.
 
 =head2 Etymology
 

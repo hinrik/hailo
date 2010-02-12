@@ -27,9 +27,9 @@ DESCRIPTION
     drastically less memory usage, and an improved tokenizer.
 
     With this distribution, you can create, modify, and query Hailo brains.
-    To use Hailo in asynchronous applications, you can use the
+    To use Hailo in event-driven POE applications, you can use the
     POE::Component::Hailo wrapper. One example is
-    POE::Component::IRC::Plugin::Hailo, which implements and IRC chat bot.
+    POE::Component::IRC::Plugin::Hailo, which implements an IRC chat bot.
 
   Etymology
     *Hailo* is a portmanteau of *HAL* (as in MegaHAL) and failo
