@@ -2,6 +2,7 @@
     - Corrected outdated documentation in some places
     - Fixed a problem with the SQLite backend not reading some information
       from an existing brain if reply() is called first
+    - Fix --reply option, its argument was being ignored
 
 0.10 Fri Feb 12 02:31:34 GMT 2010
     - Normalized the SQL schema some more. This breaks compatability with old

@@ -262,6 +262,7 @@ sub make_reply {
     $self->_engage() if !$self->_engaged;
     my @key_ids = map { $self->_token_id($_) } @$key_tokens;
     my $key_token_id = shift @key_ids;
+
     my ($orig_expr_id, @token_ids) = $self->_random_expr($key_token_id);
     my $repeat_limit = $self->repeat_limit;
     my $expr_id = $orig_expr_id;

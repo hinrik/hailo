@@ -82,7 +82,7 @@ has reply_str => (
     cmd_aliases   => "r",
     cmd_flag      => "reply",
     documentation => "Reply to STRING",
-    isa           => Maybe[Str],
+    isa           => Str,
     is            => "ro",
 );
 
