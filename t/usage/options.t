@@ -44,6 +44,13 @@ dies_ok {
     my $hailo = Hailo->new( reply_str => "foo ")->run
 } "reply_str with no other options should fail";
 
+# reply with empty brain
+{
+    my $hailo = Hailo->new;
+    my $reply = $hailo->reply("foo");
+    is($reply, undef, "If hailo doesn't know anything he should return undef, and not spew warnings");
+}
+
 # learn_reply_str
 is( sub {
         my $hailo = Hailo->new;
