@@ -504,7 +504,7 @@ CREATE TABLE token (
                          [% CASE 'mysql' %]INTEGER PRIMARY KEY AUTO_INCREMENT,
                          [% CASE DEFAULT %]INTEGER PRIMARY KEY AUTOINCREMENT,
                          [% END %]
-    text [% IF dbd == 'SQLite' %] TEXT [% ELSE %] VARCHAR(255) [% END %] NOT NULL
+    text [% IF dbd == 'mysql' %] VARCHAR(255) [% ELSE %] TEXT [% END %] NOT NULL
 );
 __[ table_expr ]__
 CREATE TABLE expr (
