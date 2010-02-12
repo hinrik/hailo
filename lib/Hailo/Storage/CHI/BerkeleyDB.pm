@@ -4,7 +4,7 @@ use Moose;
 use MooseX::StrictConstructor;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 extends qw(Hailo::Storage::Mixin::CHI);
 

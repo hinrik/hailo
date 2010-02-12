@@ -1,4 +1,4 @@
-0.10
+0.10 Fri Feb 12 02:31:34 GMT 2010
     - Normalized the SQL schema some more. This breaks compatability with old
       brains of course, but training/learning is quite a bit faster now.
     - Removed Hailo::Engine and moved most of its logic into the storage

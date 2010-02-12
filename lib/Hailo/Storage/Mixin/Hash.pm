@@ -5,7 +5,7 @@ use MooseX::StrictConstructor;
 use MooseX::Types::Moose qw<HashRef>;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 has _memory_area => (
     isa        => HashRef,
