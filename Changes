@@ -4,6 +4,7 @@
     - Removed Hailo::Engine and moved most of its logic into the storage
       backends
     - Fixed module loader picking Perl::Flat when Perl was requested
+    - Always return a reply, even when input tokens are unknown or missing
 
 0.09 Thu Feb 11 02:36:49 GMT 2010
     - Disable SQLite's journal while training. Speeds up long imports.

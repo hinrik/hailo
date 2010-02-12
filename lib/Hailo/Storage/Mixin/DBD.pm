@@ -260,7 +260,6 @@ sub make_reply {
     my $order = $self->order;
 
     my @key_ids = map { $self->_token_id($_) } @$key_tokens;
-    return if !@key_ids;
     my $key_token_id = shift @key_ids;
     my ($orig_expr_id, @token_ids) = $self->_random_expr($key_token_id);
     my $repeat_limit = $self->repeat_limit;
@@ -424,14 +423,20 @@ sub _random_expr {
 
     my $return;
 
-    # try the positions in a random order
-    for my $pos (shuffle 0 .. $self->order-1) {
-        my $column = "token${pos}_id";
+    if (!defined $token_id) {
+        $self->sth->{"random_expr"}->execute();
+        $return = @{ $self->sth->{"random_expr"}->fetchall_arrayref() }[0];
+    }
+    else {
+        # try the positions in a random order
+        for my $pos (shuffle 0 .. $self->order-1) {
+            my $column = "token${pos}_id";
 
-        # get a random expression which includes the token at this position
-        $self->sth->{"expr_by_$column"}->execute($token_id);
-        $return = @{ $self->sth->{"expr_by_$column"}->fetchall_arrayref() }[0];
-        last if defined $return;
+            # get a random expression which includes the token at this position
+            $self->sth->{"expr_by_$column"}->execute($token_id);
+            $return = @{ $self->sth->{"expr_by_$column"}->fetchall_arrayref() }[0];
+            last if defined $return;
+        }
     }
 
     # return the expression id first, then the token ids
@@ -556,6 +561,10 @@ SELECT id FROM expr WHERE
 __[ query_expr_by_token(NUM)_id ]__
 SELECT * FROM expr WHERE [% column %] = ?
   ORDER BY [% IF dbd == 'mysql' %] RAND() [% ELSE %] RANDOM() [% END %] LIMIT 1;
+__[ query_random_expr ]__
+SELECT * from expr
+  WHERE id >= (abs([% IF dbd == 'mysql' %] RAND() [% ELSE %] RANDOM() [% END %]) % (SELECT max(id) FROM expr))
+  LIMIT 1;
 __[ query_token_id ]__
 SELECT id FROM token WHERE text = ?;
 __[ query_token_text ]__

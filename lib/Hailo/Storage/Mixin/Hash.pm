@@ -71,7 +71,6 @@ sub make_reply {
     my $order = $self->order;
 
     my @keys = grep { $self->_token_exists($_) } @$key_tokens;
-    return if !@keys;
     my @reply = $self->_random_expr(shift @keys);
     my $repeat_limit = $self->repeat_limit;
 
@@ -146,8 +145,16 @@ sub _token_exists {
 
 sub _random_expr {
     my ($self, $token) = @_;
-    my @ehash = @{ $self->_memory->{token}{$token} };
-    return @{ $self->_memory->{expr}{ $ehash[rand @ehash] } };
+
+    my @ehashes;
+    if (defined $token) {
+        @ehashes = @{ $self->_memory->{token}{$token} };
+    }
+    else {
+        @ehashes = keys %{ $self->_memory->{expr} };
+    }
+
+    return @{ $self->_memory->{expr}{ $ehashes[rand @ehashes] } };
 }
 
 sub _pos_token {

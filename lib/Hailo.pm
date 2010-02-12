@@ -5,7 +5,7 @@ use autodie qw(open close);
 use Class::MOP;
 use Moose;
 use MooseX::StrictConstructor;
-use MooseX::Types::Moose qw/Int Str Bool HashRef/;
+use MooseX::Types::Moose qw/Int Str Bool HashRef Maybe/;
 use MooseX::Types::Path::Class qw(File);
 use Time::HiRes qw(gettimeofday tv_interval);
 use IO::Interactive qw(is_interactive);
@@ -82,7 +82,7 @@ has reply_str => (
     cmd_aliases   => "r",
     cmd_flag      => "reply",
     documentation => "Reply to STRING",
-    isa           => Str,
+    isa           => Maybe[Str],
     is            => "ro",
 );
 
@@ -445,10 +445,12 @@ sub reply {
     my $storage = $self->_storage_obj;
     my $toke    = $self->_tokenizer_obj;
 
-    $input = $self->_clean_input($input);
-    my @tokens = $toke->make_tokens($input);
-    my @key_tokens = $toke->find_key_tokens(\@tokens);
-    return if !@key_tokens;
+    my @key_tokens;
+    if (defined $input) {
+        $input = $self->_clean_input($input);
+        my @tokens = $toke->make_tokens($input);
+        @key_tokens = $toke->find_key_tokens(\@tokens);
+    }
 
     my $reply = $storage->make_reply(\@key_tokens);
     return if !defined $reply;

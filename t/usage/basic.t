@@ -11,9 +11,9 @@ while (<DATA>) {
     $hailo->learn($_);
 }
 
-is($hailo->reply("Gogogo"), undef, "TODO: Hailo doesn't learn from tokenize(str) > order input yet");
-is($hailo->reply("Naturally"), undef, "TODO: Hailo doesn't learn from tokenize(str) > order input yet");
-is($hailo->reply("Slamming"), undef, "TODO: Hailo doesn't learn from tokenize(str) > order input yet");
+ok(defined $hailo->reply("Gogogo"), "Got a random reply");
+ok(defined $hailo->reply("Naturally"), "Got a random reply");
+ok(defined $hailo->reply("Slamming"), "Got a random reply");
 
 my %reply;
 for (1 .. 5000) {
