@@ -9,12 +9,12 @@ cp utils/bisect-hailo /tmp/hailo/
 git bisect start
 git bisect bad
 git bisect good 0.09
-git bisect run /tmp/hailo/bisect-hailo /tmp/hailo/t
+git bisect run prove -Ilib /tmp/hailo/t
 EOF
 }
 
 die `pwd` unless `pwd` =~ /hailo$/;
 
-my $ret = system "prove -Ilib -r $ARGV[1]";
+my $ret = system "prove -Ilib -r $ARGV[0]";
 
-exit $ret
+exit $ret != 0 ? 1 : 0;
