@@ -34,7 +34,7 @@ my ($tfh, $tfilename) = tempfile( DIR => $dir, SUFFIX => '.trn' );
 
 for (1 .. $times) {
     for (@DATA) {
-        my $line = $_;
+        $tfh->autoflush(1);
         say $tfh $_;
     }
 }
