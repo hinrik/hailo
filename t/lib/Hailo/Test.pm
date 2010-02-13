@@ -40,6 +40,12 @@ has brief => (
     default => 0,
 );
 
+has in_memory => (
+    is => 'ro',
+    isa => 'Bool',
+    default => 1,
+);
+
 has tmpdir => (
     is => 'ro',
     isa => 'Str',
@@ -47,8 +53,13 @@ has tmpdir => (
 );
 
 sub _build_tmpdir {
+    my ($self) = @_;
+    my $storage = $self->storage;
+
+    $storage =~ s/[A-Za-z0-9]/-/g;
+
     # Dir to store our brains
-    my $dir = tempdir( CLEANUP => 1 );
+    my $dir = tempdir( "hailo-test-$storage-XXXXX", CLEANUP => 1 );
 
     return $dir;
 }
@@ -168,8 +179,8 @@ sub _connect_opts {
     given ($storage) {
         when (/SQLite/) {
             %opts = (
-                brain_resource => ($self->brain || ':memory:')
-            ),
+                brain_resource => ($self->in_memory  ? ':memory:' : $self->brain)
+            );
         }
         when (/Perl/) {
             %opts = (

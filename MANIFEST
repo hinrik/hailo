@@ -46,6 +46,7 @@ t/bug/increment.t
 t/lib/Hailo/Test.pm
 t/lib/Hailo/Test/badger.trn
 t/lib/Hailo/Test/megahal.trn
+t/lib/Hailo/Test/starcraft.trn
 t/storage/arguments.t
 t/storage/chain-brain.t
 t/storage/CHI-BerkeleyDB.t
@@ -54,13 +55,13 @@ t/storage/CHI-Memory.t
 t/storage/DBD-mysql.t
 t/storage/dbd-options.t
 t/storage/DBD-Pg.t
-t/storage/DBD-SQLite.t
+t/storage/DBD-SQLite-file.t
+t/storage/DBD-SQLite-memory.t
 t/storage/Perl-Flat.t
 t/storage/Perl.t
 t/tokenizer/Chars.t
 t/tokenizer/Words.t
 t/ui/readline.t
-t/usage/basic.t
 t/usage/options.t
 utils/bisect-hailo
 utils/crunchbase-companies
