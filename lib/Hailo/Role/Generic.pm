@@ -25,8 +25,8 @@ Hailo::Role::Generic - A role used by all other L<Hailo|Hailo> roles
 
 =head2 C<arguments>
 
-A C<HashRef> of arguments passed to us from L<Hailo>'s
-L<storage|Hailo/storage_args>, L<engine|Hailo/engine_args> or
+A C<HashRef> of arguments passed to us from L<Hailo|Hailo>'s
+L<storage|Hailo/storage_args>, or
 L<tokenizer|Hailo/tokenizer_args> arguments.
 
 =head1 AUTHOR

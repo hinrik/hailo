@@ -72,7 +72,7 @@ ATTRIBUTES
   "storage_args"
   "tokenizer_args"
   "ui_args"
-    A "HashRef" of arguments storage/tokenizer/engine/ui backends. See the
+    A "HashRef" of arguments storage/tokenizer/ui backends. See the
     documentation for the backends for what sort of arguments they accept.
 
   "token_separator"
@@ -89,7 +89,7 @@ METHODS
     Run the application according to the command line arguments.
 
   "learn"
-    Takes a line of UTF-8 encoded text as input and learns from it.
+    Takes a string argument and learns from it.
 
   "train"
     Takes a filename, filehandle or array referenceand calls "learn" on all
@@ -101,8 +101,8 @@ METHODS
     relevant.
 
   "learn_reply"
-    Takes a line of text, learns from it, and generates a reply that might
-    be relevant.
+    Takes a string argument, learns from it, and generates a reply that
+    might be relevant.
 
   "save"
     Tells the underlying storage backend to save its state.

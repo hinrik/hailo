@@ -591,9 +591,8 @@ The UI to use. Default: 'ReadLine';
 
 =head2 C<ui_args>
 
-A C<HashRef> of arguments storage/tokenizer/engine/ui backends. See
-the documentation for the backends for what sort of arguments they
-accept.
+A C<HashRef> of arguments storage/tokenizer/ui backends. See the
+documentation for the backends for what sort of arguments they accept.
 
 =head2 C<token_separator>
 
@@ -614,7 +613,7 @@ Run the application according to the command line arguments.
 
 =head2 C<learn>
 
-Takes a line of UTF-8 encoded text as input and learns from it.
+Takes a string argument and learns from it.
 
 =head2 C<train>
 
@@ -628,8 +627,8 @@ Takes an optional line of text and generates a reply that might be relevant.
 
 =head2 C<learn_reply>
 
-Takes a line of text, learns from it, and generates a reply that might be
-relevant.
+Takes a string argument, learns from it, and generates a reply that might
+be relevant.
 
 =head2 C<save>
 
