@@ -578,10 +578,11 @@ CREATE INDEX expr_token[% i %]_id on expr (token[% i %]_id);
 CREATE INDEX expr_token_ids on expr ([% columns %]);
 CREATE INDEX next_token_expr_id ON next_token (expr_id);
 CREATE INDEX prev_token_expr_id ON prev_token (expr_id);
+CREATE INDEX next_token_token_id ON next_token (token_id);
 __[ query_drop_token_index ]__
-DROP INDEX IF EXISTS next_token_token_id;
+DROP INDEX next_token_token_id;
 __[ query_create_token_index ]__
-CREATE INDEX IF NOT EXISTS next_token_token_id ON next_token (token_id);
+CREATE INDEX next_token_token_id ON next_token (token_id);
 __[ query_get_order ]__
 SELECT text FROM info WHERE attribute = 'markov_order';
 __[ query_set_order ]__
