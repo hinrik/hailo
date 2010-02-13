@@ -7,7 +7,7 @@
       cc189bd7a2dc56561c71868f061307ee5068f904
     - When replying to some input, pay more attention to rare tokens
     - Hailo::Storage::Mixin::Hash would inevitably die due to not importing uniq()
-    - Allow Hailo->train() to take an array, filename, or filehandle argument
+    - Allow Hailo->train() to take an arrayref, filename, or filehandle argument
 
 0.11 Fri Feb 12 09:44:13 GMT 2010
     - Corrected outdated documentation in some places
