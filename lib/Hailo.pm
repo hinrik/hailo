@@ -566,15 +566,15 @@ The storage backend to use. Default: 'SQLite'.
 This gives you an idea of approximately how the backends compare in
 speed:
 
-                 s/iter CHI::File CHI::BerkeleyDB PostgreSQL MySQL CHI::Memory SQLite Perl Perl::Flat
- CHI::File         15.1        --            -51%       -72%  -75%        -82%   -91% -95%       -95%
- CHI::BerkeleyDB   7.43      103%              --       -42%  -49%        -64%   -81% -90%       -91%
- PostgreSQL        4.30      252%             73%         --  -11%        -37%   -67% -83%       -84%
- MySQL             3.83      295%             94%        12%    --        -29%   -63% -81%       -82%
- CHI::Memory       2.70      460%            176%        59%   42%          --   -48% -73%       -75%
- SQLite            1.41      972%            427%       205%  171%         91%     -- -48%       -52%
- Perl             0.735     1957%            911%       485%  420%        267%    92%   --        -7%
- Perl::Flat       0.683     2114%            988%       529%  460%        295%   106%   8%         --
+                   Rate CHI::File PostgreSQL CHI::BerkeleyDB MySQL CHI::Memory SQLite Perl::Flat Perl
+ CHI::File       1.08/s        --       -53%            -63%  -70%        -71%   -78%       -89% -93%
+ PostgreSQL      2.28/s      112%         --            -21%  -35%        -38%   -53%       -76% -86%
+ CHI::BerkeleyDB 2.90/s      169%        27%              --  -18%        -21%   -40%       -70% -82%
+ MySQL           3.53/s      228%        55%             22%    --         -4%   -27%       -63% -78%
+ CHI::Memory     3.68/s      242%        61%             27%    4%          --   -24%       -62% -78%
+ SQLite          4.81/s      347%       111%             66%   36%         31%     --       -50% -71%
+ Perl::Flat      9.62/s      793%       321%            232%  172%        162%   100%         -- -41%
+ Perl            16.4/s     1423%       618%            466%  364%        346%   241%        70%   --
 
 To run your own test try running F<utils/hailo-benchmark> in the Hailo
 distribution.
