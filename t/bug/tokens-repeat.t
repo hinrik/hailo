@@ -1,30 +1,14 @@
 use 5.10.0;
+use lib 't/lib';
 use strict;
 use warnings;
 use Hailo;
-use Test::More tests => 550;
+use Hailo::Test;
+use Test::More tests => 550 * (my @x = Hailo::Test::simple_storages());
 
-my $hailo = Hailo->new(
-    storage_class => "DBD::SQLite",
-    brain_resource => ':memory:',
-);
-
-while (<DATA>) {
-    chomp;
-    $hailo->learn($_);
+for my $storage (Hailo::Test::simple_storages()) {
+    my $test = Hailo::Test->new(
+        storage => $storage,
+    );
+    $test->test_badger;
 }
-
-for (1 .. 50) {
-    for (1 .. 5) {
-        my $reply = $hailo->reply("badger");
-        like($reply,
-             qr/^Badger!(?: Badger!)+/,
-             "Badger badger badger badger badger badger badger badger badger badger badger badger");
-        pass("Mushroom Mushroom");
-    }
-    pass("A big ol' snake - snake a snake oh it's a snake");
-}
-
-__DATA__
-badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger!
-badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger! badger!

@@ -1,9 +1,11 @@
 use 5.10.0;
+use lib 't/lib';
 use utf8;
 use strict;
 use warnings;
-use Test::More tests => 107;
+use Test::More tests => 72;
 use Hailo;
+use Hailo::Test;
 use Data::Random qw(:all);
 use File::Temp qw(tempfile tempdir);
 
@@ -97,20 +99,16 @@ for my $backend (qw(Perl Perl::Flat CHI::Memory CHI::File CHI::BerkeleyDB DBD::m
             }
         }
 
-        # Get some training material
-        my $size = 10;
-        my @random_words = rand_words( size => $size );
-        is(scalar @random_words, $size, "$backend: Got $size words to train on, try $i");
+        my $test = Hailo::Test->new(
+            hailo => $hailo,
+        );
 
-        # Learn from it
-        eval {
-            $hailo->learn("@random_words");
-        };
+        my ($err, $words) = $test->learn_a_few_words();
 
-        skip "Couldn't load backend $backend: $@", 1 if $@;
+        skip "Couldn't load backend $backend: $@", 1 if $err;
 
         # Hailo replies
-        cmp_ok(length($hailo->reply($random_words[5])) * 2, '>', length($random_words[5]), "Hailo knows how to babble, try $i");
+        cmp_ok(length($hailo->reply($words->[5])) * 2, '>', length($words->[5]), "Hailo knows how to babble, try $i");
 
         if ($backend =~ /Perl/) {
             # Save this brain for the next iteration
