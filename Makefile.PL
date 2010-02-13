@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use 5.010;
 use inc::Module::Install '0.92';
 
 name           ('Hailo');
