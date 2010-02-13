@@ -7,7 +7,7 @@ use CHI;
 use Digest::MD4 qw(md4_hex);
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 extends qw(Hailo::Storage::Mixin::Hash::Flat);
 
