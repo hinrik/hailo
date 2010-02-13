@@ -403,7 +403,7 @@ sub some_words {
     my @trn_words = map { $words->make_tokens($_) } @small_trn;
     my @words = shuffle($words->find_key_tokens(\@trn_words));
 
-    @words = @words[0 .. 50];
+    @words = @words[0 .. $lines];
 
     return @words;
 }
