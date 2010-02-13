@@ -502,7 +502,7 @@ sub DEMOLISH {
     my $hailo = $self->hailo;
     my $storage = $self->storage;
 
-    $hailo->unspawn_storage();
+    $self->unspawn_storage();
 }
 
 __PACKAGE__->meta->make_immutable;
