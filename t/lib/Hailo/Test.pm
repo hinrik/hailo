@@ -28,6 +28,12 @@ sub chain_storages {
     return qw(Perl Perl::Flat);
 }
 
+sub all_tests {
+    return qw(test_starcraft test_congress test_congress_unknown test_babble test_badger test_megahal);
+}
+
+sub all_tests_known { return grep { $_ !~ /unknown/ } all_tests() }
+
 has brief => (
     is => 'ro',
     isa => 'Bool',
@@ -364,6 +370,35 @@ sub test_babble {
     }
 }
 
+sub test_starcraft {
+    my ($self) = @_;
+    my $hailo = $self->hailo;
+    my $storage = $self->storage;
+
+    $self->train_filename("starcraft.trn");
+
+    ok(defined $hailo->reply("Gogogo"), "$storage: Got a random reply");
+    ok(defined $hailo->reply("Naturally"), "$storage: Got a random reply");
+    ok(defined $hailo->reply("Slamming"), "$storage: Got a random reply");
+
+    my %reply;
+    for (1 .. 500) {
+        $reply{ $hailo->reply("that") } = 1;
+    }
+
+    is_deeply(
+        \%reply,
+        {
+            "Ah, fusion, eh? I'll have to remember that." => 1,
+            "I copy that." => 1,
+            "I hear that." => 1,
+            "I really have to remember that." => 1,
+            "Oh, is that it?" => 1,
+        },
+        "$storage: Make sure we get every possible reply"
+    );
+}
+
 sub test_all_plan {
     my ($self, $restriction) = @_;
     my $storage = $self->storage;    
@@ -387,7 +422,7 @@ sub test_all_plan {
 sub test_known {
     my ($self) = @_;
 
-    for (qw(test_congress test_babble test_badger test_megahal)) {
+    for (all_tests_known()) {
         $self->$_;
     }
 
@@ -397,7 +432,7 @@ sub test_known {
 sub test_all {
     my ($self) = @_;
 
-    for (qw(test_congress test_congress_unknown test_babble test_badger test_megahal)) {
+    for (all_tests()) {
         $self->$_;
     }
 
