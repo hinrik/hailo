@@ -308,7 +308,7 @@ sub test_megahal {
     my $storage = $self->storage;
     my $file    = $self->test_file("megahal.trn");
     my $lns     = $lines // count_lines($file);
-    $lns        = ($storage ~~ /File/ or $self->brief) ? 30 : $lns;
+    $lns        = ($self->brief) ? 30 : $lns;
 
 
     $self->train_filename("megahal.trn", $lns);
@@ -361,11 +361,11 @@ sub test_all_plan {
 
     plan skip_all => "Skipping $storage tests, can't create storage" unless $ok;
     if (defined $restriction && $restriction eq 'known') {
-        plan(tests => 953);
+        plan(tests => 937);
         $self->test_known;
     }
     else {
-        plan(tests => 954);
+        plan(tests => 938);
         $self->test_all;
     }
     $self->unspawn_storage();
