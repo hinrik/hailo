@@ -115,9 +115,6 @@ sub _build_sth {
         $state{$name} = $sql;
     }
 
-    # hack to make it easy to add WHERE clauses in a FOREACH
-    s/\s*AND\s*$/;/ for values %state;
-
     $state{$_} = $self->dbh->prepare($state{$_}) for keys %state;
     return \%state;
 }
@@ -589,18 +586,19 @@ INSERT INTO info (attribute, text) VALUES ('markov_order', ?);
 __[ query_expr_id ]__
 SELECT id FROM expr WHERE
 [% FOREACH i IN orders %]
-    token[% i %]_id = ? AND
+    token[% i %]_id = ? [% UNLESS loop.last %] AND [% END %]
 [% END %]
 __[ query_expr_by_token(NUM)_id ]__
 SELECT * FROM expr WHERE [% column %] = ?
-  ORDER BY [% IF dbd == 'mysql' %] RAND() [% ELSE %] RANDOM() [% END %] LIMIT 1;
+[% SWITCH dbd %][% CASE 'mysql'  %]ORDER BY RAND()   LIMIT 1;
+                [% CASE DEFAULT  %]ORDER BY RANDOM() LIMIT 1;
+                [% END %]
 __[ query_random_expr ]__
 SELECT * from expr
-[% SWITCH dbd %]
-[% CASE 'Pg'    %]WHERE id >= (random()*id+1)::int
-[% CASE 'mysql' %]WHERE id >= (abs(rand()) % (SELECT max(id) FROM expr))
-[% CASE DEFAULT %]WHERE id >= (abs(random()) % (SELECT max(id) FROM expr))
-[% END %]
+[% SWITCH dbd %][% CASE 'Pg'    %]WHERE id >= (random()*id+1)::int
+                [% CASE 'mysql' %]WHERE id >= (abs(rand()) % (SELECT max(id) FROM expr))
+                [% CASE DEFAULT %]WHERE id >= (abs(random()) % (SELECT max(id) FROM expr))
+                [% END %]
   LIMIT 1;
 __[ query_token_id ]__
 SELECT id FROM token WHERE text = ?;
