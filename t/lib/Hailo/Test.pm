@@ -334,8 +334,6 @@ sub test_file {
 
     my $path = catfile($hailo_test, 'Test', $file);
 
-    say $path;
-
     return $path;
 }
 
