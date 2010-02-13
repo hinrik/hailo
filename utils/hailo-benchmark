@@ -9,7 +9,10 @@ use Test::More;
 use namespace::clean -except => 'meta';
 
 my $test_count = $ARGV[0] // 10;
-my @storages = $ARGV[1] ? (split /,/, $ARGV[1]) : Hailo::Test::all_storages();
+my @storages = $ARGV[1] ? (split /[\s,]+/, $ARGV[1]) : Hailo::Test::all_storages();
+
+say "Testing @storages";
+sleep 1;
 
 # Dir to store our training file / brains
 my $dir = tempdir( CLEANUP => 1 );
@@ -23,6 +26,7 @@ for my $storage (@storages) {
         my $hailo = Hailo::Test->new(
             tmpdir => $tmpdir,
             storage => $storage,
+            brief => 1,
         );
 
         my $ok = $hailo->spawn_storage();
