@@ -523,7 +523,7 @@ Hailo - A pluggable Markov engine analogous to MegaHAL
 
  while (<>) {
      $hailo->learn($_);
-     print $hailo->reply($_), "\n";
+     say $hailo->reply($_);
  }
 
 =head1 DESCRIPTION
