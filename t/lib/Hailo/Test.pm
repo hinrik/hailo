@@ -13,7 +13,7 @@ use File::CountLines qw(count_lines);
 use Hailo::Tokenizer::Words;
 
 sub simple_storages {
-    return qw(Perl DBD::SQLite)
+    return qw(Perl Perl::Flat DBD::SQLite)
 }
 
 sub flat_storages {

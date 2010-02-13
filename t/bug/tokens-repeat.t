@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Hailo;
 use Hailo::Test;
-use Test::More tests => 550 * (my @x = Hailo::Test::simple_storages());
+use Test::More tests => 552 * (my @x = Hailo::Test::simple_storages());
 
 for my $storage (Hailo::Test::simple_storages()) {
     my $test = Hailo::Test->new(
