@@ -28,6 +28,12 @@ sub chain_storages {
     return qw(Perl Perl::Flat);
 }
 
+has brief => (
+    is => 'ro',
+    isa => 'Bool',
+    default => 0,
+);
+
 has tmpdir => (
     is => 'ro',
     isa => 'Str',
@@ -262,10 +268,13 @@ sub test_badger {
     my ($self) = @_;
     my $hailo = $self->hailo;
     my $storage = $self->storage;
+    my $brief = $self->brief;
 
     $self->train_filename("badger.trn");
 
-    for (1 .. 50) {
+    my $tests = $brief ? 5 : 50;
+
+    for (1 .. $tests) {
         for (1 .. 5) {
             my $reply = $hailo->reply("badger");
             like($reply,
@@ -283,13 +292,9 @@ sub train_filename {
     my ($self, $filename, $lines) = @_;
     my $hailo   = $self->hailo;
     my $storage = $self->storage;
-
-    my $file    = $self->test_file($filename);
     my $fh      = $self->test_fh($filename);
-    my $lns     = $lines // count_lines($file);
-    $lns        = 100 if $storage ~~ /File/;
 
-    for my $l (1 .. $lns) {
+    for my $l (1 .. $lines) {
         chomp(my $_ = <$fh>);
         pass("$storage: Training line $l/$filename: $_");
         $hailo->learn($_);
@@ -299,9 +304,13 @@ sub test_megahal {
     my ($self, $lines) = @_;
     my $hailo   = $self->hailo;
     my $storage = $self->storage;
+    my $file    = $self->test_file("megahal.trn");
+    my $lns     = $lines // count_lines($file);
+    $lns        = ($storage ~~ /File/ or $self->brief) ? 30 : $lines;
 
-    $self->train_filename("megahal.trn", $lines);
-    my @words = $self->some_words("megahal.trn", $lines, 50);
+
+    $self->train_filename("megahal.trn", $lns);
+    my @words = $self->some_words("megahal.trn", $lines, $lns * 0.1);
 
     for (@words) {
         my $reply = $hailo->reply($_);
