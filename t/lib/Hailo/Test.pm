@@ -308,7 +308,7 @@ sub test_megahal {
     my $storage = $self->storage;
     my $file    = $self->test_file("megahal.trn");
     my $lns     = $lines // count_lines($file);
-    $lns        = ($storage ~~ /File/ or $self->brief) ? 30 : $lines;
+    $lns        = ($storage ~~ /File/ or $self->brief) ? 30 : $lns;
 
 
     $self->train_filename("megahal.trn", $lns);
