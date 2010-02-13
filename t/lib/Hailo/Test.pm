@@ -230,7 +230,7 @@ sub train_a_few_words {
 
     # Get some training material
     my $size = 10;
-    my @random_words = rand_words( size => $size );
+    my @random_words = rand_chars( set => 'all', min => 10, max => 15 );
 
     # Learn from it
     eval {
@@ -340,15 +340,27 @@ sub test_chaining {
             is_deeply($prev_brain, $this_brain, "$storage: Our previous $storage brain matches the new one, try $i");
         }
 
-        my ($err, $words) = $test->train_a_few_words();
-
-        # Hailo replies
-        cmp_ok(length($test->hailo->reply($words->[5])) * 2, '>', length($words->[5]), "$storage: Hailo knows how to babble, try $i");
+        $self->test_babble;
 
         # Save this brain for the next iteration
         $prev_brain = $test->hailo->_storage_obj->_memory;
 
         $test->hailo->save();
+    }
+}
+
+sub test_babble {
+    my ($self) = @_;
+    my $hailo = $self->hailo;
+    my $storage = $self->storage;
+
+    for (1 .. 10) {
+        my ($err, $words) = $self->train_a_few_words();
+
+        my $input = $words->[5];
+        my $reply = $hailo->reply($input);
+        # Hailo replies
+        cmp_ok(length($reply) * 2, '>', length($input), "$storage: Hailo knows how to babble, said '$reply' given '$input'");
     }
 }
 
@@ -361,11 +373,11 @@ sub test_all_plan {
 
     plan skip_all => "Skipping $storage tests, can't create storage" unless $ok;
     if (defined $restriction && $restriction eq 'known') {
-        plan(tests => 937);
+        plan(tests => 947);
         $self->test_known;
     }
     else {
-        plan(tests => 938);
+        plan(tests => 948);
         $self->test_all;
     }
     $self->unspawn_storage();
@@ -375,7 +387,7 @@ sub test_all_plan {
 sub test_known {
     my ($self) = @_;
 
-    for (qw(test_congress test_badger test_megahal)) {
+    for (qw(test_congress test_babble test_badger test_megahal)) {
         $self->$_;
     }
 
@@ -385,7 +397,7 @@ sub test_known {
 sub test_all {
     my ($self) = @_;
 
-    for (qw(test_congress test_congress_unknown test_badger test_megahal)) {
+    for (qw(test_congress test_congress_unknown test_babble test_badger test_megahal)) {
         $self->$_;
     }
 
