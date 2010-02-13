@@ -10,39 +10,49 @@ use namespace::clean -except => 'meta';
 
 my $test_count = $ARGV[0] // 10;
 my @storages = $ARGV[1] ? (split /[\s,]+/, $ARGV[1]) : Hailo::Test::all_storages();
+my @s = map {
+    /SQLite/
+    ? ([ $_, "$_/file",   { in_memory => 0 } ],
+       [ $_, "$_/memory", { in_memory => 1 } ])
+    : ([ $_, $_, {} ]);
+} @storages;
 
-say "Testing @storages";
+my @s_str = map { $_->[0] } @s;
+
+say "Testing @s_str";
 sleep 1;
 
 # Dir to store our training file / brains
-my $dir = tempdir( CLEANUP => 1 );
+my $dir = tempdir( "hailo-benchmark-XXXXX", CLEANUP => 1, TMPDIR => 1 );
 
 my %hailos;
 my %test;
 
-for my $storage (@storages) {
+
+for my $s (@s) {
+    my ($storage, $name, $opts) = @$s;
     for my $cnt (1 .. $test_count) {
-        my $tmpdir = tempdir( DIR => $dir, CLEANUP => 1 );
+        my $st = $name;
+        $st =~ s/[^A-Za-z]/-/g;
+        my $tmpdir = tempdir( "$st-XXXXX", DIR => $dir, CLEANUP => 1 );
         my $hailo = Hailo::Test->new(
             tmpdir => $tmpdir,
             storage => $storage,
             brief => 1,
+            %$opts,
         );
 
         my $ok = $hailo->spawn_storage();
 
-        # Don't garbage collect me
-        $hailo->{_stash} = $tmpdir;
-
         pass "Created storage $storage $cnt/$test_count";
 
         # Push a hailo
-        push @{ $hailos{$storage} } => $hailo;
+        push @{ $hailos{$name} } => $hailo;
     }
 
-    $test{$storage} = sub {
+    $test{$name} = sub {
         state $iter = 0;
-        my $hailo = $hailos{$storage}->[$iter];
+        my $hailo = $hailos{$name}->[$iter];
 
         $hailo->test_known();
 
@@ -51,13 +61,5 @@ for my $storage (@storages) {
 }
 
 cmpthese($test_count, \%test);
-
-# XXX: Do this in Hailo::Test destructor
-for my $storage (@storages) {
-    for my $hailo (@{ $hailos{$storage} }) {
-        pass "Nuking $storage storage";
-        $hailo->unspawn_storage();
-    }
-}
 
 done_testing();

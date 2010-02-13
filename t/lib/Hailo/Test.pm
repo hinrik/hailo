@@ -59,7 +59,7 @@ sub _build_tmpdir {
     $storage =~ s/[A-Za-z0-9]/-/g;
 
     # Dir to store our brains
-    my $dir = tempdir( "hailo-test-$storage-XXXXX", CLEANUP => 1 );
+    my $dir = tempdir( CLEANUP => 1 );
 
     return $dir;
 }
@@ -431,7 +431,6 @@ sub test_all_plan {
         plan(tests => 952);
         $self->test_all;
     }
-    $self->unspawn_storage();
   }
 }
 
@@ -489,6 +488,14 @@ sub test_file {
     my $path = catfile($hailo_test, 'Test', $file);
 
     return $path;
+}
+
+sub DEMOLISH {
+    my ($self) = @_;
+    my $hailo = $self->hailo;
+    my $storage = $self->storage;
+
+    $hailo->unspawn_storage();
 }
 
 __PACKAGE__->meta->make_immutable;
