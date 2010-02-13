@@ -26,7 +26,7 @@ my @DATA = map { chomp; $_ } split /^/, join '', <DATA>;
 @DATA = @DATA[0 .. min(scalar(@DATA), $lines)];
 my $words = Hailo::Tokenizer::Words->new;
 my @DATA_words = map { $words->make_tokens($_) } @DATA;
-my @words = shuffle(@DATA_words);
+my @words = shuffle($words->find_key_tokens(\@DATA_words));
 @words = @words[0 .. 50];
 
 # Generate a training file
