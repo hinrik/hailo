@@ -3,7 +3,7 @@ use lib 't/lib';
 use utf8;
 use strict;
 use warnings;
-use Test::More tests => 65;
+use Test::More tests => 66;
 use Hailo;
 use Hailo::Test;
 use Data::Random qw(:all);
