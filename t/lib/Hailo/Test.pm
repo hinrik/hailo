@@ -312,7 +312,7 @@ sub test_megahal {
 
 
     $self->train_filename("megahal.trn", $lns);
-    my @words = $self->some_words("megahal.trn", $lines, $lns * 0.1);
+    my @words = $self->some_words("megahal.trn", $lns * 0.1);
 
     for (@words) {
         my $reply = $hailo->reply($_);
