@@ -141,12 +141,16 @@ sub spawn_storage {
             if (system qq[echo "SELECT DATABASE();" | mysql -u'hailo' -p'hailo' 'hailo' >/dev/null 2>&1]) {
                 $ok = 0;
             } else {
-                system q[echo 'drop table info; drop table token; drop table expr; drop table next_token; drop table prev_token;' | mysql -u hailo -p'hailo' hailo];
+                $self->_nuke_mysql();
             }
         }
     }
 
     return $ok;
+}
+
+sub _nuke_mysql {
+    system q[echo 'drop table info; drop table token; drop table expr; drop table next_token; drop table prev_token;' | mysql -u hailo -p'hailo' hailo];
 }
 
 sub unspawn_storage {
@@ -166,6 +170,9 @@ sub unspawn_storage {
         }
         when (/SQLite/) {
             $nuke_db->();
+        }
+        when (/mysql/) {
+            $self->_nuke_mysql();
         }
     }
 }
