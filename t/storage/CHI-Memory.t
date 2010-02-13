@@ -5,7 +5,4 @@ use warnings;
 use Hailo::Test;
 use Test::More;
 
-my $test = Hailo::Test->new(
-    storage => "CHI::Memory",
-);
-$test->test_all_plan('known');
+Hailo::Test->new( storage => 'CHI::Memory' )->test_all_plan('known');
