@@ -29,6 +29,8 @@ theme    = moose || core
 [-ErrorHandling::RequireCarping]
 [-ErrorHandling::RequireCheckingReturnValueOfEval]
 
+[-InputOutput::RequireBriefOpen]
+
 [TestingAndDebugging::RequireUseStrict]
 equivalent_modules = MooseX::Role::Strict
 
