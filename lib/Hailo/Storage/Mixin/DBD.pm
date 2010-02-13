@@ -264,6 +264,7 @@ sub make_reply {
     my $key_token_id = shift @key_ids;
 
     my ($orig_expr_id, @token_ids) = $self->_random_expr($key_token_id);
+    return if !defined $orig_expr_id; # we don't know anything yet
     my $repeat_limit = $self->repeat_limit;
     my $expr_id = $orig_expr_id;
 
