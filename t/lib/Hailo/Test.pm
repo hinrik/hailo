@@ -58,6 +58,7 @@ sub _build_tmpfile {
     my $dir = $self->tmpdir;
 
     my ($fh, $filename) = tempfile( DIR => $dir, SUFFIX => '.trn' );
+    $fh->autoflush(1);
 
     return [$fh, $filename];
 }
