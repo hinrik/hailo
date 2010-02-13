@@ -580,7 +580,7 @@ CREATE INDEX next_token_expr_id ON next_token (expr_id);
 CREATE INDEX prev_token_expr_id ON prev_token (expr_id);
 CREATE INDEX next_token_token_id ON next_token (token_id);
 __[ query_drop_token_index ]__
-DROP INDEX next_token_token_id;
+DROP INDEX next_token_token_id [% IF dbd == 'mysql %] ON next_token [% END %];
 __[ query_create_token_index ]__
 CREATE INDEX next_token_token_id ON next_token (token_id);
 __[ query_get_order ]__
