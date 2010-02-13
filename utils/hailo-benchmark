@@ -31,10 +31,10 @@ my @words = shuffle(@DATA_words);
 
 # Generate a training file
 my ($tfh, $tfilename) = tempfile( DIR => $dir, SUFFIX => '.trn' );
+$tfh->autoflush(1);
 
 for (1 .. $times) {
     for (@DATA) {
-        $tfh->autoflush(1);
         say $tfh $_;
     }
 }
