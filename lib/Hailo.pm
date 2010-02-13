@@ -454,10 +454,11 @@ sub _clean_input {
 
 sub learn {
     my ($self, $input) = @_;
+    my $inputs = ref $input eq 'ARRAY' ? $input : [$input];
     my $storage = $self->_storage_obj;
 
     $storage->start_learning();
-    $self->_learn_one($input);
+    $self->_learn_one($_) for @$inputs;
     $storage->stop_learning();
     return;
 }
@@ -615,13 +616,14 @@ Run the application according to the command line arguments.
 
 =head2 C<learn>
 
-Takes a string argument and learns from it.
+Takes a string or an array reference of strings, and learns from them.
 
 =head2 C<train>
 
-Takes a filename, filehandle or array referenceand calls L<C<learn>|/learn>
-on all its lines. If a filename is passed, the file is assumed to be UTF-8
-encoded.
+Takes a filename, filehandle or array reference and learns from all its
+lines. If a filename is passed, the file is assumed to be UTF-8 encoded.
+Unlike L<C<learn>|/learn>, this method sacrifices some safety (disables
+the database journal, fsyncs, etc) for speed while learning.
 
 =head2 C<reply>
 
