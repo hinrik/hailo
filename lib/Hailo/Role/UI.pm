@@ -1,5 +1,5 @@
 package Hailo::Role::UI;
-use 5.10.0;
+use 5.010;
 use MooseX::Role::Strict;
 use namespace::clean -except => 'meta';
 

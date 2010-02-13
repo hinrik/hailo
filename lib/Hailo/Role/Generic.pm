@@ -1,5 +1,5 @@
 package Hailo::Role::Generic;
-use 5.10.0;
+use 5.010;
 use MooseX::Role::Strict;
 use MooseX::Types::Moose qw/HashRef/;
 use namespace::clean -except => 'meta';

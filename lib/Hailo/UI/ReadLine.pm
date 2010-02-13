@@ -1,5 +1,5 @@
 package Hailo::UI::ReadLine;
-use 5.10.0;
+use 5.010;
 use Moose;
 use MooseX::StrictConstructor;
 use Hailo;

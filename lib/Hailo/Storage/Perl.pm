@@ -1,5 +1,5 @@
 package Hailo::Storage::Perl;
-use 5.10.0;
+use 5.010;
 use Moose;
 use MooseX::StrictConstructor;
 use MooseX::Types::Moose qw<HashRef Int Str>;

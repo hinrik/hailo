@@ -1,4 +1,4 @@
-use 5.10.0;
+use 5.010;
 use strict;
 use List::MoreUtils qw(uniq);
 use Test::More tests => 36;

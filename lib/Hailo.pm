@@ -1,6 +1,6 @@
 package Hailo;
 
-use 5.10.0;
+use 5.010;
 use autodie qw(open close);
 use Class::MOP;
 use Moose;
