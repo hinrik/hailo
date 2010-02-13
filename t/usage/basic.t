@@ -19,7 +19,6 @@ say $fh $_ for @DATA;
 
 for my $i (1 .. 2) {
   SKIP: {
-    skip "Training from filehandle", 4 if $i == 2;
     my $hailo = Hailo->new(brain_resource => ':memory:');
 
     given ($i) {

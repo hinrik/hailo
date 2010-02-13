@@ -367,20 +367,29 @@ sub save {
 }
 
 sub train {
-    my ($self, $filename) = @_;
+    my ($self, $file) = @_;
     my $storage = $self->_storage_obj;
     $storage->start_training();
 
-    open my $fh, '<:encoding(utf8)', $filename;
+    my $had_fh = ref($file) eq 'GLOB';
+    my $fh;
+
+    if ($had_fh) {
+        $fh = $file;
+    } else {
+        open $fh, '<:encoding(utf8)', $file;
+    }
+
     if ($self->print_progress) {
-        $self->_train_progress($fh, $filename);
+        die "Can't train with progress on a filehandle" if $had_fh;
+        $self->_train_progress($fh, $file);
     } else {
         while (my $line = <$fh>) {
             chomp $line;
             $self->_learn_one($line);
         }
     }
-    close $fh;
+    close $fh unless $had_fh;
     $storage->stop_training();
     return;
 }
@@ -601,8 +610,8 @@ Takes a line of UTF-8 encoded text as input and learns from it.
 
 =head2 C<train>
 
-Takes a filename and calls L<C<learn>|/learn> on all its lines. The file is
-assumed to be UTF-8 encoded.
+Takes a filename or filehandle and calls L<C<learn>|/learn> on all its
+lines. The file is assumed to be UTF-8 encoded.
 
 =head2 C<reply>
 
