@@ -3,7 +3,7 @@ use lib 't/lib';
 use utf8;
 use strict;
 use warnings;
-use Test::More tests => 81;
+use Test::More;
 use Hailo;
 use Hailo::Test;
 use Data::Random qw(:all);
@@ -52,3 +52,5 @@ for my $backend (Hailo::Test::all_storages()) {
     # Don't skip for the next backend
     $skip_all = 0;
 }
+
+done_testing();
