@@ -2,7 +2,7 @@ use 5.10.0;
 use strict;
 use warnings;
 use Hailo;
-use Test::More tests => 55;
+use Test::More tests => 550;
 
 my $hailo = Hailo->new(
     storage_class => "DBD::SQLite",
@@ -13,18 +13,16 @@ while (<DATA>) {
     chomp;
     $hailo->learn($_);
 }
-SKIP: {
-    skip "This test needs to be refactored to reflect recent changes", 55;
+
+for (1 .. 50) {
     for (1 .. 5) {
-        for (1 .. 5) {
-            my $reply = $hailo->reply("badger");
-            like($reply,
-                qr/^Badger! Badger! Badger! Badger! Badger! Badger! Badger! Badger! Badger! Badger! Badger! Badger! Badger! Badger! Badger! Badger! Badger! Badger! Badger(?:\.|!|! )$/,
-                "Badger badger badger badger badger badger badger badger badger badger badger badger");
-            pass("Mushroom Mushroom");
-        }
-        pass("A big ol' snake - snake a snake oh it's a snake");
+        my $reply = $hailo->reply("badger");
+        like($reply,
+             qr/^Badger!(?: Badger!)+/,
+             "Badger badger badger badger badger badger badger badger badger badger badger badger");
+        pass("Mushroom Mushroom");
     }
+    pass("A big ol' snake - snake a snake oh it's a snake");
 }
 
 __DATA__
