@@ -292,9 +292,11 @@ sub train_filename {
     my ($self, $filename, $lines) = @_;
     my $hailo   = $self->hailo;
     my $storage = $self->storage;
+    my $file    = $self->test_file($filename);
     my $fh      = $self->test_fh($filename);
+    my $lns     = $lines // count_lines($file);
 
-    for my $l (1 .. $lines) {
+    for my $l (1 .. $lns) {
         chomp(my $_ = <$fh>);
         pass("$storage: Training line $l/$filename: $_");
         $hailo->learn($_);
