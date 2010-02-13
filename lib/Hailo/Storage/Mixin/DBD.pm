@@ -533,7 +533,7 @@ CREATE TABLE info (
     attribute [% SWITCH dbd %][% CASE 'mysql' %]TEXT NOT NULL,
                               [% CASE DEFAULT %]TEXT NOT NULL UNIQUE PRIMARY KEY,
                               [% END %]
-    text [% IF dbd == 'SQLite' %] TEXT [% ELSE %] VARCHAR(255) [% END %] NOT NULL
+    text TEXT NOT NULL
 );
 __[ table_token ]__
 CREATE TABLE token (
@@ -541,7 +541,7 @@ CREATE TABLE token (
                          [% CASE 'mysql' %]INTEGER PRIMARY KEY AUTO_INCREMENT,
                          [% CASE DEFAULT %]INTEGER PRIMARY KEY AUTOINCREMENT,
                          [% END %]
-    text [% IF dbd == 'mysql' %] VARCHAR(255) [% ELSE %] TEXT [% END %] NOT NULL
+    text TEXT NOT NULL
 );
 __[ table_expr ]__
 CREATE TABLE expr (
@@ -574,7 +574,7 @@ CREATE TABLE prev_token (
     count    INTEGER NOT NULL
 );
 __[ table_indexes ]__
-CREATE INDEX token_text on token (text);
+CREATE INDEX token_text on token (text[% IF dbd == 'mysql' %](255)[% END %]);
 [% FOREACH i IN orders %]
 CREATE INDEX expr_token[% i %]_id on expr (token[% i %]_id);
 [% END %]
