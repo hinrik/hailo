@@ -8,6 +8,7 @@ use File::Spec::Functions qw(catdir catfile);
 use Data::Random qw(:all);
 use File::Slurp qw(slurp);
 use List::Util qw(shuffle min);
+use File::Temp qw(tempfile tempdir);
 use Hailo::Tokenizer::Words;
 
 sub simple_storages {
@@ -26,10 +27,18 @@ sub chain_storages {
     return qw(Perl Perl::Flat);
 }
 
-has tempdir => (
+has tmpdir => (
     is => 'ro',
     isa => 'Str',
+    lazy_build => 1,
 );
+
+sub _build_tmpdir {
+    # Dir to store our brains
+    my $dir = tempdir( CLEANUP => 1 );
+
+    return $dir;
+}
 
 has brain_resource => (
     is => 'ro',
@@ -144,7 +153,7 @@ sub _connect_opts {
         when (/CHI::(?:BerkeleyDB|File)/) {
             %opts = (
                 storage_args => {
-                    root_dir => $self->tempdir,
+                    root_dir => $self->tmpdir,
                 },
             );
         }
