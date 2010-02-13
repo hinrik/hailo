@@ -131,13 +131,18 @@ sub unspawn_storage {
     my $storage = $self->storage;
     my $brainrs = $self->brain;
 
+    my $nuke_db = sub {
+        $_->finish for values %{ $self->hailo->_storage_obj->sth };
+        $self->hailo->_storage_obj->dbh->disconnect;
+    };
+
     given ($storage) {
         when (/Pg/) {
+            $nuke_db->();
             system "dropdb '$brainrs'";
         }
         when (/SQLite/) {
-            $_->finish for values %{ $self->hailo->_storage_obj->sth };
-            $self->hailo->_storage_obj->dbh->disconnect;
+            $nuke_db->();
         }
     }
 }
