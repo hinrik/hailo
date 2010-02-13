@@ -23,7 +23,7 @@ stdout_like(
 # Invalid train file
 dies_ok { Hailo->new( train_file => "/this-does-not-exist/$$" )->run }  "Calling Hailo with an invalid training file";
 # Valid train file
-lives_ok { Hailo->new( train_file => __FILE__, print_progress => 0 )->run }  "Calling Hailo with an invalid training file";
+lives_ok { Hailo->new( train_file => __FILE__, print_progress => 0 )->run }  "Calling Hailo with a valid training file";
 
 # learn_str
 lives_ok { Hailo->new( learn_str => "foo" )->run } "Hailo can learn from a string";

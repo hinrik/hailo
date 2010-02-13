@@ -92,8 +92,9 @@ METHODS
     Takes a line of UTF-8 encoded text as input and learns from it.
 
   "train"
-    Takes a filename and calls "learn" on all its lines. The file is assumed
-    to be UTF-8 encoded.
+    Takes a filename, filehandle or array referenceand calls "learn" on all
+    its lines. If a filename is passed, the file is assumed to be UTF-8
+    encoded.
 
   "reply"
     Takes an optional line of text and generates a reply that might be

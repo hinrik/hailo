@@ -367,29 +367,37 @@ sub save {
 }
 
 sub train {
-    my ($self, $file) = @_;
+    my ($self, $input) = @_;
     my $storage = $self->_storage_obj;
     $storage->start_training();
 
-    my $had_fh = ref($file) eq 'GLOB';
-    my $fh;
+    my $got_filename = (ref $input eq '' || ref $input eq 'Path::Class::File');
 
-    if ($had_fh) {
-        $fh = $file;
-    } else {
-        open $fh, '<:encoding(utf8)', $file;
+    my $fh;
+    if (ref $input eq 'GLOB') {
+        $fh = $input;
+    }
+    elsif ($got_filename) {
+        open $fh, '<:encoding(utf8)', $input;
     }
 
-    if ($self->print_progress) {
-        die "Can't train with progress on a filehandle" if $had_fh;
-        $self->_train_progress($fh, $file);
-    } else {
+    if ($self->print_progress && !$got_filename) {
+        die "Can't train with progress unless argument is a filename\n";
+        $self->_train_progress($fh, $input);
+    }
+    elsif (ref $input eq 'ARRAY') {
+        for my $line (@$input) {
+            $self->_learn_one($line);
+        }
+    }
+    elsif (ref $input eq 'GLOB') {
         while (my $line = <$fh>) {
             chomp $line;
             $self->_learn_one($line);
         }
     }
-    close $fh unless $had_fh;
+
+    close $fh if $got_filename;
     $storage->stop_training();
     return;
 }
@@ -610,8 +618,9 @@ Takes a line of UTF-8 encoded text as input and learns from it.
 
 =head2 C<train>
 
-Takes a filename or filehandle and calls L<C<learn>|/learn> on all its
-lines. The file is assumed to be UTF-8 encoded.
+Takes a filename, filehandle or array referenceand calls L<C<learn>|/learn>
+on all its lines. If a filename is passed, the file is assumed to be UTF-8
+encoded.
 
 =head2 C<reply>
 
