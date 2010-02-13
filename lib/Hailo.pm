@@ -381,8 +381,10 @@ sub train {
         open $fh, '<:encoding(utf8)', $input;
     }
 
-    if ($self->print_progress && !$got_filename) {
-        die "Can't train with progress unless argument is a filename\n";
+    if ($self->print_progress) {
+        if (!$got_filename) {
+            die "Can't train with progress unless argument is a filename\n";
+        }
         $self->_train_progress($fh, $input);
     }
     elsif (ref $input eq 'ARRAY') {
@@ -390,7 +392,7 @@ sub train {
             $self->_learn_one($line);
         }
     }
-    elsif (ref $input eq 'GLOB') {
+    else {
         while (my $line = <$fh>) {
             chomp $line;
             $self->_learn_one($line);
