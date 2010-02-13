@@ -9,6 +9,7 @@ use Data::Random qw(:all);
 use File::Slurp qw(slurp);
 use List::Util qw(shuffle min);
 use File::Temp qw(tempfile tempdir);
+use File::CountLines qw(count_lines);
 use Hailo::Tokenizer::Words;
 
 sub simple_storages {
@@ -180,11 +181,11 @@ sub train_megahal_trn {
 }
 
 sub train_file {
-    my ($self) = @_;
+    my ($self, $file) = @_;
     my $hailo = $self->hailo;
 
-    my $fh = $self->test_fh("badger.trn");
-    $hailo->train($fh);
+    my $f = $self->test_file($file);
+    $hailo->train($f);
 }
 
 sub train_a_few_words {
@@ -232,8 +233,7 @@ sub test_badger {
     my $hailo = $self->hailo;
     my $storage = $self->storage;
 
-    my $fh = $self->test_fh("badger.trn");
-    $hailo->train($fh);
+    $self->train_filename("badger.trn");
 
     for (1 .. 50) {
         for (1 .. 5) {
@@ -249,20 +249,33 @@ sub test_badger {
     return;
 }
 
-sub test_megahal {
-    my ($self, $lines) = @_;
-    my $hailo = $self->hailo;
+sub train_filename {
+    my ($self, $filename, $lines) = @_;
+    my $hailo   = $self->hailo;
     my $storage = $self->storage;
 
-    my $fh = $self->test_fh("megahal.trn");
-    $hailo->train($fh);
+    my $file    = $self->test_file($filename);
+    my $fh      = $self->test_fh($filename);
+    my $lns     = $lines // count_lines($file);
+    $lns        = 100 if $storage ~~ /File/;
 
+    for my $l (1 .. $lns) {
+        chomp(my $_ = <$fh>);
+        pass("Training line $l/$filename: $_");
+        $hailo->learn($_);
+    }
+}
+sub test_megahal {
+    my ($self, $lines) = @_;
+    my $hailo   = $self->hailo;
+    my $storage = $self->storage;
+
+    $self->train_filename("megahal.trn", $lines);
     my @words = $self->some_words("megahal.trn", $lines, 50);
-
 
     for (@words) {
         my $reply = $hailo->reply($_);
-        ok(defined $reply, "$storage: Got a reply");
+        ok(defined $reply, "$storage: Got a reply to $_");
     }
 
     return;
@@ -307,11 +320,11 @@ sub test_all_plan {
 
     plan skip_all => "Skipping $storage tests, can't create storage" unless $ok;
     if (defined $restriction && $restriction eq 'known') {
-        plan(tests => 602);
+        plan(tests => 953);
         $self->test_known;
     }
     else {
-        plan(tests => 603);
+        plan(tests => 954);
         $self->test_all;
     }
     $self->unspawn_storage();
