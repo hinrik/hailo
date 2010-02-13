@@ -1,3 +1,6 @@
+0.13
+    - Add missing .trn files to the test suite
+
 0.12 Sat Feb 13 08:55:25 GMT 2010
     - If asked for a reply before we've learned anything, return nothing
       instead of spewing warnings
