@@ -44,8 +44,23 @@ sub _build_tmpdir {
 has brain_resource => (
     is => 'ro',
     isa => 'Str',
-    default => '',
 );
+
+has tmpfile => (
+    is => 'ro',
+    lazy_build => 1,
+);
+
+sub _build_tmpfile {
+    my ($self) = @_;
+
+    # Dir to store our brains
+    my $dir = $self->tmpdir;
+
+    my ($fh, $filename) = tempfile( DIR => $dir, SUFFIX => '.trn' );
+
+    return [$fh, $filename];
+}
 
 has hailo => (
     is => 'ro',
@@ -63,10 +78,16 @@ sub _build_hailo {
     return $hailo;
 }
 
+sub brain {
+    my ($self) = @_;
+
+    return $self->brain_resource // $self->tmpfile->[1];
+}
+
 sub spawn_storage {
     my ($self) = @_;
     my $storage = $self->storage;
-    my $brainrs = $self->brain_resource;
+    my $brainrs = $self->brain;
     my $ok = 1;
 
     my %classes = (
@@ -104,7 +125,7 @@ sub spawn_storage {
 sub unspawn_storage {
     my ($self) = @_;
     my $storage = $self->storage;
-    my $brainrs = $self->brain_resource;
+    my $brainrs = $self->brain;
 
     given ($storage) {
         when (/Pg/) {
@@ -126,18 +147,18 @@ sub _connect_opts {
     given ($storage) {
         when (/SQLite/) {
             %opts = (
-                brain_resource => ($self->brain_resource || ':memory:')
+                brain_resource => ($self->brain || ':memory:')
             ),
         }
         when (/Perl/) {
             %opts = (
-                brain_resource => $self->brain_resource,
+                brain_resource => $self->brain,
             ),
         }
         when (/Pg/) {
             %opts = (
                 storage_args => {
-                    dbname => $self->brain_resource
+                    dbname => $self->brain
                 },
             );
         }
@@ -285,7 +306,7 @@ sub test_chaining {
     my ($self) = @_;
     my $hailo = $self->hailo;
     my $storage = $self->storage;
-    my $brainrs = $self->brain_resource;
+    my $brainrs = $self->brain;
 
     my $prev_brain;
     for my $i (1 .. 10) {
