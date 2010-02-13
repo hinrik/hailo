@@ -5,6 +5,9 @@ use warnings;
 use Hailo::Test;
 use Test::More;
 
+eval "use CHI::Memory";
+plan skip_all => "CHI::Memory not available";
+
 my $test = Hailo::Test->new(
     storage => "CHI::Memory",
 );
