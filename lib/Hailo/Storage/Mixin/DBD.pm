@@ -328,7 +328,7 @@ sub learn_tokens {
     }
 
     for my $i (0 .. @$tokens - $order) {
-        my @expr = map { $token_ids{ $tokens->[$_] } } ($i .. $i+$order-1);
+        my @expr = map { $token_ids{ $tokens->[$_] } } $i .. $i+$order-1;
         my $expr_id = $self->_expr_id(\@expr);
         $expr_id = $self->_add_expr(\@expr) if !defined $expr_id;
 
