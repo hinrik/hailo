@@ -2,7 +2,7 @@ use 5.010;
 use lib 't/lib';
 use strict;
 use warnings;
-use Test::More tests => 40;
+use Test::More tests => 220;
 use Hailo;
 use Hailo::Test;
 use Data::Random qw(:all);
