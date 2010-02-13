@@ -45,12 +45,7 @@ sub find_key_tokens {
     my ($self, $tokens) = @_;
 
     # remove duplicates and uninteresting ones
-    my @good = grep { /$INTERESTING/ } uniq(@$tokens);
-
-    # put the longest ones first
-    @good = sort { length $b <=> length $a } @good;
-
-    return @good;
+    return grep { /$INTERESTING/ } uniq(@$tokens);
 }
 
 # tokens -> output

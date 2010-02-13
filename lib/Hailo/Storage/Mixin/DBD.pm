@@ -261,6 +261,7 @@ sub make_reply {
 
     $self->_engage() if !$self->_engaged;
     my @key_ids = map { $self->_token_id($_) } @$key_tokens;
+    @key_ids = $self->_find_rare_tokens(\@key_ids);
     my $key_token_id = shift @key_ids;
 
     my ($orig_expr_id, @token_ids) = $self->_random_expr($key_token_id);
@@ -350,6 +351,21 @@ sub learn_tokens {
     }
 
     return;
+}
+
+# sort token ids based on how rare they are
+sub _find_rare_tokens {
+    my ($self, $token_ids) = @_;
+
+    my %rare;
+    for my $id (@$token_ids) {
+        $self->sth->{token_count}->execute($id);
+        my $count = $self->sth->{token_count}->fetchall_arrayref;
+        $rare{$id} = scalar @$count;
+    }
+
+    my @ids = sort { $rare{$a} <=> $rare{$b} } keys %rare;
+    return @ids;
 }
 
 sub _inc_link {
@@ -560,6 +576,7 @@ CREATE INDEX expr_token[% i %]_id on expr (token[% i %]_id);
 CREATE INDEX expr_token_ids on expr ([% columns %]);
 CREATE INDEX next_token_expr_id ON next_token (expr_id);
 CREATE INDEX prev_token_expr_id ON prev_token (expr_id);
+CREATE INDEX next_token_token_id ON next_token (token_id);
 __[ query_get_order ]__
 SELECT text FROM info WHERE attribute = 'markov_order';
 __[ query_set_order ]__
@@ -600,3 +617,5 @@ __[ query_(next_token|prev_token)_get ]__
 SELECT token_id, count FROM [% table %] WHERE expr_id = ?;
 __[ query_(add_expr) ]__
 INSERT INTO expr ([% columns %]) VALUES ([% ids %])[% IF dbd == 'Pg' %] RETURNING id[% END %];
+__[ query_token_count ]__
+SELECT count FROM next_token WHERE token_id = ?;
