@@ -375,6 +375,10 @@ sub test_starcraft {
     my $hailo = $self->hailo;
     my $storage = $self->storage;
 
+
+  SKIP: {
+    skip "$storage: We have to implement a method for clearing brains, or construct a new brain for each test", 4;
+
     $self->train_filename("starcraft.trn");
 
     ok(defined $hailo->reply("Gogogo"), "$storage: Got a random reply");
@@ -397,6 +401,7 @@ sub test_starcraft {
         },
         "$storage: Make sure we get every possible reply"
     );
+  }
 }
 
 sub test_all_plan {
@@ -408,11 +413,11 @@ sub test_all_plan {
 
     plan skip_all => "Skipping $storage tests, can't create storage" unless $ok;
     if (defined $restriction && $restriction eq 'known') {
-        plan(tests => 947);
+        plan(tests => 951);
         $self->test_known;
     }
     else {
-        plan(tests => 948);
+        plan(tests => 952);
         $self->test_all;
     }
     $self->unspawn_storage();
