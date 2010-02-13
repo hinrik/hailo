@@ -5,6 +5,8 @@ use warnings;
 use Hailo::Test;
 use Test::More;
 
+plan skip_all => "CHI::File takes forever to run, set TEST_CHI_FILE=1 to enable it" unless $ENV{TEST_CHI_FILE};
+
 my $test = Hailo::Test->new(
     storage => "CHI::File",
 );

@@ -5,6 +5,8 @@ use warnings;
 use Hailo::Test;
 use Test::More;
 
+plan skip_all => "The Badger Test is broken with CHI::BerkeleyDB";
+
 my $test = Hailo::Test->new(
     storage => "CHI::BerkeleyDB",
 );
