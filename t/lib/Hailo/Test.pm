@@ -69,7 +69,7 @@ sub spawn_storage {
 
     if (exists $classes{$storage}) {
         eval { Class::MOP::load_class($classes{$storage}) };
-        return;
+        return if $@;
     }
 
     given ($storage) {
