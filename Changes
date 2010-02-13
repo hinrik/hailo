@@ -1,6 +1,11 @@
 0.14
     - Fixed a bug in the test suite preventing optional backends from
       being tested
+    - All tests now use Hailo::Test, consequently backends now go
+      through much more thorough testing. Lots of other test related
+      since from 0.13.
+    - utils/hailo-benchmark: Rewritten to use Hailo::Test, the
+      benchmark is now more representive of actual Hailo usage.
     - Hailo->learn() can now take an arrayref
 
 0.13 Sat Feb 13 09:19:52 GMT 2010

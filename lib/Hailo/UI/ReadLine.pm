@@ -6,7 +6,7 @@ use Hailo;
 use Term::ReadLine;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 
 with qw(Hailo::Role::Generic
         Hailo::Role::UI);

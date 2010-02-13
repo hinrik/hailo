@@ -4,7 +4,7 @@ use MooseX::Role::Strict;
 use MooseX::Types::Moose qw/HashRef/;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 
 has arguments => (
     isa           => HashRef,

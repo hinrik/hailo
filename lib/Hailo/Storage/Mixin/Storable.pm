@@ -6,7 +6,7 @@ use MooseX::Types::Moose qw<HashRef>;
 use Storable;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 
 has _memory => (
     isa        => HashRef,
