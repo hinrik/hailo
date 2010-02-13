@@ -109,6 +109,9 @@ sub spawn_storage {
             # It doesn't use the file to store data obviously, it's just a convenient random token.
             if (system "createdb '$brainrs' >/dev/null 2>&1") {
                 $ok = 0;
+            } else {
+                # Kill Pg notices
+                $SIG{__WARN__} = sub { print STDERR @_ if $_[0] !~ m/NOTICE:\s*CREATE TABLE/; };
             }
         }
         when (/mysql/) {
@@ -283,7 +286,7 @@ sub train_filename {
 
     for my $l (1 .. $lns) {
         chomp(my $_ = <$fh>);
-        pass("Training line $l/$filename: $_");
+        pass("$storage: Training line $l/$filename: $_");
         $hailo->learn($_);
     }
 }
