@@ -4,7 +4,7 @@ use MooseX::Role::Strict;
 use Log::Log4perl;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 # Adapted from http://stackoverflow.com/questions/2232430/possible-to-get-log4perl-to-report-actually-line-number-of-log-event/2232473
 

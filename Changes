@@ -1,4 +1,4 @@
-0.13
+0.13 Sat Feb 13 09:19:52 GMT 2010
     - Add missing .trn files to the test suite
     - Fix number of tests in t/storage/all.t
 
