@@ -11,4 +11,4 @@ plan skip_all => "CHI::BerkeleyDB not available";
 my $test = Hailo::Test->new(
     storage => "CHI::BerkeleyDB",
 );
-$test->test_all_plan;
+$test->test_all_plan('known');

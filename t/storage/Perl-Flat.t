@@ -8,4 +8,4 @@ use Test::More;
 my $test = Hailo::Test->new(
     storage => "Perl::Flat",
 );
-$test->test_all_plan;
+$test->test_all_plan('known');

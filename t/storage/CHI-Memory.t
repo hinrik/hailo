@@ -11,4 +11,4 @@ plan skip_all => "CHI::Memory not available";
 my $test = Hailo::Test->new(
     storage => "CHI::Memory",
 );
-$test->test_all_plan;
+$test->test_all_plan('known');

@@ -15,7 +15,7 @@ for my $storage (Hailo::Test::simple_storages()) {
         my $test = Hailo::Test->new(
             storage => $storage,
         );
-        $test->test_congress_again;
+        $test->test_congress;
     }
 }
 

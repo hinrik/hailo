@@ -14,7 +14,7 @@ use File::Temp qw(tempfile tempdir);
 # Suppress PostgreSQL notices
 $SIG{__WARN__} = sub { print STDERR @_ if $_[0] !~ m/NOTICE:\s*CREATE TABLE/; };
 
-for my $backend (Hailo::Test::all_storage()) {
+for my $backend (Hailo::Test::all_storages()) {
     # Skip all tests for this backend?
     my $skip_all;
 

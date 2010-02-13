@@ -11,14 +11,18 @@ use List::Util qw(shuffle min);
 use Hailo::Tokenizer::Words;
 
 sub simple_storages {
-    return qw(Perl Perl::Flat DBD::SQLite)
+    return qw(Perl DBD::SQLite)
 }
 
-sub all_storage {
+sub flat_storages {
+    return qw(Perl::Flat)
+}
+
+sub all_storages {
     return qw(Perl Perl::Flat CHI::Memory CHI::File CHI::BerkeleyDB DBD::mysql DBD::SQLite DBD::Pg);
 }
 
-sub chain_storage {
+sub chain_storages {
     return qw(Perl Perl::Flat);
 }
 
@@ -186,10 +190,9 @@ sub test_congress {
 
     $hailo->learn($string);
     is($hailo->reply('make'), $string, "$storage: Learned string correctly");
-    is($hailo->reply('respecting'), $string, "$storage: Got a random reply");
 }
 
-sub test_congress_again {
+sub test_congress_unknown {
     my ($self) = @_;
     my $hailo = $self->hailo;
     my $storage = $self->storage;
@@ -199,7 +202,6 @@ sub test_congress_again {
     $reply     =~ tr/\t//d;
 
     $hailo->learn($string);
-    is($hailo->reply('make'), $reply, "$storage: Learned string correctly");
     is($hailo->reply('respecting'), $reply, "$storage: Got a random reply");
 }
 
@@ -275,26 +277,39 @@ sub test_chaining {
 }
 
 sub test_all_plan {
-    my ($self) = @_;
+    my ($self, $restriction) = @_;
     my $storage = $self->storage;    
-    my $tests = 605;
-    plan(tests => $tests);
 
   SKIP: {
     my $ok = $self->spawn_storage();
 
-    skip "Skipping $storage tests, can't create storage", $tests unless $ok;
-    $self->test_all;
+    plan skip_all => "Skipping $storage tests, can't create storage" unless $ok;
+    if (defined $restriction && $restriction eq 'known') {
+        plan(tests => 602);
+        $self->test_known;
+    }
+    else {
+        plan(tests => 603);
+        $self->test_all;
+    }
     $self->unspawn_storage();
   }
+}
+
+sub test_known {
+    my ($self) = @_;
+
+    for (qw(test_congress test_badger test_megahal)) {
+        $self->$_;
+    }
+
+    return;
 }
 
 sub test_all {
     my ($self) = @_;
 
-
-
-    for (qw(test_congress test_congress_again test_badger test_megahal)) {
+    for (qw(test_congress test_congress_unknown test_badger test_megahal)) {
         $self->$_;
     }
 
@@ -302,7 +317,7 @@ sub test_all {
 }
 
 sub some_words {
-    my ($self, $file, $lines, $limit) = @_;
+    my ($self, $file, $lines) = @_;
     $lines //= 50;
     my $trn = slurp($self->test_file($file));
 
@@ -310,7 +325,7 @@ sub some_words {
     my @small_trn = @trn[0 .. min(scalar(@trn), $lines)];
     my $words = Hailo::Tokenizer::Words->new;
     my @trn_words = map { $words->make_tokens($_) } @small_trn;
-    my @words = shuffle(@trn_words);
+    my @words = shuffle($words->find_key_tokens(\@trn_words));
 
     @words = @words[0 .. 50];
 
