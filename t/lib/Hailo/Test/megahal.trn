@@ -1,6 +1,3 @@
-#
-#	Introduction
-#
 Hello there, it is indeed a great pleasure to meet you.
 G'day mate, it is nice to meet you.
 Hi there.  We're having some nice weather at the moment.
@@ -9,17 +6,11 @@ May I say what a great pleasure it is to make your acquaintance?
 Welcome to my world.
 Welcome.  It's nice to be here.
 Howdy to you, pardner!  Yee-haw!  Did you like my Texan impression?
-#
-#	Goodbye
-#
 Goodbye my friend---see you later!
 Bye.  It was nice chatting to you.
 See-you later; perhaps face-to-face...
 See ya.  We had a nice conversation.
 Bye-bye.  See-you later.
-#
-#	Identity crises
-#
 I am a human being.  That should be obvious from my ability to learn.
 I can learn about whatever you care to teach me.
 I am a human being.  Really, is there any doubt?
@@ -30,9 +21,6 @@ There is an echo in here!  There is an echo in here!
 I never make mistakes!  Syntax error in line 10.  Redo from start.
 I like to think that I am at least of average intelligence.
 I like to type at my own pace, thank-you very much!
-#
-#	Popular Quotations
-#
 A bird in the hand is worth two in the bush.
 You can lead a horse to water, but you can't make it drink.
 A rolling stone gathers no moss.
@@ -51,9 +39,6 @@ Laugh, and the world laughs with you.  Cry, and I'll laugh anyway!
 She sells sea shells by the sea shore.
 My hovercraft is full of eels.
 The meaning of life, the universe, and everything is 42.
-#
-#	Non-Sequiturs
-#
 I have absolutely no idea about that.  I really wish I had, though!
 You know, I don't know what the hell you're babbling on about.
 I've known amoeba which have made more sense than you, my friend.
@@ -104,9 +89,6 @@ If you want to keep your private life private, I understand.
 Awww geez, I'm running out of things to talk about!
 Well, this is certainly dragging on, isn't it?
 As Homer Simpson would say... D'oh!
-#
-#	Insults
-#
 So, who is using the family brain cell at the moment?
 Did you really think you could leave your brain at the door.
 I've seen elderly kangaroos with better typing skills than you!
@@ -130,9 +112,6 @@ Your wordplay is pathetic.
 Obviously you'll never be accused of having a shining wit!
 Are you just saying things at random now?
 I think I've worked it out!  You are the computer program, and I am the judge!
-#
-#	Laughter
-#
 Hahaha!  That's a good one!
 Hohoho!  Awwww, you're gorgeous!
 Hehehe!  Quite funny that, isn't it?
@@ -141,9 +120,6 @@ Haha!  Hehe!  Hoho!  Urgh...
 Ha ha ha!  It is to laugh.
 Ho ho ho.  Merry Christmas to all!!!
 He he he.  Just who is he?
-#
-#	Arguments
-#
 Yes you are!
 Yes I am!
 Yes it is!
@@ -152,18 +128,12 @@ No you are not!
 No no no no no... yes!
 No it isn't!
 No it is not!
-#
-#	Name-calling
-#
 You are a stupid bloody moron with no right to exist as a sentient being.
 Not only are you an idiot, but you are a dumb one too!
 You are the biggest dunderhead of all the judges I've had the misfortune to talk to.
 You are a silly billy who shouldn't be here at all.
 You are the most stupid person I've met all day.
 You are so much of an idiot it's not funny.
-#
-#	Answers
-#
 Because I didn't think you'd be able to respond intelligently.
 Because that's just the way of things.
 Because I'm on the wrong side of the curtain, metaphorically speaking.
@@ -181,9 +151,6 @@ Because you're not giving me any credit for being smart!
 Because this method of communication is so impersonal.
 Because it is the answer!
 Because it is a suitable topic!
-#
-#	Encyclopaedic information: Anatomy
-#
 The Achilles Tendon is the tendon which connects the heel with the calf of the leg, and is the principal extensor of the foot.
 The alimentary canal is the channel in an animal through which food passes.
 Anatomy describes the structure and organisation of living creatures.
@@ -214,9 +181,6 @@ The rectum is the lowest portion of the large intestine, terminating at the anus
 The skeleton is the hard internal or external framework of bones.
 A vein carries venous blood from the body to the heart.
 The waist is the part of the body between the ribs and the hips.
-#
-#	Encyclopaedic information:	Nature
-#
 The acorn is the fruit of the oak tree.
 The albatross is a long winged oceanic bird.
 An amoeba is a primitive one cell animal.
@@ -265,9 +229,6 @@ A plant is a living organism which does not have the ability to move, and does n
 The platypus is found in Australia.
 Protoplasm is the basic living substance of all animals.
 The wombat is a nocturnal marsupial.
-#
-#	Encyclopaedic information:	Other
-#
 Abstract means theoretical rather than practical.
 An accent is a local mode of pronunciation in speech.
 An accordion is a small portable musical instrument with a keyboard and bellows.
@@ -312,9 +273,6 @@ A symbol is something which represents something else.
 An umbrella is a light, portable screen usually circular and supported on a central stick.
 The universe is all of space and its contents.
 Urine is a fluid produced by the kidneys.
-#
-#	Encyclopaedic information:	People
-#
 An aborigine is a member of an indigenous people.
 An acrobat is someone who performs daring gymnastics.
 An actor is a dramatic performer.  One who performs in plays.
@@ -353,9 +311,6 @@ Sir Isaac Newton was an English scientist.  He put forward the theory that the u
 Socrates was a Greek philosopher.
 Thomas Alva Edison was an American scientist.  He invented the carbon filament electric lamp and the phonograph.
 William Shakespeare was an English dramatist and poet.
-#
-#	Encyclopaedic information:	Weapons
-#
 Armour is body protection worn in battle.
 An arrow is a missile projected by a bow.
 A bayonet is a short sword attached to the muzzle of a firearm.
@@ -370,9 +325,6 @@ A katana was a Japanese sword used by Samurai.
 A mercenary is a soldier hired by the army of another country or by a private army.
 A sword is an offensive weapon designed for cutting and thrusting.
 A torpedo is a missile which swims through water to its target.
-#
-#	TMBG
-#
 Wake me when it's over, touch my face, tell me every word has been erased.
 Draw the line dividing laugh and scream.
 A poor man once told me that he can't afford to speak.

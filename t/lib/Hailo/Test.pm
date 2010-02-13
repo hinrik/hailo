@@ -252,7 +252,6 @@ sub test_megahal {
 
 
     for (@words) {
-        diag "word: '$_'";
         my $reply = $hailo->reply($_);
         ok(defined $reply, "$storage: Got a reply");
     }
