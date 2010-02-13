@@ -238,7 +238,7 @@ sub test_megahal {
 
     for (@words) {
         my $reply = $hailo->reply($_);
-        pass("$storage: Got reply: $reply");
+        ok(defined $reply, "$storage: Got a reply");
     }
 
     return;

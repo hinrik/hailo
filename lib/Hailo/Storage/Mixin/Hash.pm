@@ -73,6 +73,7 @@ sub make_reply {
 
     my @keys = grep { $self->_token_exists($_) } @$key_tokens;
     my @reply = $self->_random_expr(shift @keys);
+    return if !@reply;
     my $repeat_limit = $self->repeat_limit;
 
     my $i = 0;
