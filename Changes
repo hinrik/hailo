@@ -3,6 +3,7 @@
       instead of spewing warnings
     - Issue #19: Ability to ->train() from filehandle as well as from
       a file
+    - When replying to some input, pay more attention to the longer tokens
 
 0.11 Fri Feb 12 09:44:13 GMT 2010
     - Corrected outdated documentation in some places

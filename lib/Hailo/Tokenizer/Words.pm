@@ -43,8 +43,12 @@ sub make_tokens {
 # return a list of key tokens
 sub find_key_tokens {
     my ($self, $tokens) = @_;
-    # remove duplicates and return the interesting ones
-    return grep { /$INTERESTING/ } uniq(@$tokens);
+
+    # remove duplicates and uninteresting ones
+    my @good = grep { /$INTERESTING/ } uniq(@$tokens);
+
+    # return the longest ones first
+    return sort { length $b <=> length $a } @good;
 }
 
 # tokens -> output
