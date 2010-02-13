@@ -597,7 +597,7 @@ SELECT * FROM expr WHERE [% column %] = ?
 __[ query_random_expr ]__
 SELECT * from expr
 [% SWITCH dbd %]
-[% CASE 'Pg'    %]WHERE id >= (random()*C+1)::int
+[% CASE 'Pg'    %]WHERE id >= (random()*id+1)::int
 [% CASE 'mysql' %]WHERE id >= (abs(rand()) % (SELECT max(id) FROM expr))
 [% CASE DEFAULT %]WHERE id >= (abs(random()) % (SELECT max(id) FROM expr))
 [% END %]
