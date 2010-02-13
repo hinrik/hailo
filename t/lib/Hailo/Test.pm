@@ -59,6 +59,19 @@ sub spawn_storage {
     my $brainrs = $self->brain_resource;
     my $ok = 1;
 
+    my %classes = (
+        Pg                => 'DBD::Pg',
+        mysql             => 'DBD::mysql',
+        'CHI::File'       => 'CHI::Driver::File',
+        'CHI::Memory'     => 'CHI::Driver::Memory',
+        'CHI::BerkeleyDB' => 'CHI::Driver::BerkeleyDB',
+    );
+
+    if (exists $classes{$storage}) {
+        eval { Class::MOP::load_class($classes{$storage}) };
+        return;
+    }
+
     given ($storage) {
         when (/Pg/) {
             # It doesn't use the file to store data obviously, it's just a convenient random token.

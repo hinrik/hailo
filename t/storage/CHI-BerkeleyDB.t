@@ -5,9 +5,6 @@ use warnings;
 use Hailo::Test;
 use Test::More;
 
-eval "use CHI::BerkeleyDB";
-plan skip_all => "CHI::BerkeleyDB not available";
-
 my $test = Hailo::Test->new(
     storage => "CHI::BerkeleyDB",
 );

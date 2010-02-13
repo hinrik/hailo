@@ -5,9 +5,6 @@ use warnings;
 use Hailo::Test;
 use Test::More;
 
-eval "use CHI::File";
-plan skip_all => "CHI::File not available";
-
 my $test = Hailo::Test->new(
     storage => "CHI::File",
 );
