@@ -63,8 +63,7 @@ sub spawn_storage {
             }
         }
         when (/mysql/) {
-            if (!$ENV{HAILO_TEST_MYSQL} or
-                system qq[echo "SELECT DATABASE();" | mysql -u'hailo' -p'hailo' 'hailo' >/dev/null 2>&1]) {
+            if (system qq[echo "SELECT DATABASE();" | mysql -u'hailo' -p'hailo' 'hailo' >/dev/null 2>&1]) {
                 $ok = 0;
             } else {
                 system q[echo 'drop table info; drop table token; drop table expr; drop table next_token; drop table prev_token;' | mysql -u hailo -p'hailo' hailo];
@@ -248,7 +247,7 @@ sub test_megahal {
 sub test_chaining {
     my ($self) = @_;
     my $hailo = $self->hailo;
-    my $storage = $self->storage;    
+    my $storage = $self->storage;
     my $brainrs = $self->brain_resource;
 
     my $prev_brain;
@@ -277,8 +276,17 @@ sub test_chaining {
 
 sub test_all_plan {
     my ($self) = @_;
-    plan(tests => 605);
+    my $storage = $self->storage;    
+    my $tests = 605;
+    plan(tests => $tests);
+
+  SKIP: {
+    my $ok = $self->spawn_storage();
+
+    skip "Skipping $storage tests, can't create storage", $tests unless $ok;
     $self->test_all;
+    $self->unspawn_storage();
+  }
 }
 
 sub test_all {
