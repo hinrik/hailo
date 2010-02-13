@@ -56,10 +56,10 @@ sub _build_tmpdir {
     my ($self) = @_;
     my $storage = $self->storage;
 
-    $storage =~ s/[A-Za-z0-9]/-/g;
+    $storage =~ s/[^A-Za-z0-9]/-/g;
 
     # Dir to store our brains
-    my $dir = tempdir( CLEANUP => 1 );
+    my $dir = tempdir( "hailo-test-$storage-XXXXX", CLEANUP => 1, TMPDIR => 1 );
 
     return $dir;
 }
