@@ -195,8 +195,10 @@ sub _engage {
 sub start_training {
     my ($self) = @_;
     $self->_engage() if !$self->_engaged;
-    my $mysql = $self->dbd eq 'mysql' ? " ON next_token" : "";
-    $self->dbh->do("DROP INDEX next_token_token_id$mysql;");
+    my $st = $self->dbd eq 'mysql'
+        ? "ALTER TABLE next_token DROP INDEX next_token_token_id;"
+        : "DROP INDEX next_token_token_id;";
+    $self->dbh->do($st);
     $self->start_learning();
     return;
 }
