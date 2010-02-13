@@ -3,6 +3,7 @@ use 5.10.0;
 use Moose;
 use MooseX::StrictConstructor;
 use MooseX::Types::Moose qw<HashRef>;
+use List::MoreUtils qw<uniq>;
 use namespace::clean -except => 'meta';
 
 our $VERSION = '0.11';
