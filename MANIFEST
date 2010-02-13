@@ -46,7 +46,6 @@ t/bug/increment.t
 t/lib/Hailo/Test.pm
 t/lib/Hailo/Test/badger.trn
 t/lib/Hailo/Test/megahal.trn
-t/storage/all.t
 t/storage/arguments.t
 t/storage/chain-brain.t
 t/storage/CHI-BerkeleyDB.t
