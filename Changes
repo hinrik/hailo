@@ -3,6 +3,8 @@
       instead of spewing warnings
     - Issue #19: Ability to ->train() from filehandle as well as from
       a file
+    - Re-enable t/bug/tokens-repeat.t test disabled in
+      cc189bd7a2dc56561c71868f061307ee5068f904
 
 0.11 Fri Feb 12 09:44:13 GMT 2010
     - Corrected outdated documentation in some places
