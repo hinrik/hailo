@@ -81,9 +81,10 @@ This backend maintains information in an SQLite database. It is the default
 storage backend.
 
 For some example numbers, I have a 5th-order database built from a ~210k line
-(7.4MB) IRC channel log file. On my laptop (Core 2 Duo 2.53 GHz) it took 8
-minutes and 50 seconds (~400 lines/sec) to create the 229MB database.
-Furthermore, it can generate about 90 replies per second from it.
+(7.4MB) IRC channel log file. With the default L<cache_size/storage_args>,
+it took my laptop (Core 2 Duo 2.53 GHz, Intel X25-M hard drive) 8 minutes and
+50 seconds (~400 lines/sec) to create the 248MB database. Furthermore, it
+could generate about 90 replies per second from it.
 
 =head1 ATTRIBUTES
 
