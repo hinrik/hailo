@@ -4,7 +4,7 @@ use Moose;
 use MooseX::StrictConstructor;
 use MooseX::Types::Moose qw<ArrayRef HashRef Int Str Bool>;
 use DBI;
-use List::Util qw<shuffle>;
+use List::Util qw<first shuffle>;
 use List::MoreUtils qw<uniq>;
 use Data::Section qw(-setup);
 use Template;
@@ -264,10 +264,14 @@ sub make_reply {
     $self->_engage() if !$self->_engaged;
     my @key_ids = map { $self->_token_id($_) } @$key_tokens;
     @key_ids = $self->_find_rare_tokens(\@key_ids);
-    my $key_token_id = shift @key_ids;
+    my $seed_token_id = shift @key_ids;
 
-    my ($orig_expr_id, @token_ids) = $self->_random_expr($key_token_id);
+    my ($orig_expr_id, @token_ids) = $self->_random_expr($seed_token_id);
     return if !defined $orig_expr_id; # we don't know anything yet
+
+    # remove key tokens we're already using
+    @key_ids = grep { my $used = $_; !first { $_ == $used } @token_ids } @key_ids;
+
     my $repeat_limit = $self->repeat_limit;
     my $expr_id = $orig_expr_id;
 
@@ -334,19 +338,19 @@ sub learn_tokens {
         my $expr_id = $self->_expr_id(\@expr);
         $expr_id = $self->_add_expr(\@expr) if !defined $expr_id;
 
-        # add next token for this expression, if any
+        # add link to next token for this expression, if any
         if ($i < @$tokens - $order) {
             my $next_id = $token_ids{ $tokens->[$i+$order] };
             $self->_inc_link('next_token', $expr_id, $next_id);
         }
 
-        # add previous token for this expression, if any
+        # add link to previous token for this expression, if any
         if ($i > 0) {
             my $prev_id = $token_ids{ $tokens->[$i-1] };
             $self->_inc_link('prev_token', $expr_id, $prev_id);
         }
 
-        # add boundary tokens if appropriate
+        # add links to boundary token if appropriate
         my $b = $self->_boundary_token_id;
         $self->_inc_link('prev_token', $expr_id, $b) if $i == 0;
         $self->_inc_link('next_token', $expr_id, $b) if $i == @$tokens-$order;
