@@ -533,9 +533,9 @@ L<AI::MegaHAL|AI::MegaHAL>. It has a lightweight L<Moose|Moose>-based core
 with pluggable L<storage|Hailo::Role::Storage> and
 L<tokenizer|Hailo::Role::Tokenizer> backends.
 
-It is similar to MegaHAL in functionality, the main difference being (with
-the default storage/tokenizer backends) better scalability, drastically less
-memory usage, and an improved tokenizer.
+It is similar to MegaHAL in functionality, the main differences (with the
+default backends) being better scalability, drastically less memory usage,
+an improved tokenizer, and tidier output.
 
 With this distribution, you can create, modify, and query Hailo brains. To
 use Hailo in event-driven POE applications, you can use the
