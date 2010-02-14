@@ -271,6 +271,7 @@ sub make_reply {
         shift @key_ids;
     }
 
+    # return a completely random reply
     return $self->_make_new_reply();
 }
 
