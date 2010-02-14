@@ -258,14 +258,27 @@ sub _get_create_db_sql {
 }
 
 sub make_reply {
-    my ($self, $key_tokens) = @_;
-    my $order = $self->order;
-
+    my ($self, $tokens, $key_tokens) = @_;
     $self->_engage() if !$self->_engaged;
+
     my @key_ids = map { $self->_token_id($_) } @$key_tokens;
     @key_ids = $self->_find_rare_tokens(\@key_ids);
-    my $seed_token_id = shift @key_ids;
 
+    # try to construct a novel, but relevant reply
+    while (@key_ids) {
+        my $reply = $self->_make_new_reply(@key_ids);
+        return $reply if "@$reply" ne "@$tokens";
+        shift @key_ids;
+    }
+
+    return $self->_make_new_reply();
+}
+
+sub _make_new_reply {
+    my ($self, @key_ids) = @_;
+    my $order = $self->order;
+
+    my $seed_token_id = shift @key_ids;
     my ($orig_expr_id, @token_ids) = $self->_random_expr($seed_token_id);
     return if !defined $orig_expr_id; # we don't know anything yet
 

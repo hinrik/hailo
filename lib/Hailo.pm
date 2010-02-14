@@ -489,17 +489,14 @@ sub reply {
     my $storage = $self->_storage_obj;
     my $toke    = $self->_tokenizer_obj;
 
-    my (@tokens, $reply);
+    my $reply;
     if (defined $input) {
         $input = $self->_clean_input($input);
-        @tokens = $toke->make_tokens($input);
+        my @tokens = $toke->make_tokens($input);
         my @key_tokens = $toke->find_key_tokens(\@tokens);
-        $reply = $storage->make_reply(\@key_tokens);
+        $reply = $storage->make_reply(\@tokens, \@key_tokens);
     }
-
-    # if we got no input, or the reply is the same as the input,
-    # we generate a random reply
-    if (!defined $input || defined $reply && "@tokens" eq "@$reply") {
+    else {
         $reply = $storage->make_reply([ ]);
     }
 
