@@ -1,6 +1,7 @@
 0.15
     - Allow specifying SQLite's cache size with --storage-args
     - Never return a reply which is identical to the input
+    - Added a NoWhitespace tokenizer which splits on whitespace
 
 0.14 Sat Feb 13 17:07:30 GMT 2010
     - Fixed a bug in the test suite preventing optional backends from
