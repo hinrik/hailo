@@ -1,0 +1,40 @@
+#!/usr/bin/env perl
+
+# Usage: perl utils/bump-requires Makefile.PL
+
+# Bumps the Makefile.PL versions to whatever's working on the computer it's run on
+
+# perl -pi
+BEGIN { $^I = ""; }
+
+use 5.010;
+use Moose;
+use Class::MOP;
+
+my $module_get = qr/
+    ^(?<what>requires|recommends|test_requires|author_requires)
+    (?<white>\s*)
+    \(
+    '(?<mod>.*?)'
+    (?<white2>\s*)
+    => \s*
+    '(?<vers>.*?)'
+    \);
+/x;
+
+while (<>) {
+    chomp $_;
+
+    if ($_ ~~ $module_get) {
+        if ($+{vers} eq '0' and $+{mod} ne 'Term::ReadLine::Gnu') {
+            Class::MOP::load_class($+{mod});
+            no strict 'refs';
+            if (my $ver = ${ $+{mod} . '::VERSION' }) {
+                say $+{what}, $+{white}, "('$+{mod}'", $+{white2}, "=> '$ver');";
+                next;
+            }
+        }
+    }
+
+    say;
+}
