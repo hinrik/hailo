@@ -1,5 +1,5 @@
 0.15
-    - Allow specifing SQLite's cache size with --storage-args
+    - Allow specifying SQLite's cache size with --storage-args
     - Never return a reply which is identical to the input
 
 0.14 Sat Feb 13 17:07:30 GMT 2010
