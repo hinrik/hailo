@@ -72,7 +72,7 @@ ATTRIBUTES
   "storage_args"
   "tokenizer_args"
   "ui_args"
-    A "HashRef" of arguments storage/tokenizer/ui backends. See the
+    A "HashRef" of arguments for storage/tokenizer/ui backends. See the
     documentation for the backends for what sort of arguments they accept.
 
   "token_separator"

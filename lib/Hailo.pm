@@ -597,7 +597,7 @@ The UI to use. Default: 'ReadLine';
 
 =head2 C<ui_args>
 
-A C<HashRef> of arguments storage/tokenizer/ui backends. See the
+A C<HashRef> of arguments for storage/tokenizer/ui backends. See the
 documentation for the backends for what sort of arguments they accept.
 
 =head2 C<token_separator>
