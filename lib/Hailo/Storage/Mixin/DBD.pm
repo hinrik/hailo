@@ -546,7 +546,7 @@ __DATA__
 __[ table_info ]__
 CREATE TABLE info (
     attribute [% SWITCH dbd %][% CASE 'mysql' %]TEXT NOT NULL,
-                              [% CASE DEFAULT %]TEXT NOT NULL UNIQUE PRIMARY KEY,
+                              [% CASE DEFAULT %]TEXT NOT NULL PRIMARY KEY,
                               [% END %]
     text TEXT NOT NULL
 );
