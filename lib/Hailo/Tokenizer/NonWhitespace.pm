@@ -13,6 +13,7 @@ with qw(Hailo::Role::Generic
 my $APOSTROPHE    = qr/['’]/;
 my $DOTTED_WORD   = qr/\w+(?:\.\w+)?/;
 my $WORD          = qr/$DOTTED_WORD(?:$APOSTROPHE$DOTTED_WORD)*/;
+my $TOKEN         = qr/\S+|\s{3,}/s;
 my $OPEN_QUOTE    = qr/['"‘“„«»「『‹‚]/;
 my $CLOSE_QUOTE   = qr/['"’«»“”」』›‘]/;
 my $TERMINATOR    = qr/(?:[?!‽]+|(?<!\.)\.)/;
@@ -28,7 +29,7 @@ my $WORD_STRICT   = qr/$DOTTED_STRICT(?:$APOSTROPHE$DOTTED_STRICT)*/;
 # input -> tokens
 sub make_tokens {
     my ($self, $line) = @_;
-    my @tokens = split /\s+/, $line;
+    my @tokens = $line =~ /($TOKEN)/gs;
 
     # lower-case tokens except those which are ALL UPPERCASE
     @tokens = map { $_ ne uc($_) ? lc($_) : $_ } @tokens;
