@@ -76,29 +76,29 @@ L<DBD::Pg|DBD::Pg>
 
 As a module:
 
-    my $hailo = Hailo->new(
-        train_file    => 'hailo.trn',
-        storage_class => 'Pg',
-        storage_args  => {
-            dbname    => 'hailo',
-            host      => 'localhost',
-            port      => '5432',
-            options   => '...',
-            username  => 'hailo',
-            password  => 'hailo'
-        },
-    );
+ my $hailo = Hailo->new(
+     train_file    => 'hailo.trn',
+     storage_class => 'Pg',
+     storage_args => {
+         dbname   => 'hailo',
+         host     => 'localhost',
+         port     => '5432',
+         options  => '...',
+         username => 'hailo',
+         password => 'hailo'
+     },
+ );
 
 From the command line:
 
-    hailo --train        hailo.trn \
-          --storage      Pg \
-          --storage-args dbname=hailo \
-          --storage-args host=localhost \
-          --storage-args port=5432 \
-          --storage-args options=... \
-          --storage-args username=hailo \
-          --storage-args password=hailo
+ hailo --train hailo.trn \
+     --storage      Pg \
+     --storage-args dbname=hailo \
+     --storage-args host=localhost \
+     --storage-args port=5432 \
+     --storage-args options=... \
+     --storage-args username=hailo \
+     --storage-args password=hailo
 
 Almost all of these options can be omitted, see L<DBD::Pg's
 documentation|DBD::Pg/"connect"> for the default values.
@@ -108,6 +108,24 @@ See L<Hailo's documentation|Hailo> for other non-Pg specific options.
 =head1 DESCRIPTION
 
 This backend maintains information in a PostgreSQL database.
+
+=head1 ATTRIBUTES
+
+=head2 C<storage_args>
+
+This is a hash reference which can have the following keys:
+
+B<'dbname'>, the name of the database to use (required).
+
+B<'host'>, the host to connect to (required).
+
+B<'port'>, the port to connect to (required).
+
+B<'options'>, additional options to pass to PostgreSQL.
+
+B<'username'>, the username to use.
+
+B<'password'>, the password to use.
 
 =head1 CAVEATS
 

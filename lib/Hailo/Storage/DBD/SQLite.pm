@@ -19,6 +19,13 @@ override _build_dbd_options => sub {
     };
 };
 
+before _engage => sub {
+    my ($self) = @_;
+    my $size = $self->arguments->{cache_size};
+    $self->dbh->do("PRAGMA cache_size=$size;") if defined $size;
+    return;
+};
+
 before start_training => sub {
     my $dbh = shift->dbh;
     $dbh->do('PRAGMA synchronous=OFF;');
@@ -50,6 +57,24 @@ __PACKAGE__->meta->make_immutable;
 Hailo::Storage::DBD::SQLite - A storage backend for L<Hailo|Hailo> using
 L<DBD::SQLite|DBD::SQLite>
 
+=head1 SYNOPSIS
+
+As a module:
+
+my $hailo = Hailo->new(
+     train_file    => 'hailo.trn',
+     storage_class => 'SQLite',
+     storage_args  => {
+         cache_size > 102400, # 100MB page cache
+     },
+ );
+
+From the command line:
+
+ hailo --train hailo.trn --storage SQLite --storage-args cache_size=102400
+
+See L<Hailo's documentation|Hailo> for other non-MySQL specific options.
+
 =head1 DESCRIPTION
 
 This backend maintains information in an SQLite database. It is the default
@@ -59,6 +84,17 @@ For some example numbers, I have a 5th-order database built from a ~210k line
 (7.4MB) IRC channel log file. On my laptop (Core 2 Duo 2.53 GHz) it took 8
 minutes and 50 seconds (~400 lines/sec) to create the 229MB database.
 Furthermore, it can generate about 90 replies per second from it.
+
+=head1 ATTRIBUTES
+
+=head2 C<storage_args>
+
+This is a hash reference which can have the following keys:
+
+B<'cache_size'>, the size of the page cache used by SQLite. See L<SQLite's
+documentation|http://www.sqlite.org/pragma.html#pragma_cache_size> for more
+information. Setting this value higher than the default can be beneficial,
+especially when disk IO is slow on your machine.
 
 =head1 AUTHOR
 

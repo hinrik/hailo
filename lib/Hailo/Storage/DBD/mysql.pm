@@ -73,13 +73,13 @@ As a module:
 
 From the command line:
 
-    hailo --train        hailo.trn \
-          --storage      mysql \
-          --storage-args database=hailo \
-          --storage-args host=localhost \
-          --storage-args port=3306 \
-          --storage-args username=hailo \
-          --storage-args password=hailo
+ hailo --train hailo.trn \
+     --storage      mysql \
+     --storage-args database=hailo \
+     --storage-args host=localhost \
+     --storage-args port=3306 \
+     --storage-args username=hailo \
+     --storage-args password=hailo
 
 Almost all of these options can be omitted, see L<DBD::mysql's
 documentation|DBD::mysql> for the default values.
@@ -89,6 +89,22 @@ See L<Hailo's documentation|Hailo> for other non-MySQL specific options.
 =head1 DESCRIPTION
 
 This backend maintains information in a MySQL database.
+
+=head1 ATTRIBUTES
+
+=head2 C<storage_args>
+
+This is a hash reference which can have the following keys:
+
+B<'database'>, the name of the database to use (required).
+
+B<'host'>, the host to connect to (required).
+
+B<'port'>, the port to connect to (required).
+
+B<'username'>, the username to use.
+
+B<'password'>, the password to use.
 
 =head1 CAVEATS
 
