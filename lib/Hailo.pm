@@ -348,7 +348,7 @@ sub run {
 
     if (defined $self->learn_reply_str) {
         my $answer = $self->learn_reply($self->learn_reply_str);
-        say $answer;
+        say $answer // "I don't know enough to answer you yet.";
     }
 
     if (defined $self->reply_str) {
