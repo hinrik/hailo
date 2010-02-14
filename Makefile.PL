@@ -53,7 +53,7 @@ tests_recursive();
 test_requires  ('Data::Random'    => '0');
 test_requires  ('Test::Exception' => '0.29');
 test_requires  ('Test::Exit'      => '0.03');
-test_requires  ('Test::More'      => '0');
+test_requires  ('Test::More'      => '0.94');
 test_requires  ('Test::Output'    => '0.16');
 
 author_requires('Perl::Critic'        => '1.098');
