@@ -80,7 +80,7 @@ See L<Hailo's documentation|Hailo> for other non-MySQL specific options.
 This backend maintains information in an SQLite database. It is the default
 storage backend.
 
-For some example numbers, I have a 5th-order database built from a ~210k line
+For some example numbers, I have a 2nd-order database built from a ~210k line
 (7.4MB) IRC channel log file. With the default L<cache_size/storage_args>,
 it took my laptop (Core 2 Duo 2.53 GHz, Intel X25-M hard drive) 5 minutes and
 40 seconds (~617 lines/sec) to create the 98MB database. Furthermore, it
