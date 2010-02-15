@@ -1,5 +1,6 @@
 use 5.010;
 use strict;
+use warnings;
 use List::MoreUtils qw(uniq);
 use Test::More tests => 36;
 use Test::Exception;

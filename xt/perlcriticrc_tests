@@ -2,6 +2,9 @@
 severity = 3
 verbose  = 3
 
+# disable this until it supports namespace::clean
+ [-Perl::Critic::Policy::Moose::RequireCleanNamespace]
+
 # these policies are either too anal, demand additional dependencies,
 # or inhibit backwards-compatability
 [-RegularExpressions::RequireExtendedFormatting]
@@ -30,6 +33,7 @@ verbose  = 3
 [-Modules::RequireFilenameMatchesPackage]
 [-Subroutines::RequireFinalReturn]
 [-TestingAndDebugging::ProhibitNoStrict]
+[-Subroutines::ProtectPrivateSubs]
 
 [TestingAndDebugging::RequireUseStrict]
 equivalent_modules = MooseX::Role::Strict

@@ -11,6 +11,7 @@ use List::Util qw(shuffle min);
 use File::Temp qw(tempfile tempdir);
 use File::CountLines qw(count_lines);
 use Hailo::Tokenizer::Words;
+use namespace::clean -except => 'meta';
 
 sub simple_storages {
     return qw(Perl Perl::Flat DBD::SQLite)
