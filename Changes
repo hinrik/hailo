@@ -5,7 +5,7 @@
     - Instead of depending on version "0" of most modules (i.e. any
       version) depend on the latest CPAN version. We know this works;
       but we have no idea if the older modules work.
-    - When replying to some tokens, also considers known tokens which contain
+    - When replying to some tokens, also consider known tokens which contain
       them as a substring. This makes the NonWhitespace tokenizer more useful
 
 0.14 Sat Feb 13 17:07:30 GMT 2010
