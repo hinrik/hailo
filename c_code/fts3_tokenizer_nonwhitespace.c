@@ -78,11 +78,13 @@ static int simpleCreate(
       t->delim[ch] = 1;
     }
   } else {
-    /* Mark non-alphanumeric ASCII characters as delimiters */
+    /* Mark whitespace as a delimiter */
     int i;
     for(i=1; i<0x80; i++){
-      t->delim[i] = !isalnum(i) ? -1 : 0;
+      t->delim[i] = !isgraph(i);
     }
+    t->delim[39] = 0; // apostrophe
+    t->delim[42] = 1; // asterisk
   }
 
   *ppTokenizer = &t->base;
