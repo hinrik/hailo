@@ -7,6 +7,8 @@
       but we have no idea if the older modules work.
     - When replying to some tokens, also consider known tokens which contain
       them as a substring. This makes the NonWhitespace tokenizer more useful
+    - Made NonWhitespace the default tokenizer and changed the default Markov
+      order from 5 to 2
 
 0.14 Sat Feb 13 17:07:30 GMT 2010
     - Fixed a bug in the test suite preventing optional backends from

@@ -100,7 +100,7 @@ has order => (
     documentation => "Markov order",
     isa           => Int,
     is            => "ro",
-    default       => 5,
+    default       => 2,
 );
 
 has brain_resource => (
@@ -129,7 +129,7 @@ has tokenizer_class => (
     documentation => "Use tokenizer CLASS",
     isa           => Str,
     is            => "ro",
-    default       => "Words",
+    default       => "NonWhitespace",
 );
 
 has ui_class => (
