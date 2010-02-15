@@ -9,6 +9,8 @@
       them as a substring. This makes the NonWhitespace tokenizer more useful
     - Made NonWhitespace the default tokenizer and changed the default Markov
       order from 5 to 2
+    - Fixed a bug with the DBD::* backends not retrieving the Markov order
+      from an existing database
 
 0.14 Sat Feb 13 17:07:30 GMT 2010
     - Fixed a bug in the test suite preventing optional backends from

@@ -96,12 +96,18 @@ has _boundary_token_id => (
 # our statement handlers
 sub _build_sth {
     my ($self) = @_;
-    my $sections = $self->_sth_sections();
+    my ($sections, $prefix) = $self->_sth_sections_static();
+    return $self->_prepare_sth($sections, $prefix);
+}
+
+sub _prepare_sth {
+    my ($self, $sections, $prefix) = @_;
+
     my %state;
     while (my ($name, $options) = each %$sections) {
         my $section = $options->{section} // $name;
         my %options = %{ $options->{options} // {} };
-        my $template = $self->section_data("query_$section");
+        my $template = $self->section_data("$prefix$section");
         my $sql;
         Template->new->process(
             $template,
@@ -119,13 +125,14 @@ sub _build_sth {
     return \%state;
 }
 
-sub _sth_sections {
+sub _sth_sections_static {
     my ($self) = @_;
     my %sections;
+    my $prefix = 'static_query_';
 
     # () sections are magical
-    my @plain_sections = grep { /^query_/ and not /\(.*?\)/ } $self->section_data_names;
-    s[^query_][] for @plain_sections;
+    my @plain_sections = grep { /^$prefix/ and not /\(.*?\)/ } $self->section_data_names;
+    s[^$prefix][] for @plain_sections;
 
     $sections{$_} = undef for @plain_sections;
 
@@ -137,6 +144,20 @@ sub _sth_sections {
             };
         }
     }
+
+    return \%sections, $prefix;;
+}
+
+sub _sth_sections_dynamic {
+    my ($self) = @_;
+    my %sections;
+    my $prefix = 'dynamic_query_';
+
+    # () sections are magical
+    my @plain_sections = grep { /^$prefix/ and not /\(.*?\)/ } $self->section_data_names;
+    s[^$prefix][] for @plain_sections;
+
+    $sections{$_} = undef for @plain_sections;
 
     for my $order (0 .. $self->order-1) {
         $sections{"expr_by_token${order}_id"} = {
@@ -157,7 +178,7 @@ sub _sth_sections {
         }
     }
 
-    return \%sections;
+    return \%sections, $prefix;
 }
 
 sub _engage {
@@ -182,6 +203,13 @@ sub _engage {
         $self->sth->{last_token_rowid}->execute();
         my $id = $self->sth->{last_token_rowid}->fetchrow_array();
         $self->_boundary_token_id($id);
+    }
+
+    # prepare SQL statements which depend on the Markov order
+    my ($sections, $prefix) = $self->_sth_sections_dynamic();
+    my $sth = $self->_prepare_sth($sections, $prefix);
+    while (my ($query, $st) = each %$sth) {
+        $self->sth->{$query} = $st;
     }
 
     $self->_engaged(1);
@@ -614,51 +642,51 @@ CREATE INDEX expr_token_ids on expr ([% columns %]);
 CREATE INDEX next_token_expr_id ON next_token (expr_id);
 CREATE INDEX prev_token_expr_id ON prev_token (expr_id);
 CREATE INDEX next_token_token_id ON next_token (token_id);
-__[ query_get_order ]__
+__[ static_query_get_order ]__
 SELECT text FROM info WHERE attribute = 'markov_order';
-__[ query_set_order ]__
+__[ static_query_set_order ]__
 INSERT INTO info (attribute, text) VALUES ('markov_order', ?);
-__[ query_expr_id ]__
-SELECT id FROM expr WHERE
-[% FOREACH i IN orders %]
-    token[% i %]_id = ? [% UNLESS loop.last %] AND [% END %]
-[% END %]
-__[ query_expr_by_token(NUM)_id ]__
-SELECT * FROM expr WHERE [% column %] = ?
-[% SWITCH dbd %][% CASE 'mysql'  %]ORDER BY RAND()   LIMIT 1;
-                [% CASE DEFAULT  %]ORDER BY RANDOM() LIMIT 1;
-                [% END %]
-__[ query_random_expr ]__
+__[ static_query_random_expr ]__
 SELECT * from expr
 [% SWITCH dbd %][% CASE 'Pg'    %]WHERE id >= (random()*id+1)::int
                 [% CASE 'mysql' %]WHERE id >= (abs(rand()) % (SELECT max(id) FROM expr))
                 [% CASE DEFAULT %]WHERE id >= (abs(random()) % (SELECT max(id) FROM expr))
                 [% END %]
   LIMIT 1;
-__[ query_token_id ]__
+__[ static_query_token_id ]__
 SELECT id FROM token WHERE text = ?;
-__[ query_token_id_like ]__
+__[ static_query_token_id_like ]__
 SELECT id FROM token WHERE text LIKE ? ESCAPE '\'
 [% SWITCH dbd %][% CASE 'mysql'  %]ORDER BY RAND()   LIMIT 1;
                 [% CASE DEFAULT  %]ORDER BY RANDOM() LIMIT 1;
                 [% END %];
-__[ query_token_text ]__
+__[ static_query_token_text ]__
 SELECT text FROM token WHERE id = ?;
-__[ query_add_token ]__
+__[ static_query_add_token ]__
 INSERT INTO token (text) VALUES (?)[% IF dbd == 'Pg' %] RETURNING id[% END %];
-__[ query_last_expr_rowid ]_
+__[ static_query_last_expr_rowid ]_
 SELECT id FROM expr ORDER BY id DESC LIMIT 1;
-__[ query_last_token_rowid ]__
+__[ static_query_last_token_rowid ]__
 SELECT id FROM token ORDER BY id DESC LIMIT 1;
-__[ query_(next_token|prev_token)_count ]__
+__[ static_query_(next_token|prev_token)_count ]__
 SELECT count FROM [% table %] WHERE expr_id = ? AND token_id = ?;
-__[ query_(next_token|prev_token)_inc ]__
+__[ static_query_(next_token|prev_token)_inc ]__
 UPDATE [% table %] SET count = ? WHERE expr_id = ? AND token_id = ?
-__[ query_(next_token|prev_token)_add ]__
+__[ static_query_(next_token|prev_token)_add ]__
 INSERT INTO [% table %] (expr_id, token_id, count) VALUES (?, ?, 1);
-__[ query_(next_token|prev_token)_get ]__
+__[ static_query_(next_token|prev_token)_get ]__
 SELECT token_id, count FROM [% table %] WHERE expr_id = ?;
-__[ query_(add_expr) ]__
-INSERT INTO expr ([% columns %]) VALUES ([% ids %])[% IF dbd == 'Pg' %] RETURNING id[% END %];
-__[ query_token_count ]__
+__[ static_query_token_count ]__
 SELECT count FROM next_token WHERE token_id = ?;
+__[ dynamic_query_(add_expr) ]__
+INSERT INTO expr ([% columns %]) VALUES ([% ids %])[% IF dbd == 'Pg' %] RETURNING id[% END %];
+__[ dynamic_query_expr_by_token(NUM)_id ]__
+SELECT * FROM expr WHERE [% column %] = ?
+[% SWITCH dbd %][% CASE 'mysql'  %]ORDER BY RAND()   LIMIT 1;
+                [% CASE DEFAULT  %]ORDER BY RANDOM() LIMIT 1;
+                [% END %]
+__[ dynamic_query_expr_id ]__
+SELECT id FROM expr WHERE
+[% FOREACH i IN orders %]
+    token[% i %]_id = ? [% UNLESS loop.last %] AND [% END %]
+[% END %]
