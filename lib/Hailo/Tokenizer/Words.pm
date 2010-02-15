@@ -32,9 +32,6 @@ sub make_tokens {
     my ($self, $line) = @_;
     my (@tokens) = $line =~ /($TOKEN)/gs;
 
-    # compress whitespace
-    s/ +/ / for @tokens;
-
     # lower-case tokens except those which are ALL UPPERCASE
     @tokens = map { $_ ne uc($_) ? lc($_) : $_ } @tokens;
     return @tokens;

@@ -106,6 +106,11 @@ subtest make_output => sub {
             ],
             "Sá ''karlkyns'' aðili í [[hjónaband]]i tveggja lesbía?",
         ],
+        [
+            "long    whitespace is preserved",
+            ['long', '    ', 'whitespace', ' ', 'is', ' ', 'preserved'],
+            "Long    whitespace is preserved.",
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();
