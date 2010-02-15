@@ -2,6 +2,8 @@ package Hailo::Storage::DBD::SQLite;
 use 5.010;
 use Moose;
 use MooseX::StrictConstructor;
+use Hailo::Storage::DBD::SQLite::Tokenizer;
+use DBI qw(:sql_types);
 use namespace::clean -except => 'meta';
 
 our $VERSION = '0.14';
@@ -23,6 +25,8 @@ before _engage => sub {
     my ($self) = @_;
     my $size = $self->arguments->{cache_size};
     $self->dbh->do("PRAGMA cache_size=$size;") if defined $size;
+    # OMGWTFBUBBLEGUM
+    $self->inject_tokenizer();
     return;
 };
 
@@ -46,6 +50,16 @@ sub _exists_db {
     return unless defined $self->brain;
     return if $self->brain eq ':memory:';
     return -s $self->brain;
+}
+
+sub inject_tokenizer {
+    my ($self) = @_;
+    my $ptr = Hailo::Storage::DBD::SQLite::Tokenizer::get_tokenizer_ptr();
+    my $dbh = $self->dbh;
+    my $sth = $dbh->prepare("SELECT fts3_tokenizer(?, ?)");
+    $sth->bind_param(1, "Hailo_tokenizer");
+    $sth->bind_param(2, $ptr, SQL_BLOB);
+    $sth->execute();
 }
 
 __PACKAGE__->meta->make_immutable;

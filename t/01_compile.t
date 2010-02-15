@@ -20,6 +20,7 @@ my @classes = qw(
     Hailo::Storage::Perl
     Hailo::Storage::Perl::Flat
     Hailo::Storage::DBD::SQLite
+    Hailo::Storage::DBD::SQLite::Tokenizer
     Hailo::Storage::DBD::mysql
     Hailo::Storage::DBD::Pg
     Hailo::Role::Generic

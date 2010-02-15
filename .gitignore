@@ -1,3 +1,4 @@
+_Inline
 Makefile
 Makefile.old
 Hailo-*
@@ -11,3 +12,4 @@ cover_db
 *.trn
 *.txt
 *.bak
+*.#*
