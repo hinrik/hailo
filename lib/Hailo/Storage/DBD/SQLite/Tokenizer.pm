@@ -394,6 +394,7 @@ SQLITE_PRIVATE void sqlite3Fts3SimpleTokenizerModule(
 void* get_tokenizer_ptr() {
     sqlite3_tokenizer_module *p;
     sqlite3Fts3SimpleTokenizerModule(&p);
+    /*printf("myxptr = %d\n", p);*/
     return (void *)p;
 }
 

@@ -55,10 +55,15 @@ sub _exists_db {
 sub inject_tokenizer {
     my ($self) = @_;
     my $ptr = Hailo::Storage::DBD::SQLite::Tokenizer::get_tokenizer_ptr();
-    my $dbh = $self->dbh;
-    my $sth = $dbh->prepare("SELECT fts3_tokenizer(?, ?)");
+
+    # HACK. Doing this because using '?' and $sth->bind_param(2, $ptr,
+    # SQL_BLOB); ends up passing nothing to
+    # sqlite. I.e. sqlite3_value_bytes(argv[1]); will be 0
+    my $pptr = pack "P", $ptr;
+
+    my $sth = $self->dbh->prepare("SELECT fts3_tokenizer(?, '$pptr')");
     $sth->bind_param(1, "Hailo_tokenizer");
-    $sth->bind_param(2, $ptr, SQL_BLOB);
+
     $sth->execute();
 }
 
