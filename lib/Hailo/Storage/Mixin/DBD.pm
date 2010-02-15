@@ -261,7 +261,7 @@ sub make_reply {
     my ($self, $tokens, $key_tokens) = @_;
     $self->_engage() if !$self->_engaged;
 
-    my @key_ids = map { $self->_token_id($_) } @$key_tokens;
+    my @key_ids = map { $self->_token_id_like($_) } @$key_tokens;
     @key_ids = $self->_find_rare_tokens(\@key_ids);
 
     # try to construct a novel, but relevant reply
@@ -428,6 +428,23 @@ sub _token_id {
 
     $self->sth->{token_id}->execute($token);
     my $token_id = $self->sth->{token_id}->fetchrow_array();
+
+    return if !defined $token_id;
+    return $token_id;
+}
+
+sub _token_id_like {
+    my ($self, $token) = @_;
+
+    # \ is an escape character in the LIKE expression,
+    # and % and _ are special
+    $token =~ s{\\}{\\\\}g;
+    $token =~ s{([%_])}{\\$1}g;
+    $token = "%$token%";
+
+    $self->sth->{token_id_like}->execute($token);
+    my $token_id = $self->sth->{token_id_like}->fetchrow_array();
+
     return if !defined $token_id;
     return $token_id;
 }
@@ -620,6 +637,11 @@ SELECT * from expr
   LIMIT 1;
 __[ query_token_id ]__
 SELECT id FROM token WHERE text = ?;
+__[ query_token_id_like ]__
+SELECT id FROM token WHERE text LIKE ? ESCAPE '\'
+[% SWITCH dbd %][% CASE 'mysql'  %]ORDER BY RAND()   LIMIT 1;
+                [% CASE DEFAULT  %]ORDER BY RANDOM() LIMIT 1;
+                [% END %];
 __[ query_token_text ]__
 SELECT text FROM token WHERE id = ?;
 __[ query_add_token ]__
