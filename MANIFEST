@@ -64,7 +64,6 @@ t/tokenizer/Chars.t
 t/tokenizer/Words.t
 t/ui/readline.t
 t/usage/options.t
-utils/bisect-hailo
 utils/crunchbase-companies
 utils/hailo-benchmark
 xt/01_pod.t

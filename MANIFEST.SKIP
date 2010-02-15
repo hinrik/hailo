@@ -10,3 +10,4 @@
 \.brn$
 ^blib/
 \.#
+^utils/developer/
