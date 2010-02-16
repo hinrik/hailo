@@ -289,7 +289,7 @@ sub make_reply {
     my ($self, $tokens, $key_tokens) = @_;
     $self->_engage() if !$self->_engaged;
 
-    my @key_ids = map { $self->_token_id($_) } @$key_tokens;
+    my @key_ids = map { $self->_token_id_like($_) } @$key_tokens;
     @key_ids = $self->_find_rare_tokens(\@key_ids);
 
     # try to construct a novel, but relevant reply
