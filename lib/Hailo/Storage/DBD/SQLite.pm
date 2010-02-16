@@ -26,7 +26,7 @@ before _engage => sub {
     my $size = $self->arguments->{cache_size};
     $self->dbh->do("PRAGMA cache_size=$size;") if defined $size;
     # OMGWTFBUBBLEGUM
-    $self->inject_tokenizer();
+    #$self->inject_tokenizer();
     return;
 };
 
