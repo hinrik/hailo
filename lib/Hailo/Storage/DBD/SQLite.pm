@@ -71,11 +71,16 @@ sub _exists_db {
 sub inject_tokenizer {
     my ($self) = @_;
     my $ptr = Hailo::Storage::DBD::SQLite::Tokenizer::get_tokenizer_ptr();
+    use Data::Dump 'ddx';
 
     # HACK. Doing this because using '?' and $sth->bind_param(2, $ptr,
     # SQL_BLOB); ends up passing nothing to
     # sqlite. I.e. sqlite3_value_bytes(argv[1]); will be 0
     my $pptr = pack "P", $ptr;
+    ddx $ptr;
+
+    # show the pointer to the 'simple' tokenizer'
+    ddx $self->dbh->selectrow_array("SELECT fts3_tokenizer('simple')");
 
     my $sth = $self->dbh->prepare("SELECT fts3_tokenizer(?, ?)");
     $sth->bind_param(1, "Hailo_tokenizer");
