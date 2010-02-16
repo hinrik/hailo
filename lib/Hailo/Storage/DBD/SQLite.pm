@@ -26,7 +26,7 @@ before _engage => sub {
     my $size = $self->arguments->{cache_size};
     $self->dbh->do("PRAGMA cache_size=$size;") if defined $size;
     # OMGWTFBUBBLEGUM
-    #$self->inject_tokenizer();
+    $self->inject_tokenizer();
     return;
 };
 
@@ -76,10 +76,10 @@ sub inject_tokenizer {
     # SQL_BLOB); ends up passing nothing to
     # sqlite. I.e. sqlite3_value_bytes(argv[1]); will be 0
     my $pptr = pack "P", $ptr;
-    $pptr =~ s/\0/x/g;
 
-    my $sth = $self->dbh->prepare("SELECT fts3_tokenizer(?, '$pptr')");
+    my $sth = $self->dbh->prepare("SELECT fts3_tokenizer(?, ?)");
     $sth->bind_param(1, "Hailo_tokenizer");
+    $sth->bind_param(2, $pptr, SQL_BLOB);
 
     $sth->execute();
 }
