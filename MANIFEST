@@ -58,6 +58,7 @@ t/storage/dbd-options.t
 t/storage/DBD-Pg.t
 t/storage/DBD-SQLite-file.t
 t/storage/DBD-SQLite-memory.t
+t/storage/DBD-SQLite-nonalpha.t
 t/storage/dbd-switch-order.t
 t/storage/Perl-Flat.t
 t/storage/Perl.t
