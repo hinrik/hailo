@@ -44,6 +44,22 @@ after stop_training => sub {
     return;
 };
 
+override _token_id_similar => sub {
+    my ($self, $token) = @_;
+
+    # \ is an escape character in the MATCH expression,
+    # and *, and ", are special
+    $token =~ s{\\}{\\\\}g;
+    $token =~ s{([*"])}{\\$1}g;
+    $token = qq{"$token*"};
+
+    $self->sth->{token_id_similar}->execute($token);
+    my $token_id = $self->sth->{token_id_similar}->fetchrow_array();
+
+    return if !defined $token_id;
+    return $token_id;
+};
+
 sub _exists_db {
     my ($self) = @_;
     my $brain = $self->brain;
@@ -60,6 +76,7 @@ sub inject_tokenizer {
     # SQL_BLOB); ends up passing nothing to
     # sqlite. I.e. sqlite3_value_bytes(argv[1]); will be 0
     my $pptr = pack "P", $ptr;
+    $pptr =~ s/\0/x/g;
 
     my $sth = $self->dbh->prepare("SELECT fts3_tokenizer(?, '$pptr')");
     $sth->bind_param(1, "Hailo_tokenizer");
@@ -133,7 +150,9 @@ it under the same terms as Perl itself.
 =cut
 
 __DATA__
-__[ query_last_expr_rowid ]__
+__[ static_query_last_expr_rowid ]__
 SELECT last_insert_rowid();
-__[ query_last_token_rowid ]__
+__[ static_query_last_token_rowid ]__
 SELECT last_insert_rowid();
+__[ static_query_token_id_similar ]__
+SELECT rowid FROM token WHERE text LIKE ? ESCAPE '\' ORDER BY RANDOM() LIMIT 1;

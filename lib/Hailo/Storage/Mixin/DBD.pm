@@ -289,7 +289,7 @@ sub make_reply {
     my ($self, $tokens, $key_tokens) = @_;
     $self->_engage() if !$self->_engaged;
 
-    my @key_ids = map { $self->_token_id_like($_) } @$key_tokens;
+    my @key_ids = map { $self->_token_id_similar($_) } @$key_tokens;
     @key_ids = $self->_find_rare_tokens(\@key_ids);
 
     # try to construct a novel, but relevant reply
@@ -461,20 +461,11 @@ sub _token_id {
     return $token_id;
 }
 
-sub _token_id_like {
+sub _token_id_similar {
     my ($self, $token) = @_;
 
-    # \ is an escape character in the LIKE expression,
-    # and % and _ are special
-    $token =~ s{\\}{\\\\}g;
-    $token =~ s{([%_])}{\\$1}g;
-    $token = "%$token%";
-
-    $self->sth->{token_id_like}->execute($token);
-    my $token_id = $self->sth->{token_id_like}->fetchrow_array();
-
-    return if !defined $token_id;
-    return $token_id;
+    # do an exact lookup by default
+    return $self->_token_id($token);
 }
 
 # add token and/or return its id
@@ -596,17 +587,27 @@ CREATE TABLE info (
     text TEXT NOT NULL
 );
 __[ table_token ]__
-CREATE TABLE token (
-    id   [% SWITCH dbd %][% CASE 'Pg'    %]SERIAL UNIQUE,
-                         [% CASE 'mysql' %]INTEGER PRIMARY KEY AUTO_INCREMENT,
-                         [% CASE DEFAULT %]INTEGER PRIMARY KEY AUTOINCREMENT,
-                         [% END %]
-    text [% IF dbd == 'mysql' %] VARCHAR(255) [% ELSE %] TEXT [% END %] NOT NULL
-);
+[% IF dbd == 'SQLite' %]
+    CREATE VIRTUAL TABLE token USING fts3(text, tokenize=simple);
+[% ELSE %]
+    CREATE TABLE token (
+        id   [% SWITCH dbd %]
+                [% CASE 'Pg'    %]SERIAL UNIQUE,
+                [% CASE 'mysql' %]INTEGER PRIMARY KEY AUTO_INCREMENT,
+                [% CASE DEFAULT %]INTEGER PRIMARY KEY AUTOINCREMENT,
+            [% END %]
+        text [% IF dbd == 'mysql' %] VARCHAR(255) [% ELSE %] TEXT [% END %] NOT NULL
+    );
+[% END %]
 __[ table_expr ]__
 CREATE TABLE expr (
 [% FOREACH i IN orders %]
-    token[% i %]_id INTEGER NOT NULL REFERENCES token (id),
+    token[% i %]_id INTEGER NOT NULL REFERENCES token (
+        [% IF dbd == 'SQLite' %]
+            rowid
+        [% ELSE %]
+            id
+        [% END %]),
 [% END %]
     id        [% SWITCH dbd %][% CASE 'Pg'    %]SERIAL UNIQUE
                               [% CASE 'mysql' %]INTEGER PRIMARY KEY AUTO_INCREMENT
@@ -620,7 +621,12 @@ CREATE TABLE next_token (
                              [% CASE DEFAULT %]INTEGER PRIMARY KEY AUTOINCREMENT,
                              [% END %]
     expr_id  INTEGER NOT NULL REFERENCES expr (id),
-    token_id INTEGER NOT NULL REFERENCES token (id),
+    token_id INTEGER NOT NULL REFERENCES token (
+        [% IF dbd == 'SQLite' %]
+            rowid
+        [% ELSE %]
+            id
+        [% END %]),
     count    INTEGER NOT NULL
 );
 __[ table_prev_token ]__
@@ -630,11 +636,16 @@ CREATE TABLE prev_token (
                              [% CASE DEFAULT %]INTEGER PRIMARY KEY AUTOINCREMENT,
                              [% END %]
     expr_id  INTEGER NOT NULL REFERENCES expr (id),
-    token_id INTEGER NOT NULL REFERENCES token (id),
+    token_id INTEGER NOT NULL REFERENCES token (
+        [% IF dbd == 'SQLite' %]
+            rowid
+        [% ELSE %]
+            id
+        [% END %]),
     count    INTEGER NOT NULL
 );
 __[ table_indexes ]__
-CREATE INDEX token_text on token (text);
+[% IF dbd != 'SQLite' %]CREATE INDEX token_text on token (text);[% END %]
 [% FOREACH i IN orders %]
 CREATE INDEX expr_token[% i %]_id on expr (token[% i %]_id);
 [% END %]
@@ -654,14 +665,9 @@ SELECT * from expr
                 [% END %]
   LIMIT 1;
 __[ static_query_token_id ]__
-SELECT id FROM token WHERE text = ?;
-__[ static_query_token_id_like ]__
-SELECT id FROM token WHERE text LIKE ? ESCAPE '\'
-[% SWITCH dbd %][% CASE 'mysql'  %]ORDER BY RAND()   LIMIT 1;
-                [% CASE DEFAULT  %]ORDER BY RANDOM() LIMIT 1;
-                [% END %];
+SELECT [% IF dbd == 'SQLite' %]rowid[% ELSE %]id[% END %] FROM token WHERE text [% IF dbd == 'SQLite' %]LIKE ? ESCAPE '\'[% ELSE %]= ?[% END %];
 __[ static_query_token_text ]__
-SELECT text FROM token WHERE id = ?;
+SELECT text FROM token WHERE [% IF dbd == 'SQLite' %]rowid[% ELSE %]id[% END %] = ?;
 __[ static_query_add_token ]__
 INSERT INTO token (text) VALUES (?)[% IF dbd == 'Pg' %] RETURNING id[% END %];
 __[ static_query_last_expr_rowid ]_
