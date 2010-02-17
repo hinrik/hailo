@@ -64,8 +64,8 @@ sub make_output {
     # end paragraphs with a period when it makes sense
     $string =~ s/ $WORD\K$/./;
 
-    # capitalize the word 'I'
-    $string =~ s{(?<= )\bi\b}{I}g;
+    # capitalize the word "i'm"
+    $string =~ s{\bi'm\b}{I'm}g;
 
     return $string;
 }
