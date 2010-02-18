@@ -12,6 +12,7 @@
     - Removed Text::Trim dependency due to it not being acceptable for Debian
     - Learn from the input when using the ReadLine UI
     - Removed Test::Exit hard dependency for tests: Not in Debian yet
+    - Added a --stats option to print some statistics about the brain
 
 0.14 Sat Feb 13 17:07:30 GMT 2010
     - Fixed a bug in the test suite preventing optional backends from

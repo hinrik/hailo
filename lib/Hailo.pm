@@ -112,6 +112,16 @@ has brain_resource => (
     is            => "ro",
 );
 
+has print_stats => (
+    traits        => [qw(Getopt)],
+    cmd_aliases   => "s",
+    cmd_flag      => "stats",
+    documentation => "Print statistics about the brain",
+    isa           => Bool,
+    is            => "ro",
+);
+
+# working classes
 has storage_class => (
     traits        => [qw(Getopt)],
     cmd_aliases   => "S",
@@ -354,6 +364,11 @@ sub run {
     if (defined $self->reply_str) {
         my $answer = $self->reply($self->reply_str);
         say $answer // "I don't know enough to answer you yet.";
+    }
+
+    if ($self->print_stats) {
+        my ($tok, $ex) = $hailo->stats();
+        say "I know about $tok tokens and $ex expressions.";
     }
 
     $self->save() if defined $self->brain_resource;
