@@ -505,8 +505,7 @@ sub reply {
     if (defined $input) {
         $input = $self->_clean_input($input);
         my $tokens = $toke->make_tokens($input);
-        my $uniq_tokens = $toke->uniq_tokens($tokens);
-        $reply = $storage->make_reply($uniq_tokens);
+        $reply = $storage->make_reply($tokens);
     }
     else {
         $reply = $storage->make_reply();

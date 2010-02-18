@@ -61,20 +61,6 @@ sub make_tokens {
     return \@tokens;
 }
 
-sub uniq_tokens {
-    my ($self, $tokens) = @_;
-
-    my %uniq;
-    for my $pos (0 .. $#{ $tokens }) {
-        my $key = join '', @{ $tokens->[$pos] };
-        $uniq{$key} = $pos;
-    }
-
-    my @ordered = sort { $uniq{$a} <=> $uniq{$b} } keys %uniq;
-    my @return = map { [/^(\d)(.*)/] } @ordered;
-    return \@return;
-}
-
 # tokens -> output
 sub make_output {
     my ($self, $tokens) = @_;

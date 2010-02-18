@@ -308,6 +308,9 @@ sub make_reply {
     $self->_engage() if !$self->_engaged;
     my $order = $self->order;
 
+    # we will favor these tokens when making the reply
+    my @key_ids;
+
     my %token_cache;
     for my $token_info (@$tokens) {
         my $text = $token_info->[1];
@@ -315,12 +318,10 @@ sub make_reply {
         next if !defined $info;
         my ($id, $spacing) = @$info;
         next if !defined $id;
+        push @key_ids, $id;
         next if exists $token_cache{$id};
         $token_cache{$id} = [$spacing, $text];
     }
-
-    # we will favor these tokens when making the reply
-    my @key_ids = keys %token_cache;
 
     # toss all but a third of the tokens away
     @key_ids = do {
@@ -433,11 +434,12 @@ sub _sort_rare_tokens {
 
     my %rare;
     for my $id (@$token_ids) {
+        next if exists $rare{$id};
         $self->sth->{token_count}->execute($id);
-        $rare{$id} = $self->sth->{token_count}->fetchrow_array;
+        $rare{$id} = $self->sth->{token_count}->fetchrow_array // 0;
     }
 
-    my @ids = sort { $rare{$a} <=> $rare{$b} } keys %rare;
+    my @ids = sort { $rare{$a} <=> $rare{$b} } @$token_ids;
     return @ids;
 }
 

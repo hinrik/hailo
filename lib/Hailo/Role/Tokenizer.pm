@@ -6,7 +6,6 @@ use namespace::clean -except => 'meta';
 our $VERSION = '0.14';
 
 requires 'make_tokens';
-requires 'uniq_tokens';
 requires 'make_output';
 
 1;
@@ -30,10 +29,6 @@ Takes a line of input and returns an array reference of tokens.
 =head2 C<make_output>
 
 Takes an array reference of tokens and returns a line of output.
-
-=head2 C<uniq_tokens>
-
-Takes an array reference of tokens and returns the unique ones.
 
 =head1 AUTHOR
 

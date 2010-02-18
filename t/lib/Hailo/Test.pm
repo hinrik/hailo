@@ -475,7 +475,7 @@ sub some_tokens {
     my @small_trn = @trn[0 .. min(scalar(@trn), $lines)];
     my $toke = Hailo::Tokenizer::Words->new;
     my @trn_tokens = map { @{ $toke->make_tokens($_) } } @small_trn;
-    my @token_refs = shuffle(@{ $toke->uniq_tokens(\@trn_tokens) });
+    my @token_refs = shuffle(@trn_tokens);
     my @tokens;
     push @tokens, $_->[1] for @token_refs;
 
