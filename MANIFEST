@@ -62,7 +62,7 @@ t/storage/dbd-switch-order.t
 t/storage/Perl-Flat.t
 t/storage/Perl.t
 t/tokenizer/Chars.t
-t/tokenizer/NonWhitespace.t
+t/tokenizer/Words.t
 t/ui/readline.t
 t/usage/options.t
 utils/crunchbase-companies
