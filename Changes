@@ -1,4 +1,4 @@
-0.15
+0.15 Thu Feb 18 23:55:19 GMT 2010
     - Allow specifying SQLite's cache size with --storage-args
     - Reduce likelhood of returning a reply which is identical to the input
     - Instead of depending on version "0" of most modules (i.e. any

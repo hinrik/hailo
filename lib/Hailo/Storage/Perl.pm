@@ -6,7 +6,7 @@ use MooseX::Types::Moose qw<HashRef Int Str>;
 use Storable;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.14';
+our $VERSION = '0.15';
 
 extends qw(Hailo::Storage::Mixin::Hash
            Hailo::Storage::Mixin::Storable);
