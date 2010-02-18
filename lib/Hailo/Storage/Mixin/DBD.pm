@@ -303,7 +303,7 @@ sub make_reply {
         $token_cache{$id} = [$spacing, $text];
     }
 
-    # we eill favor these tokens while making the reply
+    # we will favor these tokens when making the reply
     my @key_ids = keys %token_cache;
 
     # toss all but a third of the tokens away
