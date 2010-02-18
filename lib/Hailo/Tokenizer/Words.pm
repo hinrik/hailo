@@ -1,4 +1,4 @@
-package Hailo::Tokenizer::NonWhitespace;
+package Hailo::Tokenizer::Words;
 use 5.010;
 use Moose;
 use MooseX::StrictConstructor;
@@ -122,7 +122,7 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Hailo::Tokenizer::NonWhitespace - A tokenizer for L<Hailo|Hailo> which splits
+Hailo::Tokenizer::Words - A tokenizer for L<Hailo|Hailo> which splits
 on whitespace, mostly.
 
 =head1 DESCRIPTION

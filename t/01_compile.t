@@ -28,7 +28,7 @@ my @classes = qw(
     Hailo::Role::Log
     Hailo::Role::Tokenizer
     Hailo::UI::ReadLine
-    Hailo::Tokenizer::NonWhitespace
+    Hailo::Tokenizer::Words
     Hailo::Tokenizer::Chars
 );
 

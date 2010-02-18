@@ -1,13 +1,12 @@
 0.15
     - Allow specifying SQLite's cache size with --storage-args
     - Reduce likelhood of returning a reply which is identical to the input
-    - Added a NonWhitespace tokenizer which splits on whitespace
     - Instead of depending on version "0" of most modules (i.e. any
       version) depend on the latest CPAN version. We know this works;
       but we have no idea if the older modules work.
-    - Made NonWhitespace the default tokenizer and changed the default Markov
-      order from 5 to 2
-    - Removed Words tokenizer
+    - Changed to word tokenizer so that it doesn't return whitespace tokens,
+      instead returning a flag which dictatesthe whitespace policy of the
+      token in question. Changed the default Markov order to 2 to compensate.
     - Fixed a bug with the DBD::* backends not retrieving the Markov order
       from an existing database
     - Removed Text::Trim dependency due to it not being acceptable for Debian

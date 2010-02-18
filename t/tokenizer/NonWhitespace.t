@@ -3,7 +3,7 @@ use utf8;
 use strict;
 use warnings;
 use Test::More tests => 2;
-use Hailo::Tokenizer::NonWhitespace;
+use Hailo::Tokenizer::Words;
 
 binmode $_, ':encoding(utf8)' for (*STDIN, *STDOUT, *STDERR);
 
@@ -12,7 +12,7 @@ subtest make_tokens => sub {
     my $t = sub {
         my ($str, $tokens) = @_;
 
-        my $toke = Hailo::Tokenizer::NonWhitespace->new();
+        my $toke = Hailo::Tokenizer::Words->new();
         my $parsed = $toke->make_tokens($str);
         my $tok;
         push @$tok, $_->[1] for @$parsed;
@@ -83,7 +83,7 @@ subtest make_output => sub {
         ],
     );
 
-    my $toke = Hailo::Tokenizer::NonWhitespace->new();
+    my $toke = Hailo::Tokenizer::Words->new();
 
     for my $test (@tokens) {
         my $tokens = $toke->make_tokens($test->[0]);

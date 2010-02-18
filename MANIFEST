@@ -31,7 +31,7 @@ lib/Hailo/Storage/Mixin/Storable.pm
 lib/Hailo/Storage/Perl.pm
 lib/Hailo/Storage/Perl/Flat.pm
 lib/Hailo/Tokenizer/Chars.pm
-lib/Hailo/Tokenizer/NonWhitespace.pm
+lib/Hailo/Tokenizer/Words.pm
 lib/Hailo/UI/ReadLine.pm
 Makefile.PL
 MANIFEST			This list of files

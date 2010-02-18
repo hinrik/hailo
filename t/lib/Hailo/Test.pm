@@ -10,7 +10,7 @@ use File::Slurp qw(slurp);
 use List::Util qw(shuffle min);
 use File::Temp qw(tempfile tempdir);
 use File::CountLines qw(count_lines);
-use Hailo::Tokenizer::NonWhitespace;
+use Hailo::Tokenizer::Words;
 use namespace::clean -except => 'meta';
 
 sub simple_storages {
@@ -300,7 +300,7 @@ sub test_badger {
         $self->train_filename("badger.trn");
 
         my $tests = $brief ? 5 : 50;
-        skip "Badger test doesn't work with NonWhitespace tokenizer", $tests + $tests * 5 * 2;
+        skip "Badger test doesn't work with Words tokenizer", $tests + $tests * 5 * 2;
 
         for (1 .. $tests) {
             for (1 .. 5) {
@@ -473,7 +473,7 @@ sub some_tokens {
 
     my @trn = split /\n/, $trn;
     my @small_trn = @trn[0 .. min(scalar(@trn), $lines)];
-    my $toke = Hailo::Tokenizer::NonWhitespace->new;
+    my $toke = Hailo::Tokenizer::Words->new;
     my @trn_tokens = map { @{ $toke->make_tokens($_) } } @small_trn;
     my @token_refs = shuffle(@{ $toke->uniq_tokens(\@trn_tokens) });
     my @tokens;

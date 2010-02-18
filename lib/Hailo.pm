@@ -129,7 +129,7 @@ has tokenizer_class => (
     documentation => "Use tokenizer CLASS",
     isa           => Str,
     is            => "ro",
-    default       => "NonWhitespace",
+    default       => "Words",
 );
 
 has ui_class => (
