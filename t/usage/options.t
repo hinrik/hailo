@@ -5,21 +5,36 @@ use List::MoreUtils qw(uniq);
 use Test::More tests => 36;
 use Test::Exception;
 use Test::Output;
-use Test::Exit;
 use Hailo;
 
 $SIG{__WARN__} = sub {
     print STDERR @_ if $_[0] !~ m/(?:^Issuing rollback|for database handle being DESTROY)/
 };
 
-# --version
-stdout_like(
-    sub {
-        never_exits_ok( sub { Hailo->new( print_version => 1)->run }, "exiting exits")
-    },
-    qr/^hailo [0-9.]+$/,
-    "Hailo prints its version",
-);
+my $has_test_exit = sub {
+    local $@;
+    eval {
+        require Test::Exit;
+        Test::Exit->import;
+    };
+    return 1 unless $@;
+    return;
+}->();
+
+if ($has_test_exit) {
+    # --version
+    stdout_like(
+        sub {
+            never_exits_ok( sub { Hailo->new( print_version => 1)->run }, "exiting exits")
+        },
+        qr/^hailo [0-9.]+$/,
+        "Hailo prints its version",
+    );
+} else {
+  SKIP: {
+    skip "We don't have Test::Exit, skipping never_exits_ok() test", 2;
+  }
+}
 
 # Invalid train file
 dies_ok { Hailo->new( train_file => "/this-does-not-exist/$$" )->run }  "Calling Hailo with an invalid training file";
