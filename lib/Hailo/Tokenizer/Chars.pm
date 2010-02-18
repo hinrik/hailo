@@ -1,7 +1,6 @@
 package Hailo::Tokenizer::Chars;
 use 5.010;
 use Moose;
-use Text::Trim;
 use namespace::clean -except => 'meta';
 
 our $VERSION = '0.14';
@@ -36,6 +35,13 @@ sub uniq_tokens {
 sub make_output {
     my ($self, $tokens) = @_;
     return trim(join '', map { $_->[1] } @$tokens);
+}
+
+sub trim {
+    my $txt = shift;
+    $txt =~ s/^\s+//;
+    $txt =~ s/\s+$//;
+    return $txt;
 }
 
 __PACKAGE__->meta->make_immutable;

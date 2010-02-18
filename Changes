@@ -10,6 +10,7 @@
     - Removed Words tokenizer
     - Fixed a bug with the DBD::* backends not retrieving the Markov order
       from an existing database
+    - Removed Text::Trim dependency due to it not being acceptable for Debian
 
 0.14 Sat Feb 13 17:07:30 GMT 2010
     - Fixed a bug in the test suite preventing optional backends from

@@ -38,7 +38,6 @@ requires       ('namespace::clean'              => '0.13');
 requires       ('Template'                      => '2.22');
 requires       ('Term::ProgressBar'             => '2.00');
 requires       ('Term::ReadLine::Gnu'           => '0');
-requires       ('Text::Trim'                    => '1.01');
 
 # for the optional backends
 recommends     ('CHI'                           => '0.34');
