@@ -79,6 +79,14 @@ Learns from a sequence of tokens. Takes an array reference of strings.
 Takes an (optional) array reference of tokens and returns a reply (arrayref
 of tokens) that might be relevant.
 
+=head2 C<token_total>
+
+Takes no arguments. Returns the number of tokens the brain knows.
+
+=head2 C<expr_total>
+
+Takes no arguments. Returns the number of expressions the brain knows.
+
 =head2 C<start_learning>
 
 Takes no arguments. This method is called by C<Hailo|Hailo> right before learning

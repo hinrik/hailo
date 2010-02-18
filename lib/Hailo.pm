@@ -501,6 +501,14 @@ sub reply {
     return $toke->make_output($reply);
 }
 
+sub stats {
+    my ($self) = @_;
+    my $storage = $self->_storage_obj;
+    my $tokens = $storage->token_total();
+    my $exprs = $storage->expr_total();
+    return $tokens, $exprs;
+}
+
 __PACKAGE__->meta->make_immutable;
 
 =encoding utf8
@@ -637,6 +645,11 @@ be relevant.
 =head2 C<save>
 
 Tells the underlying storage backend to save its state.
+
+=head2 C<stats>
+
+Takes no arguments. Returns the number of known tokens as well as the number
+of known expressions.
 
 =head1 CAVEATS
 

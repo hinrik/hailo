@@ -285,6 +285,22 @@ sub _get_create_db_sql {
     return ($sql =~ /\s*(.*?);/gs);
 }
 
+# return the number of tokens we know about
+sub token_total {
+    my ($self) = @_;
+    $self->_engage() if !$self->_engaged;
+    $self->sth->{token_total}->execute();
+    return $self->sth->{token_total}->fetchrow_array - 1;
+}
+
+# return the number of expressions we know about
+sub expr_total {
+    my ($self) = @_;
+    $self->_engage() if !$self->_engaged;
+    $self->sth->{expr_total}->execute();
+    return $self->sth->{expr_total}->fetchrow_array // 0;
+}
+
 ## no critic (Subroutines::ProhibitExcessComplexity)
 sub make_reply {
     my $self = shift;
@@ -645,6 +661,10 @@ __[ static_query_get_order ]__
 SELECT text FROM info WHERE attribute = 'markov_order';
 __[ static_query_set_order ]__
 INSERT INTO info (attribute, text) VALUES ('markov_order', ?);
+__[ static_query_token_total ]__
+SELECT COUNT(id) FROM token;
+__[ static_query_expr_total ]__
+SELECT COUNT(id) FROM expr;
 __[ static_query_random_expr ]__
 SELECT * from expr
 [% SWITCH dbd %]

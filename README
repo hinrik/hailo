@@ -108,6 +108,10 @@ METHODS
   "save"
     Tells the underlying storage backend to save its state.
 
+  "stats"
+    Takes no arguments. Returns the number of known tokens as well as the
+    number of known expressions.
+
 CAVEATS
     All occurences of "token_separator" will be stripped from your input
     before it is processed, so make sure it's set to something that is

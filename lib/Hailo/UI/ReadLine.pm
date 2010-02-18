@@ -24,6 +24,8 @@ sub run {
     my $name = ref $hailo;
     my $term = Term::ReadLine->new($name);
 
+    my ($tok, $ex) = $hailo->stats();
+    say "I know about $tok tokens and $ex expressions.";
     while (defined (my $line = $term->readline(lc($name) . '> '))) {
         if ($line =~ /^\s*$/s) {
             say "Provide some input to $name";
