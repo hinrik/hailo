@@ -367,7 +367,7 @@ sub run {
     }
 
     if ($self->print_stats) {
-        my ($tok, $ex) = $hailo->stats();
+        my ($tok, $ex) = $self->stats();
         say "I know about $tok tokens and $ex expressions.";
     }
 
