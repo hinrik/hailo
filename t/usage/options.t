@@ -33,7 +33,7 @@ lives_ok { Hailo->new( learn_str => "foo" )->run } "Hailo can learn from a strin
 is( sub {
         my $hailo = Hailo->new;
         $hailo->learn("hello there good sirs");
-        $hailo->reply("hello it's fun") for 1 .. 100;
+        #$hailo->reply("hello it's fun") for 1 .. 100;
         return join '', uniq(map { $hailo->reply("hello") } 1 .. 100);
     }->(),
     "Hello there good sirs.",

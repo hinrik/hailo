@@ -5,7 +5,10 @@ use Hailo;
 
 # this tests the retrieval of non-alphanumeric tokens
 
-my $hailo = Hailo->new(brain_resource => ':memory:');
+my $hailo = Hailo->new(
+    brain_resource => ':memory:',
+    print_progress => 0,
+);
 my @lines = split /\n/, do { local $/ = undef; <DATA> };
 $hailo->train(\@lines);
 
@@ -15,6 +18,7 @@ for (1..100) {
 }
 
 __DATA__
+Hello; (foo) bar, baz :  3.14  quux,bla [hi].
 Hello there foo.
 What foo bar?
 Foo; bar baz.

@@ -16,8 +16,8 @@ sub make_tokens {
     return split //, $line;
 }
 
-# return a list of key tokens
-sub find_key_tokens {
+# return unique tokens
+sub uniq_tokens {
     my ($self, $tokens) = @_;
     return uniq(@$tokens);
 }

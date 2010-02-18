@@ -2,7 +2,6 @@ package Hailo::Tokenizer::NonWhitespace;
 use 5.010;
 use Moose;
 use MooseX::StrictConstructor;
-use List::MoreUtils qw<uniq>;
 use namespace::clean -except => 'meta';
 
 our $VERSION = '0.14';
@@ -10,64 +9,111 @@ our $VERSION = '0.14';
 with qw(Hailo::Role::Generic
         Hailo::Role::Tokenizer);
 
+# tokenization
 my $APOSTROPHE    = qr/['’]/;
 my $DOTTED_WORD   = qr/\w+(?:\.\w+)?/;
 my $WORD          = qr/$DOTTED_WORD(?:$APOSTROPHE$DOTTED_WORD)*/;
 my $TOKEN         = qr/\S+|(?<=\s)\s+(?=\s)/s;
+
+# capitalization
 my $OPEN_QUOTE    = qr/['"‘“„«»「『‹‚]/;
-my $CLOSE_QUOTE   = qr/['"’«»“”」』›‘]/;
+my $CLOSE_QUOTE   = qr/['"’“”«»」』›‘]/;
 my $TERMINATOR    = qr/(?:[?!‽]+|(?<!\.)\.)/;
 my $ADDRESS       = qr/:/;
 my $BOUNDARY      = qr/\s*$CLOSE_QUOTE?\s*(?:$TERMINATOR|$ADDRESS)\s+$OPEN_QUOTE?\s*/;
-my $INTERESTING   = qr/\S/;
 
-# these are only used in capitalization, because we want to capitalize words
-# that come after "On example.com?" or "You mean 3.2?", but not "Yes, e.g."
+# we want to capitalize words that come after "On example.com?"
+# or "You mean 3.2?", but not "Yes, e.g."
 my $DOTTED_STRICT = qr/\w+(?:\.(?:\d+|\w{2,}))?/;
 my $WORD_STRICT   = qr/$DOTTED_STRICT(?:$APOSTROPHE$DOTTED_STRICT)*/;
 
 # input -> tokens
 sub make_tokens {
     my ($self, $line) = @_;
-    my @tokens = $line =~ /($TOKEN)/gs;
+    
+    my @tokens;
+    my @chunks = split /\s+/, $line;
+    for my $chunk (@chunks) {
 
-    # lower-case tokens except those which are ALL UPPERCASE
-    @tokens = map { $_ ne uc($_) ? lc($_) : $_ } @tokens;
-    return @tokens;
+        my $got_word = 0;
+        while (length $chunk) {
+            if (my ($word) = $chunk =~ /^($WORD)/) {
+                $chunk =~ s/^\Q$word//;
+                $word = lc($word) if $word ne uc($word);
+                push @tokens, [0, $word];
+                $got_word = 1;
+            }
+            elsif (my ($non_word) = $chunk =~ /^(\W+)/) {
+                $chunk =~ s/^\Q$non_word//;
+                $non_word = lc($non_word) if $non_word ne uc($non_word);
+                
+                my $spacing = 0;
+                if ($got_word) {
+                    $spacing = length $chunk ? 3 : 2;
+                }
+                elsif (length $chunk) {
+                    $spacing = 1;
+                }
+                
+                push @tokens, [$spacing, $non_word];
+            }
+        }
+    }
+    return \@tokens;
 }
 
-# return a list of key tokens
-sub find_key_tokens {
+sub uniq_tokens {
     my ($self, $tokens) = @_;
 
-    # remove duplicates and uninteresting ones
-    return grep { /$INTERESTING/ } uniq(@$tokens);
+    my %uniq;
+    for my $pos (0 .. $#{ $tokens }) {
+        my $key = join '', @{ $tokens->[$pos] };
+        $uniq{$key} = $pos;
+    }
+
+    my @ordered = sort { $uniq{$a} <=> $uniq{$b} } keys %uniq;
+    my @return = map { [/^(\d)(.*)/] } @ordered;
+    return \@return;
 }
 
 # tokens -> output
 sub make_output {
-    my ($self, $reply) = @_;
-    my $string = join ' ', @$reply;
+    my ($self, $tokens) = @_;
+    my $reply = '';
+
+    for my $pos (0 .. $#{ $tokens }) {
+        my ($spacing, $text) = @{ $tokens->[$pos] };
+        $reply .= $text;
+        
+        # append whitespace if this is not a prefix token or infix token,
+        # and this is not the last token, and the next token is not
+        # a postfix/infix token
+        if ($pos != $#{ $tokens }
+            && $spacing !~ /[13]/
+            && !($pos < $#{ $tokens } && $tokens->[$pos+1][0] =~ /[23]/)) {
+            $reply .= ' ';
+        }
+    }
 
     # capitalize the first word
-    $string =~ s/^$TERMINATOR?\s*$OPEN_QUOTE?\s*\K($WORD)/\u$1/;
+    $reply =~ s/^$TERMINATOR?\s*$OPEN_QUOTE?\s*\K($WORD)/\u$1/;
 
     # capitalize the second word
-    $string =~ s/^$TERMINATOR?\s*$OPEN_QUOTE?\s*$WORD(?:\s*(?:$TERMINATOR|$ADDRESS)\s+)\K($WORD)/\u$1/;
+    $reply =~ s/^$TERMINATOR?\s*$OPEN_QUOTE?\s*$WORD(?:\s*(?:$TERMINATOR|$ADDRESS)\s+)\K($WORD)/\u$1/;
 
     # capitalize all other words after word boundaries
     # we do it in two passes because we need to match two words at a time
-    $string =~ s/ $WORD_STRICT$BOUNDARY\K($WORD)/\x1B\u$1\x1B/g;
-    $string =~ s/\x1B$WORD_STRICT\x1B$BOUNDARY\K($WORD)/\u$1/g;
-    $string =~ s/\x1B//g;
+    $reply =~ s/ $WORD_STRICT$BOUNDARY\K($WORD)/\x1B\u$1\x1B/g;
+    $reply =~ s/\x1B$WORD_STRICT\x1B$BOUNDARY\K($WORD)/\u$1/g;
+    $reply =~ s/\x1B//g;
 
     # end paragraphs with a period when it makes sense
-    $string =~ s/ $WORD\K$/./;
+    $reply =~ s/ $WORD\K$/./;
 
     # capitalize the word "i'm"
-    $string =~ s{\bi'm\b}{I'm}g;
+    $reply =~ s{\bi'm\b}{I'm}g;
 
-    return $string;
+    return $reply;
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -77,7 +123,7 @@ __PACKAGE__->meta->make_immutable;
 =head1 NAME
 
 Hailo::Tokenizer::NonWhitespace - A tokenizer for L<Hailo|Hailo> which splits
-on whitespace
+on whitespace, mostly.
 
 =head1 DESCRIPTION
 

@@ -8,13 +8,15 @@ use File::Spec::Functions qw(catdir catfile);
 use Data::Random qw(:all);
 use File::Slurp qw(slurp);
 use List::Util qw(shuffle min);
+use List::MoreUtils qw(uniq);
 use File::Temp qw(tempfile tempdir);
 use File::CountLines qw(count_lines);
 use Hailo::Tokenizer::NonWhitespace;
 use namespace::clean -except => 'meta';
 
 sub simple_storages {
-    return qw(Perl Perl::Flat DBD::SQLite)
+    #return qw(Perl Perl::Flat DBD::SQLite)
+    return qw(DBD::SQLite)
 }
 
 sub flat_storages {
@@ -473,8 +475,10 @@ sub some_tokens {
     my @trn = split /\n/, $trn;
     my @small_trn = @trn[0 .. min(scalar(@trn), $lines)];
     my $toke = Hailo::Tokenizer::NonWhitespace->new;
-    my @trn_tokens = map { $toke->make_tokens($_) } @small_trn;
-    my @tokens = shuffle($toke->find_key_tokens(\@trn_tokens));
+    my @trn_tokens = map { @{ $toke->make_tokens($_) } } @small_trn;
+    my @token_refs = shuffle(@{ $toke->uniq_tokens(\@trn_tokens) });
+    my @tokens;
+    push @tokens, $_->[1] for @token_refs;
 
     @tokens = @tokens[0 .. $lines];
 

@@ -5,6 +5,7 @@ use warnings;
 use Hailo::Test;
 use Test::More;
 
+plan skip_all => 'Perl backend needs to be updated';
 my $test = Hailo::Test->new(
     storage => "Perl",
 );

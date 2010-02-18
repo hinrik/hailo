@@ -385,6 +385,7 @@ sub train {
         if (!$got_filename) {
             die "Can't train with progress unless argument is a filename\n";
         }
+        
         $self->_train_progress($fh, $input);
     }
     elsif (ref $input eq 'ARRAY') {
@@ -469,12 +470,12 @@ sub _learn_one {
     my $order   = $storage->order;
 
     $input = $self->_clean_input($input);
-    my @tokens = $self->_tokenizer_obj->make_tokens($input);
+    my $tokens = $self->_tokenizer_obj->make_tokens($input);
 
     # only learn from inputs which are long enough
-    return if @tokens < $order;
+    return if @$tokens < $order;
 
-    $storage->learn_tokens(\@tokens);
+    $storage->learn_tokens($tokens);
     return;
 }
 
@@ -492,12 +493,12 @@ sub reply {
     my $reply;
     if (defined $input) {
         $input = $self->_clean_input($input);
-        my @tokens = $toke->make_tokens($input);
-        my @key_tokens = $toke->find_key_tokens(\@tokens);
-        $reply = $storage->make_reply(\@tokens, \@key_tokens);
+        my $tokens = $toke->make_tokens($input);
+        my $uniq_tokens = $toke->uniq_tokens($tokens);
+        $reply = $storage->make_reply($uniq_tokens);
     }
     else {
-        $reply = $storage->make_reply([ ]);
+        $reply = $storage->make_reply();
     }
 
     return if !defined $reply;

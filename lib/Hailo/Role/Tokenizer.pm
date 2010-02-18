@@ -5,8 +5,8 @@ use namespace::clean -except => 'meta';
 
 our $VERSION = '0.14';
 
-requires 'find_key_tokens';
 requires 'make_tokens';
+requires 'uniq_tokens';
 requires 'make_output';
 
 1;
@@ -25,16 +25,15 @@ This is the constructor. It takes no arguments.
 
 =head2 C<make_tokens>
 
-Takes a line of input and returns a list of tokens.
+Takes a line of input and returns an array reference of tokens.
 
 =head2 C<make_output>
 
-Takes a list of tokens and returns a line of output.
+Takes an array reference of tokens and returns a line of output.
 
-=head2 C<find_key_tokens>
+=head2 C<uniq_tokens>
 
-Takes a list of tokens and returns those which are deemed interesting enough
-to base a reply on.
+Takes an array reference of tokens and returns the unique ones.
 
 =head1 AUTHOR
 

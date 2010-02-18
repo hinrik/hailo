@@ -2,8 +2,6 @@ package Hailo::Storage::DBD::SQLite;
 use 5.010;
 use Moose;
 use MooseX::StrictConstructor;
-use Hailo::Storage::DBD::SQLite::Tokenizer;
-use DBI qw(:sql_types);
 use namespace::clean -except => 'meta';
 
 our $VERSION = '0.14';
@@ -25,8 +23,6 @@ before _engage => sub {
     my ($self) = @_;
     my $size = $self->arguments->{cache_size};
     $self->dbh->do("PRAGMA cache_size=$size;") if defined $size;
-    # OMGWTFBUBBLEGUM
-    $self->inject_tokenizer();
     return;
 };
 
@@ -44,49 +40,12 @@ after stop_training => sub {
     return;
 };
 
-override _token_id_similar => sub {
-    my ($self, $token) = @_;
-
-    # \ is an escape character in the MATCH expression,
-    # and *, and ", are special
-    $token =~ s{\\}{\\\\}g;
-    $token =~ s{([*"])}{\\$1}g;
-    $token = qq{"$token*"};
-
-    $self->sth->{token_id_similar}->execute($token);
-    my $token_id = $self->sth->{token_id_similar}->fetchrow_array();
-
-    return if !defined $token_id;
-    return $token_id;
-};
-
 sub _exists_db {
     my ($self) = @_;
     my $brain = $self->brain;
     return unless defined $self->brain;
     return if $self->brain eq ':memory:';
     return -s $self->brain;
-}
-
-sub inject_tokenizer {
-    my ($self) = @_;
-    my $ptr = Hailo::Storage::DBD::SQLite::Tokenizer::get_tokenizer_ptr();
-    use Data::Dump 'ddx';
-
-    # HACK. Doing this because using '?' and $sth->bind_param(2, $ptr,
-    # SQL_BLOB); ends up passing nothing to
-    # sqlite. I.e. sqlite3_value_bytes(argv[1]); will be 0
-    my $pptr = pack "P", $ptr;
-    ddx $pptr;
-
-    # show the pointer to the 'simple' tokenizer'
-    ddx $self->dbh->selectrow_array("SELECT fts3_tokenizer('simple')");
-
-    my $sth = $self->dbh->prepare("SELECT fts3_tokenizer(?, ?)");
-    $sth->bind_param(1, "Hailo_tokenizer");
-    $sth->bind_param(2, $pptr, SQL_BLOB);
-
-    $sth->execute();
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -123,9 +82,9 @@ storage backend.
 
 For some example numbers, I have a 2nd-order database built from a ~210k line
 (7.4MB) IRC channel log file. With the default L<cache_size/storage_args>,
-it took my laptop (Core 2 Duo 2.53 GHz, Intel X25-M hard drive) 5 minutes and
-40 seconds (~617 lines/sec) to create the 98MB database. Furthermore, it
-could generate about 33 replies per second from it.
+it took my laptop (Core 2 Duo 2.53 GHz, Intel X25-M hard drive) 8 minutes and
+20 seconds (~420 lines/sec) to create the 102MB database. Furthermore, it
+could generate about 90 replies per second from it.
 
 =head1 ATTRIBUTES
 
@@ -159,5 +118,3 @@ __[ static_query_last_expr_rowid ]__
 SELECT last_insert_rowid();
 __[ static_query_last_token_rowid ]__
 SELECT last_insert_rowid();
-__[ static_query_token_id_similar ]__
-SELECT rowid FROM token WHERE text LIKE ? ESCAPE '\' ORDER BY RANDOM() LIMIT 1;

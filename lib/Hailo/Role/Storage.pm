@@ -72,12 +72,12 @@ Saves the current state.
 
 =head2 C<learn_tokens>
 
-Learns from a sequence of tokens. Takes an array ref of strings.
+Learns from a sequence of tokens. Takes an array reference of strings.
 
 =head2 C<make_reply>
 
-Takes an array reference of tokens and returns a reply (arrayref of tokens)
-that might be relevant.
+Takes an (optional) array reference of tokens and returns a reply (arrayref
+of tokens) that might be relevant.
 
 =head2 C<start_learning>
 
