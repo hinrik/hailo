@@ -1,10 +1,10 @@
 # level 3 is a nice compromise
 severity = 3
 verbose  = 3
-theme    = moose || core
+#theme    = moose || core
 
 # disable this until it supports namespace::clean
-[-Perl::Critic::Policy::Moose::RequireCleanNamespace]
+#[-Perl::Critic::Policy::Moose::RequireCleanNamespace]
 
 # these policies are either too anal, demand additional dependencies,
 # or inhibit backwards-compatability
