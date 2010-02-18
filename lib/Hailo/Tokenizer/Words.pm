@@ -13,7 +13,6 @@ with qw(Hailo::Role::Generic
 my $APOSTROPHE    = qr/['’]/;
 my $DOTTED_WORD   = qr/\w+(?:\.\w+)?/;
 my $WORD          = qr/$DOTTED_WORD(?:$APOSTROPHE$DOTTED_WORD)*/;
-my $TOKEN         = qr/\S+|(?<=\s)\s+(?=\s)/s;
 
 # capitalization
 my $OPEN_QUOTE    = qr/['"‘“„«»「『‹‚]/;
