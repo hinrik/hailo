@@ -1,7 +1,6 @@
 package Hailo::Tokenizer::Chars;
 use 5.010;
 use Moose;
-use List::MoreUtils qw<uniq>;
 use Text::Trim;
 use namespace::clean -except => 'meta';
 
@@ -13,19 +12,30 @@ with qw(Hailo::Role::Generic
 # output -> tokens
 sub make_tokens {
     my ($self, $line) = @_;
-    return split //, $line;
+    my @chars = split //, $line;
+    my @tokens = map { [0, $_] } @chars;
+    return \@tokens;
 }
 
 # return unique tokens
 sub uniq_tokens {
-    my ($self, $tokens) = @_;
-    return uniq(@$tokens);
+    my ($self, $tokens) = @_; 
+
+    my %uniq;
+    for my $pos (0 .. $#{ $tokens }) {
+        my $key = join '', @{ $tokens->[$pos] };
+        $uniq{$key} = $pos;
+    }   
+
+    my @ordered = sort { $uniq{$a} <=> $uniq{$b} } keys %uniq;
+    my @return = map { [/^(\d)(.*)/] } @ordered;
+    return \@return;
 }
 
 # tokens -> output
 sub make_output {
-    my ($self, $reply) = @_;
-    return trim join '', @$reply;
+    my ($self, $tokens) = @_;
+    return trim(join '', map { $_->[1] } @$tokens);
 }
 
 __PACKAGE__->meta->make_immutable;
