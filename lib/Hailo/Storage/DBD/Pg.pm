@@ -58,8 +58,8 @@ sub _add_expr {
 }
 
 sub _add_token {
-    my ($self, $token) = @_;
-    $self->sth->{add_token}->execute($token);
+    my ($self, $token_info) = @_;
+    $self->sth->{add_token}->execute(@$token_info);
     return $self->sth->{add_token}->fetchrow_array;
 }
 
