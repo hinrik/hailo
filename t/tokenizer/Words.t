@@ -81,6 +81,11 @@ subtest make_output => sub {
             [qw<sá '' karlkyns '' aðili í [[ hjónaband ]] i tveggja lesbía ?>],
             "Sá ''karlkyns'' aðili í [[hjónaband]]i tveggja lesbía?",
         ],
+        #[
+        #    'Pretty girl like her "peak". oh and you’re touching yourself',
+        #    [qw<pretty girl like her " peak ". oh and you’re touching yourself>],
+        #    'Pretty girl like her "peak". Oh and you’re touching yourself.',
+        #],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();
