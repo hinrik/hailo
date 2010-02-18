@@ -26,13 +26,10 @@ sub run {
 
     my ($tok, $ex) = $hailo->stats();
     say "I know about $tok tokens and $ex expressions.";
+
     while (defined (my $line = $term->readline(lc($name) . '> '))) {
-        if ($line =~ /^\s*$/s) {
-            say "Provide some input to $name";
-        } else {
-            my $answer = $hailo->reply($line);
-            say $answer // "I don't know enough to answer you yet.";
-        }
+        my $answer = $hailo->learn_reply($line);
+        say $answer // "I don't know enough to answer you yet.";
     }
 
     return;
