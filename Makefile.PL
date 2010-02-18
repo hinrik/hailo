@@ -22,7 +22,6 @@ requires       ('Data::Section'                 => '0.100270');
 requires       ('DBD::SQLite'                   => '1.29');
 requires       ('File::CountLines'              => '0.0.2');
 requires       ('Getopt::Long::Descriptive'     => '0.083');
-requires       ('Inline'                        => '0.46');
 requires       ('IO::Interactive'               => '0.0.6');
 requires       ('List::MoreUtils'               => '0.22');
 requires       ('Log::Log4perl'                 => '1.27');
