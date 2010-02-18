@@ -148,5 +148,5 @@ it under the same terms as Perl itself.
 =cut
 
 __DATA__
-__[ query_exists_db ]__
+__[ static_query_exists_db ]__
 SELECT count(*) FROM information_schema.columns WHERE table_name ='info';

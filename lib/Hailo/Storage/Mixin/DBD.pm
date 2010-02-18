@@ -678,7 +678,7 @@ SELECT id FROM token WHERE spacing = ? AND text = ?;
 __[ static_query_token_info ]__
 SELECT spacing, text FROM token WHERE id = ?;
 __[ static_query_token_similar ]__
-SELECT id, spacing FROM token WHERE text = ?;
+SELECT id, spacing FROM token WHERE text = ?
 [% SWITCH dbd %]
     [% CASE 'mysql'  %]ORDER BY RAND()   LIMIT 1;
     [% CASE DEFAULT  %]ORDER BY RANDOM() LIMIT 1;
