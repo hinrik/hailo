@@ -382,10 +382,6 @@ sub train {
     }
 
     if ($self->print_progress) {
-        if (!$got_filename) {
-            die "Can't train with progress unless argument is a filename\n";
-        }
-        
         $self->_train_progress($fh, $input);
     }
     elsif (ref $input eq 'ARRAY') {
