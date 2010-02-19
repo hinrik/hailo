@@ -310,10 +310,16 @@ sub make_reply {
     my $order = $self->order;
 
     # we will favor these tokens when making the reply
-    my @key_ids;
+    my @key_tokens = @$tokens;
 
-    my %token_cache;
-    for my $token_info (@$tokens) {
+    # shuffle the tokens and discard half of them
+    @key_tokens = do {
+        my $i = 0;
+        grep { $i++ % 2 == 0 } shuffle(@key_tokens);
+    };
+
+    my (@key_ids, %token_cache);
+    for my $token_info (@key_tokens) {
         my $text = $token_info->[1];
         my $info = $self->_token_similar($text);
         next if !defined $info;
@@ -323,12 +329,6 @@ sub make_reply {
         next if exists $token_cache{$id};
         $token_cache{$id} = [$spacing, $text];
     }
-
-    # toss half of the tokens away
-    @key_ids = do {
-        my $i = 0;
-        grep { $i++ % 2 == 0 } shuffle(@key_ids);
-    };
 
     # sort the rest by rareness
     @key_ids = $self->_find_rare_tokens(\@key_ids);
