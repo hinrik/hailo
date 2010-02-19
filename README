@@ -114,10 +114,8 @@ SUPPORT
     You can join the IRC channel *#hailo* on FreeNode if you have questions.
 
 SEE ALSO
-    Hailo: A Perl rewrite of MegaHAL
-    <http://blogs.perl.org/users/aevar_arnfjor_bjarmason/2010/01/hailo-a-per
-    l-rewrite-of-megahal.html> - A blog posting about the motivation behind
-    Hailo
+    Hailo: A Perl rewrite of MegaHAL - A blog posting about the motivation
+    behind Hailo
 
 AUTHORS
     Hinrik Örn Sigurðsson, hinrik.sig@gmail.com

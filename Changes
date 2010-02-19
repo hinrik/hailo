@@ -1,4 +1,5 @@
 0.16
+    - Don't seed a reply with a token which is too rare
     - Make the Word tokenizer split "example.com" into 3 tokens, while still
       keeping "3.14" as one token. Also accept ',' as a decimal point.
 

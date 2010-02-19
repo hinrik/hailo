@@ -672,8 +672,8 @@ You can join the IRC channel I<#hailo> on FreeNode if you have questions.
 
 =head1 SEE ALSO
 
-L<Hailo: A Perl rewrite of
-MegaHAL|http://blogs.perl.org/users/aevar_arnfjor_bjarmason/2010/01/hailo-a-perl-rewrite-of-megahal.html>
+L<Hailo: A Perl rewrite of MegaHAL|
+http://blogs.perl.org/users/aevar_arnfjor_bjarmason/2010/01/hailo-a-perl-rewrite-of-megahal.html>
 - A blog posting about the motivation behind Hailo
 
 =head1 AUTHORS

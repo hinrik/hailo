@@ -323,14 +323,14 @@ sub make_reply {
         $token_cache{$id} = [$spacing, $text];
     }
 
-    # toss all but a third of the tokens away
+    # toss half of the tokens away
     @key_ids = do {
         my $i = 0;
         grep { $i++ % 2 == 0 } shuffle(@key_ids);
     };
 
     # sort the rest by rareness
-    @key_ids = $self->_sort_rare_tokens(\@key_ids);
+    @key_ids = $self->_find_rare_tokens(\@key_ids);
 
     # get the middle expression
     my $seed_token_id = shift @key_ids;
@@ -428,18 +428,23 @@ sub learn_tokens {
 }
 
 # sort token ids based on how rare they are
-sub _sort_rare_tokens {
+sub _find_rare_tokens {
     my ($self, $token_ids) = @_;
     return if !@$token_ids;
 
-    my %rare;
+    my %links;
     for my $id (@$token_ids) {
-        next if exists $rare{$id};
+        next if exists $links{$id};
         $self->sth->{token_count}->execute($id);
-        $rare{$id} = $self->sth->{token_count}->fetchrow_array // 0;
+        $links{$id} = $self->sth->{token_count}->fetchrow_array // 0;
     }
 
-    my @ids = sort { $rare{$a} <=> $rare{$b} } @$token_ids;
+    my @ids = sort { $links{$a} <=> $links{$b} } @$token_ids;
+
+    # remove tokens which are too rare, if we use one of them for the
+    # initial expression, we might get the same sentence we just learned
+    @ids = grep { $links{$_} > 1 } @ids;
+
     return @ids;
 }
 
