@@ -3,6 +3,7 @@
     - Make the Word tokenizer split "example.com" into 3 tokens, while still
       keeping "3.14" as one token. Also accept ',' as a decimal point.
     - Various improvements to capitalization in the Word tokenizer
+    - Don't run the ReadLine UI if --stats is supplied
 
 0.15 Thu Feb 18 23:55:19 GMT 2010
     - Allow specifying SQLite's cache size with --storage-args

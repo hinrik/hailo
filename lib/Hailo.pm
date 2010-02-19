@@ -348,7 +348,8 @@ sub run {
         not defined $self->train_file and
         not defined $self->learn_str and
         not defined $self->learn_reply_str and
-        not defined $self->reply_str) {
+        not defined $self->reply_str and
+        not defined $self->print_stats) {
 
         $self->_ui_obj->run($self);
     }
