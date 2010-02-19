@@ -92,9 +92,9 @@ subtest make_output => sub {
             "Sá ''karlkyns'' aðili í [[hjónaband]]i tveggja lesbía?",
         ],
         [
-            "you mean 3,14? yes",
-            ['you', 'mean', '3,14', '?', 'yes'],
-            "You mean 3,14? Yes.",
+            "you mean i've got 3,14? yes",
+            [qw<you mean i've got>, '3,14', '?', 'yes'],
+            "You mean I've got 3,14? Yes.",
         ],
         [
             'Pretty girl like her "peak". oh and you’re touching yourself',

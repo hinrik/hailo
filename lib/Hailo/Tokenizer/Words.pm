@@ -98,8 +98,8 @@ sub make_output {
     # end paragraphs with a period when it makes sense
     $reply =~ s/ $WORD\K$/./;
 
-    # capitalize the word "i'm"
-    $reply =~ s{\bi'm\b}{I'm}g;
+    # capitalize the words "i'm" and "i've"
+    $reply =~ s{\bi'(m|ve)\b}{I'$1}g;
 
     return $reply;
 }
