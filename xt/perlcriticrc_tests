@@ -3,7 +3,7 @@ severity = 3
 verbose  = 3
 
 # disable this until it supports namespace::clean
- [-Perl::Critic::Policy::Moose::RequireCleanNamespace]
+#[-Perl::Critic::Policy::Moose::RequireCleanNamespace]
 
 # these policies are either too anal, demand additional dependencies,
 # or inhibit backwards-compatability
