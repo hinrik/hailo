@@ -101,6 +101,11 @@ subtest make_output => sub {
             [qw<pretty girl like her " peak ". oh and you’re touching yourself>],
             'Pretty girl like her "peak". Oh and you’re touching yourself.',
         ],
+        [
+            'http://foo.bar/baz',
+            [qw<http :// foo . bar / baz>],
+            'http://foo.bar/baz',
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();
