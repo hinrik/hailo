@@ -588,16 +588,11 @@ The storage backend to use. Default: 'SQLite'.
 
 This gives you an idea of approximately how the backends compare in
 speed:
-
-                   Rate CHI::File PostgreSQL CHI::BerkeleyDB MySQL CHI::Memory SQLite Perl::Flat Perl
- CHI::File       1.08/s        --       -53%            -63%  -70%        -71%   -78%       -89% -93%
- PostgreSQL      2.28/s      112%         --            -21%  -35%        -38%   -53%       -76% -86%
- CHI::BerkeleyDB 2.90/s      169%        27%              --  -18%        -21%   -40%       -70% -82%
- MySQL           3.53/s      228%        55%             22%    --         -4%   -27%       -63% -78%
- CHI::Memory     3.68/s      242%        61%             27%    4%          --   -24%       -62% -78%
- SQLite          4.81/s      347%       111%             66%   36%         31%     --       -50% -71%
- Perl::Flat      9.62/s      793%       321%            232%  172%        162%   100%         -- -41%
- Perl            16.4/s     1423%       618%            466%  364%        346%   241%        70%   --
+                      Rate DBD::Pg DBD::mysql DBD::SQLite/file DBD::SQLite/memory
+ DBD::Pg            1.96/s      --       -20%             -40%               -56%
+ DBD::mysql         2.46/s     25%         --             -25%               -45%
+ DBD::SQLite/file   3.29/s     67%        34%               --               -27%
+ DBD::SQLite/memory 4.50/s    129%        83%              37%                 --
 
 To run your own test try running F<utils/hailo-benchmark> in the Hailo
 distribution.
