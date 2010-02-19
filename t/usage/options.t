@@ -12,7 +12,7 @@ $SIG{__WARN__} = sub {
 };
 
 my $has_test_exit = sub {
-    local $@;
+    local $@ = undef;
     eval {
         require Test::Exit;
         Test::Exit->import;
