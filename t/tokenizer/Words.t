@@ -38,7 +38,7 @@ subtest make_output => sub {
     my @tokens = (
         [
             ' " why hello there. «yes». "foo is a bar", e.g. bla ... yes',
-            [qw<" why hello there . « yes ». " foo is a bar>, '",', qw<e.g . bla ... yes>],
+            [qw<" why hello there . « yes ». " foo is a bar>, '",', qw<e . g . bla ... yes>],
             '" Why hello there. «Yes». "Foo is a bar", e.g. bla ... yes.',
         ],
         [
@@ -73,13 +73,28 @@ subtest make_output => sub {
         ],
         [
             'on example.com? yes',
-            [qw<on example.com ? yes>],
+            [qw<on example . com ? yes>],
             "On example.com? Yes.",
+        ],
+        [
+            'pi is 3.14, well, almost',
+            [qw<pi is 3.14>, ',', 'well', ',', 'almost'],
+            "Pi is 3.14, well, almost.",
+        ],
+        [
+            'foo 0.40 bar or .40 bar bla 0,40 foo ,40',
+            [qw<foo 0.40 bar or .40 bar bla>, '0,40', 'foo', ',40'],
+            'Foo 0.40 bar or .40 bar bla 0,40 foo ,40.',
         ],
         [
             "sá ''karlkyns'' aðili í [[hjónaband]]i tveggja lesbía?",
             [qw<sá '' karlkyns '' aðili í [[ hjónaband ]] i tveggja lesbía ?>],
             "Sá ''karlkyns'' aðili í [[hjónaband]]i tveggja lesbía?",
+        ],
+        [
+            "you mean 3,14? yes",
+            ['you', 'mean', '3,14', '?', 'yes'],
+            "You mean 3,14? Yes.",
         ],
         #[
         #    'Pretty girl like her "peak". oh and you’re touching yourself',

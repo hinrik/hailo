@@ -10,9 +10,11 @@ with qw(Hailo::Role::Generic
         Hailo::Role::Tokenizer);
 
 # tokenization
+my $DECIMAL       = qr/[.,]/;
+my $NUMBER        = qr/$DECIMAL?\d+(?:$DECIMAL\d+)*/;
 my $APOSTROPHE    = qr/['’]/;
-my $DOTTED_WORD   = qr/\w+(?:\.\w+)?/;
-my $WORD          = qr/$DOTTED_WORD(?:$APOSTROPHE$DOTTED_WORD)*/;
+my $APOST_WORD    = qr/\w+(?:$APOSTROPHE\w+)*/;
+my $WORD          = qr/$NUMBER|$APOST_WORD/;
 
 # capitalization
 my $OPEN_QUOTE    = qr/['"‘“„«»「『‹‚]/;
@@ -23,7 +25,7 @@ my $BOUNDARY      = qr/\s*$CLOSE_QUOTE?\s*(?:$TERMINATOR|$ADDRESS)\s+$OPEN_QUOTE
 
 # we want to capitalize words that come after "On example.com?"
 # or "You mean 3.2?", but not "Yes, e.g."
-my $DOTTED_STRICT = qr/\w+(?:\.(?:\d+|\w{2,}))?/;
+my $DOTTED_STRICT = qr/\w+(?:$DECIMAL(?:\d+|\w{2,}))?/;
 my $WORD_STRICT   = qr/$DOTTED_STRICT(?:$APOSTROPHE$DOTTED_STRICT)*/;
 
 # input -> tokens

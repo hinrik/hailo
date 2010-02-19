@@ -1,3 +1,7 @@
+0.16
+    - Make the Word tokenizer split "example.com" into 3 tokens, while still
+      keeping "3.14" as one token. Also accept ',' as a decimal point.
+
 0.15 Thu Feb 18 23:55:19 GMT 2010
     - Allow specifying SQLite's cache size with --storage-args
     - Reduce likelhood of returning a reply which is identical to the input
