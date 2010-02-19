@@ -1,5 +1,6 @@
 package Hailo::Tokenizer::Words;
 use 5.010;
+use utf8;
 use Moose;
 use MooseX::StrictConstructor;
 use namespace::clean -except => 'meta';
