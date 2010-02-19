@@ -24,9 +24,6 @@ sub run {
     my $name = ref $hailo;
     my $term = Term::ReadLine->new($name);
 
-    my ($tok, $ex) = $hailo->stats();
-    say "I know about $tok tokens and $ex expressions.";
-
     while (defined (my $line = $term->readline(lc($name) . '> '))) {
         my $answer = $hailo->learn_reply($line);
         say $answer // "I don't know enough to answer you yet.";

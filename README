@@ -102,8 +102,8 @@ METHODS
     Tells the underlying storage backend to save its state.
 
   "stats"
-    Takes no arguments. Returns the number of known tokens as well as the
-    number of known expressions.
+    Takes no arguments. Returns the number of tokens, expressions, previous
+    token links and next token links.
 
 CAVEATS
     All occurences of "token_separator" will be stripped from your input

@@ -368,8 +368,13 @@ sub run {
     }
 
     if ($self->print_stats) {
-        my ($tok, $ex) = $self->stats();
-        say "I know about $tok tokens and $ex expressions.";
+        my ($tok, $ex, $prev, $next) = $self->stats();
+        my $order = $self->_storage_obj->order;
+        say "Tokens: $tok";
+        say "Expression length: $order tokens";
+        say "Expressions: $ex";
+        say "Links to preceding tokens: $prev";
+        say "Links to following tokens: $next";
     }
 
     $self->save() if defined $self->brain_resource;
@@ -519,9 +524,7 @@ sub reply {
 sub stats {
     my ($self) = @_;
     my $storage = $self->_storage_obj;
-    my $tokens = $storage->token_total();
-    my $exprs = $storage->expr_total();
-    return $tokens, $exprs;
+    return $storage->totals();
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -658,8 +661,8 @@ Tells the underlying storage backend to save its state.
 
 =head2 C<stats>
 
-Takes no arguments. Returns the number of known tokens as well as the number
-of known expressions.
+Takes no arguments. Returns the number of tokens, expressions, previous
+token links and next token links.
 
 =head1 CAVEATS
 
