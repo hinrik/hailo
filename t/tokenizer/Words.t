@@ -96,11 +96,11 @@ subtest make_output => sub {
             ['you', 'mean', '3,14', '?', 'yes'],
             "You mean 3,14? Yes.",
         ],
-        #[
-        #    'Pretty girl like her "peak". oh and you’re touching yourself',
-        #    [qw<pretty girl like her " peak ". oh and you’re touching yourself>],
-        #    'Pretty girl like her "peak". Oh and you’re touching yourself.',
-        #],
+        [
+            'Pretty girl like her "peak". oh and you’re touching yourself',
+            [qw<pretty girl like her " peak ". oh and you’re touching yourself>],
+            'Pretty girl like her "peak". Oh and you’re touching yourself.',
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();

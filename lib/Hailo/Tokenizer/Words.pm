@@ -11,18 +11,18 @@ with qw(Hailo::Role::Generic
         Hailo::Role::Tokenizer);
 
 # tokenization
-my $DECIMAL       = qr/[.,]/;
-my $NUMBER        = qr/$DECIMAL?\d+(?:$DECIMAL\d+)*/;
-my $APOSTROPHE    = qr/['’]/;
-my $APOST_WORD    = qr/\w+(?:$APOSTROPHE\w+)*/;
-my $WORD          = qr/$NUMBER|$APOST_WORD/;
+my $DECIMAL    = qr/[.,]/;
+my $NUMBER     = qr/$DECIMAL?\d+(?:$DECIMAL\d+)*/;
+my $APOSTROPHE = qr/['’]/;
+my $APOST_WORD = qr/\w+(?:$APOSTROPHE\w+)*/;
+my $WORD       = qr/$NUMBER|$APOST_WORD/;
 
 # capitalization
-my $OPEN_QUOTE    = qr/['"‘“„«»「『‹‚]/;
-my $CLOSE_QUOTE   = qr/['"’“”«»」』›‘]/;
-my $TERMINATOR    = qr/(?:[?!‽]+|(?<!\.)\.)/;
-my $ADDRESS       = qr/:/;
-my $BOUNDARY      = qr/\s*$CLOSE_QUOTE?\s*(?:$TERMINATOR|$ADDRESS)\s+$OPEN_QUOTE?\s*/;
+my $OPEN_QUOTE  = qr/['"‘“„«»「『‹‚]/;
+my $CLOSE_QUOTE = qr/['"’“”«»」』›‘]/;
+my $TERMINATOR  = qr/(?:[?!‽]+|(?<!\.)\.)/;
+my $ADDRESS     = qr/:/;
+my $BOUNDARY    = qr/\s*$CLOSE_QUOTE?\s*(?:$TERMINATOR|$ADDRESS)\s+$OPEN_QUOTE?\s*/;
 
 # we want to capitalize words that come after "On example.com?"
 # or "You mean 3.2?", but not "Yes, e.g."
@@ -91,7 +91,7 @@ sub make_output {
 
     # capitalize all other words after word boundaries
     # we do it in two passes because we need to match two words at a time
-    $reply =~ s/ $WORD_STRICT$BOUNDARY\K($WORD)/\x1B\u$1\x1B/g;
+    $reply =~ s/ $OPEN_QUOTE?\s*$WORD_STRICT$BOUNDARY\K($WORD)/\x1B\u$1\x1B/g;
     $reply =~ s/\x1B$WORD_STRICT\x1B$BOUNDARY\K($WORD)/\u$1/g;
     $reply =~ s/\x1B//g;
 
