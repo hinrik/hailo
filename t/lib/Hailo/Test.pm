@@ -224,7 +224,8 @@ sub _connect_opts {
 
     my %all_opts = (
         print_progress => 0,
-        storage_class => $storage,
+        save_on_exit   => 0,
+        storage_class  => $storage,
         %opts,
     );
 
