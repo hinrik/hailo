@@ -7,6 +7,7 @@
     - Allow keeping the entire SQLite database in memory while running
     - Make that the default behavior to reduce IO
     - Declare undeclared File::Slurp dependency
+    - Declare undeclared Test::Script dependency
 
 0.15 Thu Feb 18 23:55:19 GMT 2010
     - Allow specifying SQLite's cache size with --storage-args

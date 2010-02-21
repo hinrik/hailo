@@ -54,6 +54,7 @@ test_requires  ('Data::Random'    => '0.05');
 test_requires  ('Test::Exception' => '0.29');
 test_requires  ('Test::More'      => '0.94');
 test_requires  ('Test::Output'    => '0.16');
+test_requires  ('Test::Script'    => '1.07');
 
 author_requires('Perl::Critic'        => '1.098');
 # uncomment when the distro becomes installable via cpanp(1)
