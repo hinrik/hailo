@@ -382,8 +382,8 @@ sub run {
 }
 
 sub save {
-    my ($self) = @_;
-    $self->_storage_obj->save();
+    my $self = shift;
+    $self->_storage_obj->save(@_);
     return;
 }
 
@@ -657,7 +657,8 @@ be relevant.
 
 =head2 C<save>
 
-Tells the underlying storage backend to save its state.
+Tells the underlying storage backend to save its state. To override the
+filename you can provide one as an argument.
 
 =head2 C<stats>
 

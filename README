@@ -99,7 +99,8 @@ METHODS
     might be relevant.
 
   "save"
-    Tells the underlying storage backend to save its state.
+    Tells the underlying storage backend to save its state. To override the
+    filename you can provide one as an argument.
 
   "stats"
     Takes no arguments. Returns the number of tokens, expressions, previous

@@ -73,9 +73,10 @@ sub _exists_db {
 }
 
 override save => sub {
-    my ($self) = @_;
+    my ($self, $filename) = @_;
+    my $file = $filename // $self->brain;
     if ($self->arguments->{in_memory}) {
-        $self->dbh->sqlite_backup_to_file($self->brain);
+        $self->dbh->sqlite_backup_to_file($file);
     }
     return;
 };
