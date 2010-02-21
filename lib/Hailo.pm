@@ -46,6 +46,16 @@ has print_version => (
     is            => 'ro',
 );
 
+has save_on_exit => (
+    traits        => [qw(Getopt)],
+    cmd_aliases   => 'a',
+    cmd_flag      => 'autosave',
+    documentation => 'Save the brain on exit (on by default)',
+    isa           => Bool,
+    is            => 'ro',
+    default       => 1,
+);
+
 has print_progress => (
     traits        => [qw(Getopt)],
     cmd_aliases   => 'p',
@@ -377,7 +387,6 @@ sub run {
         say "Links to following tokens: $next";
     }
 
-    $self->save() if defined $self->brain_resource;
     return;
 }
 
@@ -525,6 +534,12 @@ sub stats {
     my ($self) = @_;
     my $storage = $self->_storage_obj;
     return $storage->totals();
+}
+
+sub DEMOLISH {
+    my ($self) = @_;
+    $self->save if $self->save_on_exit;
+    return;
 }
 
 __PACKAGE__->meta->make_immutable;
