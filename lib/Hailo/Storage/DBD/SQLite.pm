@@ -93,7 +93,7 @@ L<DBD::SQLite|DBD::SQLite>
 
 As a module:
 
-my $hailo = Hailo->new(
+ my $hailo = Hailo->new(
      train_file    => 'hailo.trn',
      storage_class => 'SQLite',
      storage_args  => {
