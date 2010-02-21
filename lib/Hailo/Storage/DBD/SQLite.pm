@@ -80,8 +80,9 @@ sub _exists_db {
 override save => sub {
     my ($self, $filename) = @_;
     my $file = $filename // $self->brain;
-    if (defined $self->brain && $self->brain ne ':memory:'
-        &&(!defined $self->arguments->{in_memory}
+
+    if (defined $file && $file ne ':memory:'
+        && (!defined $self->arguments->{in_memory}
         || $self->arguments->{in_memory})) {
         $self->dbh->sqlite_backup_to_file($file);
     }
