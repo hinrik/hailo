@@ -40,6 +40,10 @@ ATTRIBUTES
     The name of the resource (file name, database name) to use as storage.
     There is no default.
 
+  "save_on_exit"
+    A boolean value indicating whether Hailo should save its state before
+    its object gets destroyed. Defaults to true.
+
   "order"
     The Markov order (chain length) you want to use for an empty brain. The
     default is 5.

@@ -596,6 +596,11 @@ L<failo|http://identi.ca/failo>.
 The name of the resource (file name, database name) to use as storage.
 There is no default.
 
+=head2 C<save_on_exit>
+
+A boolean value indicating whether Hailo should save its state before its
+object gets destroyed. Defaults to true.
+
 =head2 C<order>
 
 The Markov order (chain length) you want to use for an empty brain.

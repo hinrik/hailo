@@ -124,11 +124,10 @@ documentation|http://www.sqlite.org/pragma.html#pragma_cache_size> for more
 information. Setting this value higher than the default can be beneficial,
 especially when disk IO is slow on your machine.
 
-B<'in_memory'>, when set to a true value, the entire database will be kept
-in memory, and only written out to disk when the C<save|Hailo/save> method
-is called. This is different from simply specifying ':memory:' as the
-filename, as this will load an existing database from the filesystem if
-present, and allow you to save it back.
+B<'in_memory'>, when set to a true value, Hailo behaves much like MegaHAL.
+The entire database will be kept in memory, and only written out to disk
+when the C<save|Hailo/save> method is called and/or when the L<Hailo|Hailo>
+object gets destroyed (unless you disabled L<save_on_exit|Hailo/save_on_exit>).
 
 =head1 AUTHOR
 
