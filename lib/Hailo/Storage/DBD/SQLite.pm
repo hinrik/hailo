@@ -24,7 +24,9 @@ around _build_dbi_options => sub {
     my $self = shift;
 
     my $return;
-    if (!defined $self->arguments->{in_memory} || $self->arguments->{in_memory}) {
+    if (defined $self->brain && $self->brain ne ':memory:'
+        && (!defined $self->arguments->{in_memory}
+        || $self->arguments->{in_memory})) {
         my $file = $self->brain;
         $self->brain(':memory:');
         $return = $self->$orig(@_);
@@ -43,8 +45,10 @@ before _engage => sub {
     my $size = $self->arguments->{cache_size};
     $self->dbh->do("PRAGMA cache_size=$size;") if defined $size;
 
-    if (!defined $self->arguments->{in_memory} || $self->arguments->{in_memory}
-        && $self->_exists_db) {
+    if (defined $self->brain && $self->brain ne ':memory:'
+        && $self->_exists_db
+        && (!defined $self->arguments->{in_memory}
+        || $self->arguments->{in_memory})) {
         $self->dbh->sqlite_backup_from_file($self->brain);
     }
 
@@ -76,7 +80,9 @@ sub _exists_db {
 override save => sub {
     my ($self, $filename) = @_;
     my $file = $filename // $self->brain;
-    if (!defined $self->arguments->{in_memory} || $self->arguments->{in_memory}) {
+    if (defined $self->brain && $self->brain ne ':memory:'
+        &&(!defined $self->arguments->{in_memory}
+        || $self->arguments->{in_memory})) {
         $self->dbh->sqlite_backup_to_file($file);
     }
     return;
