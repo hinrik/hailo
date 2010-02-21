@@ -24,7 +24,7 @@ around _build_dbi_options => sub {
     my $self = shift;
 
     my $return;
-    if ($self->arguments->{in_memory}) {
+    if (!defined $self->arguments->{in_memory} || $self->arguments->{in_memory}) {
         my $file = $self->brain;
         $self->brain(':memory:');
         $return = $self->$orig(@_);
@@ -43,7 +43,8 @@ before _engage => sub {
     my $size = $self->arguments->{cache_size};
     $self->dbh->do("PRAGMA cache_size=$size;") if defined $size;
 
-    if ($self->arguments->{in_memory} && $self->_exists_db) {
+    if (!defined $self->arguments->{in_memory} || $self->arguments->{in_memory}
+        && $self->_exists_db) {
         $self->dbh->sqlite_backup_from_file($self->brain);
     }
 
@@ -75,7 +76,7 @@ sub _exists_db {
 override save => sub {
     my ($self, $filename) = @_;
     my $file = $filename // $self->brain;
-    if ($self->arguments->{in_memory}) {
+    if (!defined $self->arguments->{in_memory} || $self->arguments->{in_memory}) {
         $self->dbh->sqlite_backup_to_file($file);
     }
     return;
@@ -128,6 +129,7 @@ B<'in_memory'>, when set to a true value, Hailo behaves much like MegaHAL.
 The entire database will be kept in memory, and only written out to disk
 when the C<save|Hailo/save> method is called and/or when the L<Hailo|Hailo>
 object gets destroyed (unless you disabled L<save_on_exit|Hailo/save_on_exit>).
+This is turned on by default.
 
 =head1 AUTHOR
 
