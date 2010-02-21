@@ -19,10 +19,34 @@ override _build_dbd_options => sub {
     };
 };
 
+around _build_dbi_options => sub {
+    my $orig = shift;
+    my $self = shift;
+
+    my $return;
+    if ($self->arguments->{in_memory}) {
+        my $file = $self->brain;
+        $self->brain(':memory:');
+        $return = $self->$orig(@_);
+        $self->brain($file);
+    }
+    else {
+        $return = $self->$orig(@_);
+    }
+
+    return $return;
+};
+
 before _engage => sub {
     my ($self) = @_;
+    
     my $size = $self->arguments->{cache_size};
     $self->dbh->do("PRAGMA cache_size=$size;") if defined $size;
+
+    if ($self->arguments->{in_memory} && $self->_exists_db) {
+        $self->dbh->sqlite_backup_from_file($self->brain);
+    }
+
     return;
 };
 
@@ -47,6 +71,14 @@ sub _exists_db {
     return if $self->brain eq ':memory:';
     return -s $self->brain;
 }
+
+override save => sub {
+    my ($self) = @_;
+    if ($self->arguments->{in_memory}) {
+        $self->dbh->sqlite_backup_to_file($self->brain);
+    }
+    return;
+};
 
 __PACKAGE__->meta->make_immutable;
 
@@ -96,6 +128,12 @@ B<'cache_size'>, the size of the page cache used by SQLite. See L<SQLite's
 documentation|http://www.sqlite.org/pragma.html#pragma_cache_size> for more
 information. Setting this value higher than the default can be beneficial,
 especially when disk IO is slow on your machine.
+
+B<'in_memory'>, when set to a true value, the entire database will be kept
+in memory, and only written out to disk when the C<save|Hailo/save> method
+is called. This is different from simply specifying ':memory:' as the
+filename, as this will load an existing database from the filesystem if
+present, and allow you to save it back.
 
 =head1 AUTHOR
 

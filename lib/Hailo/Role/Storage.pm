@@ -9,7 +9,7 @@ our $VERSION = '0.15';
 
 has brain => (
     isa => Str,
-    is  => 'ro',
+    is  => 'rw',
 );
 
 has order => (
