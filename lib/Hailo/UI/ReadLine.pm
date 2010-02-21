@@ -2,6 +2,7 @@ package Hailo::UI::ReadLine;
 use 5.010;
 use Moose;
 use MooseX::StrictConstructor;
+use Encode 'decode';
 use Hailo;
 use Term::ReadLine;
 use namespace::clean -except => 'meta';
@@ -25,6 +26,7 @@ sub run {
     my $term = Term::ReadLine->new($name);
 
     while (defined (my $line = $term->readline(lc($name) . '> '))) {
+        $line = decode('utf8', $line);
         my $answer = $hailo->learn_reply($line);
         say $answer // "I don't know enough to answer you yet.";
     }

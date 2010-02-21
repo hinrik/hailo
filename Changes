@@ -8,6 +8,7 @@
     - Make that the default behavior to reduce IO
     - Declare undeclared File::Slurp dependency
     - Declare undeclared Test::Script dependency
+    - Fixed utf8 problems with ReadLine UI
 
 0.15 Thu Feb 18 23:55:19 GMT 2010
     - Allow specifying SQLite's cache size with --storage-args
