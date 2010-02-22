@@ -7,7 +7,6 @@ use Moose;
 use MooseX::StrictConstructor;
 use MooseX::Types::Moose qw/Int Str Bool HashRef Maybe/;
 use MooseX::Getopt;
-use Time::HiRes qw(gettimeofday tv_interval);
 use File::Spec::Functions qw(catfile);
 use Module::Pluggable (
     search_path => [ map { "Hailo::$_" } qw(Storage Tokenizer UI) ],
@@ -452,6 +451,8 @@ before _train_progress => sub {
     Term::ProgressBar->import(2.00);
     require File::CountLines;
     File::CountLines->import('count_lines');
+    require Time::HiRes;
+    Time::HiRes->import(qw(gettimeofday tv_interval));
     return;
 };
 
