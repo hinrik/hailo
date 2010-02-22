@@ -5,7 +5,7 @@ use autodie qw(open close);
 use Class::MOP;
 use Moose;
 use MooseX::StrictConstructor;
-use MooseX::Types::Moose qw/Int Str Bool HashRef Maybe/;
+use MooseX::Types::Moose qw/Int Str Bool HashRef/;
 use MooseX::Getopt;
 use File::Spec::Functions qw(catfile);
 use Module::Pluggable (
