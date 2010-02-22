@@ -35,9 +35,9 @@ while (<>) {
             my $elapsed = tv_interval($start_time);
 
             if ($ENV{TIME}) {
-                say sprintf "%d\t%.4f\t%s", $mem, $elapsed, $mod;
-            } else {
                 say sprintf "%.4f\t%d\t%s", $elapsed, $mem, $mod;
+            } else {
+                say sprintf "%d\t%.4f\t%s", $mem, $elapsed, $mod;
             }
         }
     }
