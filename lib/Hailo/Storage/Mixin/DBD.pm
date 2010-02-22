@@ -633,7 +633,7 @@ CREATE TABLE expr (
             [% CASE DEFAULT %]INTEGER PRIMARY KEY AUTOINCREMENT
         [% END %],
 [% FOREACH i IN orders %]
-    token[% i %]_id INTEGER NOT NULL REFERENCES token (id)[% UNLESS loop.last %],[% END %]
+    token[% i %]_id INTEGER NOT NULL[% UNLESS loop.last %],[% END %]
 [% END %]
 );
 __[ table_next_token ]__
@@ -643,8 +643,8 @@ CREATE TABLE next_token (
                  [% CASE 'mysql' %]INTEGER PRIMARY KEY AUTO_INCREMENT,
                  [% CASE DEFAULT %]INTEGER PRIMARY KEY AUTOINCREMENT,
              [% END %]
-    expr_id  INTEGER NOT NULL REFERENCES expr (id),
-    token_id INTEGER NOT NULL REFERENCES token (id),
+    expr_id  INTEGER NOT NULL,
+    token_id INTEGER NOT NULL,
     count    INTEGER NOT NULL
 );
 __[ table_prev_token ]__
@@ -654,8 +654,8 @@ CREATE TABLE prev_token (
                  [% CASE 'mysql' %]INTEGER PRIMARY KEY AUTO_INCREMENT,
                  [% CASE DEFAULT %]INTEGER PRIMARY KEY AUTOINCREMENT,
              [% END %]
-    expr_id  INTEGER NOT NULL REFERENCES expr (id),
-    token_id INTEGER NOT NULL REFERENCES token (id),
+    expr_id  INTEGER NOT NULL,
+    token_id INTEGER NOT NULL,
     count    INTEGER NOT NULL
 );
 __[ table_indexes ]__
