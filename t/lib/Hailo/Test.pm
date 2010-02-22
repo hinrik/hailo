@@ -21,7 +21,6 @@ sub simple_storages {
     return grep /sqlite/i, all_storages();
 }
 
-
 sub all_tests {
     return qw(test_starcraft test_congress test_congress_unknown test_babble test_badger test_megahal);
 }
@@ -342,33 +341,6 @@ sub test_megahal {
     }
 
     return;
-}
-
-sub test_chaining {
-    my ($self) = @_;
-    my $hailo = $self->hailo;
-    my $storage = $self->storage;
-    my $brainrs = $self->brain;
-
-    my $prev_brain;
-    for my $i (1 .. 10) {
-        my $test = (ref $self)->new(
-            storage => $storage,
-            brain_resource => $brainrs,
-        );
-
-        if ($prev_brain) {
-            my $this_brain = $test->hailo->_storage_obj->_memory;
-            is_deeply($prev_brain, $this_brain, "$storage: Our previous $storage brain matches the new one, try $i");
-        }
-
-        $self->test_babble;
-
-        # Save this brain for the next iteration
-        $prev_brain = $test->hailo->_storage_obj->_memory;
-
-        $test->hailo->save();
-    }
 }
 
 sub test_babble {
