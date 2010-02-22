@@ -1,0 +1,38 @@
+#!/usr/bin/env perl
+
+# Usage: perl utils/developer/memory-usage Makefile.PL
+
+# Checks the memory usage of modules in Makefile.PL
+
+use 5.010;
+use Moose;
+use Class::MOP;
+
+my $module_get = qr/
+    ^(?<what>requires|recommends|test_requires|author_requires)
+    (?<white>\s*)
+    \(
+    '(?<mod>.*?)'
+    (?<white2>\s*)
+    => \s*
+    '(?<vers>.*?)'
+    \);
+/x;
+
+while (<>) {
+    chomp $_;
+
+    if ($_ ~~ $module_get) {
+        if ($+{mod} ne 'Term::ReadLine::Gnu') {
+            my $mod = $+{mod};
+            $mod =~ s[::][/]g;
+            $mod =~ s[$][.pm];
+
+            my $mem = qx{$^X -e 'sub mem { my (\$m) = qx[ps -o rss \$\$] =~ /(\\d+)/; \$m }; require q[Moose.pm] if q[$mod] =~ /MooseX/; my \$before = mem(); require q[$mod]; my \$after = mem(); print \$after - \$before' \$mod};
+
+            say $mem, "\t", $mod;
+
+        }
+    }
+
+}
