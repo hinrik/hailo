@@ -225,10 +225,20 @@ has _ui_obj => (
 
 with qw(MooseX::Getopt::Dashes);
 
+
+# --i--do-not-exist
+sub _getopt_spec_exception { goto &_getopt_full_usage }
+
+# --help
 sub _getopt_full_usage {
-    my ($self, $usage) = @_;
+    my ($self, $usage, $plain_str) = @_;
+
+    # If called from _getopt_spec_exception we get "Unknown option: foo"
+    my $warning = ref $usage eq 'ARRAY' ? $usage->[0] : undef;
+
     my ($use, $options) = do {
-        my $out = $usage->text;
+        # $plain_str under _getopt_spec_exception
+        my $out = $plain_str // $usage->text;
 
         # The default getopt order sucks, use reverse sort order
         chomp(my @out = split /^/, $out);
@@ -254,15 +264,23 @@ sub _getopt_full_usage {
         $out;
     };
 
+    # Unknown option provided
+    print $warning if $warning;
+
     print <<"USAGE";
 $use
 $options
-\n\tNote: All input/output and files are assumed to be UTF-8 encoded.\n
-$synopsis\n
+\n\tNote: All input/output and files are assumed to be UTF-8 encoded.
 USAGE
+
+    # Don't spew the example output when something's wrong with the
+    # options. It won't all fit on small terminals
+    say "\n", $synopsis unless $warning;
 
     exit 1;
 }
+
+
 
 sub _build__storage_obj {
     my ($self) = @_;
@@ -337,7 +355,8 @@ before run => sub {
         not defined $self->learn_str and
         not defined $self->learn_reply_str) {
         # TODO: Make this spew out the --help reply just like hailo
-        # with invalid options does usually
+        # with invalid options does usually, but only if run via
+        # ->new_with_options
         die "A bare reply_str without a brain doesn't work";
     }
 

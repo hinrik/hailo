@@ -12,6 +12,10 @@
       printing one log line. Maybe we'll add it in the future with
       proper support. See Issue #15.
 
+    - Issue #12: --not-a-valid-option now prints the same help output
+      --help would. MooseX::Getopt::Basic is evil and hard to override
+      so this is done with some hackery. 
+
 0.16 Mon Feb 22 17:08:46 GMT 2010
     - Don't seed a reply with a token which is too rare
     - Make the Word tokenizer split "example.com" into 3 tokens, while still
