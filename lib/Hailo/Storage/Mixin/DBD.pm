@@ -220,10 +220,6 @@ sub _engage {
 sub start_training {
     my ($self) = @_;
     $self->_engage() if !$self->_engaged;
-    my $st = $self->dbd eq 'mysql'
-        ? "ALTER TABLE next_token DROP INDEX next_token_token_id;"
-        : "DROP INDEX next_token_token_id;";
-    $self->dbh->do($st);
     $self->start_learning();
     return;
 }
@@ -231,7 +227,6 @@ sub start_training {
 sub stop_training {
     my ($self) = @_;
     $self->stop_learning();
-    $self->dbh->do('CREATE INDEX next_token_token_id ON next_token (token_id);');
     return;
 }
 
@@ -285,7 +280,7 @@ sub _get_create_db_sql {
     return ($sql =~ /\s*(.*?);/gs);
 }
 
-# return the number of tokens we know about
+# return some statistics
 sub totals {
     my ($self) = @_;
     $self->_engage() if !$self->_engaged;
@@ -331,7 +326,7 @@ sub make_reply {
     }
 
     # sort the rest by rareness
-    @key_ids = $self->_find_rare_tokens(\@key_ids);
+    @key_ids = $self->_find_rare_tokens(\@key_ids, 2);
 
     # get the middle expression
     my $seed_token_id = shift @key_ids;
@@ -405,7 +400,11 @@ sub learn_tokens {
     for my $i (0 .. @$tokens - $order) {
         my @expr = map { $token_cache{ join('', @{ $tokens->[$_] }) } } $i .. $i+$order-1;
         my $expr_id = $self->_expr_id(\@expr);
-        $expr_id = $self->_add_expr(\@expr) if !defined $expr_id;
+
+        if (!defined $expr_id) {
+            $expr_id = $self->_add_expr(\@expr);
+            $self->sth->{inc_token_count}->execute($_) for uniq(@expr);
+        }
 
         # add link to next token for this expression, if any
         if ($i < @$tokens - $order) {
@@ -430,21 +429,20 @@ sub learn_tokens {
 
 # sort token ids based on how rare they are
 sub _find_rare_tokens {
-    my ($self, $token_ids) = @_;
+    my ($self, $token_ids, $min) = @_;
     return if !@$token_ids;
 
     my %links;
     for my $id (@$token_ids) {
         next if exists $links{$id};
         $self->sth->{token_count}->execute($id);
-        $links{$id} = $self->sth->{token_count}->fetchrow_array // 0;
+        $links{$id} = $self->sth->{token_count}->fetchrow_array;
     }
 
-    my @ids = sort { $links{$a} <=> $links{$b} } @$token_ids;
+    # remove tokens which are too rare
+    my @ids = grep { $links{$_} >= $min } @$token_ids;
 
-    # remove tokens which are too rare, if we use one of them for the
-    # initial expression, we might get the same sentence we just learned
-    @ids = grep { $links{$_} > 1 } @ids;
+    @ids = sort { $links{$a} <=> $links{$b} } @ids;
 
     return @ids;
 }
@@ -620,7 +618,8 @@ CREATE TABLE token (
             [% CASE DEFAULT %]INTEGER PRIMARY KEY AUTOINCREMENT,
          [% END %]
     spacing INTEGER NOT NULL,
-    text [% IF dbd == 'mysql' %] VARCHAR(255) [% ELSE %] TEXT [% END %] NOT NULL
+    text [% IF dbd == 'mysql' %] VARCHAR(255) [% ELSE %] TEXT [% END %] NOT NULL,
+    count INTEGER NOT NULL
 );
 __[ table_expr ]__
 CREATE TABLE expr (
@@ -663,7 +662,6 @@ CREATE INDEX token_text on token (text);
 CREATE INDEX expr_token_ids on expr ([% columns %]);
 CREATE INDEX next_token_expr_id ON next_token (expr_id);
 CREATE INDEX prev_token_expr_id ON prev_token (expr_id);
-CREATE INDEX next_token_token_id ON next_token (token_id);
 __[ static_query_get_order ]__
 SELECT text FROM info WHERE attribute = 'markov_order';
 __[ static_query_set_order ]__
@@ -695,7 +693,10 @@ SELECT id, spacing FROM token WHERE text = ?
     [% CASE DEFAULT  %]ORDER BY RANDOM() LIMIT 1;
 [% END %]
 __[ static_query_add_token ]__
-INSERT INTO token (spacing, text) VALUES (?, ?)[% IF dbd == 'Pg' %] RETURNING id[% END %];
+INSERT INTO token (spacing, text, count) VALUES (?, ?, 0)
+[% IF dbd == 'Pg' %] RETURNING id[% END %];
+__[ static_query_inc_token_count ]__
+UPDATE token SET count = count + 1 WHERE id = ?;
 __[ static_query_last_expr_rowid ]_
 SELECT id FROM expr ORDER BY id DESC LIMIT 1;
 __[ static_query_last_token_rowid ]__
@@ -709,9 +710,10 @@ INSERT INTO [% table %] (expr_id, token_id, count) VALUES (?, ?, 1);
 __[ static_query_(next_token|prev_token)_get ]__
 SELECT token_id, count FROM [% table %] WHERE expr_id = ?;
 __[ static_query_token_count ]__
-SELECT COUNT(count) FROM next_token WHERE token_id = ?;
+SELECT count FROM token WHERE id = ?;
 __[ dynamic_query_(add_expr) ]__
-INSERT INTO expr ([% columns %]) VALUES ([% ids %])[% IF dbd == 'Pg' %] RETURNING id[% END %];
+INSERT INTO expr ([% columns %]) VALUES ([% ids %])
+[% IF dbd == 'Pg' %] RETURNING id[% END %];
 __[ dynamic_query_expr_by_token(NUM)_id ]__
 SELECT * FROM expr WHERE [% column %] = ?
 [% SWITCH dbd %]

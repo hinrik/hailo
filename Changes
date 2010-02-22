@@ -9,6 +9,8 @@
     - Declare undeclared File::Slurp dependency
     - Declare undeclared Test::Script dependency
     - Fixed utf8 problems with ReadLine UI
+    - Optimize the SQL schema bit, which shaves about 10% off the size of
+      the DB and cuts more than half of the time needed to generate a reply
 
 0.15 Thu Feb 18 23:55:19 GMT 2010
     - Allow specifying SQLite's cache size with --storage-args
