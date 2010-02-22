@@ -81,6 +81,7 @@ override save => sub {
     my ($self, $filename) = @_;
     my $file = $filename // $self->brain;
 
+    return if !$self->_engaged;
     if (defined $file && $file ne ':memory:'
         && (!defined $self->arguments->{in_memory}
         || $self->arguments->{in_memory})) {
