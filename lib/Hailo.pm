@@ -7,7 +7,6 @@ use Moose;
 use MooseX::StrictConstructor;
 use MooseX::Types::Moose qw/Int Str Bool HashRef/;
 use MooseX::Getopt;
-use File::Spec::Functions qw(catfile);
 use Module::Pluggable (
     search_path => [ map { "Hailo::$_" } qw(Storage Tokenizer UI) ],
     except      => [
@@ -247,8 +246,10 @@ sub _getopt_full_usage {
         open my $fh, '>', \$out;
 
         require FindBin;
+        require File::Spec;
+        
         Pod::Usage::pod2usage(
-            -input => catfile($FindBin::Bin, $FindBin::Script),
+            -input => File::Spec->catfile($FindBin::Bin, $FindBin::Script),
             -sections => 'SYNOPSIS',
             -output   => $fh,
             -exitval  => 'noexit',
