@@ -13,22 +13,14 @@ use File::CountLines qw(count_lines);
 use Hailo::Tokenizer::Words;
 use namespace::clean -except => 'meta';
 
-sub simple_storages {
-    #return qw(Perl Perl::Flat DBD::SQLite)
-    return qw(DBD::SQLite)
-}
-
-sub flat_storages {
-    return qw(Perl::Flat)
-}
-
 sub all_storages {
-    return qw(Perl Perl::Flat CHI::Memory CHI::File CHI::BerkeleyDB DBD::mysql DBD::SQLite DBD::Pg);
+    return qw(DBD::SQLite DBD::Pg DBD::mysql);
 }
 
-sub chain_storages {
-    return qw(Perl Perl::Flat);
+sub simple_storages {
+    return grep /sqlite/i, all_storages();
 }
+
 
 sub all_tests {
     return qw(test_starcraft test_congress test_congress_unknown test_babble test_badger test_megahal);

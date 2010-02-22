@@ -10,15 +10,6 @@ use Test::Script;
 my @classes = qw(
     Hailo
     Hailo::Storage::Mixin::DBD
-    Hailo::Storage::Mixin::CHI
-    Hailo::Storage::Mixin::Hash::Flat
-    Hailo::Storage::Mixin::Hash
-    Hailo::Storage::Mixin::Storable
-    Hailo::Storage::CHI::BerkeleyDB
-    Hailo::Storage::CHI::File
-    Hailo::Storage::CHI::Memory
-    Hailo::Storage::Perl
-    Hailo::Storage::Perl::Flat
     Hailo::Storage::DBD::SQLite
     Hailo::Storage::DBD::mysql
     Hailo::Storage::DBD::Pg

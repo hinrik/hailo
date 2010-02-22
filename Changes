@@ -1,3 +1,13 @@
+0.17
+    - Remove all storage engines that weren't DBD::*. I.e. the Perl
+      backend and the flat Perl::Flat & CHI::* backends.
+
+      These backends were added to experiment with alternate backends,
+      but between them they had no redeeming quality aside from
+      increasing our number of backends & tests. The downside is that
+      we constantly had to deal with errors in these backends that
+      were'n present in our primary DBD::* targets.
+
 0.16 Mon Feb 22 17:08:46 GMT 2010
     - Don't seed a reply with a token which is too rare
     - Make the Word tokenizer split "example.com" into 3 tokens, while still
