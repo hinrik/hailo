@@ -30,6 +30,7 @@ sub run {
         my $answer = $hailo->learn_reply($line);
         say $answer // "I don't know enough to answer you yet.";
     }
+    print "\n";
 
     return;
 }
