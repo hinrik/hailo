@@ -38,7 +38,6 @@ requires       ('namespace::clean'              => '0.13');
 requires       ('Template'                      => '2.22');
 requires       ('Term::ProgressBar'             => '2.00');
 requires       ('Term::ReadLine::Gnu'           => '0');
-requires       ('File::Slurp'                   => '9999.13');
 
 # for the optional backends
 recommends     ('CHI'                           => '0.34');
@@ -51,6 +50,7 @@ recommends     ('Digest::MD4'                   => '1.5');
 
 tests_recursive();
 test_requires  ('Data::Random'    => '0.05');
+requires       ('File::Slurp'     => '9999.13');
 test_requires  ('Test::Exception' => '0.29');
 test_requires  ('Test::More'      => '0.94');
 test_requires  ('Test::Output'    => '0.16');
