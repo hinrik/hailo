@@ -6,7 +6,7 @@ use Class::MOP;
 use Moose;
 use MooseX::StrictConstructor;
 use MooseX::Types::Moose qw/Int Str Bool HashRef Maybe/;
-use MooseX::Types::Path::Class qw(File);
+use MooseX::Getopt;
 use Time::HiRes qw(gettimeofday tv_interval);
 use IO::Interactive qw(is_interactive);
 use FindBin qw($Bin $Script);
@@ -89,8 +89,7 @@ has train_file => (
     cmd_aliases   => "t",
     cmd_flag      => "train",
     documentation => "Learn from all the lines in FILE",
-    isa           => File,
-    coerce        => 1,
+    isa           => Str,
     is            => "ro",
 );
 
@@ -419,7 +418,7 @@ sub train {
     my $storage = $self->_storage_obj;
     $storage->start_training();
 
-    my $got_filename = (ref $input eq '' || ref $input eq 'Path::Class::File');
+    my $got_filename = ref $input eq '';
 
     my $fh;
     if (ref $input eq 'GLOB') {

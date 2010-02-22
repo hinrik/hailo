@@ -47,7 +47,6 @@ requires       ('DBD::SQLite'                   => '1.29');
 # everywhere
 requires       ('MooseX::Role::Strict'          => '0.03');
 requires       ('MooseX::StrictConstructor'     => '0.08');
-requires       ('MooseX::Types::Path::Class'    => '0.05');
 requires       ('MooseX::Types'                 => '0.21');
 requires       ('MooseX::Types::Moose'          => '0.21');
 requires       ('namespace::clean'              => '0.13');
