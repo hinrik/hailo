@@ -61,7 +61,7 @@ has print_progress => (
     documentation => 'Print import progress with Term::ProgressBar',
     isa           => Bool,
     is            => 'ro',
-    default       => sub { require IO::Interactive; IO::Interactive::is_interactive() }
+    default       => sub { is_interactive() }
 );
 
 has learn_str => (
@@ -556,6 +556,11 @@ sub DEMOLISH {
     my ($self) = @_;
     $self->save if $self->save_on_exit;
     return;
+}
+
+sub is_interactive {
+    require IO::Interactive;
+    return IO::Interactive::is_interactive();
 }
 
 __PACKAGE__->meta->make_immutable;
