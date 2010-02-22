@@ -16,36 +16,40 @@ githubmeta     ();
 bugtracker     ('http://github.com/hinrik/hailo/issues');
 resources      (Ratings => 'http://cpanratings.perl.org/d/Hailo');
 
+# Hailo.pm
 requires       ('autodie'                       => '2.08');
+requires       ('Moose'                         => '0.94');
 requires       ('Class::MOP'                    => '0.98');
 requires       ('Data::Section'                 => '0.100270');
-requires       ('DBD::SQLite'                   => '1.29');
 requires       ('File::CountLines'              => '0.0.2');
-requires       ('Getopt::Long::Descriptive'     => '0.083');
-requires       ('IO::Interactive'               => '0.0.6');
-requires       ('List::MoreUtils'               => '0.22');
-requires       ('Module::Pluggable'             => '3.9');
-requires       ('Moose'                         => '0.94');
 requires       ('MooseX::Getopt'                => '0.26');
 requires       ('MooseX::Getopt::Dashes'        => '0');
+requires       ('Getopt::Long::Descriptive'     => '0.083');
+requires       ('IO::Interactive'               => '0.0.6');
+requires       ('Module::Pluggable'             => '3.9');
+
+# ReadLine.pm
+requires       ('Term::ProgressBar'             => '2.00');
+requires       ('Term::ReadLine::Gnu'           => '0');
+
+# DBD.pm
+requires       ('List::MoreUtils'               => '0.22');
+requires       ('Template'                      => '2.22');
+
+# SQLite.pm
+requires       ('DBD::SQLite'                   => '1.29');
+
+# everywhere
 requires       ('MooseX::Role::Strict'          => '0.03');
 requires       ('MooseX::StrictConstructor'     => '0.08');
 requires       ('MooseX::Types::Path::Class'    => '0.05');
 requires       ('MooseX::Types'                 => '0.21');
 requires       ('MooseX::Types::Moose'          => '0.21');
 requires       ('namespace::clean'              => '0.13');
-requires       ('Template'                      => '2.22');
-requires       ('Term::ProgressBar'             => '2.00');
-requires       ('Term::ReadLine::Gnu'           => '0');
 
-# for the optional backends
-recommends     ('CHI'                           => '0.34');
-recommends     ('CHI::Driver::BerkeleyDB'       => '0.01');
-recommends     ('CHI::Driver::File'             => '0');
-recommends     ('CHI::Driver::Memory'           => '0');
+# Pg/mysql: optional backends
 recommends     ('DBD::mysql'                    => '4.013');
 recommends     ('DBD::Pg'                       => '2.16.1');
-recommends     ('Digest::MD4'                   => '1.5');
 
 tests_recursive();
 test_requires  ('Data::Random'    => '0.05');
