@@ -16,7 +16,6 @@ my @classes = qw(
     Hailo::Role::Generic
     Hailo::Role::UI
     Hailo::Role::Storage
-    Hailo::Role::Log
     Hailo::Role::Tokenizer
     Hailo::UI::ReadLine
     Hailo::Tokenizer::Words

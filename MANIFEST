@@ -13,7 +13,6 @@ inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
 lib/Hailo.pm
 lib/Hailo/Role/Generic.pm
-lib/Hailo/Role/Log.pm
 lib/Hailo/Role/Storage.pm
 lib/Hailo/Role/Tokenizer.pm
 lib/Hailo/Role/UI.pm

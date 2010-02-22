@@ -223,8 +223,7 @@ has _ui_obj => (
     init_arg    => undef,
 );
 
-with qw(MooseX::Getopt::Dashes
-        Hailo::Role::Log);
+with qw(MooseX::Getopt::Dashes);
 
 sub _getopt_full_usage {
     my ($self, $usage) = @_;
@@ -467,7 +466,7 @@ sub _train_progress {
 
     $progress->update($lines) if $lines >= $next_update;
     my $elapsed = tv_interval($start_time);
-    $self->meh->info("Imported in $elapsed seconds");
+    say "Imported in $elapsed seconds";
 
     return;
 }

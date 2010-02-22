@@ -24,7 +24,6 @@ requires       ('File::CountLines'              => '0.0.2');
 requires       ('Getopt::Long::Descriptive'     => '0.083');
 requires       ('IO::Interactive'               => '0.0.6');
 requires       ('List::MoreUtils'               => '0.22');
-requires       ('Log::Log4perl'                 => '1.27');
 requires       ('Module::Pluggable'             => '3.9');
 requires       ('Moose'                         => '0.94');
 requires       ('MooseX::Getopt'                => '0.26');
