@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 
-# Usage: perl utils/developer/memory-usage Makefile.PL
+# Usage: perl utils/developer/memory-usage Makefile.PL | sort -n | grep -v -e Test -e Critic -e Random -e Slurp
 
 # Checks the memory usage of modules in Makefile.PL
 
