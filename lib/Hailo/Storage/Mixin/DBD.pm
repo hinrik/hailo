@@ -456,8 +456,7 @@ sub _inc_link {
     my $count = $self->sth->{"${type}_count"}->fetchrow_array;
 
     if (defined $count) {
-        my $new_count = $count++;
-        $self->sth->{"${type}_inc"}->execute($new_count, $expr_id, $token_id);
+        $self->sth->{"${type}_inc"}->execute($expr_id, $token_id);
     }
     else {
         $self->sth->{"${type}_add"}->execute($expr_id, $token_id);
@@ -704,7 +703,7 @@ SELECT id FROM token ORDER BY id DESC LIMIT 1;
 __[ static_query_(next_token|prev_token)_count ]__
 SELECT count FROM [% table %] WHERE expr_id = ? AND token_id = ?;
 __[ static_query_(next_token|prev_token)_inc ]__
-UPDATE [% table %] SET count = ? WHERE expr_id = ? AND token_id = ?
+UPDATE [% table %] SET count = count + 1 WHERE expr_id = ? AND token_id = ?
 __[ static_query_(next_token|prev_token)_add ]__
 INSERT INTO [% table %] (expr_id, token_id, count) VALUES (?, ?, 1);
 __[ static_query_(next_token|prev_token)_get ]__
