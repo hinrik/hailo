@@ -5,7 +5,7 @@ use MooseX::Types::Moose qw<Str Int>;
 use List::Util qw<min>;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 has brain => (
     isa => Str,

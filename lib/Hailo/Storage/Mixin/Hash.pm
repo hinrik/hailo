@@ -6,7 +6,7 @@ use MooseX::Types::Moose qw<HashRef>;
 use List::MoreUtils qw<uniq>;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 has _memory_area => (
     isa        => HashRef,

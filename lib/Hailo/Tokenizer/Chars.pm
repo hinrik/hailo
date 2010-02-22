@@ -3,7 +3,7 @@ use 5.010;
 use Moose;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 with qw(Hailo::Role::Generic
         Hailo::Role::Tokenizer);
