@@ -8,7 +8,6 @@ use MooseX::StrictConstructor;
 use MooseX::Types::Moose qw/Int Str Bool HashRef Maybe/;
 use MooseX::Getopt;
 use Time::HiRes qw(gettimeofday tv_interval);
-use IO::Interactive qw(is_interactive);
 use FindBin qw($Bin $Script);
 use File::Spec::Functions qw(catfile);
 use Module::Pluggable (
@@ -63,7 +62,7 @@ has print_progress => (
     documentation => 'Print import progress with Term::ProgressBar',
     isa           => Bool,
     is            => 'ro',
-    default       => sub { is_interactive() },
+    default       => sub { require IO::Interactive; IO::Interactive::is_interactive() }
 );
 
 has learn_str => (
