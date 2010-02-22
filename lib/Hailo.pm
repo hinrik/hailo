@@ -8,7 +8,6 @@ use MooseX::StrictConstructor;
 use MooseX::Types::Moose qw/Int Str Bool HashRef Maybe/;
 use MooseX::Getopt;
 use Time::HiRes qw(gettimeofday tv_interval);
-use FindBin qw($Bin $Script);
 use File::Spec::Functions qw(catfile);
 use Module::Pluggable (
     search_path => [ map { "Hailo::$_" } qw(Storage Tokenizer UI) ],
@@ -248,8 +247,9 @@ sub _getopt_full_usage {
         my $out;
         open my $fh, '>', \$out;
 
+        require FindBin;
         Pod::Usage::pod2usage(
-            -input => catfile($Bin, $Script),
+            -input => catfile($FindBin::Bin, $FindBin::Script),
             -sections => 'SYNOPSIS',
             -output   => $fh,
             -exitval  => 'noexit',
