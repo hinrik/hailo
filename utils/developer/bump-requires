@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 
-# Usage: perl utils/bump-requires Makefile.PL
+# Usage: perl utils/developer/bump-requires Makefile.PL
 
 # Bumps the Makefile.PL versions to whatever's working on the computer it's run on
 
