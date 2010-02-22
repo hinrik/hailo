@@ -18,7 +18,7 @@ sub all_storages {
 }
 
 sub simple_storages {
-    return grep /sqlite/i, all_storages();
+    return grep { /sqlite/i } all_storages();
 }
 
 
