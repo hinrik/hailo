@@ -8,10 +8,7 @@ our $VERSION = '0.16';
 
 extends 'Hailo::Storage::Mixin::DBD';
 
-has '+dbd' => (
-    default => 'mysql',
-);
-
+override _build_dbd         => sub { 'mysql' };
 override _build_dbd_options => sub {
     return {
         %{ super() },

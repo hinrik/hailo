@@ -20,16 +20,35 @@ with qw(Hailo::Role::Generic
         Hailo::Role::Storage
         Hailo::Role::Log);
 
-has dbh => (
-    isa        => 'DBI::db',
-    is         => 'ro',
-    lazy_build => 1,
-);
-
 has dbd => (
     isa           => Str,
     is            => 'ro',
+    lazy_build    => 1,
     documentation => "The DBD::* driver we're using",
+);
+
+# Override me
+sub _build_dbd { die }
+
+has dbd_options => (
+    isa           => HashRef,
+    is            => 'ro',
+    lazy_build    => 1,
+    documentation => 'Options passed as the last argument to DBI->connect()',
+);
+
+sub _build_dbd_options {
+    my ($self) = @_;
+    return {
+        RaiseError => 1
+    };
+}
+
+has dbh => (
+    isa           => 'DBI::db',
+    is            => 'ro',
+    lazy_build    => 1,
+    documentation => 'Our DBD object',
 );
 
 sub _build_dbh {
@@ -40,10 +59,11 @@ sub _build_dbh {
 };
 
 has dbi_options => (
-    isa => ArrayRef,
-    is => 'ro',
-    auto_deref => 1,
-    lazy_build => 1,
+    isa           => ArrayRef,
+    is            => 'ro',
+    auto_deref    => 1,
+    lazy_build    => 1,
+    documentation => 'Options passed to DBI->connect()',
 );
 
 sub _build_dbi_options {
@@ -62,35 +82,18 @@ sub _build_dbi_options {
     return \@options;
 }
 
-has dbd_options => (
-    isa        => HashRef,
-    is         => 'ro',
-    lazy_build => 1,
-);
-
-sub _build_dbd_options {
-    my ($self) = @_;
-    return {
-        RaiseError => 1
-    };
-}
-
 has _engaged => (
     isa           => Bool,
     is            => 'rw',
     default       => 0,
-    documentation => "Have we done setup work to get this database going?",
+    documentation => 'Have we done setup work to get this database going?',
 );
 
 has sth => (
     isa        => HashRef,
     is         => 'ro',
     lazy_build => 1,
-);
-
-has _boundary_token_id => (
-    isa => Int,
-    is  => 'rw',
+    documentation => 'A HashRef of prepared DBI statement handles',
 );
 
 # our statement handlers
@@ -99,6 +102,11 @@ sub _build_sth {
     my ($sections, $prefix) = $self->_sth_sections_static();
     return $self->_prepare_sth($sections, $prefix);
 }
+
+has _boundary_token_id => (
+    isa => Int,
+    is  => 'rw',
+);
 
 sub _prepare_sth {
     my ($self, $sections, $prefix) = @_;
