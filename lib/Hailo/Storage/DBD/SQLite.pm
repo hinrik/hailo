@@ -159,3 +159,11 @@ __[ static_query_last_expr_rowid ]__
 SELECT last_insert_rowid();
 __[ static_query_last_token_rowid ]__
 SELECT last_insert_rowid();
+__[ static_query_token_total ]__
+SELECT seq FROM sqlite_sequence WHERE name = 'token';
+__[ static_query_expr_total ]__
+SELECT seq FROM sqlite_sequence WHERE name = 'expr';
+__[ static_query_prev_total ]__
+SELECT seq FROM sqlite_sequence WHERE name = 'prev_token';
+__[ static_query_next_total ]__
+SELECT seq FROM sqlite_sequence WHERE name = 'next_token';
