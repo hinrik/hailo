@@ -8,6 +8,9 @@ use File::Temp qw(tempfile tempdir);
 use Test::More;
 use namespace::clean -except => 'meta';
 
+# Notes:
+# ROOT=.. (for i in $(echo 'show databases;' | mysql -u root -p$ROOT|grep ^hailo_); do echo "drop database $i;" | mysql -u root -p$ROOT; done)
+
 my $test_count = $ARGV[0] // 10;
 my @storages = $ARGV[1] ? (split /[\s,]+/, $ARGV[1]) : Hailo::Test::all_storages();
 my @s = map {
