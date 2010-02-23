@@ -251,9 +251,15 @@ sub train_a_few_tokens {
     my @random_tokens = rand_chars( set => 'all', min => 10, max => 15 );
 
     # Learn from it
-    eval {
-        $hailo->learn("@random_tokens");
-    };
+    if ((int rand 2) == 1) {
+        eval {
+            $hailo->learn( \@random_tokens );
+        };
+    } else {
+        eval {
+            $hailo->learn( "@random_tokens" );
+        };
+    }
 
     return ($@, \@random_tokens);
 }
