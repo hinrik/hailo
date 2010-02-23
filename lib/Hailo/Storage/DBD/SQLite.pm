@@ -41,7 +41,6 @@ sub _backup_memory_to_disk {
 
     return (defined $self->brain
             and $self->brain ne ':memory:'
-            and $self->_exists_db
             and (!defined $self->arguments->{in_memory}
             or $self->arguments->{in_memory}));
 }
