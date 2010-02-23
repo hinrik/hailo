@@ -707,6 +707,10 @@ You can join the IRC channel I<#hailo> on FreeNode if you have questions.
 
 L<Hailo::UI::Web> - A L<Catalyst> and jQuery powered web interface to Hailo
 
+L<POE::Component::Hailo> - A non-blocking POE wrapper around Hailo
+
+L<POE::Component::IRC::Plugin::Hailo> - A Hailo IRC bot plugin
+
 =head1 LINKS
 
 L<Hailo: A Perl rewrite of MegaHAL|

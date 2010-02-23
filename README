@@ -121,8 +121,19 @@ SUPPORT
     You can join the IRC channel *#hailo* on FreeNode if you have questions.
 
 SEE ALSO
+    Hailo::UI::Web - A Catalyst and jQuery powered web interface to Hailo
+
+    POE::Component::Hailo - A non-blocking POE wrapper around Hailo
+
+    POE::Component::IRC::Plugin::Hailo - A Hailo IRC bot plugin
+
+LINKS
     Hailo: A Perl rewrite of MegaHAL - A blog posting about the motivation
     behind Hailo
+
+BUGS
+    Bugs, feature requests and other issues are tracked in Hailo's issue
+    tracker on Github <http://github.com/hinrik/hailo/issues>.
 
 AUTHORS
     Hinrik Örn Sigurðsson, hinrik.sig@gmail.com
