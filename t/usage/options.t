@@ -39,10 +39,21 @@ if ($has_test_exit) {
 # Invalid train file
 dies_ok { Hailo->new( train_file => "/this-does-not-exist/$$" )->run }  "Calling Hailo with an invalid training file";
 # Valid train file
-lives_ok { Hailo->new( train_file => __FILE__, print_progress => 0 )->run }  "Calling Hailo with a valid training file";
+lives_ok {
+    Hailo->new(
+        train_file     => __FILE__,
+        print_progress => 0,
+        brain_resource => ':memory:',
+    )->run
+}  "Calling Hailo with a valid training file";
 
 # learn_str
-lives_ok { Hailo->new( learn_str => "foo" )->run } "Hailo can learn from a string";
+lives_ok {
+    Hailo->new(
+        learn_str      => "foo",
+        brain_resource => ':memory:',
+    )->run
+} "Hailo can learn from a string";
 
 # learn/reply
 is( sub {
