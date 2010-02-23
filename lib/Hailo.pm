@@ -565,6 +565,8 @@ command-line invocation.
 
     # Hailo requires Perl 5.10
     use 5.010;
+    use strict;
+    use warnings;
     use Hailo;
 
     # Construct a new in-memory Hailo using the SQLite backend. See
