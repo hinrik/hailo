@@ -110,9 +110,6 @@ sub spawn_storage {
     my %classes = (
         Pg                => 'DBD::Pg',
         mysql             => 'DBD::mysql',
-        'CHI::File'       => 'CHI::Driver::File',
-        'CHI::Memory'     => 'CHI::Driver::Memory',
-        'CHI::BerkeleyDB' => 'CHI::Driver::BerkeleyDB',
     );
 
     if (exists $classes{$storage}) {
