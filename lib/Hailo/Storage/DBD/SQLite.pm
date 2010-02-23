@@ -23,6 +23,7 @@ around _build_dbi_options => sub {
     my $return;
     if ($self->_backup_memory_to_disk) {
         my $file = $self->brain;
+        $self->brain(':memory:');
         $return = $self->$orig(@_);
         $self->brain($file);
     }
@@ -41,8 +42,7 @@ sub _backup_memory_to_disk {
     return defined $self->brain
            and $self->brain ne ':memory:'
            and $self->_exists_db
-           and (not defined $self->arguments->{in_memory}
-                 or $self->arguments->{in_memory});
+           and self->arguments->{in_memory};
 }
 
 
