@@ -2,7 +2,7 @@ use 5.010;
 use strict;
 use warnings;
 use Hailo;
-use File::Temp qw(tempfile);
+use File::Temp qw(tempdir tempfile);
 use Test::More tests => 1;
 
 # Dir to store our brains
