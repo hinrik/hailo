@@ -22,6 +22,7 @@ my $OPEN_QUOTE  = qr/['"‘“„«»「『‹‚]/;
 my $CLOSE_QUOTE = qr/['"’“”«»」』›‘]/;
 my $TERMINATOR  = qr/(?:[?!‽]+|(?<!\.)\.)/;
 my $ADDRESS     = qr/:/;
+my $PUNCTUATION = qr/[?!‽,;.:]/;
 my $BOUNDARY    = qr/\s*$CLOSE_QUOTE?\s*(?:$TERMINATOR|$ADDRESS)\s+$OPEN_QUOTE?\s*/;
 
 # we want to capitalize words that come after "On example.com?"
@@ -98,8 +99,8 @@ sub make_output {
     # end paragraphs with a period when it makes sense
     $reply =~ s/ $WORD\K$/./;
 
-    # capitalize the words "i'm" and "i've"
-    $reply =~ s{\bi'(m|ve)\b}{I'$1}g;
+    # capitalize I
+    $reply =~ s{ \Ki(?=$PUNCTUATION| |$APOSTROPHE)}{I}g;
 
     return $reply;
 }
