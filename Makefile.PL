@@ -16,6 +16,11 @@ githubmeta     ();
 bugtracker     ('http://github.com/hinrik/hailo/issues');
 resources      (Ratings => 'http://cpanratings.perl.org/d/Hailo');
 
+# Core stuff
+resources      ('Time::HiRes'                   => '0');
+resources      ('FindBin'                       => '0');
+resources      ('File::Spec::Functions'         => '0');
+
 # Hailo.pm
 requires       ('autodie'                       => '2.08');
 requires       ('Moose'                         => '0.94');
@@ -42,7 +47,6 @@ requires       ('DBD::SQLite'                   => '1.29');
 # everywhere
 requires       ('MooseX::Role::Strict'          => '0.03');
 requires       ('MooseX::StrictConstructor'     => '0.08');
-requires       ('MooseX::Types::Path::Class'    => '0.05');
 requires       ('MooseX::Types'                 => '0.21');
 requires       ('MooseX::Types::Moose'          => '0.21');
 requires       ('namespace::clean'              => '0.13');

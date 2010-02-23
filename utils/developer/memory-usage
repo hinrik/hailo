@@ -1,12 +1,14 @@
 #!/usr/bin/env perl
 
-# Usage: perl utils/developer/memory-usage Makefile.PL | sort -n | grep -v -e Test -e Critic -e Random -e Slurp
+# Usage: TIME=1 perl utils/developer/memory-usage Makefile.PL | sort -n | grep -v -e Test -e Critic -e Random -e Slurp
+# Usage: time=0 perl utils/developer/memory-usage Makefile.PL | sort -n | grep -v -e Test -e Critic -e Random -e Slurp
 
 # Checks the memory usage of modules in Makefile.PL
 
 use 5.010;
 use Moose;
 use Class::MOP;
+use Time::HiRes qw(gettimeofday tv_interval);
 
 my $module_get = qr/
     ^(?<what>requires|recommends|test_requires|author_requires)
@@ -28,10 +30,15 @@ while (<>) {
             $mod =~ s[::][/]g;
             $mod =~ s[$][.pm];
 
+            my $start_time = [gettimeofday()];
             my $mem = qx{$^X -e 'sub mem { my (\$m) = qx[ps -o rss \$\$] =~ /(\\d+)/; \$m }; require q[Moose.pm] if q[$mod] =~ /MooseX/; my \$before = mem(); require q[$mod]; my \$after = mem(); print \$after - \$before' \$mod};
+            my $elapsed = tv_interval($start_time);
 
-            say $mem, "\t", $mod;
-
+            if ($ENV{TIME}) {
+                say sprintf "%.4f\t%d\t%s", $elapsed, $mem, $mod;
+            } else {
+                say sprintf "%d\t%.4f\t%s", $mem, $elapsed, $mod;
+            }
         }
     }
 

@@ -38,7 +38,6 @@ t/lib/Hailo/Test/badger.trn
 t/lib/Hailo/Test/megahal.trn
 t/lib/Hailo/Test/starcraft.trn
 t/storage/arguments.t
-t/storage/chain-brain.t
 t/storage/DBD-mysql.t
 t/storage/dbd-options.t
 t/storage/DBD-Pg.t

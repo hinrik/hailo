@@ -5,12 +5,8 @@ use autodie qw(open close);
 use Class::MOP;
 use Moose;
 use MooseX::StrictConstructor;
-use MooseX::Types::Moose qw/Int Str Bool HashRef Maybe/;
-use MooseX::Types::Path::Class qw(File);
-use Time::HiRes qw(gettimeofday tv_interval);
-use IO::Interactive qw(is_interactive);
-use FindBin qw($Bin $Script);
-use File::Spec::Functions qw(catfile);
+use MooseX::Types::Moose qw/Int Str Bool HashRef/;
+use MooseX::Getopt;
 use Module::Pluggable (
     search_path => [ map { "Hailo::$_" } qw(Storage Tokenizer UI) ],
     except      => [
@@ -61,7 +57,7 @@ has print_progress => (
     documentation => 'Print import progress with Term::ProgressBar',
     isa           => Bool,
     is            => 'ro',
-    default       => sub { is_interactive() },
+    default       => sub { is_interactive() }
 );
 
 has learn_str => (
@@ -87,8 +83,7 @@ has train_file => (
     cmd_aliases   => "t",
     cmd_flag      => "train",
     documentation => "Learn from all the lines in FILE",
-    isa           => File,
-    coerce        => 1,
+    isa           => Str,
     is            => "ro",
 );
 
@@ -248,8 +243,11 @@ sub _getopt_full_usage {
         my $out;
         open my $fh, '>', \$out;
 
+        require FindBin;
+        require File::Spec;
+        
         Pod::Usage::pod2usage(
-            -input => catfile($Bin, $Script),
+            -input => File::Spec->catfile($FindBin::Bin, $FindBin::Script),
             -sections => 'SYNOPSIS',
             -output   => $fh,
             -exitval  => 'noexit',
@@ -417,7 +415,7 @@ sub train {
     my $storage = $self->_storage_obj;
     $storage->start_training();
 
-    my $got_filename = (ref $input eq '' || ref $input eq 'Path::Class::File');
+    my $got_filename = ref $input eq '';
 
     my $fh;
     if (ref $input eq 'GLOB') {
@@ -452,6 +450,8 @@ before _train_progress => sub {
     Term::ProgressBar->import(2.00);
     require File::CountLines;
     File::CountLines->import('count_lines');
+    require Time::HiRes;
+    Time::HiRes->import(qw(gettimeofday tv_interval));
     return;
 };
 
@@ -556,6 +556,11 @@ sub DEMOLISH {
     my ($self) = @_;
     $self->save if $self->save_on_exit;
     return;
+}
+
+sub is_interactive {
+    require IO::Interactive;
+    return IO::Interactive::is_interactive();
 }
 
 __PACKAGE__->meta->make_immutable;
