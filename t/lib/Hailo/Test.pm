@@ -131,19 +131,14 @@ sub spawn_storage {
             }
         }
         when (/mysql/) {
-            if (system qq[echo "SELECT DATABASE();" | mysql -u'hailo' -p'hailo' 'hailo' >/dev/null 2>&1]) {
-                $ok = 0;
-            } else {
-                $self->_nuke_mysql();
-            }
+            die "You must set MYSQL_ROOT_PASSWORD=" unless $ENV{MYSQL_ROOT_PASSWORD};
+            system qq[echo "CREATE DATABASE $brainrs;" | mysql -u root -p$ENV{MYSQL_ROOT_PASSWORD}] and die $!;
+            system qq[echo "GRANT ALL ON $brainrs.* TO hailo\@localhost IDENTIFIED BY 'hailo';;" | mysql -u root -p$ENV{MYSQL_ROOT_PASSWORD}] and die $!;
+            system qq[echo "FLUSH PRIVILEGES;" | mysql -u root -p$ENV{MYSQL_ROOT_PASSWORD}] and die $!;
         }
     }
 
     return $ok;
-}
-
-sub _nuke_mysql {
-    system q[echo 'drop table info; drop table token; drop table expr; drop table next_token; drop table prev_token;' | mysql -u hailo -p'hailo' hailo];
 }
 
 sub unspawn_storage {
@@ -165,7 +160,7 @@ sub unspawn_storage {
             $nuke_db->();
         }
         when (/mysql/) {
-            $self->_nuke_mysql();
+            system qq[echo "DROP DATABASE $brainrs;" | mysql -u root -p$ENV{MYSQL_ROOT_PASSWORD}] and die $!;
         }
     }
 }

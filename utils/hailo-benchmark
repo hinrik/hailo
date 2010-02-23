@@ -28,10 +28,13 @@ my $dir = tempdir( "hailo-benchmark-XXXXX", CLEANUP => 1, TMPDIR => 1 );
 my %hailos;
 my %test;
 
+# A uid for this test run
+my @t = "a".."z";
+my $toke = join q[], map { @t[rand @t] } 1 .. 10;
 
 for my $s (@s) {
     my ($storage, $name, $opts) = @$s;
-    for my $cnt (1 .. $test_count) {
+    my $i = 0; for my $cnt (1 .. $test_count) { $i++;
         my $st = $name;
         $st =~ s/[^A-Za-z]/-/g;
         my $tmpdir = tempdir( "$st-XXXXX", DIR => $dir, CLEANUP => 1 );
@@ -40,6 +43,9 @@ for my $s (@s) {
             storage => $storage,
             brief => 1,
             %$opts,
+            ($storage =~ /Pg|mysql/
+             ? (brain_resource => "hailo_benchmark_db_test_${toke}_$i")
+             : ()),
         );
 
         my $ok = $hailo->spawn_storage();
