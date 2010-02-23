@@ -5,7 +5,7 @@ use namespace::clean -except => 'meta';
 
 our $VERSION = '0.16';
 
-with qw(Hailo::Role::Generic
+with qw(Hailo::Role::Arguments
         Hailo::Role::Tokenizer);
 
 # output -> tokens

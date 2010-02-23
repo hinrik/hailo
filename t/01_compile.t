@@ -13,7 +13,7 @@ my @classes = qw(
     Hailo::Storage::DBD::SQLite
     Hailo::Storage::DBD::mysql
     Hailo::Storage::DBD::Pg
-    Hailo::Role::Generic
+    Hailo::Role::Arguments
     Hailo::Role::UI
     Hailo::Role::Storage
     Hailo::Role::Tokenizer

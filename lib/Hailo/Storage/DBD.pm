@@ -16,7 +16,7 @@ use namespace::clean -except => [ qw(meta
 
 our $VERSION = '0.16';
 
-with qw(Hailo::Role::Generic
+with qw(Hailo::Role::Arguments
         Hailo::Role::Storage);
 
 has dbd => (
