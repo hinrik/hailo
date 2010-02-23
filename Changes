@@ -22,6 +22,8 @@
     - Renamed Hailo::Storage::Mixin::DBD to Hailo::Storage::DBD, since
       mixin is really a misnomer for this base class.
 
+    - Improved documentation including a new SYNOPSIS with examples.
+
     - t/storage/dbd-switch-order.t didn't clean up the tempfile it was
       using.
 
