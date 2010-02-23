@@ -479,7 +479,14 @@ sub _train_progress {
 
 sub learn {
     my ($self, $input) = @_;
-    my $inputs = ref $input eq 'ARRAY' ? $input : [$input];
+    my $inputs;
+    if (ref $input eq 'ARRAY') {
+        $inputs = $input;
+    } else {
+        die "Cannot learn from undef input" unless defined $input;
+        $inputs = [$input];
+    }
+
     my $storage = $self->_storage_obj;
 
     $storage->start_learning();

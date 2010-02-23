@@ -24,6 +24,8 @@
 
     - Improved documentation including a new SYNOPSIS with examples.
 
+    - Error on training with an undef argument.
+
     - t/storage/dbd-switch-order.t didn't clean up the tempfile it was
       using.
 

@@ -2,7 +2,7 @@ use 5.010;
 use strict;
 use warnings;
 use List::MoreUtils qw(uniq);
-use Test::More tests => 36;
+use Test::More tests => 39;
 use Test::Exception;
 use Test::Output;
 use Hailo;
@@ -36,8 +36,11 @@ if ($has_test_exit) {
   }
 }
 
+### Options
+
 # Invalid train file
 dies_ok { Hailo->new( train_file => "/this-does-not-exist/$$" )->run }  "Calling Hailo with an invalid training file";
+
 # Valid train file
 lives_ok {
     Hailo->new(
@@ -96,3 +99,21 @@ for (my $i = 1; $i <= 10e10; $i += $i * 2) {
 
 # new
 dies_ok { Hailo->new( qw( a b c d ) ) } "Hailo dies on unknown arguments";
+
+### Usage
+
+# train
+dies_ok {
+    my $h = Hailo->new;
+    $h->train(undef)
+} "train: undef input";
+
+dies_ok {
+    my $h = Hailo->new;
+    $h->train()
+} "train: undef input";
+
+lives_ok {
+    my $h = Hailo->new;
+    $h->train([])
+} "train: ARRAY input";
