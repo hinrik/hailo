@@ -48,7 +48,7 @@ t/storage/dbd-switch-order.t
 t/tokenizer/Chars.t
 t/tokenizer/Words.t
 t/ui/readline.t
-t/usage/options.t
+t/usage/options-and-usage.t
 t/usage/synopsis.t
 utils/crunchbase-companies
 utils/hailo-benchmark
