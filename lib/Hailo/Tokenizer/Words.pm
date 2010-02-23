@@ -22,6 +22,7 @@ my $OPEN_QUOTE  = qr/['"‘“„«»「『‹‚]/;
 my $CLOSE_QUOTE = qr/['"’“”«»」』›‘]/;
 my $TERMINATOR  = qr/(?:[?!‽]+|(?<!\.)\.)/;
 my $ADDRESS     = qr/:/;
+my $PUNCTUATION = qr/[?!‽,;.:]/;
 my $BOUNDARY    = qr/\s*$CLOSE_QUOTE?\s*(?:$TERMINATOR|$ADDRESS)\s+$OPEN_QUOTE?\s*/;
 
 # we want to capitalize words that come after "On example.com?"
@@ -99,7 +100,7 @@ sub make_output {
     $reply =~ s/ $WORD\K$/./;
 
     # capitalize I
-    $reply =~ s{ \Ki\b}{I}g;
+    $reply =~ s{ \Ki(?=(?:$PUNCTUATION| |'))}{I}g;
 
     return $reply;
 }

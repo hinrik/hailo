@@ -111,6 +111,16 @@ subtest make_output => sub {
             [qw<foo bar baz . i said i'll do this>],
             "Foo bar baz. I said I'll do this.",
         ],
+        [
+            'talking about i&34324 yes',
+            [qw<talking about i & 34324 yes>],
+            'Talking about i&34324 yes.'
+        ],
+        [
+            'talking about i',
+            [qw<talking about i>],
+            'Talking about I.'
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();
