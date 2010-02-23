@@ -39,10 +39,10 @@ around _build_dbi_options => sub {
 sub _backup_memory_to_disk {
     my ($self) = @_;
 
-    return defined $self->brain
-           and $self->brain ne ':memory:'
-           and $self->_exists_db
-           and self->arguments->{in_memory};
+    return (defined $self->brain
+            and $self->brain ne ':memory:'
+            and $self->_exists_db
+            and $self->arguments->{in_memory});
 }
 
 
