@@ -632,12 +632,13 @@ The storage backend to use. Default: 'SQLite'.
 
 This gives you an idea of approximately how the backends compare in
 speed:
-                      Rate DBD::Pg DBD::mysql DBD::SQLite/file DBD::SQLite/memory
- DBD::Pg            1.96/s      --       -20%             -40%               -56%
- DBD::mysql         2.46/s     25%         --             -25%               -45%
- DBD::SQLite/file   3.29/s     67%        34%               --               -27%
- DBD::SQLite/memory 4.50/s    129%        83%              37%                 --
 
+                         Rate DBD::Pg DBD::mysql DBD::SQLite/file DBD::SQLite/memory
+    DBD::Pg            2.22/s      --       -33%             -49%               -56%
+    DBD::mysql         3.33/s     50%         --             -23%               -33%
+    DBD::SQLite/file   4.35/s     96%        30%               --               -13%
+    DBD::SQLite/memory 5.00/s    125%        50%              15%                 --
+    
 To run your own test try running F<utils/hailo-benchmark> in the Hailo
 distribution.
 
