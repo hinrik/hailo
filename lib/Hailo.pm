@@ -336,9 +336,9 @@ before run => sub {
 
     if (not defined $self->brain_resource and
         (defined $self->reply_str or
-        defined $self->train_file or
-        defined $self->learn_str or
-        defined $self->learn_reply_str)) {
+         defined $self->train_file or
+         defined $self->learn_str or
+         defined $self->learn_reply_str)) {
         # TODO: Make this spew out the --help reply just like hailo
         # with invalid options does usually, but only if run via
         # ->new_with_options
