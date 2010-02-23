@@ -565,6 +565,8 @@ command-line invocation.
 
     # Hailo requires Perl 5.10
     use 5.010;
+    use strict;
+    use warnings;
     use Hailo;
 
     # Construct a new in-memory Hailo using the SQLite backend. See
@@ -704,6 +706,10 @@ You can join the IRC channel I<#hailo> on FreeNode if you have questions.
 =head1 SEE ALSO
 
 L<Hailo::UI::Web> - A L<Catalyst> and jQuery powered web interface to Hailo
+
+L<POE::Component::Hailo> - A non-blocking POE wrapper around Hailo
+
+L<POE::Component::IRC::Plugin::Hailo> - A Hailo IRC bot plugin
 
 =head1 LINKS
 
