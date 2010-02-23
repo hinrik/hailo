@@ -5,7 +5,11 @@ use Hailo;
 use File::Temp qw(tempfile);
 use Test::More tests => 1;
 
-my ($fh, $brain_file) = tempfile(SUFFIX => '.sqlite', UNLINK => 1);
+# Dir to store our brains
+my $dir = tempdir( "hailo-test-sqlite-in-memory-XXXX", CLEANUP => 1, TMPDIR => 1 );
+
+my ($fh, $brain_file) = tempfile( DIR => $dir, SUFFIX => '.sqlite' );
+
 my $hailo = Hailo->new(
     storage_class  => 'SQLite',
     brain_resource => $brain_file,
