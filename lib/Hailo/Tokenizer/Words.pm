@@ -100,7 +100,7 @@ sub make_output {
     $reply =~ s/ $WORD\K$/./;
 
     # capitalize I
-    $reply =~ s{ \Ki(?=(?:$PUNCTUATION| |'))}{I}g;
+    $reply =~ s{ \Ki(?=(?:$PUNCTUATION| |$APOSTROPHE))}{I}g;
 
     return $reply;
 }
