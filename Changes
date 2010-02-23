@@ -12,6 +12,9 @@
       printing one log line. Maybe we'll add it in the future with
       proper support. See Issue #15.
 
+    - Hailo now uses less memory by lazy-loading various modules that
+      it previously loaded even if they were redundant.
+
     - Issue #12: --not-a-valid-option now prints the same help output
       --help would. MooseX::Getopt::Basic is evil and hard to override
       so this is done with some hackery. 
