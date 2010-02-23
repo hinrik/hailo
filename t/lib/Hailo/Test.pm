@@ -174,7 +174,10 @@ sub _connect_opts {
     given ($storage) {
         when (/SQLite/) {
             %opts = (
-                brain_resource => ($self->in_memory  ? ':memory:' : $self->brain)
+                brain_resource => ($self->in_memory  ? ':memory:' : $self->brain),
+                storage_args => {
+                    in_memory => 0,
+                },
             );
         }
         when (/Pg/) {
