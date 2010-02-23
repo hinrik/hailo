@@ -3,10 +3,14 @@ use warnings;
 use Test::More tests => 1;
 use Test::Exception;
 use File::Spec::Functions qw<catfile>;
-use File::Temp qw<tempfile>;
+use File::Temp qw<tempdir tempfile>;
 use Hailo;
 
-my (undef, $brainfile) = tempfile(SUFFIX => '.sqlite');
+# Dir to store our brains
+my $dir = tempdir( "hailo-test-dbd-so-XXXX", CLEANUP => 1, TMPDIR => 1 );
+
+my ($fh, $brainfile) = tempfile( DIR => $dir, SUFFIX => '.sqlite' );
+
 my $trainfile = catfile(qw<t lib Hailo Test megahal.trn>);
 
 my $hailo = Hailo->new(
