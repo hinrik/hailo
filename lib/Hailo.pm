@@ -57,7 +57,7 @@ has print_progress => (
     documentation => 'Print import progress with Term::ProgressBar',
     isa           => Bool,
     is            => 'ro',
-    default       => sub { is_interactive() }
+    default       => sub { _is_interactive() }
 );
 
 has learn_str => (
@@ -356,7 +356,7 @@ sub run {
         return;
     }
 
-    if (is_interactive() and
+    if (_is_interactive() and
         defined $self->brain_resource and
         not defined $self->train_file and
         not defined $self->learn_str and
@@ -538,7 +538,7 @@ sub DEMOLISH {
     return;
 }
 
-sub is_interactive {
+sub _is_interactive {
     require IO::Interactive;
     return IO::Interactive::is_interactive();
 }
