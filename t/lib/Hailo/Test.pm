@@ -174,11 +174,6 @@ sub _connect_opts {
                 brain_resource => ($self->in_memory  ? ':memory:' : $self->brain)
             );
         }
-        when (/Perl/) {
-            %opts = (
-                brain_resource => $self->brain,
-            ),
-        }
         when (/Pg/) {
             %opts = (
                 storage_args => {
@@ -193,13 +188,6 @@ sub _connect_opts {
                     host => 'localhost',
                     username => 'root',
                     password => $ENV{MYSQL_ROOT_PASSWORD},
-                },
-            );
-        }
-        when (/CHI::(?:BerkeleyDB|File)/) {
-            %opts = (
-                storage_args => {
-                    root_dir => $self->tmpdir,
                 },
             );
         }
