@@ -6,7 +6,7 @@ use namespace::clean -except => 'meta';
 
 our $VERSION = '0.16';
 
-extends 'Hailo::Storage::Mixin::DBD';
+extends 'Hailo::Storage::DBD';
 
 override _build_dbd         => sub { 'mysql' };
 override _build_dbd_options => sub {

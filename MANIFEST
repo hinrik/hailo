@@ -16,10 +16,10 @@ lib/Hailo/Role/Generic.pm
 lib/Hailo/Role/Storage.pm
 lib/Hailo/Role/Tokenizer.pm
 lib/Hailo/Role/UI.pm
+lib/Hailo/Storage/DBD.pm
 lib/Hailo/Storage/DBD/mysql.pm
 lib/Hailo/Storage/DBD/Pg.pm
 lib/Hailo/Storage/DBD/SQLite.pm
-lib/Hailo/Storage/Mixin/DBD.pm
 lib/Hailo/Tokenizer/Chars.pm
 lib/Hailo/Tokenizer/Words.pm
 lib/Hailo/UI/ReadLine.pm

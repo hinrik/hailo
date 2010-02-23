@@ -14,8 +14,6 @@ use File::Spec::Functions qw(catfile);
 use Module::Pluggable (
     search_path => [ map { "Hailo::$_" } qw(Storage Tokenizer UI) ],
     except      => [
-        qr[Mixin],
-
         # If an old version of Hailo is already istalled these modules
         # may be lying around. Ignore them manually; and make sure to
         # update this list if we move things around again.

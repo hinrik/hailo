@@ -1,4 +1,4 @@
-package Hailo::Storage::Mixin::DBD;
+package Hailo::Storage::DBD;
 use 5.010;
 use Moose;
 use MooseX::StrictConstructor;
@@ -578,7 +578,7 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Hailo::Storage::Mixin::DBD - A mixin class for L<Hailo> DBD
+Hailo::Storage::DBD - A base class for L<Hailo> DBD
 L<storage|Hailo::Role::Storage> backends
 
 =head1 METHODS

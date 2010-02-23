@@ -16,6 +16,9 @@
       --help would. MooseX::Getopt::Basic is evil and hard to override
       so this is done with some hackery. 
 
+    - Renamed Hailo::Storage::Mixin::DBD to Hailo::Storage::DBD, since
+      mixin is really a misnomer for this base class.
+
 0.16 Mon Feb 22 17:08:46 GMT 2010
     - Don't seed a reply with a token which is too rare
     - Make the Word tokenizer split "example.com" into 3 tokens, while still
