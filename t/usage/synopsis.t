@@ -1,4 +1,6 @@
 use autodie;
+use strict;
+use warnings;
 use Test::More tests => 1;
 open my $filehandle, '<', __FILE__;
 
