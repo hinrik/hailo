@@ -189,10 +189,10 @@ sub _connect_opts {
         when (/mysql/) {
             %opts = (
                 storage_args => {
-                    database => 'hailo',
+                    database => $self->brain,
                     host => 'localhost',
-                    username => 'hailo',
-                    password => 'hailo',
+                    username => 'root',
+                    password => $ENV{MYSQL_ROOT_PASSWORD},
                 },
             );
         }
