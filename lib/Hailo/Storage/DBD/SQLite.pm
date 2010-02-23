@@ -23,7 +23,6 @@ around _build_dbi_options => sub {
     my $return;
     if ($self->_backup_memory_to_disk) {
         my $file = $self->brain;
-        $self->brain(':memory:');
         $return = $self->$orig(@_);
         $self->brain($file);
     }
