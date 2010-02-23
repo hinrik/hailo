@@ -128,10 +128,11 @@ sub spawn_storage {
             }
         }
         when (/mysql/) {
-            die "You must set MYSQL_ROOT_PASSWORD=" unless $ENV{MYSQL_ROOT_PASSWORD};
+            plan skip_all => "You must set MYSQL_ROOT_PASSWORD= to test MySQL" unless $ENV{MYSQL_ROOT_PASSWORD};
             system qq[echo "CREATE DATABASE $brainrs;" | mysql -u root -p$ENV{MYSQL_ROOT_PASSWORD}] and die $!;
             system qq[echo "GRANT ALL ON $brainrs.* TO hailo\@localhost IDENTIFIED BY 'hailo';;" | mysql -u root -p$ENV{MYSQL_ROOT_PASSWORD}] and die $!;
             system qq[echo "FLUSH PRIVILEGES;" | mysql -u root -p$ENV{MYSQL_ROOT_PASSWORD}] and die $!;
+            $self->{_created_mysql} = 1;
         }
     }
 
@@ -157,7 +158,9 @@ sub unspawn_storage {
             $nuke_db->();
         }
         when (/mysql/) {
-            system qq[echo "DROP DATABASE $brainrs;" | mysql -u root -p$ENV{MYSQL_ROOT_PASSWORD}] and die $!;
+            if ($self->{_created_mysql}) {
+                system qq[echo "DROP DATABASE $brainrs;" | mysql -u root -p$ENV{MYSQL_ROOT_PASSWORD}] and die $!;
+            }
         }
     }
 }
