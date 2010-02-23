@@ -5,7 +5,7 @@ use Hailo;
 use File::Temp qw(tempfile);
 use Test::More tests => 1;
 
-my (undef, $brain_file) = tempfile(SUFFIX => '.sqlite');
+my ($fh, $brain_file) = tempfile(SUFFIX => '.sqlite', UNLINK => 1);
 my $hailo = Hailo->new(
     storage_class  => 'SQLite',
     brain_resource => $brain_file,
