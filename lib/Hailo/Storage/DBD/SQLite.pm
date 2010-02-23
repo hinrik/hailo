@@ -109,14 +109,11 @@ As a module:
  my $hailo = Hailo->new(
      train_file    => 'hailo.trn',
      storage_class => 'SQLite',
-     storage_args  => {
-         cache_size > 102400, # 100MB page cache
-     },
  );
 
 From the command line:
 
- hailo --train hailo.trn --storage SQLite --storage-args cache_size=102400
+ hailo --train hailo.trn --storage SQLite
 
 See L<Hailo's documentation|Hailo> for other non-MySQL specific options.
 
@@ -131,16 +128,17 @@ storage backend.
 
 This is a hash reference which can have the following keys:
 
-B<'cache_size'>, the size of the page cache used by SQLite. See L<SQLite's
-documentation|http://www.sqlite.org/pragma.html#pragma_cache_size> for more
-information. Setting this value higher than the default can be beneficial,
-especially when disk IO is slow on your machine.
-
 B<'in_memory'>, when set to a true value, Hailo behaves much like MegaHAL.
 The entire database will be kept in memory, and only written out to disk
 when the C<save|Hailo/save> method is called and/or when the L<Hailo|Hailo>
 object gets destroyed (unless you disabled L<save_on_exit|Hailo/save_on_exit>).
 This is turned on by default.
+
+B<'cache_size'>, the size of the page cache used by SQLite. See L<SQLite's
+documentation|http://www.sqlite.org/pragma.html#pragma_cache_size> for more
+information. Setting this value higher than the default can be beneficial,
+especially when disk IO is slow on your machine. Obviously, you shouldn't
+bother with this option if B<'in_memory'> is enabled.
 
 =head1 AUTHOR
 
