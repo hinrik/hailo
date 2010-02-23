@@ -3,7 +3,7 @@ use 5.010;
 use MooseX::Role::Strict;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
 requires 'make_tokens';
 requires 'make_output';

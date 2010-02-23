@@ -1,4 +1,4 @@
-0.17
+0.17 Tue Feb 23 04:06:50 GMT 2010
     - Remove all storage engines that weren't DBD::*. I.e. the Perl
       backend and the flat Perl::Flat & CHI::* backends.
 
