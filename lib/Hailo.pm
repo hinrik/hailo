@@ -181,16 +181,6 @@ has ui_args => (
     default       => sub { +{} },
 );
 
-has token_separator => (
-    traits        => [qw(Getopt)],
-    cmd_aliases   => 'P',
-    cmd_flag      => 'separator',
-    documentation => "String used when joining an expression into a string",
-    isa           => Str,
-    is            => 'rw',
-    default       => "\t",
-);
-
 # Working objects
 has _storage_obj => (
     traits      => [qw(NoGetopt)],
@@ -287,7 +277,6 @@ sub _build__storage_obj {
             (defined $self->brain_resource
              ? (brain => $self->brain_resource)
              : ()),
-            token_separator => $self->token_separator,
             order           => $self->order,
             arguments       => $self->storage_args,
         }
@@ -488,13 +477,6 @@ sub _train_progress {
     return;
 }
 
-sub _clean_input {
-    my ($self, $input) = @_;
-    my $separator = quotemeta $self->_storage_obj->token_separator;
-    $input =~ s/$separator//g;
-    return $input;
-}
-
 sub learn {
     my ($self, $input) = @_;
     my $inputs = ref $input eq 'ARRAY' ? $input : [$input];
@@ -511,7 +493,6 @@ sub _learn_one {
     my $storage = $self->_storage_obj;
     my $order   = $storage->order;
 
-    $input = $self->_clean_input($input);
     my $tokens = $self->_tokenizer_obj->make_tokens($input);
 
     # only learn from inputs which are long enough
@@ -534,7 +515,6 @@ sub reply {
 
     my $reply;
     if (defined $input) {
-        $input = $self->_clean_input($input);
         my $tokens = $toke->make_tokens($input);
         $reply = $storage->make_reply($tokens);
     }
@@ -659,12 +639,6 @@ The UI to use. Default: 'ReadLine';
 A C<HashRef> of arguments for storage/tokenizer/ui backends. See the
 documentation for the backends for what sort of arguments they accept.
 
-=head2 C<token_separator>
-
-Storage backends may choose to store the tokens of an expression as a single
-string. If so, they will be joined them together with a separator. By default,
-this is C<"\t">.
-
 =head1 METHODS
 
 =head2 C<new>
@@ -705,12 +679,6 @@ filename you can provide one as an argument.
 
 Takes no arguments. Returns the number of tokens, expressions, previous
 token links and next token links.
-
-=head1 CAVEATS
-
-All occurences of L<C<token_separator>|/token_separator> will be stripped
-from your input before it is processed, so make sure it's set to something
-that is unlikely to appear in it.
 
 =head1 SUPPORT
 
