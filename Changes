@@ -6,7 +6,7 @@
       but between them they had no redeeming quality aside from
       increasing our number of backends & tests. The downside is that
       we constantly had to deal with errors in these backends that
-      were'n present in our primary DBD::* targets.
+      weren't present in our primary DBD::* targets.
 
     - Remove Log::Log4perl. We weren't using it for anything except
       printing one log line. Maybe we'll add it in the future with
