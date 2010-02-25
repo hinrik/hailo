@@ -7,6 +7,9 @@
       C<pragmas> hash in C<storage_args>. See
       Hailo::Storage::DBD::SQLite documentation for more info.
 
+    - Issue #28: Implement a ready() method for backends. This
+      un-breaks the command-line interface with non-SQLite backends.
+
     - Add more exhaustive tests for the Word tokenizer. 
 
 0.17 Tue Feb 23 04:06:50 GMT 2010

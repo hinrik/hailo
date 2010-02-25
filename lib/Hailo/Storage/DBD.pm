@@ -572,6 +572,14 @@ sub save {
     return;
 }
 
+sub ready {
+    my ($self) = @_;
+    my $class = ref $self;
+
+    # Implement me
+    die "$class didn't implement ready()";
+}
+
 __PACKAGE__->meta->make_immutable;
 
 =encoding utf8

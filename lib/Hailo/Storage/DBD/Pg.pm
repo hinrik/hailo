@@ -44,6 +44,12 @@ sub _exists_db {
     return int $self->sth->{exists_db}->fetchrow_array;
 }
 
+sub ready {
+    my ($self) = @_;
+
+    return exists $self->arguments->{dbname};
+}
+
 # These two are optimized to use PostgreSQL >8.2's INSERT ... RETURNING 
 sub _add_expr {
     my ($self, $token_ids) = @_;

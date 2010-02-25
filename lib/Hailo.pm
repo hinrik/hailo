@@ -334,7 +334,7 @@ sub _new_class {
 before run => sub {
     my ($self) = @_;
 
-    if (not defined $self->brain_resource and
+    if (not $self->_storage_obj->ready and
         (defined $self->reply_str or
          defined $self->train_file or
          defined $self->learn_str or
@@ -342,7 +342,7 @@ before run => sub {
         # TODO: Make this spew out the --help reply just like hailo
         # with invalid options does usually, but only if run via
         # ->new_with_options
-        die "You must specify a --brain";
+        die "To reply/train/learn you must specify options to initialize your storage backend";
     }
 
     return;
@@ -357,7 +357,7 @@ sub run {
     }
 
     if (_is_interactive() and
-        defined $self->brain_resource and
+        $self->_storage_obj->ready and
         not defined $self->train_file and
         not defined $self->learn_str and
         not defined $self->learn_reply_str and

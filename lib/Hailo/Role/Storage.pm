@@ -28,6 +28,7 @@ has repeat_limit => (
     }
 );
 
+requires 'ready';
 requires 'save';
 requires 'learn_tokens';
 requires 'make_reply';
@@ -45,6 +46,12 @@ requires 'stop_training';
 Hailo::Role::Storage - A role representing a L<Hailo|Hailo> storage backend
 
 =head1 ATTRIBUTES
+
+=head2 C<ready>
+
+A method might be called after the storage has been constructed to ask
+the storage if it considers itself ready to go. E.g. a storage that
+requires a C<brain> would return false if it wasn't passed one.
 
 =head2 C<order>
 
