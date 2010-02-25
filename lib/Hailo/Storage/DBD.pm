@@ -347,8 +347,8 @@ sub make_reply {
     my $i = 0;
     while (1) {
         if (($i % $order) == 0 and
-            (($i >= $repeat_limit and uniq(@token_ids) <= $order) ||
-             ($i >= $repeat_limit * 3))) {
+            (($i >= $repeat_limit * 3) ||
+             ($i >= $repeat_limit and uniq(@token_ids) <= $order))) {
             last;
         }
         my $next_id = $self->_pos_token('next', $expr_id, \@key_ids);
@@ -364,11 +364,10 @@ sub make_reply {
     # construct the beginning of the reply
     $i = 0; while (1) {
         if (($i % $order) == 0 and
-            (($i >= $repeat_limit and uniq(@token_ids) <= $order) ||
-             ($i >= $repeat_limit * 3))) {
+            (($i >= $repeat_limit * 3) ||
+             ($i >= $repeat_limit and uniq(@token_ids) <= $order))) {
             last;
         }
-
         my $prev_id = $self->_pos_token('prev', $expr_id, \@key_ids);
         last if $prev_id eq $self->_boundary_token_id;
         unshift @token_ids, $prev_id;
