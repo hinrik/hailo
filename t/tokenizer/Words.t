@@ -121,6 +121,11 @@ subtest make_output => sub {
             [qw<talking about i>],
             'Talking about I.'
         ],
+        [
+            'none, as most animals do, I love conservapedia.',
+            ['none', ',', qw<as most animals do>, ',', qw<I love conservapedia .>],
+            'None, as most animals do, I love conservapedia.'
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();
