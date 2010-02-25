@@ -71,31 +71,55 @@ L<DBD::Pg|DBD::Pg>
 
 =head1 SYNOPSIS
 
+First create a PostgreSQL database for failo:
+
+    # Run it as a dedicated hailo user
+    createdb -E UTF8 -O hailo hailo
+
+    # Just create database..
+    createdb -E UTF8 hailo
+
 As a module:
 
- my $hailo = Hailo->new(
-     train_file    => 'hailo.trn',
-     storage_class => 'Pg',
-     storage_args => {
-         dbname   => 'hailo',
-         host     => 'localhost',
-         port     => '5432',
-         options  => '...',
-         username => 'hailo',
-         password => 'hailo'
-     },
- );
+    my $hailo = Hailo->new(
+        train_file    => 'hailo.trn',
+        storage_class => 'Pg',
+        storage_args => {
+            dbname   => 'hailo',
+        },
+    );
+
+Or with complex connection options:
+
+    my $hailo = Hailo->new(
+        train_file    => 'hailo.trn',
+        storage_class => 'Pg',
+        storage_args => {
+            dbname   => 'hailo',
+            host     => 'localhost',
+            port     => '5432',
+            options  => '...',
+            username => 'hailo',
+            password => 'hailo'
+        },
+    );
 
 From the command line:
 
- hailo --train hailo.trn \
-     --storage      Pg \
-     --storage-args dbname=hailo \
-     --storage-args host=localhost \
-     --storage-args port=5432 \
-     --storage-args options=... \
-     --storage-args username=hailo \
-     --storage-args password=hailo
+    hailo --train hailo.trn \
+        --storage      Pg \
+        --storage-args dbname=hailo
+
+Or with complex connection options:
+
+    hailo --train hailo.trn \
+        --storage      Pg \
+        --storage-args dbname=hailo \
+        --storage-args host=localhost \
+        --storage-args port=5432 \
+        --storage-args options=... \
+        --storage-args username=hailo \
+        --storage-args password=hailo
 
 Almost all of these options can be omitted, see L<DBD::Pg's
 documentation|DBD::Pg/"connect"> for the default values.
