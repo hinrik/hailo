@@ -5,20 +5,18 @@ use Test::More tests => 5;
 use Hailo;
 
 my %pragmas = (
-    auto_vacuum  => 1,
-    cache_size   => 3000,
-    encoding     => "UTF-8",
-    journal_mode => 'OFF',
-    synchronous  => 0,
+    pragma_auto_vacuum  => 1,
+    pragma_cache_size   => 3000,
+    pragma_encoding     => "UTF-8",
+    pragma_journal_mode => 'OFF',
+    pragma_synchronous  => 0,
 );
 
 my $hailo = Hailo->new(
     print_progress => 0,
     brain_resource => ':memory:',
     storage_class => 'SQLite',
-    storage_args  => {
-        pragmas => \%pragmas,
-    },
+    storage_args  => { %pragmas },
 );
 
 $hailo->learn("hello there good sir");
@@ -27,6 +25,7 @@ $hailo->learn("hello there good sir");
 my $dbh = $hailo->_storage_obj->dbh;
 
 while (my ($k, $v) = each %pragmas) {
-    my $res = $dbh->selectrow_array("PRAGMA $k;");
-    is(uc($res), $v, "PRAGMA $k was set correctly");
+    my ($short) = $k =~ /^pragma_(.*)/;
+    my $res = $dbh->selectrow_array("PRAGMA $short;");
+    is(uc($res), $v, "PRAGMA $short was set correctly");
 }

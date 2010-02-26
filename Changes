@@ -2,8 +2,8 @@
     - Fix capitalization of the first word when followed by punctuation
 
     - DBD::SQLite backend: It's now possible to set any PRAGMA SQLite
-      supports at the start of the connection by supplying a
-      C<pragmas> hash in C<storage_args>. See
+      supports at the start of the connection by supplying C<pragma_*>
+      parameters in in C<storage_args>. See
       Hailo::Storage::DBD::SQLite documentation for more info.
 
     - Issue #28: Implement a ready() method for backends. This

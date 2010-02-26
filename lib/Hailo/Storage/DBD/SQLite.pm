@@ -90,19 +90,24 @@ sub ready {
 sub _set_pragmas {
     my ($self) = @_;
 
-    my $pragmas = $self->arguments->{pragmas};
-    return if !defined $pragmas && $self->{in_memory};
-    die "Pragmas must be a HashRef" if ref $pragmas && ref $pragmas ne 'HASH';
-
-    # speedy defaults when DB is not kept in memory
-    if (!defined $pragmas) {
-        $pragmas = {
-            synchronous  => 'OFF',
-            journal_mode => 'OFF',
-        };
+    my %pragmas;
+    while (my ($k, $v) = each %{ $self->arguments }) {
+        if (my ($pragma) = $k =~ /^pragma_(.*)/) {
+            $pragmas{$pragma} = $v;
+        }
     }
 
-    while (my ($k, $v) = each %$pragmas) {
+    return if !%pragmas && $self->{in_memory};
+
+    # speedy defaults when DB is not kept in memory
+    if (!%pragmas) {
+        %pragmas = (
+            synchronous  => 'OFF',
+            journal_mode => 'OFF',
+        );
+    }
+
+    while (my ($k, $v) = each %pragmas) {
         $self->dbh->do(qq[PRAGMA $k="$v";])
     }
 
@@ -155,19 +160,19 @@ storage backend.
 
 This is a hash reference which can have the following keys:
 
-=head3 C<pragmas>
+=head3 C<pragma_*>
 
-A hash reference of L<SQLite
-pragmas|http://www.sqlite.org/pragma.html> that will be set when the
-database connection is set up, an example of this would be:
+Any option starting with B<'pragma_'> will be considered to be an L<SQLite
+pragma|http://www.sqlite.org/pragma.html> which will be set when the
+after we connect to the database. An example of this would be
 
-    pragmas => {
-        cache_size  => 10000,
-        synchronous => 'OFF',
-    }
+ storage_args => {
+     pragma_cache_size  => 10000,
+     pragma_synchronous => 'OFF',
+ }
 
-Setting B<'cache_size'> in particular can be beneficial. It's the size
-of the page cache used by SQLite. See L<SQLite's
+Setting B<'pragma_cache_size'> in particular can be beneficial. It's the
+size of the page cache used by SQLite. See L<SQLite's
 documentation|http://www.sqlite.org/pragma.html#pragma_cache_size> for
 more information.
 
@@ -175,14 +180,14 @@ Increasing it might speed up Hailo, especially when disk IO is slow on
 your machine. Obviously, you shouldn't bother with this option if
 L<B<'in_memory'>|/in_memory> is enabled.
 
-Setting B<'synchronous'> to B<'OFF'> or B<'journal_mode'> to B<'OFF'>
-will speed up operations at the expense of safety. Since Hailo is most
-likely not running as a mission-critical component this tradeoff
+Setting B<'pragma_synchronous'> to B<'OFF'> or B<'pragma_journal_mode'>
+to B<'OFF'> will speed up operations at the expense of safety. Since Hailo
+is most likely not running as a mission-critical component this trade-off
 should be acceptable in most cases. If the database becomes corrupt
 it's easy to rebuild it by retraining from the input it was trained on
 to begin with. For performance reasons, these two are set to B<'OFF'>
-if the neither the L<B<'pragma'>|/pragma> nor L<B<'in_memory'>|/in_memory>
-parameters are defined.
+if no L<B<'pragma_*>|/pragma_*> parameters nor L<B<'in_memory'>|/in_memory>
+are set.
 
 =head3 C<in_memory>
 
