@@ -33,7 +33,7 @@ my $WORD_STRICT   = qr/$DOTTED_STRICT(?:$APOSTROPHE$DOTTED_STRICT)*/;
 # input -> tokens
 sub make_tokens {
     my ($self, $line) = @_;
-    
+
     my @tokens;
     my @chunks = split /\s+/, $line;
     for my $chunk (@chunks) {
@@ -49,7 +49,7 @@ sub make_tokens {
             elsif (my ($non_word) = $chunk =~ /^(\W+)/) {
                 $chunk =~ s/^\Q$non_word//;
                 $non_word = lc($non_word) if $non_word ne uc($non_word);
-                
+
                 my $spacing = 0;
                 if ($got_word) {
                     $spacing = length $chunk ? 3 : 2;
@@ -57,7 +57,7 @@ sub make_tokens {
                 elsif (length $chunk) {
                     $spacing = 1;
                 }
-                
+
                 push @tokens, [$spacing, $non_word];
             }
         }
@@ -73,7 +73,7 @@ sub make_output {
     for my $pos (0 .. $#{ $tokens }) {
         my ($spacing, $text) = @{ $tokens->[$pos] };
         $reply .= $text;
-        
+
         # append whitespace if this is not a prefix token or infix token,
         # and this is not the last token, and the next token is not
         # a postfix/infix token

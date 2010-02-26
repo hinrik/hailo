@@ -221,7 +221,7 @@ sub _build__storage_obj {
             arguments       => $self->storage_args,
         }
     );
-    
+
     return $obj;
 }
 
@@ -518,7 +518,7 @@ sub _getopt_full_usage {
 
         require FindBin;
         require File::Spec;
-        
+
         Pod::Usage::pod2usage(
             -input => File::Spec->catfile($FindBin::Bin, $FindBin::Script),
             -sections => 'SYNOPSIS',
