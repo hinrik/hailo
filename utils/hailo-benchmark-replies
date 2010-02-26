@@ -15,7 +15,6 @@ while (<$fh>) {
     next if int(rand 5) != 0;
     last if @lines > $test_count;
     chomp;
-    say "Learning from line $.";
     push @lines => $_;
 }
 
