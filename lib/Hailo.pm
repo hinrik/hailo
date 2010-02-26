@@ -208,66 +208,6 @@ has _ui_obj => (
 
 with qw(MooseX::Getopt::Dashes);
 
-
-# --i--do-not-exist
-sub _getopt_spec_exception { goto &_getopt_full_usage }
-
-# --help
-sub _getopt_full_usage {
-    my ($self, $usage, $plain_str) = @_;
-
-    # If called from _getopt_spec_exception we get "Unknown option: foo"
-    my $warning = ref $usage eq 'ARRAY' ? $usage->[0] : undef;
-
-    my ($use, $options) = do {
-        # $plain_str under _getopt_spec_exception
-        my $out = $plain_str // $usage->text;
-
-        # The default getopt order sucks, use reverse sort order
-        chomp(my @out = split /^/, $out);
-        my $opt = join "\n", sort { $b cmp $a } @out[1 .. $#out];
-        ($out[0], $opt);
-    };
-    my $synopsis = do {
-        require Pod::Usage;
-        my $out;
-        open my $fh, '>', \$out;
-
-        require FindBin;
-        require File::Spec;
-        
-        Pod::Usage::pod2usage(
-            -input => File::Spec->catfile($FindBin::Bin, $FindBin::Script),
-            -sections => 'SYNOPSIS',
-            -output   => $fh,
-            -exitval  => 'noexit',
-        );
-        close $fh;
-
-        $out =~ s/\n+$//s;
-        $out =~ s/^Usage:/examples:/;
-
-        $out;
-    };
-
-    # Unknown option provided
-    print $warning if $warning;
-
-    print <<"USAGE";
-$use
-$options
-\n\tNote: All input/output and files are assumed to be UTF-8 encoded.
-USAGE
-
-    # Don't spew the example output when something's wrong with the
-    # options. It won't all fit on small terminals
-    say "\n", $synopsis unless $warning;
-
-    exit 1;
-}
-
-
-
 sub _build__storage_obj {
     my ($self) = @_;
     my $obj = $self->_new_class(
@@ -549,6 +489,63 @@ sub DEMOLISH {
 sub _is_interactive {
     require IO::Interactive;
     return IO::Interactive::is_interactive();
+}
+
+# --i--do-not-exist
+sub _getopt_spec_exception { goto &_getopt_full_usage }
+
+# --help
+sub _getopt_full_usage {
+    my ($self, $usage, $plain_str) = @_;
+
+    # If called from _getopt_spec_exception we get "Unknown option: foo"
+    my $warning = ref $usage eq 'ARRAY' ? $usage->[0] : undef;
+
+    my ($use, $options) = do {
+        # $plain_str under _getopt_spec_exception
+        my $out = $plain_str // $usage->text;
+
+        # The default getopt order sucks, use reverse sort order
+        chomp(my @out = split /^/, $out);
+        my $opt = join "\n", sort { $b cmp $a } @out[1 .. $#out];
+        ($out[0], $opt);
+    };
+    my $synopsis = do {
+        require Pod::Usage;
+        my $out;
+        open my $fh, '>', \$out;
+
+        require FindBin;
+        require File::Spec;
+        
+        Pod::Usage::pod2usage(
+            -input => File::Spec->catfile($FindBin::Bin, $FindBin::Script),
+            -sections => 'SYNOPSIS',
+            -output   => $fh,
+            -exitval  => 'noexit',
+        );
+        close $fh;
+
+        $out =~ s/\n+$//s;
+        $out =~ s/^Usage:/examples:/;
+
+        $out;
+    };
+
+    # Unknown option provided
+    print $warning if $warning;
+
+    print <<"USAGE";
+$use
+$options
+\n\tNote: All input/output and files are assumed to be UTF-8 encoded.
+USAGE
+
+    # Don't spew the example output when something's wrong with the
+    # options. It won't all fit on small terminals
+    say "\n", $synopsis unless $warning;
+
+    exit 1;
 }
 
 __PACKAGE__->meta->make_immutable;
