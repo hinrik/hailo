@@ -720,8 +720,9 @@ followed by L<reply|/reply>.
 
 =head2 C<save>
 
-Tells the underlying storage backend to save its state. To override the
-filename you can provide one as an argument.
+Tells the underlying storage backend to L<save its
+state|Hailo::Role::Storage/"save">, any arguments to this method will
+be passed as-is to the backend.
 
 =head2 C<stats>
 
