@@ -694,7 +694,9 @@ L</ATTRIBUTES>.
 
 =head2 C<run>
 
-Run the application according to the command line arguments.
+Run Hailo in accordance with the the attributes that were passed to
+it, this method is called by the L<hailo> command-line utility and the
+Hailo test suite, it's behavior is subject to change.
 
 =head2 C<learn>
 
