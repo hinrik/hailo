@@ -349,7 +349,7 @@ sub train {
     my $fh;
     if (ref $input eq 'GLOB') {
         $fh = $input;
-    } elsif ($input eq "1" and not -t STDIN) {
+    } elsif (defined $input and $input =~ /^(?:1|-)$/ and not -t STDIN) {
         $fh = *STDIN;
     } elsif ($got_filename) {
         open $fh, '<:encoding(utf8)', $input;
