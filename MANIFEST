@@ -32,7 +32,6 @@ script/hailo
 t/01_compile.t
 t/02_chat.t
 t/03_sanity.t
-t/bug/increment.t
 t/lib/Hailo/Test.pm
 t/lib/Hailo/Test/badger.trn
 t/lib/Hailo/Test/megahal.trn
