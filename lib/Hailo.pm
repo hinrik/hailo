@@ -19,7 +19,7 @@ use Module::Pluggable (
 use List::Util qw(first);
 use namespace::clean -except => [ qw(meta plugins) ];
 
-our $VERSION = '0.17';
+our $VERSION = '0.18';
 
 with qw(MooseX::Getopt::Dashes);
 
