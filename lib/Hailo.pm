@@ -625,7 +625,7 @@ object gets destroyed. Defaults to true.
 =head2 C<order>
 
 The Markov order (chain length) you want to use for an empty brain.
-The default is 5.
+The default is 2.
 
 =head2 C<storage_class>
 
