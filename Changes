@@ -1,5 +1,4 @@
 0.18
-
     - Fix capitalization of the first word when followed by punctuation
 
     - DBD::SQLite backend: It's now possible to set any PRAGMA SQLite
@@ -13,6 +12,9 @@
     - Add more exhaustive tests for the Word tokenizer. 
 
     - Un-break t/storage/DBD-mysql.t test
+
+    - Don't keep the brain in memory by default anymore, but enable some
+      safety-sacrificing performance optimizations instead
 
 0.17 Tue Feb 23 04:06:50 GMT 2010
     - Remove all storage engines that weren't DBD::*. I.e. the Perl

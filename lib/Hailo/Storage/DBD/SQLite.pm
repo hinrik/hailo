@@ -41,10 +41,8 @@ sub _backup_memory_to_disk {
 
     return (defined $self->brain
             and $self->brain ne ':memory:'
-            and (not defined $self->arguments->{in_memory}
-            or $self->arguments->{in_memory}));
+            and $self->arguments->{in_memory});
 }
-
 
 before _engage => sub {
     my ($self) = @_;
@@ -93,9 +91,17 @@ sub ready {
 sub _set_pragmas {
     my ($self) = @_;
 
-    return unless exists $self->arguments->{pragmas};
     my $pragmas = $self->arguments->{pragmas};
-    die "Pragmas must be a HashRef" unless ref $pragmas eq 'HASH';
+    return if !defined $pragmas && $self->{in_memory};
+    die "Pragmas must be a HashRef" if ref $pragmas && ref $pragmas ne 'HASH';
+
+    # speedy defaults when DB is not kept in memory
+    if (!defined $pragmas) {
+        $pragmas = {
+            synchronous  => 'OFF',
+            journal_mode => 'OFF',
+        };
+    }
 
     while (my ($k, $v) = each %$pragmas) {
         $self->dbh->do(qq[PRAGMA $k="$v";])
@@ -150,15 +156,6 @@ storage backend.
 
 This is a hash reference which can have the following keys:
 
-=head3 C<in_memory>
-
-When set to a true value, Hailo behaves much like MegaHAL.  The entire
-database will be kept in memory, and only written out to disk when the
-C<save|Hailo/save> method is called and/or when the L<Hailo|Hailo>
-object gets destroyed (unless you disabled
-L<save_on_exit|Hailo/save_on_exit>). This is turned on by default, to
-disable it set C<in_memory => 0>.
-
 =head3 C<pragmas>
 
 A hash reference of L<SQLite
@@ -166,25 +163,34 @@ pragmas|http://www.sqlite.org/pragma.html> that will be set when the
 database connection is set up, an example of this would be:
 
     pragmas => {
-        foreign_keys => 1,
-        synchronous => 0,
-    };
+        cache_size  => 10000,
+        synchronous => 'OFF',
+    }
 
-Setting B<'cache_size'> in particular can be benificial, it's the size
+Setting B<'cache_size'> in particular can be beneficial. It's the size
 of the page cache used by SQLite. See L<SQLite's
 documentation|http://www.sqlite.org/pragma.html#pragma_cache_size> for
 more information.
 
-Setting it will speed up Hailo, especially when disk IO is slow on
+Increasing it might speed up Hailo, especially when disk IO is slow on
 your machine. Obviously, you shouldn't bother with this option if
-B<'in_memory'> is enabled.
+L<B<'in_memory'>|/in_memory> is enabled.
 
 Setting B<'synchronous'> to B<'OFF'> or B<'journal_mode'> to B<'OFF'>
 will speed up operations at the expense of safety. Since Hailo is most
 likely not running as a mission-critical component this tradeoff
-should be acceptable in most cases, if the database becomes corrupt
+should be acceptable in most cases. If the database becomes corrupt
 it's easy to rebuild it by retraining from the input it was trained on
-to begin with.
+to begin with. For performance reasons, these two are set to B<'OFF'>
+if the neither the B<'pragma'> nor B<'in_memory'> parameters are defined.
+
+=head3 C<in_memory>
+
+When set to a true value, Hailo behaves much like MegaHAL.  The entire
+database will be kept in memory, and only written out to disk when the
+L<C<save>|Hailo/save> method is called and/or when the Hailo object gets
+destroyed (unless you disabled
+L<C<save_on_exit>|Hailo/save_on_exit>). This is disabled by default.
 
 =head1 AUTHOR
 
