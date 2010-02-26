@@ -6,6 +6,9 @@
     - MySQL backend: Don't make host a required storage_args argument,
       MySQL will use localhost by default.
 
+    - MySQL backend: Document collation settings that have to be right
+      for Hailo not to blow up.
+
 0.18 Fri Feb 26 05:02:17 GMT 2010
 
     - Don't keep the brain in memory by default anymore, but enable some

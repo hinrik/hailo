@@ -114,9 +114,46 @@ B<'password'>, the password to use.
 
 MySQL sucks.
 
-=head1 Setup notes
+=head1 MySQL setup
 
-Here's how I create a MySQL database for Hailo:
+Before creating a database for Hailo you need to ensure that the
+B<collation_connection>, B<collation_database> and B<collation_server>
+for the new database will be equivalent, you can do this by adding
+this to your C<[mysqld]> section in F<my.cnf>:
+
+    skip-character-set-client-handshake
+    collation_server=utf8_unicode_ci
+    character_set_server=utf8
+
+Now when you create the database you should get something like this:
+
+    mysql> show variables like 'coll%';
+    +----------------------+-----------------+
+    | Variable_name        | Value           |
+    +----------------------+-----------------+
+    | collation_connection | utf8_unicode_ci |
+    | collation_database   | utf8_unicode_ci |
+    | collation_server     | utf8_unicode_ci |
+    +----------------------+-----------------+
+
+If you instead get this:
+
+    +----------------------+-------------------+
+    | Variable_name        | Value             |
+    +----------------------+-------------------+
+    | collation_connection | utf8_unicode_ci   |
+    | collation_database   | latin1_swedish_ci |
+    | collation_server     | utf8_unicode_ci   |
+    +----------------------+-------------------+
+
+Then Hailo will eventually die when you train it on an error similar
+to this:
+
+    DBD::mysql::st execute failed: Illegal mix of collations (latin1_swedish_ci,IMPLICIT)
+    and (utf8_unicode_ci,COERCIBLE) for operation '=' at [...]
+
+After taking care of that create a MySQL database for Hailo using
+something like these commands:
 
     mysql -u root -p
     CREATE DATABASE hailo;
