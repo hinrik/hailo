@@ -605,6 +605,40 @@ L<POE::Component::Hailo|POE::Component::Hailo> wrapper. One example is
 L<POE::Component::IRC::Plugin::Hailo|POE::Component::IRC::Plugin::Hailo>,
 which implements an IRC chat bot.
 
+=head1 Backends
+
+Hailo supports pluggable L<storage|Hailo::Role::Storage> and
+L<tokenizer|Hailo::Role::Tokenizer> backends, it also supports a
+pluggable L<UI|Hailo::Role::UI> backend which is used by the L<hailo>
+command-line utility.
+
+=head2 Storage
+
+Hailo can currently store its data in either a
+L<SQLite|Hailo::Storage::DBD::SQLite>,
+L<PostgreSQL|Hailo::Storage::DBD::Pg> or
+L<MySQL|Hailo::Storage::DBD::mysql> database, more backends were
+supported in earlier versions but they were removed as they had no
+redeeming quality.
+
+SQLite is the primary target for Hailo. It's much faster than the
+other two and it's highly recommended that you use it. It's much
+faster and takes up less resources.
+
+This benchmark shows how the backends compare when training on the
+small testsuite dataset as reported by the F<utils/hailo-benchmark>
+utility (found in the distribution):
+
+                         Rate DBD::Pg DBD::mysql DBD::SQLite/file DBD::SQLite/memory
+    DBD::Pg            2.22/s      --       -33%             -49%               -56%
+    DBD::mysql         3.33/s     50%         --             -23%               -33%
+    DBD::SQLite/file   4.35/s     96%        30%               --               -13%
+    DBD::SQLite/memory 5.00/s    125%        50%              15%                 --
+
+Under real-world workloads SQLite is much faster than these results
+indicate since the time it takes to train/reply is relative to the
+existing database size.
+
 =head2 Etymology
 
 I<Hailo> is a portmanteau of I<HAL> (as in MegaHAL) and
@@ -630,18 +664,6 @@ The default is 2.
 =head2 C<storage_class>
 
 The storage backend to use. Default: 'SQLite'.
-
-This gives you an idea of approximately how the backends compare in
-speed:
-
-                         Rate DBD::Pg DBD::mysql DBD::SQLite/file DBD::SQLite/memory
-    DBD::Pg            2.22/s      --       -33%             -49%               -56%
-    DBD::mysql         3.33/s     50%         --             -23%               -33%
-    DBD::SQLite/file   4.35/s     96%        30%               --               -13%
-    DBD::SQLite/memory 5.00/s    125%        50%              15%                 --
-    
-To run your own test try running F<utils/hailo-benchmark> in the Hailo
-distribution.
 
 =head2 C<tokenizer_class>
 
