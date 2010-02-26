@@ -48,8 +48,8 @@ sub testit {
     my $line = $lines[$i];
 
     my $reply = $hailo->reply($line);
-    my $gave = substr $line, 0, 10;
-    my $got  = substr $line, 0, 10;
+    my $gave  = substr $line, 0, 10;
+    my $got   = substr $reply, 0, 10;
     warn "Testing $what line $i/$test_count. Fed <<$gave>> and got <<$got>" if(($i % 50) == 0);
 }
 
