@@ -748,18 +748,36 @@ tracker on Github|http://github.com/hinrik/hailo/issues>.
 
 =head1 SEE ALSO
 
+=over
+
+=item *
+
 L<Hailo::UI::Web> - A L<Catalyst> and jQuery powered web interface to Hailo
+
+=item *
 
 L<POE::Component::Hailo> - A non-blocking POE wrapper around Hailo
 
+=item *
+
 L<POE::Component::IRC::Plugin::Hailo> - A Hailo IRC bot plugin
+
+=item *
 
 L<http://github.com/hinrik/failo> - Failo, an IRC bot that uses Hailo
 
+=back
+
 =head1 LINKS
+
+=over
+
+=item *
 
 L<http://bit.ly/hailo_rewrite_of_megahal> - Hailo: A Perl rewrite of
 MegaHAL, A blog posting about the motivation behind Hailo
+
+=back
 
 =head1 AUTHORS
 
