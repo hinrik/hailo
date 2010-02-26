@@ -641,6 +641,17 @@ Under real-world workloads SQLite is much faster than these results
 indicate since the time it takes to train/reply is relative to the
 existing database size.
 
+=head2 Tokenizer
+
+By default Hailo will use L<the word
+tokenizer|Hailo::Tokenizer::Words> to split up input by whitespace,
+taking into account things like quotes, sentence terminators and more.
+
+There's also a L<the character
+tokenizer|Hailo::Tokenizer::Chars>. It's not generally useful for a
+conversation bot but can be used to e.g. generate new words given a
+list of existing words.
+
 =head1 ATTRIBUTES
 
 =head2 C<brain_resource>
