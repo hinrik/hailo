@@ -181,7 +181,8 @@ likely not running as a mission-critical component this tradeoff
 should be acceptable in most cases. If the database becomes corrupt
 it's easy to rebuild it by retraining from the input it was trained on
 to begin with. For performance reasons, these two are set to B<'OFF'>
-if the neither the B<'pragma'> nor B<'in_memory'> parameters are defined.
+if the neither the L<B<'pragma'>|/pragma> nor L<B<'in_memory'>|/in_memory>
+parameters are defined.
 
 =head3 C<in_memory>
 
