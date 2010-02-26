@@ -74,20 +74,19 @@ after stop_training => sub {
 };
 
 sub _exists_db {
-    my ($self, $ready) = @_;
+    my ($self) = @_;
     my $brain = $self->brain;
     return unless defined $self->brain;
-    if ($ready) {
-        return 1 if $self->brain eq ':memory:'
-    } else {
-        return if $self->brain eq ':memory:';
-    }
+    return if $self->brain eq ':memory:';
     return -s $self->brain;
 }
 
 sub ready {
     my ($self) = @_;
-    return $self->_exists_db(1);
+    my $brain = $self->brain;
+    return unless defined $self->brain;
+    return 1 if $self->brain eq ':memory:';
+    return 1;
 }
 
 sub _set_pragmas {
