@@ -1,0 +1,69 @@
+#!/usr/bin/env perl
+use 5.010;
+use autodie;
+use strict;
+use Hailo;
+use Benchmark qw(:all);
+
+my ($logfile, $test_count) = @ARGV;
+
+# Get some log lines to throw at Hailo
+
+my @lines;
+open my $fh, '<:encoding(utf8)', $logfile;
+while (<$fh>) {
+    next if int(rand 5) != 0;
+    last if @lines > $test_count;
+    chomp;
+    say "Learning from line $.";
+    push @lines => $_;
+}
+
+die "You must construct additional Pylons" if @lines < $test_count;
+
+# Test
+my $h_sqlite = Hailo->new(
+    storage_class   => 'SQLite',
+    brain_resource  => 'hailo.sqlite',
+);
+
+my $h_pg = Hailo->new(
+    storage_class   => 'Pg',
+    storage_args => {
+        dbname => 'failo',
+    }
+);
+
+my $h_mysql = Hailo->new(
+    storage_class   => 'mysql',
+    storage_args => {
+        database => 'hailo',
+        username => 'hailo',
+        password => 'hailo',
+    }
+);
+
+sub testit {
+    my ($what, $hailo, $i) = @_;
+    my $line = $lines[$i];
+
+    my $reply = $hailo->reply($line);
+    my $gave = substr $line, 0, 10;
+    my $got  = substr $line, 0, 10;
+    warn "Testing $what line $i/$test_count. Fed <<$gave>> and got <<$got>" if(($i % 50) == 0);
+}
+
+cmpthese($test_count, {
+    SQLite => sub {
+        state $i = 0;
+        testit("SQLite", $h_sqlite, $i++);
+    },
+    PostgreSQL => sub {
+        state $i = 0;
+        testit("PostgreSQL", $h_pg, $i++);
+    },
+    MySQL => sub {
+        state $i = 0;
+        testit("MySQL", $h_mysql, $i++);
+    },
+});

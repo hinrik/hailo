@@ -12,4 +12,6 @@ cover_db
 *.trn
 *.txt
 *.bak
+*.sql
+*.sqlite
 *.#*

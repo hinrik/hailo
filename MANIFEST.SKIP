@@ -5,6 +5,7 @@
 \.git
 \.txt$
 \.db$
+\.sql(?:ite)?$
 ^[^/\\]*\.trn$
 ^pm_to_blib$
 \.brn$

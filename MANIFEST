@@ -54,6 +54,7 @@ t/usage/options-and-usage.t
 t/usage/synopsis.t
 utils/crunchbase-companies
 utils/hailo-benchmark
+utils/hailo-benchmark-replies
 xt/01_pod.t
 xt/02_pod_coverage.t
 xt/03_perl_critic.t
