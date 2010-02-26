@@ -47,7 +47,7 @@ sub _exists_db {
 sub ready {
     my ($self) = @_;
 
-    return all { exists $self->arguments->{$_} } qw(database host username password);
+    return all { exists $self->arguments->{$_} } qw(database username password);
 }
 
 __PACKAGE__->meta->make_immutable;

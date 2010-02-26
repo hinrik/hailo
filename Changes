@@ -1,6 +1,10 @@
 0.19
     - Move File::Slurp from 'requires' to 'test_requires'
+
     - Make the default pragma logic a bit simpler
+
+    - MySQL backend: Don't make host a required storage_args argument,
+      MySQL will use localhost by default.
 
 0.18 Fri Feb 26 05:02:17 GMT 2010
 
