@@ -700,7 +700,7 @@ Hailo test suite, it's behavior is subject to change.
 
 =head2 C<learn>
 
-Takes a string or an array reference of strings, and learns from them.
+Takes a string or an array reference of strings and learns from them.
 
 =head2 C<train>
 
