@@ -605,6 +605,11 @@ L<POE::Component::Hailo|POE::Component::Hailo> wrapper. One example is
 L<POE::Component::IRC::Plugin::Hailo|POE::Component::IRC::Plugin::Hailo>,
 which implements an IRC chat bot.
 
+=head2 Etymology
+
+I<Hailo> is a portmanteau of I<HAL> (as in MegaHAL) and
+L<failo|http://identi.ca/failo>.
+
 =head1 Backends
 
 Hailo supports pluggable L<storage|Hailo::Role::Storage> and
@@ -638,11 +643,6 @@ utility (found in the distribution):
 Under real-world workloads SQLite is much faster than these results
 indicate since the time it takes to train/reply is relative to the
 existing database size.
-
-=head2 Etymology
-
-I<Hailo> is a portmanteau of I<HAL> (as in MegaHAL) and
-L<failo|http://identi.ca/failo>.
 
 =head1 ATTRIBUTES
 
