@@ -1,3 +1,6 @@
+0.19
+    - Move File::Slurp from 'requires' to 'test_requires'
+
 0.18 Fri Feb 26 05:02:17 GMT 2010
 
     - Don't keep the brain in memory by default anymore, but enable some

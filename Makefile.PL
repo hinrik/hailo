@@ -57,7 +57,7 @@ recommends     ('DBD::Pg'                       => '2.16.1');
 
 tests_recursive();
 test_requires  ('Data::Random'    => '0.05');
-requires       ('File::Slurp'     => '9999.13');
+test_requires  ('File::Slurp'     => '9999.13');
 test_requires  ('Test::Exception' => '0.29');
 test_requires  ('Test::More'      => '0.94');
 test_requires  ('Test::Output'    => '0.16');
