@@ -83,7 +83,7 @@ has train_file => (
     cmd_aliases   => "t",
     cmd_flag      => "train",
     documentation => "Learn from all the lines in FILE",
-    isa           => Str,
+    isa           => Bool|Str,
     is            => "ro",
 );
 
@@ -409,8 +409,9 @@ sub train {
     my $fh;
     if (ref $input eq 'GLOB') {
         $fh = $input;
-    }
-    elsif ($got_filename) {
+    } elsif ($input eq "1" and not -t STDIN) {
+        $fh = *STDIN;
+    } elsif ($got_filename) {
         open $fh, '<:encoding(utf8)', $input;
     }
 
