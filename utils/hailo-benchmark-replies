@@ -5,7 +5,8 @@ use strict;
 use Hailo;
 use Benchmark qw(:all);
 
-my ($logfile, $test_count) = @ARGV;
+my ($logfile, $test_count, $method) = @ARGV;
+$method //= "reply";
 
 # Get some log lines to throw at Hailo
 
@@ -24,6 +25,23 @@ die "You must construct additional Pylons" if @lines < $test_count;
 my $h_sqlite = Hailo->new(
     storage_class   => 'SQLite',
     brain_resource  => 'hailo.sqlite',
+);
+
+my $h_sqlite_28 = Hailo->new(
+    storage_class   => 'SQLite',
+    brain_resource  => 'hailo_28.sqlite',
+    storage_args    => {
+        pragma_cache_size => 28_000,
+    },
+);
+
+my $h_sqlite_mem = Hailo->new(
+    storage_class   => 'SQLite',
+    brain_resource  => 'hailo_mem.sqlite',
+    save_on_exit    => 0,
+    storage_args    => {
+        in_memory => 1,
+    },
 );
 
 my $h_pg = Hailo->new(
@@ -46,16 +64,27 @@ sub testit {
     my ($what, $hailo, $i) = @_;
     my $line = $lines[$i];
 
-    my $reply = $hailo->reply($line);
+    my $reply = $hailo->$method($line);
     my $gave  = substr $line, 0, 10;
     my $got   = substr $reply, 0, 10;
     warn "Testing $what line $i/$test_count. Fed <<$gave>> and got <<$got>" if(($i % 50) == 0);
 }
 
+# Make sure things are loaded before conducting tests
+$_->reply("foobar") for $h_sqlite, $h_sqlite_28, $h_sqlite_mem, $h_mysql, $h_pg;
+
 cmpthese($test_count, {
-    SQLite => sub {
+    'SQLite-file' => sub {
         state $i = 0;
-        testit("SQLite", $h_sqlite, $i++);
+        testit("SQLite/file", $h_sqlite, $i++);
+    },
+    'SQLite-file-28MB' => sub {
+        state $i = 0;
+        testit("SQLite/file/28MB cache", $h_sqlite_28, $i++);
+    },
+    'SQLite-memory' => sub {
+        state $i = 0;
+        testit("SQLite/memory", $h_sqlite_mem, $i++);
     },
     PostgreSQL => sub {
         state $i = 0;
