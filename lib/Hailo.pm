@@ -649,7 +649,8 @@ existing database size.
 =head2 C<brain_resource>
 
 The name of the resource (file name, database name) to use as storage.
-There is no default.
+There is no default. Whether this gets used at all depends on the
+storage backend, currently only SQLite uses it.
 
 =head2 C<save_on_exit>
 
