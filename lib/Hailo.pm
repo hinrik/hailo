@@ -715,8 +715,9 @@ Takes an optional line of text and generates a reply that might be relevant.
 
 =head2 C<learn_reply>
 
-Takes a string argument, learns from it, and generates a reply that might
-be relevant.
+Takes a string argument, learns from it, and generates a reply that
+might be relevant. This is equivalent to calling L<learn|/learn>
+followed by L<reply|/reply>.
 
 =head2 C<save>
 
