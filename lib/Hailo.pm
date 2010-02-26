@@ -699,12 +699,6 @@ documentation for the backends for what sort of arguments they accept.
 This is the constructor. It accepts the attributes specified in
 L</ATTRIBUTES>.
 
-=head2 C<run>
-
-Run Hailo in accordance with the the attributes that were passed to
-it, this method is called by the L<hailo> command-line utility and the
-Hailo test suite, it's behavior is subject to change.
-
 =head2 C<learn>
 
 Takes a string or an array reference of strings and learns from them.
@@ -745,6 +739,14 @@ You can join the IRC channel I<#hailo> on FreeNode if you have questions.
 
 Bugs, feature requests and other issues are tracked in L<Hailo's issue
 tracker on Github|http://github.com/hinrik/hailo/issues>.
+
+=head1 PRIVATE METHODS
+
+=head2 C<run>
+
+Run Hailo in accordance with the the attributes that were passed to
+it, this method is called by the L<hailo> command-line utility and the
+Hailo test suite, it's behavior is subject to change.
 
 =head1 SEE ALSO
 
