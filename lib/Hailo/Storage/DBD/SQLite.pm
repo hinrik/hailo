@@ -91,20 +91,17 @@ sub _set_pragmas {
     my ($self) = @_;
 
     my %pragmas;
+
+    # speedy defaults when DB is not kept in memory
+    if (!$self->{in_memory}) {
+        $pragmas{synchronous}  = 'OFF';
+        $pragmas{journal_mode} = 'OFF';
+    }
+
     while (my ($k, $v) = each %{ $self->arguments }) {
         if (my ($pragma) = $k =~ /^pragma_(.*)/) {
             $pragmas{$pragma} = $v;
         }
-    }
-
-    return if !%pragmas && $self->{in_memory};
-
-    # speedy defaults when DB is not kept in memory
-    if (!%pragmas) {
-        %pragmas = (
-            synchronous  => 'OFF',
-            journal_mode => 'OFF',
-        );
     }
 
     while (my ($k, $v) = each %pragmas) {
@@ -186,8 +183,7 @@ is most likely not running as a mission-critical component this trade-off
 should be acceptable in most cases. If the database becomes corrupt
 it's easy to rebuild it by retraining from the input it was trained on
 to begin with. For performance reasons, these two are set to B<'OFF'>
-if no L<B<'pragma_*>|/pragma_*> parameters nor L<B<'in_memory'>|/in_memory>
-are set.
+by default unless L<B<'in_memory'>|/in_memory> is enabled.
 
 =head3 C<in_memory>
 
