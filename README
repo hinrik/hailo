@@ -131,8 +131,10 @@ SEE ALSO
     POE::Component::IRC::Plugin::Hailo - A Hailo IRC bot plugin
 
 LINKS
-    Hailo: A Perl rewrite of MegaHAL - A blog posting about the motivation
-    behind Hailo
+    Hailo: A Perl rewrite of MegaHAL
+    <http://blogs.perl.org/users/aevar_arnfjor_bjarmason/2010/01/hailo-a-per
+    l-rewrite-of-megahal.html> - A blog posting about the motivation behind
+    Hailo
 
 BUGS
     Bugs, feature requests and other issues are tracked in Hailo's issue
