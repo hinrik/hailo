@@ -97,8 +97,19 @@ sub _build_hailo {
 
 sub brain {
     my ($self) = @_;
+    my $storage = $self->storage;
+    my $brainrs = $self->brain_resource;
 
-    return $self->brain_resource // $self->tmpfile->[1];
+    given ($storage) {
+        when (/mysql/) {
+            my $name = $self->tmpfile->[1];
+            $name =~ s[[^A-Za-z]][_]g;
+            return $name;
+        }
+        default {
+            return $self->brain_resource // $self->tmpfile->[1];
+        }
+    }
 }
 
 sub spawn_storage {
