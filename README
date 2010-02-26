@@ -47,24 +47,23 @@ DESCRIPTION
     *Hailo* is a portmanteau of *HAL* (as in MegaHAL) and failo
     <http://identi.ca/failo>.
 
-ATTRIBUTES
-  "brain_resource"
-    The name of the resource (file name, database name) to use as storage.
-    There is no default.
+Backends
+    Hailo supports pluggable storage and tokenizer backends, it also
+    supports a pluggable UI backend which is used by the hailo command-line
+    utility.
 
-  "save_on_exit"
-    A boolean value indicating whether Hailo should save its state before
-    its object gets destroyed. Defaults to true.
+  Storage
+    Hailo can currently store its data in either a SQLite, PostgreSQL or
+    MySQL database, more backends were supported in earlier versions but
+    they were removed as they had no redeeming quality.
 
-  "order"
-    The Markov order (chain length) you want to use for an empty brain. The
-    default is 5.
+    SQLite is the primary target for Hailo. It's much faster than the other
+    two and it's highly recommended that you use it. It's much faster and
+    takes up less resources.
 
-  "storage_class"
-    The storage backend to use. Default: 'SQLite'.
-
-    This gives you an idea of approximately how the backends compare in
-    speed:
+    This benchmark shows how the backends compare when training on the small
+    testsuite dataset as reported by the utils/hailo-benchmark utility
+    (found in the distribution):
 
                              Rate DBD::Pg DBD::mysql DBD::SQLite/file DBD::SQLite/memory
         DBD::Pg            2.22/s      --       -33%             -49%               -56%
@@ -72,8 +71,36 @@ ATTRIBUTES
         DBD::SQLite/file   4.35/s     96%        30%               --               -13%
         DBD::SQLite/memory 5.00/s    125%        50%              15%                 --
 
-    To run your own test try running utils/hailo-benchmark in the Hailo
-    distribution.
+    Under real-world workloads SQLite is much faster than these results
+    indicate since the time it takes to train/reply is relative to the
+    existing database size.
+
+  Tokenizer
+    By default Hailo will use the word tokenizer to split up input by
+    whitespace, taking into account things like quotes, sentence terminators
+    and more.
+
+    There's also a the character tokenizer. It's not generally useful for a
+    conversation bot but can be used to e.g. generate new words given a list
+    of existing words.
+
+ATTRIBUTES
+  "brain_resource"
+    The name of the resource (file name, database name) to use as storage.
+    There is no default. Whether this gets used at all depends on the
+    storage backend, currently only SQLite uses it.
+
+  "save_on_exit"
+    A boolean value indicating whether Hailo should save its state before
+    its object gets destroyed. This defaults to true and will simply call
+    save at "DEMOLISH" time.
+
+  "order"
+    The Markov order (chain length) you want to use for an empty brain. The
+    default is 2.
+
+  "storage_class"
+    The storage backend to use. Default: 'SQLite'.
 
   "tokenizer_class"
     The tokenizer to use. Default: 'Words';
@@ -92,11 +119,8 @@ METHODS
     This is the constructor. It accepts the attributes specified in
     "ATTRIBUTES".
 
-  "run"
-    Run the application according to the command line arguments.
-
   "learn"
-    Takes a string or an array reference of strings, and learns from them.
+    Takes a string or an array reference of strings and learns from them.
 
   "train"
     Takes a filename, filehandle or array reference and learns from all its
@@ -110,11 +134,12 @@ METHODS
 
   "learn_reply"
     Takes a string argument, learns from it, and generates a reply that
-    might be relevant.
+    might be relevant. This is equivalent to calling learn followed by
+    reply.
 
   "save"
-    Tells the underlying storage backend to save its state. To override the
-    filename you can provide one as an argument.
+    Tells the underlying storage backend to save its state, any arguments to
+    this method will be passed as-is to the backend.
 
   "stats"
     Takes no arguments. Returns the number of tokens, expressions, previous
@@ -123,22 +148,29 @@ METHODS
 SUPPORT
     You can join the IRC channel *#hailo* on FreeNode if you have questions.
 
-SEE ALSO
-    Hailo::UI::Web - A Catalyst and jQuery powered web interface to Hailo
-
-    POE::Component::Hailo - A non-blocking POE wrapper around Hailo
-
-    POE::Component::IRC::Plugin::Hailo - A Hailo IRC bot plugin
-
-LINKS
-    Hailo: A Perl rewrite of MegaHAL
-    <http://blogs.perl.org/users/aevar_arnfjor_bjarmason/2010/01/hailo-a-per
-    l-rewrite-of-megahal.html> - A blog posting about the motivation behind
-    Hailo
-
 BUGS
     Bugs, feature requests and other issues are tracked in Hailo's issue
     tracker on Github <http://github.com/hinrik/hailo/issues>.
+
+PRIVATE METHODS
+  "run"
+    Run Hailo in accordance with the the attributes that were passed to it,
+    this method is called by the hailo command-line utility and the Hailo
+    test suite, it's behavior is subject to change.
+
+SEE ALSO
+    *   Hailo::UI::Web - A Catalyst and jQuery powered web interface to
+        Hailo
+
+    *   POE::Component::Hailo - A non-blocking POE wrapper around Hailo
+
+    *   POE::Component::IRC::Plugin::Hailo - A Hailo IRC bot plugin
+
+    *   <http://github.com/hinrik/failo> - Failo, an IRC bot that uses Hailo
+
+LINKS
+    *   <http://bit.ly/hailo_rewrite_of_megahal> - Hailo: A Perl rewrite of
+        MegaHAL, A blog posting about the motivation behind Hailo
 
 AUTHORS
     Hinrik Örn Sigurðsson, hinrik.sig@gmail.com
