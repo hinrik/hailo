@@ -754,10 +754,12 @@ L<POE::Component::Hailo> - A non-blocking POE wrapper around Hailo
 
 L<POE::Component::IRC::Plugin::Hailo> - A Hailo IRC bot plugin
 
+L<http://github.com/hinrik/failo> - Failo, an IRC bot that uses Hailo
+
 =head1 LINKS
 
-L<Hailo: A Perl rewrite of MegaHAL|http://blogs.perl.org/users/aevar_arnfjor_bjarmason/2010/01/hailo-a-perl-rewrite-of-megahal.html>
-- A blog posting about the motivation behind Hailo
+L<http://bit.ly/hailo_rewrite_of_megahal> - Hailo: A Perl rewrite of
+MegaHAL, A blog posting about the motivation behind Hailo
 
 =head1 AUTHORS
 
