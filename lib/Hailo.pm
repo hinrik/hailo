@@ -624,9 +624,9 @@ L<MySQL|Hailo::Storage::DBD::mysql> database, more backends were
 supported in earlier versions but they were removed as they had no
 redeeming quality.
 
-SQLite is the primary target for Hailo. It's much faster than the
-other two and it's highly recommended that you use it. It's much
-faster and takes up less resources.
+SQLite is the primary target for Hailo. It's much faster eats less
+resources than the other two and it's highly recommended that you use
+it.
 
 This benchmark shows how the backends compare when training on the
 small testsuite dataset as reported by the F<utils/hailo-benchmark>
@@ -640,7 +640,76 @@ utility (found in the distribution):
 
 Under real-world workloads SQLite is much faster than these results
 indicate since the time it takes to train/reply is relative to the
-existing database size.
+existing database size. Here's how long it took to train on a 214,710
+line IRC log on a Linode 1080 with Hailo 0.18:
+
+=over
+
+=item *
+
+SQLite
+
+    real    8m38.285s
+    user    8m30.831s
+    sys     0m1.175s
+
+=item *
+
+MySQL
+
+    real    48m30.334s
+    user    8m25.414s
+    sys     4m38.175s
+
+=item *
+
+PostgreSQL
+
+    real    216m38.906s
+    user    11m13.474s
+    sys     4m35.509s
+
+=back
+
+In the case of PostgreSQL it's actually much faster to first train
+with SQLite, dump that database and then import it with L<psql(1)>,
+see L<failo's README|http://github.com/hinrik/failo> for a howto on
+that.
+
+However when replying with an existing database (using
+F<utils/hailo-benchmark-replies>) yields different results. SQLite can
+reply really quickly without being warmed up (which is the typical
+usecase for chatbots) but once PostgreSQL and MySQL are warmed up they
+start replying faster:
+
+Here's a comparison of doing 5 replies:
+
+                 Rate      MySQL PostgreSQL     SQLite
+    MySQL      20.8/s         --       -17%       -58%
+    PostgreSQL 25.0/s        20%         --       -50%
+    SQLite     50.0/s       140%       100%         --
+
+But doing 10,000 replies is very different:
+
+                 Rate     SQLite PostgreSQL      MySQL
+    SQLite     83.6/s         --        -7%       -29%
+    PostgreSQL 89.5/s         7%         --       -23%
+    MySQL       117/s        40%        31%         --
+
+Here's 5 replies where Hailo is also learning from the input (using
+F<utils/hailo-benchmark-learn_replies>):
+
+                 Rate      MySQL PostgreSQL     SQLite
+    MySQL      12.5/s         --       -60%       -70%
+    PostgreSQL 31.2/s       150%         --       -25%
+    SQLite     41.7/s       233%        33%         --
+
+And on 10,000 learn & replies:
+
+                 Rate     SQLite PostgreSQL      MySQL
+    SQLite     65.9/s         --        -5%       -29%
+    PostgreSQL 69.4/s         5%         --       -25%
+    MySQL      92.4/s        40%        33%         --
 
 =head2 Tokenizer
 
