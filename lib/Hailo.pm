@@ -84,8 +84,8 @@ has train_file => (
     traits        => [qw(Getopt)],
     cmd_aliases   => "t",
     cmd_flag      => "train",
-    documentation => "Learn from all the lines in FILE",
-    isa           => Bool|Str,
+    documentation => "Learn from all the lines in FILE, use - for STDIN",
+    isa           => Str,
     is            => "ro",
 );
 
@@ -349,7 +349,8 @@ sub train {
     my $fh;
     if (ref $input eq 'GLOB') {
         $fh = $input;
-    } elsif (defined $input and $input =~ /^(?:1|-)$/ and not -t STDIN) {
+    } elsif (defined $input and $input eq "-") {
+        die "You must provide STDIN along with --train=-" if _is_interactive(*STDIN);
         $fh = *STDIN;
     } elsif ($got_filename) {
         open $fh, '<:encoding(utf8)', $input;
