@@ -1,5 +1,5 @@
 0.18
-    - Fix capitalization of the first word when followed by punctuation
+    - Fix capitalization of the first word in some cases
 
     - DBD::SQLite backend: It's now possible to set any PRAGMA SQLite
       supports at the start of the connection by supplying C<pragma_*>
