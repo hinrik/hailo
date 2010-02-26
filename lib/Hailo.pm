@@ -654,8 +654,10 @@ storage backend, currently only SQLite uses it.
 
 =head2 C<save_on_exit>
 
-A boolean value indicating whether Hailo should save its state before its
-object gets destroyed. Defaults to true.
+A boolean value indicating whether Hailo should save its state before
+its object gets destroyed. This defaults to true and will simply call
+the L<storage's save method|Hailo::Role::Storage/"save"> at
+C<DEMOLISH> time.
 
 =head2 C<order>
 
