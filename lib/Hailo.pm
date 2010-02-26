@@ -733,6 +733,11 @@ token links and next token links.
 
 You can join the IRC channel I<#hailo> on FreeNode if you have questions.
 
+=head1 BUGS
+
+Bugs, feature requests and other issues are tracked in L<Hailo's issue
+tracker on Github|http://github.com/hinrik/hailo/issues>.
+
 =head1 SEE ALSO
 
 L<Hailo::UI::Web> - A L<Catalyst> and jQuery powered web interface to Hailo
@@ -745,11 +750,6 @@ L<POE::Component::IRC::Plugin::Hailo> - A Hailo IRC bot plugin
 
 L<Hailo: A Perl rewrite of MegaHAL|http://blogs.perl.org/users/aevar_arnfjor_bjarmason/2010/01/hailo-a-perl-rewrite-of-megahal.html>
 - A blog posting about the motivation behind Hailo
-
-=head1 BUGS
-
-Bugs, feature requests and other issues are tracked in L<Hailo's issue
-tracker on Github|http://github.com/hinrik/hailo/issues>.
 
 =head1 AUTHORS
 
