@@ -745,7 +745,7 @@ L<POE::Component::IRC::Plugin::Hailo> - A Hailo IRC bot plugin
 
 =head1 LINKS
 
-L<Hailo: A Perl rewrite of MegaHAL|"http://blogs.perl.org/users/aevar_arnfjor_bjarmason/2010/01/hailo-a-perl-rewrite-of-megahal.html">
+L<Hailo: A Perl rewrite of MegaHAL|http://blogs.perl.org/users/aevar_arnfjor_bjarmason/2010/01/hailo-a-perl-rewrite-of-megahal.html>
 - A blog posting about the motivation behind Hailo
 
 =head1 AUTHORS
