@@ -21,6 +21,8 @@ use namespace::clean -except => [ qw(meta plugins) ];
 
 our $VERSION = '0.17';
 
+with qw(MooseX::Getopt::Dashes);
+
 has help => (
     traits        => [qw(Getopt)],
     cmd_aliases   => 'h',
@@ -205,8 +207,6 @@ has _ui_obj => (
     is          => 'ro',
     init_arg    => undef,
 );
-
-with qw(MooseX::Getopt::Dashes);
 
 sub _build__storage_obj {
     my ($self) = @_;
