@@ -2,7 +2,7 @@ use 5.010;
 use strict;
 use warnings;
 use List::MoreUtils qw(uniq);
-use Test::More tests => 39;
+use Test::More tests => 22;
 use Test::Exception;
 use Test::Output;
 use Hailo;
@@ -93,7 +93,7 @@ is( sub {
 # order
 dies_ok { Hailo->new( order => undef ) } "undef order";
 dies_ok { Hailo->new( order => "foo" ) } "Str order";
-for (my $i = 1; $i <= 10e10; $i += $i * 2) {
+for (my $i = 1; $i <= 10e2; $i += $i * 2) {
     cmp_ok( Hailo->new( order => $i )->order, '==', $i, "The order is what we put in ($i)" );
 }
 
