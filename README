@@ -57,9 +57,9 @@ Backends
     MySQL database, more backends were supported in earlier versions but
     they were removed as they had no redeeming quality.
 
-    SQLite is the primary target for Hailo. It's much faster than the other
-    two and it's highly recommended that you use it. It's much faster and
-    takes up less resources.
+    SQLite is the primary target for Hailo. It's much faster eats less
+    resources than the other two and it's highly recommended that you use
+    it.
 
     This benchmark shows how the backends compare when training on the small
     testsuite dataset as reported by the utils/hailo-benchmark utility
@@ -73,7 +73,67 @@ Backends
 
     Under real-world workloads SQLite is much faster than these results
     indicate since the time it takes to train/reply is relative to the
-    existing database size.
+    existing database size. Here's how long it took to train on a 214,710
+    line IRC log on a Linode 1080 with Hailo 0.18:
+
+    *   SQLite
+
+            real    8m38.285s
+            user    8m30.831s
+            sys     0m1.175s
+
+    *   MySQL
+
+            real    48m30.334s
+            user    8m25.414s
+            sys     4m38.175s
+
+    *   PostgreSQL
+
+            real    216m38.906s
+            user    11m13.474s
+            sys     4m35.509s
+
+    In the case of PostgreSQL it's actually much faster to first train with
+    SQLite, dump that database and then import it with psql(1), see failo's
+    README <http://github.com/hinrik/failo> for how to do that.
+
+    However when replying with an existing database (using
+    utils/hailo-benchmark-replies) yields different results. SQLite can
+    reply really quickly without being warmed up (which is the typical
+    usecase for chatbots) but once PostgreSQL and MySQL are warmed up they
+    start replying faster:
+
+    Here's a comparison of doing 10 replies:
+
+                            Rate PostgreSQL MySQL SQLite-file SQLite-file-28MB SQLite-memory
+        PostgreSQL        71.4/s         --  -14%        -14%             -29%          -50%
+        MySQL             83.3/s        17%    --          0%             -17%          -42%
+        SQLite-file       83.3/s        17%    0%          --             -17%          -42%
+        SQLite-file-28MB 100.0/s        40%   20%         20%               --          -30%
+        SQLite-memory      143/s       100%   71%         71%              43%            --
+
+    In this test MySQL uses around 28MB of memory (using Debian's
+    my-small.cnf) and PostgreSQL around 34MB. Plain SQLite uses 2MB of cache
+    but it's also tested with 28MB of cache as well as with the entire
+    database in memory.
+
+    But doing 10,000 replies is very different:
+
+                           Rate SQLite-file PostgreSQL SQLite-file-28MB MySQL SQLite-memory
+        SQLite-file      85.1/s          --        -7%             -18%  -27%          -38%
+        PostgreSQL       91.4/s          7%         --             -12%  -21%          -33%
+        SQLite-file-28MB  103/s         21%        13%               --  -11%          -25%
+        MySQL             116/s         37%        27%              13%    --          -15%
+        SQLite-memory     137/s         61%        50%              33%   18%            --
+
+    Once MySQL gets more memory (using Debian's my-large.cnf) and a chance
+    to warm it starts yielding better results (I couldn't find out how to
+    make PostgreSQL take as much memory as it wanted):
+
+                       Rate         MySQL SQLite-memory
+        MySQL         121/s            --          -12%
+        SQLite-memory 138/s           14%            --
 
   Tokenizer
     By default Hailo will use the word tokenizer to split up input by
