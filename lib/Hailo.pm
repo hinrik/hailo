@@ -267,7 +267,12 @@ sub _new_class {
         die "Couldn't find a class name matching '$class' in plugins '@plugins'";
     }
 
-    eval "require $pkg";
+    if (Any::Moose::moose_is_preferred()) {
+        require Class::MOP;
+        eval { Class::MOP::load_class($pkg) };
+    } else {
+        eval qq[require $pkg];
+    }
     die $@ if $@;
 
     return $pkg->new(%$args);
