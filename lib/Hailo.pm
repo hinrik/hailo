@@ -9,7 +9,7 @@ BEGIN {
     return unless Any::Moose::moose_is_preferred();
     require MooseX::StrictConstructor;
     MooseX::StrictConstructor->import;
-} 
+}
 use Module::Pluggable (
     search_path => [ map { "Hailo::$_" } qw(Storage Tokenizer UI) ],
     except      => [
