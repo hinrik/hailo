@@ -5,7 +5,7 @@ use MooseX::StrictConstructor;
 use List::MoreUtils qw< all >;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 
 extends 'Hailo::Storage::DBD';
 

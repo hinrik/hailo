@@ -5,7 +5,7 @@ use Moose;
 use MooseX::StrictConstructor;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 
 with qw(Hailo::Role::Arguments
         Hailo::Role::Tokenizer);

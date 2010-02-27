@@ -1,4 +1,4 @@
-0.19
+0.19 Sat Feb 27 04:23:03 GMT 2010
     - Move File::Slurp from 'requires' to 'test_requires'
 
     - Make the default pragma logic a bit simpler
