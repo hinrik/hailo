@@ -673,7 +673,7 @@ PostgreSQL
 
 In the case of PostgreSQL it's actually much faster to first train
 with SQLite, dump that database and then import it with L<psql(1)>,
-see L<failo's README|http://github.com/hinrik/failo> for a howto on
+see L<failo's README|http://github.com/hinrik/failo> for how to do
 that.
 
 However when replying with an existing database (using
@@ -682,34 +682,36 @@ reply really quickly without being warmed up (which is the typical
 usecase for chatbots) but once PostgreSQL and MySQL are warmed up they
 start replying faster:
 
-Here's a comparison of doing 5 replies:
+Here's a comparison of doing 10 replies:
 
-                 Rate      MySQL PostgreSQL     SQLite
-    MySQL      20.8/s         --       -17%       -58%
-    PostgreSQL 25.0/s        20%         --       -50%
-    SQLite     50.0/s       140%       100%         --
+                        Rate PostgreSQL MySQL SQLite-file SQLite-file-28MB SQLite-memory
+    PostgreSQL        71.4/s         --  -14%        -14%             -29%          -50%
+    MySQL             83.3/s        17%    --          0%             -17%          -42%
+    SQLite-file       83.3/s        17%    0%          --             -17%          -42%
+    SQLite-file-28MB 100.0/s        40%   20%         20%               --          -30%
+    SQLite-memory      143/s       100%   71%         71%              43%            --
+
+In this test MySQL uses around 28MB of memory (using Debian's
+F<my-small.cnf>) and PostgreSQL around 34MB. Plain SQLite uses 2MB of
+cache but it's also tested with 28MB of cache as well as with the
+entire database in memory.
 
 But doing 10,000 replies is very different:
 
-                 Rate     SQLite PostgreSQL      MySQL
-    SQLite     83.6/s         --        -7%       -29%
-    PostgreSQL 89.5/s         7%         --       -23%
-    MySQL       117/s        40%        31%         --
+                       Rate SQLite-file PostgreSQL SQLite-file-28MB MySQL SQLite-memory
+    SQLite-file      85.1/s          --        -7%             -18%  -27%          -38%
+    PostgreSQL       91.4/s          7%         --             -12%  -21%          -33%
+    SQLite-file-28MB  103/s         21%        13%               --  -11%          -25%
+    MySQL             116/s         37%        27%              13%    --          -15%
+    SQLite-memory     137/s         61%        50%              33%   18%            --
 
-Here's 5 replies where Hailo is also learning from the input (using
-F<utils/hailo-benchmark-learn_replies>):
+Once MySQL gets more memory (using Debian's F<my-large.cnf>) and a
+chance to warm it starts yielding better results (I couldn't find out
+how to make PostgreSQL take as much memory as it wanted):
 
-                 Rate      MySQL PostgreSQL     SQLite
-    MySQL      12.5/s         --       -60%       -70%
-    PostgreSQL 31.2/s       150%         --       -25%
-    SQLite     41.7/s       233%        33%         --
-
-And on 10,000 learn & replies:
-
-                 Rate     SQLite PostgreSQL      MySQL
-    SQLite     65.9/s         --        -5%       -29%
-    PostgreSQL 69.4/s         5%         --       -25%
-    MySQL      92.4/s        40%        33%         --
+                   Rate         MySQL SQLite-memory
+    MySQL         121/s            --          -12%
+    SQLite-memory 138/s           14%            --
 
 =head2 Tokenizer
 
