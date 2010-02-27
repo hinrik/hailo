@@ -151,6 +151,16 @@ subtest make_output => sub {
             [qw<one>],
             'One.'
         ],
+        [
+            'cpanm is a true "religion"',
+            [qw<cpanm is a true " religion ">],
+            'Cpanm is a true "religion".'
+        ],
+        [
+            'cpanm is a true "anti-religion"',
+            [qw<cpanm is a true " anti - religion ">],
+            'Cpanm is a true "anti-religion".'
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();

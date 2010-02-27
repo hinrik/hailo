@@ -9,7 +9,7 @@
     - MySQL backend: Document collation settings that have to be right
       for Hailo not to blow up.
 
-    - Fix some capitalization/punctuation issues of words with dashes
+    - Fix some capitalization/punctuation issues of words with dashes/quotes
 
 0.18 Fri Feb 26 05:02:17 GMT 2010
 
