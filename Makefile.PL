@@ -24,17 +24,15 @@ resources      ('File::Spec::Functions'         => '0');
 my $got_moose = eval { require 'Moose.pm' };
 my $got_mouse = eval { require 'Mouse.pm' };
 
+requires('Mouse'          => '0.50_04');
+requires('MouseX::Types'  => '0.05');
+requires('MouseX::Getopt' => '0.2601');
+
 if ($got_moose) {
     requires('Moose'                     => '0.94');
     requires('MooseX::Types'             => '0.21');
     requires('MooseX::StrictConstructor' => '0.08');
     requires('MooseX::Getopt'            => '0.26');
-}
-
-if ($got_mouse) {
-    requires('Mouse'          => '0.50_04');
-    requires('MouseX::Types'  => '0.05');
-    requires('MouseX::Getopt' => '0.2601');
 }
 
 # Hailo.pm
