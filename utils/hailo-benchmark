@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 use 5.010;
 use lib 't/lib';
-use Moose;
+use Any::Moose;
 use Hailo::Test;
 use Benchmark qw(:all);
 use File::Temp qw(tempfile tempdir);
