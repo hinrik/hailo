@@ -29,6 +29,7 @@ MANIFEST.SKIP
 META.yml
 README
 script/hailo
+t/00_diag.t
 t/01_compile.t
 t/02_chat.t
 t/03_sanity.t
