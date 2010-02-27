@@ -84,7 +84,7 @@ sub test {
     my $inherited = shift->SUPER::test(@_);
 
     # Run tests with Moose and Mouse
-    $inherited =~ s/\t(\$\(FULLPERLRUN.*)/\tANY_MOOSE=Mouse $1\n\tANY_MOOSE=Moose $1\n/;
+    $inherited =~ s/^test_dynamic :: pure_all\n\t(.*?)\n/test_dynamic :: pure_all\n\tANY_MOOSE=Mouse $1\n\tANY_MOOSE=Moose $1\n/m;
 
     return $inherited;
 }
