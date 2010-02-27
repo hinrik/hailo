@@ -5,7 +5,11 @@ use autodie qw(open close);
 use Any::Moose;
 use Any::Moose 'X::Getopt';
 use Any::Moose 'X::Types::'.any_moose() => [qw/Int Str Bool HashRef/];
-BEGIN { eval { 'use MooseX::StrictConstructor' } if Any::Moose::moose_is_preferred }
+BEGIN {
+    return unless Any::Moose::moose_is_preferred();
+    require MooseX::StrictConstructor;
+    MooseX::StrictConstructor->import;
+} 
 use Module::Pluggable (
     search_path => [ map { "Hailo::$_" } qw(Storage Tokenizer UI) ],
     except      => [
