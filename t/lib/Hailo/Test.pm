@@ -1,7 +1,7 @@
 package Hailo::Test;
 use 5.010;
 use autodie;
-use Moose;
+use Any::Moose;
 use Hailo;
 use Test::More;
 use File::Spec::Functions qw(catfile);
