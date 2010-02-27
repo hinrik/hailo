@@ -98,8 +98,10 @@ for (my $i = 1; $i <= 10e10; $i += $i * 2) {
 }
 
 # new
-TODO: {
-    local $TODO = "Hailo doesn't die on unknown arguments with MouseX::Getop";
+SKIP: {
+    if (Any::Moose::mouse_is_preferred()) {
+        skip "Mouse doesn't have X::StrictConstructor", 1;
+    }
     dies_ok { Hailo->new( qw( a b c d ) ) } "Hailo dies on unknown arguments";
 }
 
