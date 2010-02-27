@@ -85,7 +85,7 @@ sub make_output {
     }
 
     # capitalize the first word
-    $reply =~ s/^$TERMINATOR?\s*$OPEN_QUOTE?\s*\K($WORD)(?=(?:$TERMINATOR+|$ADDRESS|$PUNCTUATION+)?(?: |$))/\u$1/;
+    $reply =~ s/^$TERMINATOR?\s*$OPEN_QUOTE?\s*\K($WORD)(?=(?:$TERMINATOR+|$ADDRESS|$PUNCTUATION+)?(?:-| |$))/\u$1/;
 
     # capitalize the second word
     $reply =~ s/^$TERMINATOR?\s*$OPEN_QUOTE?\s*$WORD(?:\s*(?:$TERMINATOR|$ADDRESS)\s+)\K($WORD)/\u$1/;
@@ -97,7 +97,7 @@ sub make_output {
     $reply =~ s/\x1B//g;
 
     # end paragraphs with a period when it makes sense
-    $reply =~ s/ $WORD\K$/./;
+    $reply =~ s/(?:-| |^)$WORD\K$/./;
 
     # capitalize I
     $reply =~ s{ \Ki(?=$PUNCTUATION| |$APOSTROPHE)}{I}g;
