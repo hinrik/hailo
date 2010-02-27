@@ -1,11 +1,6 @@
 package Hailo::Role::Tokenizer;
 use 5.010;
 use Any::Moose '::Role';
-BEGIN {
-    return unless Any::Moose::moose_is_preferred;
-    require MooseX::Role::Strict;
-    MooseX::Role::Strict->import;
-}
 use namespace::clean -except => 'meta';
 
 our $VERSION = '0.19';

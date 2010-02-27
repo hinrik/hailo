@@ -27,7 +27,6 @@ my $got_mouse = eval { require 'Mouse.pm' };
 if ($got_moose) {
     requires('Moose'                     => '0.94');
     requires('MooseX::Types'             => '0.21');
-    requires('MooseX::Role::Strict'      => '0.03');
     requires('MooseX::StrictConstructor' => '0.08');
     requires('MooseX::Getopt'            => '0.26');
 }
