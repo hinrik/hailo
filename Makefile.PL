@@ -21,19 +21,16 @@ resources      ('Time::HiRes'                   => '0');
 resources      ('FindBin'                       => '0');
 resources      ('File::Spec::Functions'         => '0');
 
-my $got_moose = eval { require 'Moose.pm' };
-my $got_mouse = eval { require 'Mouse.pm' };
-
+## Depend on Mouse or Moose, we can use either one
+# Mouse
 requires('Mouse'          => '0.50_04');
 requires('MouseX::Types'  => '0.05');
 requires('MouseX::Getopt' => '0.2601');
-
-if ($got_moose) {
-    requires('Moose'                     => '0.94');
-    requires('MooseX::Types'             => '0.21');
-    requires('MooseX::StrictConstructor' => '0.08');
-    requires('MooseX::Getopt'            => '0.26');
-}
+# Moose
+requires('Moose'                     => '0.94');
+requires('MooseX::Types'             => '0.21');
+requires('MooseX::StrictConstructor' => '0.08');
+requires('MooseX::Getopt'            => '0.26');
 
 # Hailo.pm
 requires       ('Any::Moose'                    => '0.11');
@@ -86,10 +83,8 @@ package MY;
 sub test {
     my $inherited = shift->SUPER::test(@_);
 
-    # Run tests with Moose and Mouse if we can
-    if ($got_mouse && $got_moose) {
-        $inherited =~ s/\t(\$\(FULLPERLRUN.*)/\tANY_MOOSE=Mouse $1\n\tANY_MOOSE=Moose $1\n/;
-    }
+    # Run tests with Moose and Mouse
+    $inherited =~ s/\t(\$\(FULLPERLRUN.*)/\tANY_MOOSE=Mouse $1\n\tANY_MOOSE=Moose $1\n/;
 
     return $inherited;
 }
