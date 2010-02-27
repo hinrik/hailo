@@ -31,8 +31,8 @@ SYNOPSIS
 
 DESCRIPTION
     Hailo is a fast and lightweight markov engine intended to replace
-    AI::MegaHAL. It has a lightweight Moose-based core with pluggable
-    storage and tokenizer backends.
+    AI::MegaHAL. It has a Mouse (or Moose) based core with pluggable storage
+    and tokenizer backends.
 
     It is similar to MegaHAL in functionality, the main differences (with
     the default backends) being better scalability, drastically less memory
