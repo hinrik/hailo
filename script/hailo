@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 use 5.010;
 use open qw< :encoding(utf8) :std >;
-use Mouse;
+use Any::Moose;
 use Encode qw(decode);
 use Hailo;
 use namespace::clean -except => 'meta';
