@@ -104,7 +104,7 @@ subtest make_output => sub {
         [
             'http://foo.bar/baz',
             [qw<http :// foo . bar / baz>],
-            'http://foo.bar/baz',
+            'http://foo.bar/baz.',
         ],
         [
             "foo bar baz. i said i'll do this",
@@ -160,6 +160,11 @@ subtest make_output => sub {
             'cpanm is a true "anti-religion"',
             [qw<cpanm is a true " anti - religion ">],
             'Cpanm is a true "anti-religion".'
+        ],
+        [
+            'Maps to weekends/holidays',
+            [qw<maps to weekends / holidays>],
+            'Maps to weekends/holidays.'
         ],
     );
 
