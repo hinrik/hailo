@@ -74,7 +74,6 @@ author_requires('Test::Perl::Critic'  => '1.02');
 author_requires('Test::Pod'           => '1.41');
 author_requires('Test::Pod::Coverage' => '1.08');
 author_requires('Test::Script'        => '1.07');
-author_tests   ('xt');
 auto_provides  ();
 WriteAll();
 
