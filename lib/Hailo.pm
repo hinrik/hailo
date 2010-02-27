@@ -518,6 +518,7 @@ sub _getopt_full_usage {
 
         require FindBin;
         require File::Spec;
+        no warnings 'once';
 
         Pod::Usage::pod2usage(
             -input => File::Spec->catfile($FindBin::Bin, $FindBin::Script),

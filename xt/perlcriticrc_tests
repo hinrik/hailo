@@ -36,7 +36,10 @@ verbose  = 3
 [-Subroutines::ProtectPrivateSubs]
 
 [TestingAndDebugging::RequireUseStrict]
-equivalent_modules = MooseX::Role::Strict
+equivalent_modules = Any::Moose Mouse Mouse::Role MooseX::Role::Strict
 
 [TestingAndDebugging::RequireUseWarnings]
-equivalent_modules = MooseX::Role::Strict
+equivalent_modules = Any::Moose Mouse Mouse::Role MooseX::Role::Strict
+
+[TestingAndDebugging::ProhibitNoWarnings]
+allow = once
