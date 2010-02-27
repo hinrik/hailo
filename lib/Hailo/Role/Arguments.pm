@@ -1,7 +1,11 @@
 package Hailo::Role::Arguments;
 use 5.010;
 use Any::Moose '::Role';
-eval 'use MooseX::Role::Strict' if Any::Moose::moose_is_preferred;
+BEGIN {
+    return unless Any::Moose::moose_is_preferred;
+    require MooseX::Role::Strict;
+    MooseX::Role::Strict->import;
+}
 use Any::Moose 'X::Types::'.any_moose() => [qw/HashRef/];
 use namespace::clean -except => 'meta';
 
