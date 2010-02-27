@@ -31,7 +31,7 @@ if ($got_moose) {
     requires('MooseX::Getopt'            => '0.26');
 }
 
-if ($got_mouse || !$got_moose) {
+if ($got_mouse) {
     requires('Mouse'          => '0.50_04');
     requires('MouseX::Types'  => '0.05');
     requires('MouseX::Getopt' => '0.2601');
@@ -82,3 +82,16 @@ author_requires('Test::Script'        => '1.07');
 author_tests   ('xt');
 auto_provides  ();
 WriteAll();
+
+package MY;
+
+sub test {
+    my $inherited = shift->SUPER::test(@_);
+
+    # Run tests with Moose and Mouse if we can
+    if ($got_mouse && $got_moose) {
+        $inherited =~ s/\t(\$\(FULLPERLRUN.*)/\tANY_MOOSE=Mouse $1\n\tANY_MOOSE=Moose $1\n/;
+    }
+
+    return $inherited;
+}
