@@ -1,7 +1,11 @@
 use strict;
 use warnings;
 use 5.010;
-use inc::Module::Install '0.92';
+use inc::Module::Install;
+
+if ($inc::Module::Install::VERSION lt '0.94') {
+    die 'Module::Install is too old';
+}
 
 name           ('Hailo');
 perl_version   ('5.010');
