@@ -21,14 +21,23 @@ resources      ('Time::HiRes'                   => '0');
 resources      ('FindBin'                       => '0');
 resources      ('File::Spec::Functions'         => '0');
 
+if (eval { require 'Moose.pm' }) {
+    requires('Moose'                     => '0.94');
+    requires('MooseX::Types'             => '0.21');
+    requires('MooseX::Role::Strict'      => '0.03');
+    requires('MooseX::StrictConstructor' => '0.08');
+    requires('MooseX::Getopt'            => '0.26');
+}
+else {
+    requires('Mouse'          => '0.50_04');
+    requires('MouseX::Types'  => '0.05');
+    requires('MouseX::Getopt' => '0.2601');
+}
+
 # Hailo.pm
 requires       ('autodie'                       => '2.08');
-requires       ('Moose'                         => '0.94');
-requires       ('Class::MOP'                    => '0.98');
 requires       ('Data::Section'                 => '0.100270');
 requires       ('File::CountLines'              => '0.0.2');
-requires       ('MooseX::Getopt'                => '0.26');
-requires       ('MooseX::Getopt::Dashes'        => '0');
 requires       ('Getopt::Long::Descriptive'     => '0.083');
 requires       ('IO::Interactive'               => '0.0.6');
 requires       ('Module::Pluggable'             => '3.9');
@@ -45,10 +54,6 @@ requires       ('Template'                      => '2.22');
 requires       ('DBD::SQLite'                   => '1.29');
 
 # everywhere
-requires       ('MooseX::Role::Strict'          => '0.03');
-requires       ('MooseX::StrictConstructor'     => '0.08');
-requires       ('MooseX::Types'                 => '0.21');
-requires       ('MooseX::Types::Moose'          => '0.21');
 requires       ('namespace::clean'              => '0.13');
 
 # Pg/mysql: optional backends
