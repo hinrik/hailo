@@ -1,6 +1,7 @@
 package Hailo::Role::UI;
 use 5.010;
-use MooseX::Role::Strict;
+use Any::Moose '::Role';
+eval 'use MooseX::Role::Strict' if Any::Moose::moose_is_preferred;
 use namespace::clean -except => 'meta';
 
 our $VERSION = '0.19';

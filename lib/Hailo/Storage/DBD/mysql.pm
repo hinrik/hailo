@@ -1,7 +1,6 @@
 package Hailo::Storage::DBD::mysql;
 use 5.010;
-use Moose;
-use MooseX::StrictConstructor;
+use Any::Moose;
 use List::MoreUtils qw< all >;
 use namespace::clean -except => 'meta';
 

@@ -2,11 +2,10 @@ package Hailo;
 
 use 5.010;
 use autodie qw(open close);
-use Class::MOP;
-use Moose;
-use MooseX::StrictConstructor;
-use MooseX::Types::Moose qw/Int Str Bool HashRef/;
-use MooseX::Getopt;
+use Any::Moose;
+use Any::Moose 'X::Getopt';
+use Any::Moose 'X::Types::'.any_moose() => [qw/Int Str Bool HashRef/];
+BEGIN { eval { 'use MooseX::StrictConstructor' } if Any::Moose::moose_is_preferred }
 use Module::Pluggable (
     search_path => [ map { "Hailo::$_" } qw(Storage Tokenizer UI) ],
     except      => [
@@ -21,7 +20,7 @@ use namespace::clean -except => [ qw(meta plugins) ];
 
 our $VERSION = '0.19';
 
-with qw(MooseX::Getopt::Dashes);
+with any_moose('X::Getopt::Dashes');
 
 has help => (
     traits        => [qw(Getopt)],
@@ -264,7 +263,7 @@ sub _new_class {
         die "Couldn't find a class name matching '$class' in plugins '@plugins'";
     }
 
-    eval { Class::MOP::load_class($pkg) };
+    eval "require $pkg";
     die $@ if $@;
 
     return $pkg->new(%$args);

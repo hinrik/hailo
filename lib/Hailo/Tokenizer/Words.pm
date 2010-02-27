@@ -1,8 +1,7 @@
 package Hailo::Tokenizer::Words;
 use 5.010;
 use utf8;
-use Moose;
-use MooseX::StrictConstructor;
+use Any::Moose;
 use namespace::clean -except => 'meta';
 
 our $VERSION = '0.19';
