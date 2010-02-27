@@ -1,6 +1,11 @@
 package Hailo::Storage::DBD::Pg;
 use 5.010;
 use Any::Moose;
+BEGIN {
+    return unless Any::Moose::moose_is_preferred();
+    require MooseX::StrictConstructor;
+    MooseX::StrictConstructor->import;
+}
 use namespace::clean -except => 'meta';
 
 our $VERSION = '0.19';

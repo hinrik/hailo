@@ -2,6 +2,11 @@ package Hailo::Storage::DBD;
 use 5.010;
 use Any::Moose;
 use Any::Moose 'X::Types::'.any_moose() => [qw<ArrayRef HashRef Int Str Bool>];
+BEGIN {
+    return unless Any::Moose::moose_is_preferred();
+    require MooseX::StrictConstructor;
+    MooseX::StrictConstructor->import;
+}
 use DBI;
 use List::Util qw<first shuffle>;
 use List::MoreUtils qw<uniq>;
