@@ -35,6 +35,7 @@ else {
 }
 
 # Hailo.pm
+requires       ('Any::Moose'                    => '0.11');
 requires       ('autodie'                       => '2.08');
 requires       ('Data::Section'                 => '0.100270');
 requires       ('File::CountLines'              => '0.0.2');
