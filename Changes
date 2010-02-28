@@ -1,10 +1,15 @@
 0.20
-    - Use Mouse instead of Moose by default. This saves about 9MB of
-      resident memory
 
-    - Drop MouseX::Role::Strict / MooseX::Role::Strict
+    - Use Mouse instead of Moose by default. This saves about 8MB of
+      resident memory bringing Hailo's memory usage with SQLite from
+      28MB to 20MB. Startup time is also reduced with the test suite
+      running around 46% faster.
 
-    - Improve punctuation when words are split with '/'
+    - Drop MouseX::Role::Strict / MooseX::Role::Strict. Spotted when
+      switching to Moose but mainly we just didn't care about using
+      it.
+
+    - Word tokenizer: Improve punctuation when words are split with '/'
 
 0.19 Sat Feb 27 04:23:03 GMT 2010
     - Move File::Slurp from 'requires' to 'test_requires'
