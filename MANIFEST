@@ -56,6 +56,7 @@ utils/crunchbase-companies
 utils/hailo-benchmark
 utils/hailo-benchmark-mouse-moose
 utils/hailo-benchmark-replies
+utils/train/wikipedia-did-you-know.sh
 xt/01_pod.t
 xt/02_pod_coverage.t
 xt/03_perl_critic.t
