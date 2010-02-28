@@ -1,0 +1,14 @@
+use 5.010;
+use strict;
+use Benchmark ':all';
+
+my $tests = $ARGV[0] // 5;
+
+cmpthese(50, {
+    Mouse => sub {
+        system qq< ANY_MOOSE=Mouse prove -Ilib -r t >;
+    },
+    Moose => sub {
+        system qq< ANY_MOOSE=Moose prove -Ilib -r t >;
+    }
+});
