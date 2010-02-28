@@ -4,7 +4,7 @@ use Any::Moose '::Role';
 use Any::Moose 'X::Types::'.any_moose() => [qw/HashRef/];
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 
 has arguments => (
     isa           => HashRef,

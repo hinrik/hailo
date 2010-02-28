@@ -8,7 +8,7 @@ BEGIN {
 }
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 
 extends 'Hailo::Storage::DBD';
 

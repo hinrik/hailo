@@ -22,7 +22,7 @@ use Module::Pluggable (
 use List::Util qw(first);
 use namespace::clean -except => [ qw(meta plugins) ];
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 
 with any_moose('X::Getopt::Dashes');
 

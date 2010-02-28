@@ -18,7 +18,7 @@ use namespace::clean -except => [ qw(meta
                                      merged_section_data
                                      merged_section_data_names) ];
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 
 with qw(Hailo::Role::Arguments
         Hailo::Role::Storage);

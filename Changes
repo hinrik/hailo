@@ -1,4 +1,4 @@
-0.20
+0.20 Sun Feb 28 00:29:32 GMT 2010
 
     - Use Mouse instead of Moose by default but depend on both of
       them.
