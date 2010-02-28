@@ -37,31 +37,31 @@ requires('MooseX::StrictConstructor' => '0.08');
 requires('MooseX::Getopt'            => '0.26');
 
 # Hailo.pm
-requires       ('Any::Moose'                    => '0.11');
-requires       ('autodie'                       => '2.08');
-requires       ('Data::Section'                 => '0.100270');
-requires       ('File::CountLines'              => '0.0.2');
-requires       ('Getopt::Long::Descriptive'     => '0.083');
-requires       ('IO::Interactive'               => '0.0.6');
-requires       ('Module::Pluggable'             => '3.9');
+requires       ('Any::Moose'                => '0.11');
+requires       ('autodie'                   => '2.08');
+requires       ('Data::Section'             => '0.100270');
+requires       ('File::CountLines'          => '0.0.2');
+requires       ('Getopt::Long::Descriptive' => '0.083');
+requires       ('IO::Interactive'           => '0.0.6');
+requires       ('Module::Pluggable'         => '3.9');
 
 # ReadLine.pm
-requires       ('Term::ProgressBar'             => '2.00');
-requires       ('Term::ReadLine::Gnu'           => '0');
+requires       ('Term::ProgressBar'         => '2.00');
+requires       ('Term::ReadLine::Gnu'       => '0');
 
 # DBD.pm
-requires       ('List::MoreUtils'               => '0.22');
-requires       ('Template'                      => '2.22');
+requires       ('List::MoreUtils'           => '0.22');
+requires       ('Template'                  => '2.22');
 
 # SQLite.pm
-requires       ('DBD::SQLite'                   => '1.29');
+requires       ('DBD::SQLite'               => '1.29');
 
 # everywhere
-requires       ('namespace::clean'              => '0.13');
+requires       ('namespace::clean'          => '0.13');
 
 # Pg/mysql: optional backends
-recommends     ('DBD::mysql'                    => '4.013');
-recommends     ('DBD::Pg'                       => '2.16.1');
+recommends     ('DBD::mysql'                => '4.013');
+recommends     ('DBD::Pg'                   => '2.16.1');
 
 tests_recursive();
 test_requires  ('Data::Random'    => '0.05');
