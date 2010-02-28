@@ -1,9 +1,13 @@
 0.20
 
-    - Use Mouse instead of Moose by default. This saves about 8MB of
-      resident memory bringing Hailo's memory usage with SQLite from
-      28MB to 20MB. Startup time is also reduced with the test suite
-      running around 46% faster.
+    - Use Mouse instead of Moose by default but depend on both of
+      them.
+
+      This saves about 8MB of resident memory bringing Hailo's memory
+      usage with SQLite from 28MB to 20MB. Startup time is also
+      reduced with the test suite running around 46% faster.
+
+    - Run tests with Moose and Mouse during `make test`
 
     - Drop MouseX::Role::Strict / MooseX::Role::Strict. Spotted when
       switching to Moose but mainly we just didn't care about using
