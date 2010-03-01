@@ -826,21 +826,13 @@ Hailo test suite, it's behavior is subject to change.
 
 =over
 
-=item *
+=item * L<Hailo::UI::Web> - A L<Catalyst> and jQuery powered web interface to Hailo
 
-L<Hailo::UI::Web> - A L<Catalyst> and jQuery powered web interface to Hailo
+=item * L<POE::Component::Hailo> - A non-blocking POE wrapper around Hailo
 
-=item *
+=item * L<POE::Component::IRC::Plugin::Hailo> - A Hailo IRC bot plugin
 
-L<POE::Component::Hailo> - A non-blocking POE wrapper around Hailo
-
-=item *
-
-L<POE::Component::IRC::Plugin::Hailo> - A Hailo IRC bot plugin
-
-=item *
-
-L<http://github.com/hinrik/failo> - Failo, an IRC bot that uses Hailo
+=item * L<http://github.com/hinrik/failo> - Failo, an IRC bot that uses Hailo
 
 =back
 
