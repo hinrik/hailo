@@ -67,17 +67,17 @@ L<DBD::mysql|DBD::mysql>
 
 As a module:
 
-    my $hailo = Hailo->new(
-        train_file    => 'hailo.trn',
-        storage_class => 'mysql',
-        storage_args  => {
-            database  => 'hailo',
-            host      => 'localhost',
-            port      => '3306',
-            username  => 'hailo',
-            password  => 'hailo'
-        },
-    );
+ my $hailo = Hailo->new(
+     train_file    => 'hailo.trn',
+     storage_class => 'mysql',
+     storage_args  => {
+         database  => 'hailo',
+         host      => 'localhost',
+         port      => '3306',
+         username  => 'hailo',
+         password  => 'hailo'
+     },
+ );
 
 From the command line:
 
