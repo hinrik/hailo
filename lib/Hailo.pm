@@ -571,29 +571,29 @@ Hailo - A pluggable Markov engine analogous to MegaHAL
 This is the synopsis for using Hailo as a module. See L<hailo> for
 command-line invocation.
 
-    # Hailo requires Perl 5.10
-    use 5.010;
-    use strict;
-    use warnings;
-    use Hailo;
+ # Hailo requires Perl 5.10
+ use 5.010;
+ use strict;
+ use warnings;
+ use Hailo;
 
-    # Construct a new in-memory Hailo using the SQLite backend. See
-    # backend documentation for other options.
-    my $hailo = Hailo->new;
+ # Construct a new in-memory Hailo using the SQLite backend. See
+ # backend documentation for other options.
+ my $hailo = Hailo->new;
 
-    # Various ways to learn
-    my @train_this = qw< I like big butts and I can not lie >;
-    $hailo->learn(\@train_this);
-    $hailo->learn($_) for @train_this;
+ # Various ways to learn
+ my @train_this = qw< I like big butts and I can not lie >;
+ $hailo->learn(\@train_this);
+ $hailo->learn($_) for @train_this;
 
-    # Heavy-duty training interface. Backends may drop some safety
-    # features like journals or synchronous IO to train faster using
-    # this mode.
-    $hailo->learn("megahal.trn");
-    $hailo->learn($filehandle);
+ # Heavy-duty training interface. Backends may drop some safety
+ # features like journals or synchronous IO to train faster using
+ # this mode.
+ $hailo->learn("megahal.trn");
+ $hailo->learn($filehandle);
 
-    # Make the brain babble
-    say $hailo->reply("hello good sir.");
+ # Make the brain babble
+ say $hailo->reply("hello good sir.");
 
 =head1 DESCRIPTION
 
