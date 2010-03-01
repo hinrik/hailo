@@ -840,9 +840,7 @@ Hailo test suite, it's behavior is subject to change.
 
 =over
 
-=item *
-
-L<http://bit.ly/hailo_rewrite_of_megahal> - Hailo: A Perl rewrite of
+=item * L<http://bit.ly/hailo_rewrite_of_megahal> - Hailo: A Perl rewrite of
 MegaHAL, A blog posting about the motivation behind Hailo
 
 =back
