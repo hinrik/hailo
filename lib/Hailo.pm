@@ -653,29 +653,23 @@ line IRC log on a Linode 1080 with Hailo 0.18:
 
 =over
 
-=item *
+=item * SQLite
 
-SQLite
+ real    8m38.285s
+ user    8m30.831s
+ sys     0m1.175s
 
-    real    8m38.285s
-    user    8m30.831s
-    sys     0m1.175s
+=item * MySQL
 
-=item *
+ real    48m30.334s
+ user    8m25.414s
+ sys     4m38.175s
 
-MySQL
+=item * PostgreSQL
 
-    real    48m30.334s
-    user    8m25.414s
-    sys     4m38.175s
-
-=item *
-
-PostgreSQL
-
-    real    216m38.906s
-    user    11m13.474s
-    sys     4m35.509s
+ real    216m38.906s
+ user    11m13.474s
+ sys     4m35.509s
 
 =back
 
