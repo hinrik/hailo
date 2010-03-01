@@ -57,9 +57,8 @@ Backends
     MySQL database, more backends were supported in earlier versions but
     they were removed as they had no redeeming quality.
 
-    SQLite is the primary target for Hailo. It's much faster eats less
-    resources than the other two and it's highly recommended that you use
-    it.
+    SQLite is the primary target for Hailo. It's much faster and uses less
+    resources than the other two. It's highly recommended that you use it.
 
     This benchmark shows how the backends compare when training on the small
     testsuite dataset as reported by the utils/hailo-benchmark utility
