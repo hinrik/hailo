@@ -22,13 +22,17 @@ my $APOST_WORD = qr/\w+(?:$APOSTROPHE\w+)*/;
 my $WORD       = qr/$NUMBER|$APOST_WORD/;
 
 # capitalization
+# The rest of the regexes are pretty hairy. The goal here is to catch the
+# most common cases where a word should be capitalized. We try hard to
+# guard against capitalizing things which don't look like proper words.
+# Examples include URLs and code snippets.
 my $OPEN_QUOTE  = qr/['"‘“„«»「『‹‚]/;
 my $CLOSE_QUOTE = qr/['"’“”«»」』›‘]/;
 my $TERMINATOR  = qr/(?:[?!‽]+|(?<!\.)\.)/;
 my $ADDRESS     = qr/:/;
 my $PUNCTUATION = qr/[?!‽,;.:]/;
-my $WORD_SPLIT  = qr{[-/](?![-/])};
 my $BOUNDARY    = qr/\s*$CLOSE_QUOTE?\s*(?:$TERMINATOR|$ADDRESS)\s+$OPEN_QUOTE?\s*/;
+my $SPLIT_WORD  = qr{(?:$APOST_WORD(?:-$APOST_WORD)+|$APOST_WORD/$APOST_WORD|$APOST_WORD)(?=$PUNCTUATION(?: |$)|$CLOSE_QUOTE|$TERMINATOR| |$)};
 
 # we want to capitalize words that come after "On example.com?"
 # or "You mean 3.2?", but not "Yes, e.g."
@@ -90,22 +94,22 @@ sub make_output {
     }
 
     # capitalize the first word
-    $reply =~ s/^$TERMINATOR?\s*$OPEN_QUOTE?\s*\K($WORD)(?=(?:$TERMINATOR+|$ADDRESS|$PUNCTUATION+)?(?:$WORD_SPLIT| |$))/\u$1/;
+    $reply =~ s/^$TERMINATOR?\s*$OPEN_QUOTE?\s*\K($SPLIT_WORD)(?=(?:$TERMINATOR+|$ADDRESS|$PUNCTUATION+)?(?: |$))/\u$1/;
 
     # capitalize the second word
-    $reply =~ s/^$TERMINATOR?\s*$OPEN_QUOTE?\s*$WORD(?:\s*(?:$TERMINATOR|$ADDRESS)\s+)\K($WORD)/\u$1/;
+    $reply =~ s/^$TERMINATOR?\s*$OPEN_QUOTE?\s*$SPLIT_WORD(?:\s*(?:$TERMINATOR|$ADDRESS)\s+)\K($SPLIT_WORD)/\u$1/;
 
     # capitalize all other words after word boundaries
     # we do it in two passes because we need to match two words at a time
-    $reply =~ s/ $OPEN_QUOTE?\s*$WORD_STRICT$BOUNDARY\K($WORD)/\x1B\u$1\x1B/g;
-    $reply =~ s/\x1B$WORD_STRICT\x1B$BOUNDARY\K($WORD)/\u$1/g;
+    $reply =~ s/ $OPEN_QUOTE?\s*$WORD_STRICT$BOUNDARY\K($SPLIT_WORD)/\x1B\u$1\x1B/g;
+    $reply =~ s/\x1B$WORD_STRICT\x1B$BOUNDARY\K($SPLIT_WORD)/\u$1/g;
     $reply =~ s/\x1B//g;
 
     # end paragraphs with a period when it makes sense
-    $reply =~ s/(?:$WORD_SPLIT| |^)$OPEN_QUOTE?$WORD$CLOSE_QUOTE?\K$/./;
+    $reply =~ s/(?: |^)$OPEN_QUOTE?$SPLIT_WORD$CLOSE_QUOTE?\K$/./;
 
     # capitalize I
-    $reply =~ s{ \Ki(?=$PUNCTUATION| |$APOSTROPHE)}{I}g;
+    $reply =~ s{ \Ki(?=$APOSTROPHE)}{I}g;
 
     return $reply;
 }
