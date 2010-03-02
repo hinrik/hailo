@@ -45,5 +45,5 @@ my $i = 1; for (@classes) {
 
 SKIP: {
     skip "There's no blib", 1 unless -d "blib" and -f catfile qw(blib script hailo);
-    script_compiles_ok(catfile('script', 'hailo'));
+    script_compiles_ok(catfile('bin', 'hailo'));
 };
