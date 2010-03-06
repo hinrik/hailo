@@ -26,7 +26,6 @@ resources      ('Time::HiRes'                   => '0');
 resources      ('FindBin'                       => '0');
 resources      ('File::Spec::Functions'         => '0');
 
-## Depend on Mouse or Moose, we can use either one
 # Mouse
 requires('Mouse'          => '0.50_04');
 requires('MouseX::Types'  => '0.05');
@@ -37,6 +36,12 @@ requires('MooseX::Types'             => '0.21');
 requires('MooseX::StrictConstructor' => '0.08');
 requires('MooseX::Getopt'            => '0.26');
 
+# allow hailo(1) to set legacy process name under Linux
+if ($^O eq 'linux') {
+    requires('Sys::Prctl' => '1.00');
+}
+
+## Depend on Mouse or Moose, we can use either one
 # Hailo.pm
 requires       ('Any::Moose'                => '0.11');
 requires       ('autodie'                   => '2.08');
