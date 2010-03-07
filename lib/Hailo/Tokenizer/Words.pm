@@ -94,10 +94,10 @@ sub make_output {
     }
 
     # capitalize the first word
-    $reply =~ s/^$TERMINATOR?\s*$OPEN_QUOTE?\s*\K($SPLIT_WORD)(?=(?:$TERMINATOR+|$ADDRESS|$PUNCTUATION+)?(?: |$))/\u$1/;
+    $reply =~ s/^\s*$OPEN_QUOTE?\s*\K($SPLIT_WORD)(?=(?:$TERMINATOR+|$ADDRESS|$PUNCTUATION+)?(?: |$))/\u$1/;
 
     # capitalize the second word
-    $reply =~ s/^$TERMINATOR?\s*$OPEN_QUOTE?\s*$SPLIT_WORD(?:(?:\s*$TERMINATOR|$ADDRESS)\s+)\K($SPLIT_WORD)/\u$1/;
+    $reply =~ s/^\s*$OPEN_QUOTE?\s*$SPLIT_WORD(?:(?:\s*$TERMINATOR|$ADDRESS)\s+)\K($SPLIT_WORD)/\u$1/;
 
     # capitalize all other words after word boundaries
     # we do it in two passes because we need to match two words at a time
