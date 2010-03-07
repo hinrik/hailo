@@ -1,5 +1,6 @@
 0.21
-    - Word tokenizer: Prevent capitalization of some non-words
+    - Word tokenizer: Prevent capitalization of some non-words, and don't
+      capitalize words after a bare ':'
     - Use Sys::Prctl to set legacy process name under Linux
 
 0.20 Sun Feb 28 00:29:32 GMT 2010

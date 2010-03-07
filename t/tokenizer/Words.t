@@ -196,6 +196,11 @@ subtest make_output => sub {
             [qw<foo () is a function>],
             'foo() is a function.'
         ],
+        [
+            'the symbol : and the symbol /',
+            [qw<the symbol : and the symbol />],
+            'The symbol : and the symbol /'
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();

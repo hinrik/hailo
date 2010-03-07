@@ -31,7 +31,7 @@ my $CLOSE_QUOTE = qr/['"’“”«»」』›‘]/;
 my $TERMINATOR  = qr/(?:[?!‽]+|(?<!\.)\.)/;
 my $ADDRESS     = qr/:/;
 my $PUNCTUATION = qr/[?!‽,;.:]/;
-my $BOUNDARY    = qr/\s*$CLOSE_QUOTE?\s*(?:$TERMINATOR|$ADDRESS)\s+$OPEN_QUOTE?\s*/;
+my $BOUNDARY    = qr/$CLOSE_QUOTE?(?:\s*$TERMINATOR|$ADDRESS)\s+$OPEN_QUOTE?\s*/;
 my $SPLIT_WORD  = qr{(?:$APOST_WORD(?:-$APOST_WORD)+|$APOST_WORD/$APOST_WORD|$APOST_WORD)(?=$PUNCTUATION(?: |$)|$CLOSE_QUOTE|$TERMINATOR| |$)};
 
 # we want to capitalize words that come after "On example.com?"
@@ -97,7 +97,7 @@ sub make_output {
     $reply =~ s/^$TERMINATOR?\s*$OPEN_QUOTE?\s*\K($SPLIT_WORD)(?=(?:$TERMINATOR+|$ADDRESS|$PUNCTUATION+)?(?: |$))/\u$1/;
 
     # capitalize the second word
-    $reply =~ s/^$TERMINATOR?\s*$OPEN_QUOTE?\s*$SPLIT_WORD(?:\s*(?:$TERMINATOR|$ADDRESS)\s+)\K($SPLIT_WORD)/\u$1/;
+    $reply =~ s/^$TERMINATOR?\s*$OPEN_QUOTE?\s*$SPLIT_WORD(?:(?:\s*$TERMINATOR|$ADDRESS)\s+)\K($SPLIT_WORD)/\u$1/;
 
     # capitalize all other words after word boundaries
     # we do it in two passes because we need to match two words at a time
