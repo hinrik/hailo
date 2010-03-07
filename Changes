@@ -1,5 +1,6 @@
 {{$NEXT}}
-    - Word tokenizer: Prevent capitalization of some non-words
+    - Word tokenizer: Various improvements to capitalization
+    - Use Sys::Prctl to set legacy process name under Linux
 
 0.20 Sun Feb 28 00:29:32 GMT 2010
 
@@ -49,7 +50,7 @@
 
     - Word tokenizer: Fix capitalization of the first word in some cases
 
-    - Add more exhaustive tests for the Word tokenizer. 
+    - Add more exhaustive tests for the Word tokenizer.
 
     - Un-break t/storage/DBD-mysql.t test
 
@@ -175,7 +176,7 @@
       the future by moving the DB-specific SQL out of Pg.pm and
       mysql.pm into macros in SQL.pm
     - Use of $. in Hailo.pm broke file-based backends such as Cache.pm
-    - Make MySQL docs copy-pasteable 
+    - Make MySQL docs copy-pasteable
     - Add a benchmark script as utils/hailo-benchmark
 
 0.07 Tue Feb  9 15:23:44 GMT 2010
@@ -224,7 +225,7 @@
       the probability of all the given token following each other was
       100% (i.e. there's nothing to break the loop) it would start
       generating infinitely long replies.
-  
+
       This was fixed by adding a guard clause in Hailo::Engine::Default
       which breaks the loop if we're up to C<$order * 10> and the
       number of unique tokens in the reply is less than the model

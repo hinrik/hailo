@@ -805,6 +805,14 @@ be passed as-is to the backend.
 Takes no arguments. Returns the number of tokens, expressions, previous
 token links and next token links.
 
+=head1 PRIVATE METHODS
+
+=head2 C<run>
+
+Run Hailo in accordance with the the attributes that were passed to
+it, this method is called by the L<hailo> command-line utility and the
+Hailo test suite, it's behavior is subject to change.
+
 =head1 SUPPORT
 
 You can join the IRC channel I<#hailo> on FreeNode if you have questions.
@@ -813,14 +821,6 @@ You can join the IRC channel I<#hailo> on FreeNode if you have questions.
 
 Bugs, feature requests and other issues are tracked in L<Hailo's issue
 tracker on Github|http://github.com/hinrik/hailo/issues>.
-
-=head1 PRIVATE METHODS
-
-=head2 C<run>
-
-Run Hailo in accordance with the the attributes that were passed to
-it, this method is called by the L<hailo> command-line utility and the
-Hailo test suite, it's behavior is subject to change.
 
 =head1 SEE ALSO
 
