@@ -5,8 +5,6 @@ use Any::Moose 'X::Types::'.any_moose() => [qw/Str Int/];
 use List::Util qw<min>;
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.20';
-
 has brain => (
     isa => Str,
     is  => 'rw',

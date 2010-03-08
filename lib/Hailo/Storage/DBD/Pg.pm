@@ -8,8 +8,6 @@ BEGIN {
 }
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.20';
-
 extends 'Hailo::Storage::DBD';
 
 override _build_dbd         => sub { 'Pg' };
@@ -54,7 +52,7 @@ sub ready {
     return exists $self->arguments->{dbname};
 }
 
-# These two are optimized to use PostgreSQL >8.2's INSERT ... RETURNING 
+# These two are optimized to use PostgreSQL >8.2's INSERT ... RETURNING
 sub _add_expr {
     my ($self, $token_ids) = @_;
     # add the expression

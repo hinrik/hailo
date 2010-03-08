@@ -3,8 +3,6 @@ use 5.010;
 use Any::Moose '::Role';
 use namespace::clean -except => 'meta';
 
-our $VERSION = '0.20';
-
 requires 'make_tokens';
 requires 'make_output';
 

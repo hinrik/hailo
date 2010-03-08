@@ -22,8 +22,6 @@ use Module::Pluggable (
 use List::Util qw(first);
 use namespace::clean -except => [ qw(meta plugins) ];
 
-our $VERSION = '0.20';
-
 with any_moose('X::Getopt::Dashes');
 
 has help => (
@@ -300,7 +298,12 @@ sub run {
     my ($self) = @_;
 
     if ($self->print_version) {
-        say "hailo $VERSION";
+        # Munging strictness because we don't have a version from a
+        # Git checkout. Dist::Zilla provides it.
+        no strict 'vars';
+        my $version = $VERSION // 'dev-git';
+
+        say "hailo $version";
         return;
     }
 
