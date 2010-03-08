@@ -22,25 +22,35 @@ my @classes = qw(
     Hailo::Tokenizer::Chars
 );
 
-plan tests => scalar(@classes) * 2 + 1;
+plan tests => scalar(@classes) * 3 + 1;
 
 my $i = 1; for (@classes) {
   SKIP: {
     eval { Class::MOP::load_class($_) };
 
-    skip "Couldn't compile optional dependency $_", 2 if $@ =~ /Couldn't load class/;
-
-    no strict 'refs';
-    like(${"${_}::VERSION"}, qr/^[0-9.]+$/, "$_ has a \$VERSION that makes sense");
-
-    cmp_ok(
-        ${"${_}::VERSION"},
-        '==',
-        $Hailo::VERSION,
-        qq[$_\::VERSION matches \$Hailo::VERSION. If not use perl-reversion --current ${"${_}::VERSION"} -bump]
-    );
+    skip "Couldn't compile optional dependency $_", 1 if $@ =~ /Couldn't load class/;
+    pass("Loaded class $_");
   }
-    $i++;
+}
+
+
+SKIP: {
+    no strict 'refs';
+
+    unless (defined ${"Hailo::VERSION"}) {
+        skip "Can't test \$VERSION from a Git checkout", 2 * scalar(@classes);
+    }
+
+    my $j = 1; for (@classes) {
+        like(${"${_}::VERSION"}, qr/^[0-9.]+$/, "$_ has a \$VERSION that makes sense");
+
+        cmp_ok(
+            ${"${_}::VERSION"},
+            '==',
+            $Hailo::VERSION,
+            qq[$_\::VERSION matches \$Hailo::VERSION. If not use perl-reversion --current ${"${_}::VERSION"} -bump]
+        );
+    }
 }
 
 SKIP: {
