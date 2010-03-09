@@ -1,0 +1,17 @@
+Here's how to release Hailo:
+
+# Get custom build tools:
+
+    # With fixes to override MakeMaker.pm
+    git clone git://github.com/avar/dist-zilla.git
+    # With POD UTF-8 fixes
+    git clone git://github.com/avar/dist-zilla-plugin-readmefrompod.git
+
+# Build Hailo
+
+    # Build Hailo, see Hailo-* for what'll be released
+    perl -Iinc -I ~/g/dist-zilla/lib -I ~/g/dist-zilla-plugin-readmefrompod/lib $(which dzil) build
+    # Test it
+    perl -Iinc -I ~/g/dist-zilla/lib -I ~/g/dist-zilla-plugin-readmefrompod/lib $(which dzil) test
+    # Now commit everything but dzil.ini and Changelog and:
+    perl -Iinc -I ~/g/dist-zilla/lib -I ~/g/dist-zilla-plugin-readmefrompod/lib $(which dzil) release
