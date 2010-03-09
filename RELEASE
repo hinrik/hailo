@@ -4,7 +4,7 @@ Here's how to release Hailo:
 
     # With fixes to override MakeMaker.pm
     git clone git://github.com/avar/dist-zilla.git
-    # With POD UTF-8 fixes
+    # With POD UTF-8 fixes, use the use-tempfiles branch!
     git clone git://github.com/avar/dist-zilla-plugin-readmefrompod.git
 
 # Build Hailo
