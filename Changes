@@ -1,6 +1,7 @@
 {{$NEXT}}
     - Word tokenizer: Various improvements to capitalization
     - Use Sys::Prctl to set legacy process name under Linux
+    - Added documentation about upgrading Hailo
 
 0.20 Sun Feb 28 00:29:32 GMT 2010
 
