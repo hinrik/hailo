@@ -4,6 +4,8 @@ Revision history for Hailo
     - Word tokenizer: Various improvements to capitalization
     - Use Sys::Prctl to set legacy process name under Linux
     - Added documentation about upgrading Hailo
+    - Hailo now uses Dist::Zilla instead of Module::Install to build
+      releases
 
 0.20 Sun Feb 28 00:29:32 GMT 2010
 
