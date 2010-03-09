@@ -1,6 +1,8 @@
 Revision history for Hailo
 
 {{$NEXT}}
+
+0.21 2010-03-09 18:25:46
     - Word tokenizer: Various improvements to capitalization
     - Use Sys::Prctl to set legacy process name under Linux
     - Added documentation about upgrading Hailo
