@@ -206,6 +206,16 @@ subtest make_output => sub {
             [qw<. com bubble>],
             '.com bubble.'
         ],
+        [
+            'við vorum þar. í norður- eða vesturhlutanum',
+            [qw<við vorum þar . í norður - eða vesturhlutanum>],
+            'Við vorum þar. Í norður- eða vesturhlutanum.'
+        ],
+        [
+            "i'm talking about -postfix. yeah",
+            [qw<i'm talking about - postfix . yeah>],
+            "I'm talking about -postfix. yeah.",
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();
