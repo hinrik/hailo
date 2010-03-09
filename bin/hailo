@@ -16,8 +16,11 @@ $_ = decode('utf8', $_) for @ARGV;
 $0 = 'hailo';
 
 if ($^O eq 'linux') {
-    require Sys::Prctl;
-    Sys::Prctl::prctl_name('hailo');
+    local $@;
+    eval {
+        require Sys::Prctl;
+        Sys::Prctl::prctl_name('hailo');
+    };
 }
 
 # Show help if run without arguments
