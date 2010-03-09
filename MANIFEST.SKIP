@@ -12,3 +12,4 @@
 ^blib/
 \.#
 ^utils/developer/
+^RELEASE
