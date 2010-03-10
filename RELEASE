@@ -13,13 +13,12 @@ Here's how to release Hailo:
     perl -Iinc -I ~/g/dist-zilla/lib -I ~/g/dist-zilla-plugin-readmefrompod/lib $(which dzil) build
     # Test it
     perl -Iinc -I ~/g/dist-zilla/lib -I ~/g/dist-zilla-plugin-readmefrompod/lib $(which dzil) test
-    # Now commit everything but dzil.ini and Changelog and:
+
+# Release
+
+    # Now increment version in dist.ini (but don't commit) and:
     perl -Iinc -I ~/g/dist-zilla/lib -I ~/g/dist-zilla-plugin-readmefrompod/lib $(which dzil) release
 
-# Post release
-
-    git add Changes dist.ini
-    git commit -m"Bumped to 0.21"
-    git tag -m0.21 0.21
+    # Git::* plugins will automatically commit dist.ini / Changes and tag the release
     git push; git push --tags
 
