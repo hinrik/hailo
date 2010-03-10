@@ -750,21 +750,22 @@ twofold:
 =back
 
 The reason it can't be done right is that Hailo is always going to
-destroy information present in the input you give it. How input tokens
+lose information present in the input you give it. How input tokens
 get split up and saved to the storage backend depends on the version
 of the tokenizer being used and how that input gets saved to the
 database.
 
 For instance if an earlier version of Hailo tokenized C<"foo+bar">
-simply as as C<"foo+bar"> but a later version split that up into
-C<"foo", "+", "bar"> an input of C<"foo+bar are my favorite
+simply as C<"foo+bar"> but a later version split that up into
+C<"foo", "+", "bar">, then an input of C<"foo+bar are my favorite
 metasyntactic variables"> wouldn't take into account the existing
 C<"foo+bar"> string in the database.
 
-Just because of tokenizer changes carrying over brains like this would
-accumulate dead parts of the database & leave other parts in a state
-they wouldn't otherwise have gotten into. There have been similar
-changes to the database format itself.
+Tokenizer changes like this would cause the brains to accumulate garbage
+and would leave other parts in a state they wouldn't otherwise have gotten
+into. There have been similar changes to the database format itself.
+
+In short, learning is lossy so an accurate conversion is impossible.
 
 =head1 ATTRIBUTES
 
