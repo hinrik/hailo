@@ -367,7 +367,7 @@ sub train {
         open $fh, '<:encoding(utf8)', $input;
     }
 
-    if ($self->print_progress) {
+    if ($self->print_progress and ref $input ne 'ARRAY' ) {
         $self->_train_progress($fh, $input);
     }
     elsif (ref $input eq 'ARRAY') {

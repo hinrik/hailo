@@ -2,7 +2,7 @@ use 5.010;
 use strict;
 use warnings;
 use List::MoreUtils qw(uniq);
-use Test::More tests => 25;
+use Test::More tests => 26;
 use Test::Exception;
 use Test::Output;
 use Hailo;
@@ -124,6 +124,11 @@ dies_ok {
 } "train: undef input";
 
 lives_ok {
-    my $h = Hailo->new;
+    my $h = Hailo->new( print_progress => 0 );
     $h->train([])
 } "train: ARRAY input";
+
+lives_ok {
+    my $h = Hailo->new( print_progress => 1 );
+    $h->train([])
+} "train: ARRAY input interactively";
