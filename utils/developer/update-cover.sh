@@ -23,5 +23,5 @@ cover -test
 rm -rfv ~avar/www/cover_db
 rsync -av --progress /tmp/hailo-cover/hailo/Hailo-0.*/cover_db ~avar/www/
 sudo chown -R avar:www-data ~avar/www/cover_db
-sudo chmod 775 -R ~avar/www/cover_db
+sudo chmod -R 775 ~avar/www/cover_db
 
