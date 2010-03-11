@@ -18,9 +18,6 @@ use namespace::clean -except => [ qw(meta
                                      merged_section_data
                                      merged_section_data_names) ];
 
-with qw(Hailo::Role::Arguments
-        Hailo::Role::Storage);
-
 has dbd => (
     isa           => Str,
     is            => 'ro',
@@ -571,14 +568,6 @@ sub save {
     my ($self) = @_;
     # no op
     return;
-}
-
-sub ready {
-    my ($self) = @_;
-    my $class = ref $self;
-
-    # Implement me
-    die "$class didn't implement ready()";
 }
 
 __PACKAGE__->meta->make_immutable;
