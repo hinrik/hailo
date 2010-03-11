@@ -10,15 +10,15 @@ Here's how to release Hailo:
 # Build Hailo
 
     # Build Hailo, see Hailo-* for what'll be released
-    perl -Iinc -I ~/g/dist-zilla/lib -I ~/g/dist-zilla-plugin-readmefrompod/lib $(which dzil) build
+    perl -I ~/g/dist-zilla/lib $(which dzil) build
     # Test it
-    perl -Iinc -I ~/g/dist-zilla/lib -I ~/g/dist-zilla-plugin-readmefrompod/lib $(which dzil) test
+    perl -I ~/g/dist-zilla/lib $(which dzil) test
 
 # Release
 
     # Now increment version in dist.ini (but don't commit) and:
-    perl -Iinc -I ~/g/dist-zilla/lib -I ~/g/dist-zilla-plugin-readmefrompod/lib $(which dzil) release
+    perl -I ~/g/dist-zilla/lib $(which dzil) release
 
     # Git::* plugins will automatically commit dist.ini / Changes and tag the release
-    git push; git push --tags
+    git push && git push --tags
 
