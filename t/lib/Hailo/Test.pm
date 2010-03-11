@@ -25,8 +25,6 @@ sub all_tests {
     return qw(test_starcraft test_congress test_congress_unknown test_babble test_badger test_megahal);
 }
 
-sub all_tests_known { return grep { $_ !~ /unknown/ } all_tests() }
-
 has brief => (
     is => 'ro',
     isa => 'Bool',
@@ -405,21 +403,15 @@ sub test_starcraft {
 }
 
 sub test_all_plan {
-    my ($self, $restriction) = @_;
+    my ($self) = @_;
     my $storage = $self->storage;
 
   SKIP: {
     my $ok = $self->spawn_storage();
 
     plan skip_all => "Skipping $storage tests, can't create storage" unless $ok;
-    if (defined $restriction && $restriction eq 'known') {
-        plan(tests => 971);
-        $self->test_known;
-    }
-    else {
-        plan(tests => 976);
-        $self->test_all;
-    }
+    plan(tests => 976);
+    $self->test_all;
   }
 }
 
@@ -438,17 +430,6 @@ sub test_stats {
     cmp_ok($last_next, "<=", $next, "next count is <= since last time from $last_next to $next");
 
     ($last_token, $last_expr, $last_prev, $last_next) = ($token, $expr, $prev, $next);
-
-    return;
-}
-
-sub test_known {
-    my ($self) = @_;
-
-    for (all_tests_known()) {
-        $self->$_;
-        $self->test_stats($_);
-    }
 
     return;
 }

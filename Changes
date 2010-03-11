@@ -2,6 +2,8 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Random reply tests were disabled for MySQL for no reason. They're now enabled.
+
 0.22 2010-03-10 08:46:54
 
     - A Bug in Dist::Zilla ruined 0.21. The unpacked tarball contained
