@@ -574,29 +574,29 @@ Hailo - A pluggable Markov engine analogous to MegaHAL
 This is the synopsis for using Hailo as a module. See L<hailo> for
 command-line invocation.
 
- # Hailo requires Perl 5.10
- use 5.010;
- use strict;
- use warnings;
- use Hailo;
+    # Hailo requires Perl 5.10
+    use 5.010;
+    use strict;
+    use warnings;
+    use Hailo;
 
- # Construct a new in-memory Hailo using the SQLite backend. See
- # backend documentation for other options.
- my $hailo = Hailo->new;
+    # Construct a new in-memory Hailo using the SQLite backend. See
+    # backend documentation for other options.
+    my $hailo = Hailo->new;
 
- # Various ways to learn
- my @train_this = qw< I like big butts and I can not lie >;
- $hailo->learn(\@train_this);
- $hailo->learn($_) for @train_this;
+    # Various ways to learn
+    my @train_this = qw< I like big butts and I can not lie >;
+    $hailo->learn(\@train_this);
+    $hailo->learn($_) for @train_this;
 
- # Heavy-duty training interface. Backends may drop some safety
- # features like journals or synchronous IO to train faster using
- # this mode.
- $hailo->learn("megahal.trn");
- $hailo->learn($filehandle);
+    # Heavy-duty training interface. Backends may drop some safety
+    # features like journals or synchronous IO to train faster using
+    # this mode.
+    $hailo->learn("megahal.trn");
+    $hailo->learn($filehandle);
 
- # Make the brain babble
- say $hailo->reply("hello good sir.");
+    # Make the brain babble
+    say $hailo->reply("hello good sir.");
 
 =head1 DESCRIPTION
 
@@ -658,21 +658,21 @@ line IRC log on a Linode 1080 with Hailo 0.18:
 
 =item * SQLite
 
- real    8m38.285s
- user    8m30.831s
- sys     0m1.175s
+    real    8m38.285s
+    user    8m30.831s
+    sys     0m1.175s
 
 =item * MySQL
 
- real    48m30.334s
- user    8m25.414s
- sys     4m38.175s
+    real    48m30.334s
+    user    8m25.414s
+    sys     4m38.175s
 
 =item * PostgreSQL
 
- real    216m38.906s
- user    11m13.474s
- sys     4m35.509s
+    real    216m38.906s
+    user    11m13.474s
+    sys     4m35.509s
 
 =back
 

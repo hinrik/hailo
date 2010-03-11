@@ -138,10 +138,10 @@ L<DBD::SQLite|DBD::SQLite>
 
 As a module:
 
- my $hailo = Hailo->new(
-     train_file    => 'hailo.trn',
-     storage_class => 'SQLite',
- );
+    my $hailo = Hailo->new(
+        train_file    => 'hailo.trn',
+        storage_class => 'SQLite',
+    );
 
 From the command line:
 
@@ -166,10 +166,10 @@ Any option starting with B<'pragma_'> will be considered to be an L<SQLite
 pragma|http://www.sqlite.org/pragma.html> which will be set when the
 after we connect to the database. An example of this would be
 
- storage_args => {
-     pragma_cache_size  => 10000,
-     pragma_synchronous => 'OFF',
- }
+    storage_args => {
+        pragma_cache_size  => 10000,
+        pragma_synchronous => 'OFF',
+    }
 
 Setting B<'pragma_cache_size'> in particular can be beneficial. It's the
 size of the page cache used by SQLite. See L<SQLite's

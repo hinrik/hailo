@@ -66,27 +66,27 @@ L<DBD::mysql|DBD::mysql>
 
 As a module:
 
- my $hailo = Hailo->new(
-     train_file    => 'hailo.trn',
-     storage_class => 'mysql',
-     storage_args  => {
-         database  => 'hailo',
-         host      => 'localhost',
-         port      => '3306',
-         username  => 'hailo',
-         password  => 'hailo'
-     },
- );
+    my $hailo = Hailo->new(
+        train_file    => 'hailo.trn',
+        storage_class => 'mysql',
+        storage_args  => {
+            database  => 'hailo',
+            host      => 'localhost',
+            port      => '3306',
+            username  => 'hailo',
+            password  => 'hailo'
+        },
+    );
 
 From the command line:
 
- hailo --train hailo.trn \
-     --storage      mysql \
-     --storage-args database=hailo \
-     --storage-args host=localhost \
-     --storage-args port=3306 \
-     --storage-args username=hailo \
-     --storage-args password=hailo
+    hailo --train hailo.trn \
+        --storage      mysql \
+        --storage-args database=hailo \
+        --storage-args host=localhost \
+        --storage-args port=3306 \
+        --storage-args username=hailo \
+        --storage-args password=hailo
 
 Almost all of these options can be omitted, see L<DBD::mysql's
 documentation|DBD::mysql> for the default values.
