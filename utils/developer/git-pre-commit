@@ -1,4 +1,7 @@
 #!/usr/bin/env perl
+
+# ln -s utils/developer/git-pre-commit .git/hooks/pre-commit
+
 use strict;
 use warnings;
 
