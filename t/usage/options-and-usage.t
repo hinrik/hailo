@@ -27,7 +27,7 @@ if ($has_test_exit) {
         sub {
             never_exits_ok( sub { Hailo->new( print_version => 1)->run }, "exiting exits")
         },
-        qr/^hailo [0-9.]+$/,
+        qr/^hailo (?:dev-git|[0-9.]+)$/,
         "Hailo prints its version",
     );
 } else {
