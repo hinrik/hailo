@@ -11,6 +11,6 @@ my $new = qx"git rev-parse :$file 2>/dev/null";
 
 if (($? >> 8) != 0 || $old ne $new) {
     $ENV{PERL_UNICODE} = 'O';
-    system qq[ack '^=encoding' -A 9001 $file > README.pod];
+    system qq[ack -h '^=encoding' -A 9001 $file > README.pod];
     system "git add README.pod";
 }
