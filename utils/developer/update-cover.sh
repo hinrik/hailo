@@ -12,6 +12,7 @@ cd hailo
 
 export TEST_POSTGRESQL=1
 export TEST_MYSQL=1
+export HARNESS_OPTIONS=j4
 # Must set $MYSQL_ROOT_PASSWORD externally
 
 perl -I ~avar/g/dist-zilla/lib -I ~avar/g/dist-zilla-plugin-readmefrompod/lib -Iinc $(which dzil) build
