@@ -2,7 +2,7 @@ use 5.010;
 use strict;
 use warnings;
 use List::MoreUtils qw(uniq);
-use Test::More tests => 22;
+use Test::More tests => 25;
 use Test::Exception;
 use Test::Output;
 use Hailo;
@@ -104,6 +104,11 @@ SKIP: {
     }
     dies_ok { Hailo->new( qw( a b c d ) ) } "Hailo dies on unknown arguments";
 }
+
+# Invalid storage/tokenizer/ui
+dies_ok { Hailo->new( storage_class => "Blahblahblah" )->learn_reply("foo") } "Hailo dies on unknown storage_class arguments";
+dies_ok { Hailo->new( tokenizer_class => "Blahblahblah" )->learn_reply("foo") } "Hailo dies on unknown tokenizer_class arguments";
+dies_ok { my $h = Hailo->new( ui_class => "Blahblahblah" ); $h->_ui_obj->run($h) } "Hailo dies on unknown ui_class arguments";
 
 ### Usage
 
