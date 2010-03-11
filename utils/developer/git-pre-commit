@@ -1,0 +1,13 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+my $file = 'lib/Hailo.pm';
+my $old = qx"git rev-parse HEAD:$file 2>/dev/null";
+my $new = qx"git rev-parse :$file 2>/dev/null";
+
+if (($? >> 8) != 0 || $old ne $new) {
+    $ENV{PERL_UNICODE} = 'O';
+    system qq[ack '^=encoding' -A 9001 $file > README.pod>
+    system "git add README.pod";
+}
