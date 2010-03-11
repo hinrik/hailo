@@ -410,7 +410,7 @@ sub test_all_plan {
     my $ok = $self->spawn_storage();
 
     plan skip_all => "Skipping $storage tests, can't create storage" unless $ok;
-    plan(tests => 976);
+    plan(tests => 977);
     $self->test_all;
   }
 }
@@ -436,6 +436,8 @@ sub test_stats {
 
 sub test_all {
     my ($self) = @_;
+
+    ok($self->hailo->_storage_obj->ready(), "Storage object is ready for testing");
 
     for (all_tests()) {
         $self->$_;
