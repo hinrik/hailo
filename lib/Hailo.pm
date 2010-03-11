@@ -875,6 +875,10 @@ tracker on Github|http://github.com/hinrik/hailo/issues>.
 
 =item * L<http://github.com/hinrik/failo> - Failo, an IRC bot that uses Hailo
 
+=item * L<http://github.com/bingos/gumbybrain> - GumbyBRAIN, a more famous IRC bot that uses Hailo
+
+=item * L<http://github.com/pteichman/cobe> - cobe, a Python port of MegaHAL "inspired by the success of Hailo"
+
 =back
 
 =head1 LINKS
