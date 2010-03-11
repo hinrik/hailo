@@ -2,7 +2,26 @@ Revision history for Hailo
 
 {{$NEXT}}
 
-    - Random reply tests were disabled for MySQL for no reason. They're now enabled.
+    - Increase test coverage, coverage is now up to 92.5%
+
+    - Random reply tests were disabled for MySQL for no
+      reason. They're now enabled.
+
+    - Rewording the Hailo UPGRADE section
+
+    - Re-arrange the Storage::DBD* code to be more Moosy and use roles
+      as they should be used
+
+    - Remove dead test code in Hailo::Test that was used for flat hash
+      backends who couldn't generate random replies
+
+    - Test the ->ready() storage method on all backends as part of
+      Hailo::Test
+
+    - Test Hailo::stats() on all backends as part of Hailo::Test
+
+    - Test the bin/hailo script directly if Test::Script::Run is
+      available.
 
 0.22 2010-03-10 08:46:54
 
