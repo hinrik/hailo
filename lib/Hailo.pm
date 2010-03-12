@@ -360,10 +360,12 @@ sub train {
     my $fh;
     if (ref $input eq 'GLOB') {
         $fh = $input;
-    } elsif (defined $input and $input eq "-") {
+    }
+    elsif (defined $input and $input eq "-") {
         die "You must provide STDIN along with --train=-" if _is_interactive(*STDIN);
         $fh = *STDIN;
-    } elsif ($got_filename) {
+    }
+    elsif ($got_filename) {
         open $fh, '<:encoding(utf8)', $input;
     }
 
@@ -435,7 +437,8 @@ sub learn {
     my $inputs;
     if (ref $input eq 'ARRAY') {
         $inputs = $input;
-    } else {
+    }
+    else {
         die "Cannot learn from undef input" unless defined $input;
         $inputs = [$input];
     }
