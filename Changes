@@ -6,6 +6,8 @@ Revision history for Hailo
 
     - Added more tests for the ReadLine UI
 
+    - Always run the Test::Script::Run tests
+
 0.24 2010-03-12 01:38:56
 
     - Repository metadata was wrong due to RT#55136 in

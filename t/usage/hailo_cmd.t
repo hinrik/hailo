@@ -1,20 +1,8 @@
 use 5.010;
 use strict;
 use warnings;
-use Test::More;
-
-my $has_test_script_run = sub {
-    local $@ = undef;
-    eval {
-        require Test::Script::Run;
-        Test::Script::Run->import;
-    };
-    return 1 unless $@;
-    return;
-}->();
-
-plan(skip_all => "Need Test::Script::Run to run these tests") unless $has_test_script_run;
-plan(tests => 16);
+use Test::Script::Run;
+use Test::More tests => 16;
 
 my $app = 'hailo';
 
