@@ -163,8 +163,8 @@ This is a hash reference which can have the following keys:
 =head3 C<pragma_*>
 
 Any option starting with B<'pragma_'> will be considered to be an L<SQLite
-pragma|http://www.sqlite.org/pragma.html> which will be set when the
-after we connect to the database. An example of this would be
+pragma|http://www.sqlite.org/pragma.html> which will be set after we connect
+to the database. An example of this would be
 
     storage_args => {
         pragma_cache_size  => 10000,
