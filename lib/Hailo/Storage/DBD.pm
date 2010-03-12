@@ -106,6 +106,7 @@ has _boundary_token_id => (
     is  => 'rw',
 );
 
+# create statement handle objects
 sub _prepare_sth {
     my ($self, $sections, $prefix) = @_;
 
@@ -131,6 +132,7 @@ sub _prepare_sth {
     return \%state;
 }
 
+# return SQL statements which are not dependent on the Markov order
 sub _sth_sections_static {
     my ($self) = @_;
     my %sections;
@@ -154,6 +156,7 @@ sub _sth_sections_static {
     return \%sections, $prefix;;
 }
 
+# return SQL statements which are dependent on the Markov order
 sub _sth_sections_dynamic {
     my ($self) = @_;
     my %sections;
@@ -187,6 +190,7 @@ sub _sth_sections_dynamic {
     return \%sections, $prefix;
 }
 
+# bootstrap the database
 sub _engage {
     my ($self) = @_;
 
@@ -449,6 +453,7 @@ sub _find_rare_tokens {
     return @ids;
 }
 
+# increase the link weight between an expression and a token
 sub _inc_link {
     my ($self, $type, $expr_id, $token_id) = @_;
 
@@ -465,8 +470,10 @@ sub _inc_link {
     return;
 }
 
+# add new expression to the database
 sub _add_expr {
     my ($self, $token_ids) = @_;
+
     # add the expression
     $self->sth->{add_expr}->execute(@$token_ids);
 
@@ -502,6 +509,7 @@ sub _token_id_add {
     return $token_id;
 }
 
+# return all tokens (regardless of spacing) that consist of this text
 sub _token_similar {
     my ($self, $token_text) = @_;
     $self->sth->{token_similar}->execute($token_text);
@@ -543,6 +551,7 @@ sub _random_expr {
     return @$expr;
 }
 
+# return a new next/previous token
 sub _pos_token {
     my ($self, $pos, $expr_id, $key_tokens) = @_;
     my $dbh = $self->dbh;
