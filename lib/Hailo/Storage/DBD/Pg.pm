@@ -11,7 +11,8 @@ use namespace::clean -except => 'meta';
 extends 'Hailo::Storage::DBD';
 with qw(Hailo::Role::Arguments Hailo::Role::Storage);
 
-override _build_dbd         => sub { 'Pg' };
+sub _build_dbd { return 'Pg' };
+
 override _build_dbd_options => sub {
     return {
         %{ super() },

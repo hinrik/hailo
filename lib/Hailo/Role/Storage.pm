@@ -35,6 +35,11 @@ requires 'stop_learning';
 requires 'start_training';
 requires 'stop_training';
 
+sub save {
+    # does nothing by default
+    return;
+}
+
 1;
 
 =encoding utf8

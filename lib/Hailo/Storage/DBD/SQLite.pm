@@ -11,7 +11,8 @@ use namespace::clean -except => 'meta';
 extends 'Hailo::Storage::DBD';
 with qw(Hailo::Role::Arguments Hailo::Role::Storage);
 
-override _build_dbd         => sub { 'SQLite' };
+sub _build_dbd { return 'SQLite' };
+
 override _build_dbd_options => sub {
     return {
         %{ super() },
@@ -114,7 +115,7 @@ sub _set_pragmas {
     return;
 }
 
-override save => sub {
+sub save {
     my ($self, $filename) = @_;
     my $file = $filename // $self->brain;
 

@@ -25,9 +25,6 @@ has dbd => (
     documentation => "The DBD::* driver we're using",
 );
 
-# Override me
-sub _build_dbd { die }
-
 has dbd_options => (
     isa           => HashRef,
     is            => 'ro',
@@ -573,12 +570,6 @@ sub _pos_token {
     return $novel_tokens[rand @novel_tokens];
 }
 
-sub save {
-    my ($self) = @_;
-    # no op
-    return;
-}
-
 __PACKAGE__->meta->make_immutable;
 
 =encoding utf8
@@ -591,6 +582,22 @@ L<storage|Hailo::Role::Storage> backends
 =head1 METHODS
 
 The following methods must to be implemented by subclasses:
+
+=head2 C<_build_dbd>
+
+Should return the name of the database driver (e.g. 'SQLite') which will be
+passed to L<DBI|DBI>.
+
+=head2 C<_build_dbd_options>
+
+Subclasses can override this method to add options of their own. E.g:
+
+    override _build_dbd_options => sub {
+        return {
+            %{ super() },
+            sqlite_unicode => 1,
+        };
+    };
 
 =head2 C<_exists_db>
 
