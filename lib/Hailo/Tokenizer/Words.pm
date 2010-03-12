@@ -16,8 +16,9 @@ with qw(Hailo::Role::Arguments
 my $DECIMAL    = qr/[.,]/;
 my $NUMBER     = qr/$DECIMAL?\d+(?:$DECIMAL\d+)*/;
 my $APOSTROPHE = qr/['’]/;
-my $APOST_WORD = qr/\w+(?:$APOSTROPHE\w+)*/;
-my $WORD       = qr/$NUMBER|$APOST_WORD/;
+my $APOST_WORD = qr/[[:alpha:]]+(?:$APOSTROPHE(?:[[:alpha:]]+))*/;
+my $PLAIN_WORD = qr/\w+/;
+my $WORD       = qr/$NUMBER|$APOST_WORD|$PLAIN_WORD/;
 
 # capitalization
 # The rest of the regexes are pretty hairy. The goal here is to catch the
@@ -123,8 +124,8 @@ sub make_output {
     # end paragraphs with a period when it makes sense
     $reply =~ s/(?: |^)$OPEN_QUOTE?$SPLIT_WORD$CLOSE_QUOTE?\K$/./;
 
-    # capitalize I
-    $reply =~ s{ \Ki(?=$APOSTROPHE)}{I}g;
+    # capitalize I'm, I've...
+    $reply =~ s{(?: |$OPEN_QUOTE)\Ki(?=$APOSTROPHE(?:[[:alpha:]]))}{I}g;
 
     return $reply;
 }

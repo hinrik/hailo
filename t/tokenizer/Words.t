@@ -221,6 +221,11 @@ subtest make_output => sub {
             [qw<but .. what about me ? but ... no>],
             "But..what about me? But...no",
         ],
+        [
+            "For foo'345",
+            [qw<for foo ' 345>],
+            "For foo'345",
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();
