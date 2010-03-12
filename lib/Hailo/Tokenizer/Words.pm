@@ -44,26 +44,37 @@ sub make_tokens {
 
     my @tokens;
     my @chunks = split /\s+/, $line;
-    for my $chunk (@chunks) {
 
-        my $got_word = 0;
+    # process all whitespace-delimited chunks
+    for my $chunk (@chunks) {
+        my $got_word;
+
         while (length $chunk) {
+            # normal words
             if (my ($word) = $chunk =~ /^($WORD)/) {
                 $chunk =~ s/^\Q$word//;
                 $word = lc($word) if $word ne uc($word);
-                push @tokens, [0, $word];
+                push @tokens, [$self->spacing->{normal}, $word];
                 $got_word = 1;
             }
+            # everything else
             elsif (my ($non_word) = $chunk =~ /^(\W+)/) {
                 $chunk =~ s/^\Q$non_word//;
+
+                # lowercase it if it's not all-uppercase
                 $non_word = lc($non_word) if $non_word ne uc($non_word);
 
-                my $spacing = 0;
+                my $spacing = $self->spacing->{normal};
+
+                # was the previous token a word?
                 if ($got_word) {
-                    $spacing = length $chunk ? 3 : 2;
+                    $spacing = length $chunk
+                        ? $self->spacing->{infix}
+                        : $self->spacing->{postfix};
                 }
+                # do we still have more tokens?
                 elsif (length $chunk) {
-                    $spacing = 1;
+                    $spacing = $self->spacing->{prefix};
                 }
 
                 push @tokens, [$spacing, $non_word];
@@ -86,8 +97,13 @@ sub make_output {
         # and this is not the last token, and the next token is not
         # a postfix/infix token
         if ($pos != $#{ $tokens }
-            && $spacing !~ /[13]/
-            && !($pos < $#{ $tokens } && $tokens->[$pos+1][0] =~ /[23]/)) {
+            && $spacing != $self->spacing->{prefix}
+            && $spacing != $self->spacing->{infix}
+            && !($pos < $#{ $tokens }
+                && ($tokens->[$pos+1][0] == $self->spacing->{postfix}
+                || $tokens->[$pos+1][0] == $self->spacing->{infix})
+                )
+            ) {
             $reply .= ' ';
         }
     }
