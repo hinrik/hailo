@@ -561,7 +561,7 @@ sub _pos_token {
     for my $token (keys %$pos_tokens) {
         push @novel_tokens, ($token) x $pos_tokens->{$token}{count};
     }
-    return @novel_tokens[rand @novel_tokens];
+    return $novel_tokens[rand @novel_tokens];
 }
 
 sub save {
