@@ -2,6 +2,8 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Capitalize the first word of /^but...no/
+
 0.23 2010-03-11 20:08:27
 
     - Increase test coverage, coverage is now up to 92.5%

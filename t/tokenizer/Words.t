@@ -216,6 +216,11 @@ subtest make_output => sub {
             [qw<i'm talking about - postfix . yeah>],
             "I'm talking about -postfix. yeah.",
         ],
+        [
+            "But..what about me? but...no",
+            [qw<but .. what about me ? but ... no>],
+            "But..what about me? But...no",
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();
