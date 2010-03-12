@@ -2,6 +2,15 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+0.24 2010-03-12 01:38:56
+
+    - Repository metadata was wrong due to RT#55136 in
+      Dist::Zilla::Plugin::Repository
+
+    - Add some very exhaustive tests for the storage engine. This
+      brings our test coverage up to 94.1% up from 92.5%. The tests
+      aren't run by default to to the time they take.
+
     - Capitalize the first word of /^but...no/
 
 0.23 2010-03-11 20:08:27
