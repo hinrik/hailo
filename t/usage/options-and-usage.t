@@ -11,6 +11,7 @@ $SIG{__WARN__} = sub {
     print STDERR @_ if $_[0] !~ m/(?:^Issuing rollback|for database handle being DESTROY)/
 };
 
+# TODO: remove this once Test::Exit is in Debian
 my $has_test_exit = sub {
     local $@ = undef;
     eval {
