@@ -16,7 +16,7 @@ with qw(Hailo::Role::Arguments
 my $DECIMAL    = qr/[.,]/;
 my $NUMBER     = qr/$DECIMAL?\d+(?:$DECIMAL\d+)*/;
 my $APOSTROPHE = qr/['’]/;
-my $APOST_WORD = qr/[[:alpha:]]+(?:$APOSTROPHE(?:[[:alpha:]]+))*/;
+my $APOST_WORD = qr/[[:alpha:]]+(?:$APOSTROPHE(?:[[:alpha:]]+))+/;
 my $PLAIN_WORD = qr/\w+/;
 my $WORD       = qr/$NUMBER|$APOST_WORD|$PLAIN_WORD/;
 
@@ -30,7 +30,7 @@ my $CLOSE_QUOTE = qr/['"’“”«»」』›‘]/;
 my $TERMINATOR  = qr/(?:[?!‽]+|(?<!\.)\.)/;
 my $ADDRESS     = qr/:/;
 my $PUNCTUATION = qr/[?!‽,;.:]/;
-my $WORD_BIT    = qr/$APOST_WORD(?:-(?!-))?/;
+my $WORD_BIT    = qr/$WORD(?:-(?!-))?/;
 my $BOUNDARY    = qr/$CLOSE_QUOTE?(?:\s*$TERMINATOR|$ADDRESS)\s+$OPEN_QUOTE?\s*/;
 my $SPLIT_WORD  = qr{(?:$WORD_BIT(?:-$WORD_BIT)+|$WORD_BIT/$WORD_BIT|$WORD_BIT)(?=$PUNCTUATION(?: |$)|$CLOSE_QUOTE|$TERMINATOR| |$)};
 
