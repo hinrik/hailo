@@ -2,6 +2,8 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Improved documentation of the Tokenizer role and the DBD class
+
 0.24 2010-03-12 01:38:56
 
     - Repository metadata was wrong due to RT#55136 in
