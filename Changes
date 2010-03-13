@@ -2,6 +2,10 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Remove Data::Random as a dependency. It fails the most tests of
+      all the dists we depend on and we don't really need it for
+      anything.
+
 0.28 2010-03-13 10:05:57
 
     - Update README.pod which hadn't been bumped since 0.25

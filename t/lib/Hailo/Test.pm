@@ -5,7 +5,6 @@ use Any::Moose;
 use Hailo;
 use Test::More;
 use File::Spec::Functions qw(catfile);
-use Data::Random qw(:all);
 use File::Slurp qw(slurp);
 use List::Util qw(shuffle min);
 use File::Temp qw(tempfile tempdir);
@@ -260,8 +259,9 @@ sub train_a_few_tokens {
     my $hailo = $self->hailo;
 
     # Get some training material
-    my $size = 10;
-    my @random_tokens = rand_chars( set => 'all', min => 10, max => 15 );
+
+    my @chr = map { chr } 50..120;
+    my @random_tokens = map { $chr[rand @chr] } 1 .. 30;
 
     # Learn from it
     if ((int rand 2) == 1) {

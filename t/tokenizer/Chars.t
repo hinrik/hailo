@@ -4,7 +4,6 @@ use strict;
 use warnings;
 use Test::More tests => 2;
 use Hailo::Tokenizer::Chars;
-use Data::Random qw(:all);
 
 binmode $_, ':encoding(utf8)' for (*STDIN, *STDOUT, *STDERR);
 
@@ -28,8 +27,15 @@ subtest make_tokens => sub {
         $t->($chr, [ split //, $chr ]);
     }
 
-    my @random_chars = rand_chars( set => 'all', min => 5, max => 8 );
-    my @random_words = rand_words( size => 10 );
+    my @chr = map { chr } 50..120;
+    my @random_chars = map { $chr[rand @chr] } 1 .. 30;
+    my @wrd = qw<
+                    Hailo is a fast and lightweight markov engine
+                    intended to replace AI::MegaHAL. It has a Mouse
+                    (or Moose) based core with pluggable storage and
+                    tokenizer backends.
+                >;
+    my @random_words = map { $chr[rand @chr] } 1 .. 30;
 
     $t->($_, [ split //, $_ ]) for @random_words;
     $t->($_, [ split //, $_ ]) for @random_chars;
@@ -54,8 +60,15 @@ subtest make_output => sub {
         #$t->($chr, $chr);
     }
 
-    my @random_chars = rand_chars( set => 'all', min => 5, max => 8 );
-    my @random_words = rand_words( size => 10 );
+    my @chr = map { chr } 50..120;
+    my @random_chars = map { $chr[rand @chr] } 1 .. 30;
+    my @wrd = qw<
+                    Hailo is a fast and lightweight markov engine
+                    intended to replace AI::MegaHAL. It has a Mouse
+                    (or Moose) based core with pluggable storage and
+                    tokenizer backends.
+                >;
+    my @random_words = map { $chr[rand @chr] } 1 .. 30;
 
     $t->($_, join '', split //, $_) for @random_words;
     $t->($_, join '', split //, $_) for @random_chars;
