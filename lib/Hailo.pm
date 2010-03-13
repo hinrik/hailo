@@ -338,7 +338,7 @@ command-line invocation.
     my $hailo = Hailo->new;
 
     # Various ways to learn
-    my @train_this = qw< I like big butts and I can not lie >;
+    my @train_this = ("I like big butts", "and I can not lie");
     $hailo->learn(\@train_this);
     $hailo->learn($_) for @train_this;
 
