@@ -2,7 +2,7 @@ use 5.010;
 use strict;
 use warnings;
 use List::MoreUtils qw(uniq);
-use Test::More tests => 21;
+use Test::More tests => 22;
 use Test::Exception;
 use Test::Output;
 use Hailo;
@@ -72,6 +72,18 @@ dies_ok {
     my $h = Hailo->new;
     $h->train();
 } "train: undef input";
+
+#stdout_like(
+#    sub {
+        dies_ok {
+#            no warnings 'redefine';
+#            local *Hailo::_is_interactive = sub { 1 };
+            my $h = Hailo->new;
+            $h->train("-");
+        } "train: undef input";
+#    },
+#    qr/You must provide STDIN/,
+#);
 
 lives_ok {
     my $h = Hailo->new;
