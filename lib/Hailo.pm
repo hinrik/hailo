@@ -227,6 +227,8 @@ sub _train_fh {
         chomp $line;
         $self->_learn_one($line);
     }
+
+    return;
 }
 
 sub learn {

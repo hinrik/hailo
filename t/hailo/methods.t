@@ -1,4 +1,5 @@
 use 5.010;
+use autodie;
 use strict;
 use warnings;
 use List::MoreUtils qw(uniq);

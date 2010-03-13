@@ -43,7 +43,7 @@ run_ok( $app, [ '--no-help' ], "Don't help me" );
     like($stdout, qr{files are assumed to be UTF-8 encoded}, 'Got UTF-8 note');
     unlike($stdout, qr{examples:}, "no examples on error");
 
-my $good_out = <<END;
+my $good_out = <<'END';
         -v --version           Print version and exit
         -u --ui                Use UI CLASS
         -t --train             Learn from all the lines in FILE, use - for STDIN
