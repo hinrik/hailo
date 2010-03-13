@@ -14,12 +14,8 @@ use namespace::clean -except => 'meta';
 with qw(Hailo::Role::Arguments
         Hailo::Role::UI);
 
-# Use Gnu readline
 sub BUILD {
-    my ($self) = @_;
-    require Term::ReadLine::Gnu;
-    $ENV{PERL_RL} = 'Gnu';
-    return;
+    $ENV{PERL_RL} = 'Perl o=0' unless $ENV{PERL_RL};
 }
 
 sub run {

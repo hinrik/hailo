@@ -2,6 +2,16 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Stop depending on Term::ReadLine::Gnu and use Term::ReadLine
+      instead. I tested Term::ReadLine once and found that it was
+      really bad (no history, C-p, C-n etc.) but now with
+      PERL_RL='Perl o=0' everything's magically awesome in it.
+
+      Term::ReadLine::Gnu was the #1 cause of our test failures so
+      it's good not to depend on it.
+
+      Also only set PERL_RL if it isn't set already.
+
 0.26 2010-03-13 08:04:32
 
     - Split the X::Getopt parts of Hailo into Hailo::Command. This way
