@@ -232,12 +232,21 @@ sub _train_fh {
 sub learn {
     my ($self, $input) = @_;
     my $inputs;
-    if (ref $input eq 'ARRAY') {
-        $inputs = $input;
-    }
-    else {
-        die "Cannot learn from undef input" unless defined $input;
-        $inputs = [$input];
+
+    given ($input) {
+        when (not defined) {
+            die "Cannot learn from undef input";
+        }
+        when (not ref) {
+            $inputs = [$input];            
+        }
+        # With an Array
+        when (ref eq 'ARRAY') {
+            $inputs = $input
+        }
+        default {
+            die "Unknown input: $input";
+        }
     }
 
     my $storage = $self->_storage;

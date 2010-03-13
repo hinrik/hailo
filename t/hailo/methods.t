@@ -2,7 +2,7 @@ use 5.010;
 use strict;
 use warnings;
 use List::MoreUtils qw(uniq);
-use Test::More tests => 15;
+use Test::More tests => 21;
 use Test::Exception;
 use Test::Output;
 use Hailo;
@@ -83,6 +83,36 @@ dies_ok {
     my $h = Hailo->new;
     $h->train({});
 } "train: HASH";
+
+# learn
+# learn
+dies_ok {
+    my $h = Hailo->new;
+    $h->learn(undef)
+} "learn: undef input";
+
+dies_ok {
+    my $h = Hailo->new;
+    open my $fh, "<", __FILE__;
+    $h->learn($fh);
+    ok($h->reply, "replies from learning");
+} "learn: filehandle input";
+
+dies_ok {
+    my $h = Hailo->new;
+    $h->learn();
+} "learn: undef input";
+
+lives_ok {
+    my $h = Hailo->new;
+    $h->learn(['foo bar blah blah']);
+    ok($h->reply, "replies from learning ARRAY");
+} "learn: ARRAY input";
+
+dies_ok {
+    my $h = Hailo->new;
+    $h->learn({});
+} "learn: HASH";
 
 __DATA__
 wrarr training material
