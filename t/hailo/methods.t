@@ -2,11 +2,10 @@ use 5.010;
 use strict;
 use warnings;
 use List::MoreUtils qw(uniq);
-use Test::More tests => 12;
+use Test::More tests => 15;
 use Test::Exception;
 use Test::Output;
 use Hailo;
-use Hailo::Command;
 
 $SIG{__WARN__} = sub {
     print STDERR @_ if $_[0] !~ m/(?:^Issuing rollback|for database handle being DESTROY)/
@@ -62,17 +61,28 @@ dies_ok {
     $h->train(undef)
 } "train: undef input";
 
+lives_ok {
+    my $h = Hailo->new;
+    open my $fh, "<", __FILE__;
+    $h->train($fh);
+    ok($h->reply, "replies from training");
+} "train: filehandle input";
+
 dies_ok {
     my $h = Hailo->new;
-    $h->train()
+    $h->train();
 } "train: undef input";
 
 lives_ok {
     my $h = Hailo->new;
-    $h->train([])
+    $h->train(['foo bar blah blah']);
+    ok($h->reply, "replies from training ARRAY");
 } "train: ARRAY input";
 
-lives_ok {
+dies_ok {
     my $h = Hailo->new;
-    $h->train([])
-} "train: ARRAY input interactively";
+    $h->train({});
+} "train: HASH";
+
+__DATA__
+wrarr training material
