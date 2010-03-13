@@ -1,6 +1,5 @@
 package inc::Dist::Zilla::Plugin::HailoMakeMaker;
 use Moose;
-#use Dist::Zilla::Plugin::OverridableMakeMaker;
 
 extends 'Dist::Zilla::Plugin::OverridableMakeMaker';
 
