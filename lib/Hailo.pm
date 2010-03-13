@@ -3,7 +3,6 @@ package Hailo;
 use 5.010;
 use autodie qw(open close);
 use Any::Moose;
-use Any::Moose 'X::Getopt';
 use Any::Moose 'X::Types::'.any_moose() => [qw/Int Str Bool HashRef/];
 BEGIN {
     return unless Any::Moose::moose_is_preferred();
@@ -22,31 +21,7 @@ use Module::Pluggable (
 use List::Util qw(first);
 use namespace::clean -except => [ qw(meta plugins) ];
 
-with any_moose('X::Getopt::Dashes');
-
-has help => (
-    traits        => [qw(Getopt)],
-    cmd_aliases   => 'h',
-    cmd_flag      => 'help',
-    isa           => Bool,
-    is            => 'ro',
-    default       => 0,
-    documentation => 'This help message',
-);
-
-has print_version => (
-    traits        => [qw(Getopt)],
-    cmd_aliases   => 'v',
-    cmd_flag      => 'version',
-    documentation => 'Print version and exit',
-    isa           => Bool,
-    is            => 'ro',
-);
-
 has save_on_exit => (
-    traits        => [qw(Getopt)],
-    cmd_aliases   => 'a',
-    cmd_flag      => 'autosave',
     documentation => 'Save the brain on exit (on by default)',
     isa           => Bool,
     is            => 'ro',
@@ -54,55 +29,16 @@ has save_on_exit => (
 );
 
 has print_progress => (
-    traits        => [qw(Getopt)],
-    cmd_aliases   => 'p',
-    cmd_flag      => 'progress',
     documentation => 'Print import progress with Term::ProgressBar',
     isa           => Bool,
     is            => 'ro',
-    default       => sub { _is_interactive() }
-);
-
-has learn_str => (
-    traits        => [qw(Getopt)],
-    cmd_aliases   => "l",
-    cmd_flag      => "learn",
-    documentation => "Learn from STRING",
-    isa           => Str,
-    is            => "ro",
-);
-
-has learn_reply_str => (
-    traits        => [qw(Getopt)],
-    cmd_aliases   => "L",
-    cmd_flag      => "learn-reply",
-    documentation => "Learn from STRING and reply to it",
-    isa           => Str,
-    is            => "ro",
-);
-
-has train_file => (
-    traits        => [qw(Getopt)],
-    cmd_aliases   => "t",
-    cmd_flag      => "train",
-    documentation => "Learn from all the lines in FILE, use - for STDIN",
-    isa           => Str,
-    is            => "ro",
-);
-
-has reply_str => (
-    traits        => [qw(Getopt)],
-    cmd_aliases   => "r",
-    cmd_flag      => "reply",
-    documentation => "Reply to STRING",
-    isa           => Str,
-    is            => "ro",
+    default       => sub {
+        my ($self) = @_;
+        $self->_is_interactive();
+    },
 );
 
 has order => (
-    traits        => [qw(Getopt)],
-    cmd_aliases   => "o",
-    cmd_flag      => "order",
     documentation => "Markov order",
     isa           => Int,
     is            => "ro",
@@ -110,28 +46,13 @@ has order => (
 );
 
 has brain_resource => (
-    traits        => [qw(Getopt)],
-    cmd_aliases   => "b",
-    cmd_flag      => "brain",
     documentation => "Load/save brain to/from FILE",
     isa           => Str,
     is            => "ro",
 );
 
-has print_stats => (
-    traits        => [qw(Getopt)],
-    cmd_aliases   => "s",
-    cmd_flag      => "stats",
-    documentation => "Print statistics about the brain",
-    isa           => Bool,
-    is            => "ro",
-);
-
 # working classes
 has storage_class => (
-    traits        => [qw(Getopt)],
-    cmd_aliases   => "S",
-    cmd_flag      => "storage",
     documentation => "Use storage CLASS",
     isa           => Str,
     is            => "ro",
@@ -139,9 +60,6 @@ has storage_class => (
 );
 
 has tokenizer_class => (
-    traits        => [qw(Getopt)],
-    cmd_aliases   => "T",
-    cmd_flag      => "tokenizer",
     documentation => "Use tokenizer CLASS",
     isa           => Str,
     is            => "ro",
@@ -149,9 +67,6 @@ has tokenizer_class => (
 );
 
 has ui_class => (
-    traits        => [qw(Getopt)],
-    cmd_aliases   => "u",
-    cmd_flag      => "ui",
     documentation => "Use UI CLASS",
     isa           => Str,
     is            => "ro",
@@ -160,7 +75,6 @@ has ui_class => (
 
 # Object arguments
 has storage_args => (
-    traits        => [qw(Getopt)],
     documentation => "Arguments for the Storage class",
     isa           => HashRef,
     coerce        => 1,
@@ -169,7 +83,6 @@ has storage_args => (
 );
 
 has tokenizer_args => (
-    traits        => [qw(Getopt)],
     documentation => "Arguments for the Tokenizer class",
     isa           => HashRef,
     is            => "ro",
@@ -177,7 +90,6 @@ has tokenizer_args => (
 );
 
 has ui_args => (
-    traits        => [qw(Getopt)],
     documentation => "Arguments for the UI class",
     isa           => HashRef,
     is            => "ro",
@@ -186,7 +98,6 @@ has ui_args => (
 
 # Working objects
 has _storage_obj => (
-    traits      => [qw(NoGetopt)],
     does        => 'Hailo::Role::Storage',
     lazy_build  => 1,
     is          => 'ro',
@@ -194,7 +105,6 @@ has _storage_obj => (
 );
 
 has _tokenizer_obj => (
-    traits      => [qw(NoGetopt)],
     does        => 'Hailo::Role::Tokenizer',
     lazy_build  => 1,
     is          => 'ro',
@@ -202,7 +112,6 @@ has _tokenizer_obj => (
 );
 
 has _ui_obj => (
-    traits      => [qw(NoGetopt)],
     does        => 'Hailo::Role::UI',
     lazy_build  => 1,
     is          => 'ro',
@@ -276,74 +185,6 @@ sub _new_class {
     return $pkg->new(%$args);
 }
 
-# Check validity of options
-before run => sub {
-    my ($self) = @_;
-
-    if (not $self->_storage_obj->ready and
-        (defined $self->reply_str or
-         defined $self->train_file or
-         defined $self->learn_str or
-         defined $self->learn_reply_str)) {
-        # TODO: Make this spew out the --help reply just like hailo
-        # with invalid options does usually, but only if run via
-        # ->new_with_options
-        die "To reply/train/learn you must specify options to initialize your storage backend";
-    }
-
-    return;
-};
-
-sub run {
-    my ($self) = @_;
-
-    if ($self->print_version) {
-        # Munging strictness because we don't have a version from a
-        # Git checkout. Dist::Zilla provides it.
-        no strict 'vars';
-        my $version = $VERSION // 'dev-git';
-
-        say "hailo $version";
-        return;
-    }
-
-    if (_is_interactive() and
-        $self->_storage_obj->ready and
-        not defined $self->train_file and
-        not defined $self->learn_str and
-        not defined $self->learn_reply_str and
-        not defined $self->reply_str and
-        not defined $self->print_stats) {
-
-        $self->_ui_obj->run($self);
-    }
-
-    $self->train($self->train_file) if defined $self->train_file;
-    $self->learn($self->learn_str) if defined $self->learn_str;
-
-    if (defined $self->learn_reply_str) {
-        my $answer = $self->learn_reply($self->learn_reply_str);
-        say $answer // "I don't know enough to answer you yet.";
-    }
-
-    if (defined $self->reply_str) {
-        my $answer = $self->reply($self->reply_str);
-        say $answer // "I don't know enough to answer you yet.";
-    }
-
-    if ($self->print_stats) {
-        my ($tok, $ex, $prev, $next) = $self->stats();
-        my $order = $self->_storage_obj->order;
-        say "Tokens: $tok";
-        say "Expression length: $order tokens";
-        say "Expressions: $ex";
-        say "Links to preceding tokens: $prev";
-        say "Links to following tokens: $next";
-    }
-
-    return;
-}
-
 sub save {
     my $self = shift;
     $self->_storage_obj->save(@_);
@@ -362,7 +203,7 @@ sub train {
         $fh = $input;
     }
     elsif (defined $input and $input eq "-") {
-        die "You must provide STDIN along with --train=-" if _is_interactive(*STDIN);
+        die "You must provide STDIN along with --train=-" if $self->_is_interactive(*STDIN);
         $fh = *STDIN;
     }
     elsif ($got_filename) {
@@ -504,64 +345,6 @@ sub DEMOLISH {
 sub _is_interactive {
     require IO::Interactive;
     return IO::Interactive::is_interactive();
-}
-
-# --i--do-not-exist
-sub _getopt_spec_exception { goto &_getopt_full_usage }
-
-# --help
-sub _getopt_full_usage {
-    my ($self, $usage, $plain_str) = @_;
-
-    # If called from _getopt_spec_exception we get "Unknown option: foo"
-    my $warning = ref $usage eq 'ARRAY' ? $usage->[0] : undef;
-
-    my ($use, $options) = do {
-        # $plain_str under _getopt_spec_exception
-        my $out = $plain_str // $usage->text;
-
-        # The default getopt order sucks, use reverse sort order
-        chomp(my @out = split /^/, $out);
-        my $opt = join "\n", sort { $b cmp $a } @out[1 .. $#out];
-        ($out[0], $opt);
-    };
-    my $synopsis = do {
-        require Pod::Usage;
-        my $out;
-        open my $fh, '>', \$out;
-
-        require FindBin;
-        require File::Spec;
-        no warnings 'once';
-
-        Pod::Usage::pod2usage(
-            -input => File::Spec->catfile($FindBin::Bin, $FindBin::Script),
-            -sections => 'SYNOPSIS',
-            -output   => $fh,
-            -exitval  => 'noexit',
-        );
-        close $fh;
-
-        $out =~ s/\n+$//s;
-        $out =~ s/^Usage:/examples:/;
-
-        $out;
-    };
-
-    # Unknown option provided
-    print $warning if $warning;
-
-    print <<"USAGE";
-$use
-$options
-\n\tNote: All input/output and files are assumed to be UTF-8 encoded.
-USAGE
-
-    # Don't spew the example output when something's wrong with the
-    # options. It won't all fit on small terminals
-    say "\n", $synopsis unless $warning;
-
-    exit 1;
 }
 
 __PACKAGE__->meta->make_immutable;

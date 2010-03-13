@@ -3,7 +3,7 @@ use 5.010;
 use open qw< :encoding(utf8) :std >;
 use Any::Moose;
 use Encode qw(decode);
-use Hailo;
+use Hailo::Command;
 use namespace::clean -except => 'meta';
 
 # Nothing to see here
@@ -27,7 +27,7 @@ if ($^O eq 'linux') {
 @ARGV = qw(--help) unless @ARGV;
 
 # Hailing frequencies open
-Hailo->new_with_options->run;
+Hailo::Command->new_with_options->run;
 
 =encoding utf8
 
