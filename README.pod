@@ -27,8 +27,8 @@ command-line invocation.
     # Heavy-duty training interface. Backends may drop some safety
     # features like journals or synchronous IO to train faster using
     # this mode.
-    $hailo->learn("megahal.trn");
-    $hailo->learn($filehandle);
+    $hailo->train("megahal.trn");
+    $hailo->train($filehandle);
 
     # Make the brain babble
     say $hailo->reply("hello good sir.");
@@ -204,9 +204,9 @@ In short, learning is lossy so an accurate conversion is impossible.
 
 =head1 ATTRIBUTES
 
-=head2 C<brain_resource>
+=head2 C<brain>
 
-The name of the resource (file name, database name) to use as storage.
+The name of the brain (file name, database name) to use as storage.
 There is no default. Whether this gets used at all depends on the
 storage backend, currently only SQLite uses it.
 
@@ -280,14 +280,6 @@ be passed as-is to the backend.
 
 Takes no arguments. Returns the number of tokens, expressions, previous
 token links and next token links.
-
-=head1 PRIVATE METHODS
-
-=head2 C<run>
-
-Run Hailo in accordance with the the attributes that were passed to
-it, this method is called by the L<hailo> command-line utility and the
-Hailo test suite, it's behavior is subject to change.
 
 =head1 SUPPORT
 
