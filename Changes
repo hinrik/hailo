@@ -2,6 +2,28 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Split the X::Getopt parts of Hailo into Hailo::Command. This way
+      the speed / memory penalty of loading all the command-line
+      related modules is only applicable if running the command-line
+      interface.
+
+    - Due to the split it was possible to rename the `brain_resource'
+      attribute to `brain'. The former is still provided for backwards
+      compatibility.
+
+    - A lot of miscellaneous cleanups in the code made possible by
+      splitting the core of Hailo from the command line UI.
+
+    - A lot has been changed in the test suite. Below is a partial
+      summary:
+
+    - Test the ->run method in Hailo::Command completely. Previously
+      only a subset of its functionality was tested. The only thing
+      that isn't tested completely is the invocation of
+      Hailo::UI::ReadLine via ->run.
+
+    - Test the --help output.
+
 0.25 2010-03-12 17:45:42
 
     - Improved documentation of the Tokenizer role and the DBD class

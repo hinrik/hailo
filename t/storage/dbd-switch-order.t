@@ -15,13 +15,13 @@ my $trainfile = catfile(qw<t lib Hailo Test megahal.trn>);
 
 my $hailo = Hailo->new(
     storage_class  => 'SQLite',
-    brain_resource => $brain_file,
+    brain          => $brain_file,
     order          => 5,
 );
 $hailo->train($trainfile);
 $hailo = Hailo->new(
     storage_class  => 'SQLite',
-    brain_resource => $brain_file,
+    brain          => $brain_file,
     order          => 3,
 );
 

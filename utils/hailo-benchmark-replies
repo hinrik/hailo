@@ -24,7 +24,7 @@ die "You must construct additional Pylons" if @lines < $test_count;
 # Test
 my $h_sqlite = Hailo->new(
     storage_class   => 'SQLite',
-    brain_resource  => 'hailo.sqlite',
+    brain           => 'hailo.sqlite',
     storage_args => {
         pragma_synchronous => 'ON',
         pragmas_journal_mode => 'ON',
@@ -33,7 +33,7 @@ my $h_sqlite = Hailo->new(
 
 my $h_sqlite_28 = Hailo->new(
     storage_class   => 'SQLite',
-    brain_resource  => 'hailo_28.sqlite',
+    brain           => 'hailo_28.sqlite',
     storage_args    => {
         pragma_synchronous => 'ON',
         pragmas_journal_mode => 'ON',
@@ -43,7 +43,7 @@ my $h_sqlite_28 = Hailo->new(
 
 my $h_sqlite_mem = Hailo->new(
     storage_class   => 'SQLite',
-    brain_resource  => 'hailo_mem.sqlite',
+    brain           => 'hailo_mem.sqlite',
     save_on_exit    => 0,
     storage_args    => {
         in_memory => 1,

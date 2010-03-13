@@ -13,8 +13,7 @@ my %pragmas = (
 );
 
 my $hailo = Hailo->new(
-    print_progress => 0,
-    brain_resource => ':memory:',
+    brain         => ':memory:',
     storage_class => 'SQLite',
     storage_args  => { %pragmas },
 );
@@ -22,7 +21,7 @@ my $hailo = Hailo->new(
 $hailo->learn("hello there good sir");
 
 # Test that pragmas were set
-my $dbh = $hailo->_storage_obj->dbh;
+my $dbh = $hailo->_storage->dbh;
 
 while (my ($k, $v) = each %pragmas) {
     my ($short) = $k =~ /^pragma_(.*)/;

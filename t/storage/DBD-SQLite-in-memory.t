@@ -12,7 +12,7 @@ my ($fh, $brain_file) = tempfile( DIR => $dir, SUFFIX => '.sqlite' );
 
 my $hailo = Hailo->new(
     storage_class  => 'SQLite',
-    brain_resource => $brain_file,
+    brain          => $brain_file,
 );
 
 # we need to learn something first so the DB file will be initialized

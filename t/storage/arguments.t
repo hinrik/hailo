@@ -18,9 +18,9 @@ my $hailo = Hailo->new(
     storage_args  => $arguments,
 );
 
-is_deeply(scalar $hailo->_storage_obj->arguments, $arguments, "Arguments were passed to Pg");
+is_deeply(scalar $hailo->_storage->arguments, $arguments, "Arguments were passed to Pg");
 
-my $conn_line = $hailo->_storage_obj->dbi_options->[0];
+my $conn_line = $hailo->_storage->dbi_options->[0];
 while (my ($k, $v) = each %$arguments) {
     next if $k =~ /^(username|password)$/;
     like($conn_line, qr/$k=$v/, "connection line '$conn_line' has $k=$v");

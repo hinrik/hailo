@@ -48,7 +48,7 @@ for my $s (@s) {
             brief => 1,
             %$opts,
             ($storage =~ /Pg|mysql/
-             ? (brain_resource => "hailo_benchmark_db_test_${toke}_$i")
+             ? (brain => "hailo_benchmark_db_test_${toke}_$i")
              : ()),
         );
 

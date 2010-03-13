@@ -24,10 +24,10 @@ sub BUILD {
 
 sub run {
     my ($self, $hailo) = @_;
-    my $name = ref $hailo;
+    my $name = 'Hailo';
     my $term = Term::ReadLine->new($name);
 
-    while (defined (my $line = $term->readline(lc($name) . '> '))) {
+    while (defined (my $line = $term->readline($name . '> '))) {
         $line = decode('utf8', $line);
         my $answer = $hailo->learn_reply($line);
         say $answer // "I don't know enough to answer you yet.";

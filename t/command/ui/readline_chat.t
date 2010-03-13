@@ -7,7 +7,7 @@ use Hailo;
 
 expect_run(
     command => "$^X bin/hailo -o 2 -b :memory:",
-    prompt  => 'hailo> ',
+    prompt  => 'Hailo> ',
     quit    => '',
 );
 

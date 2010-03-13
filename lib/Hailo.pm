@@ -22,52 +22,46 @@ use List::Util qw(first);
 use namespace::clean -except => [ qw(meta plugins) ];
 
 has save_on_exit => (
-    documentation => 'Save the brain on exit (on by default)',
     isa           => Bool,
     is            => 'ro',
     default       => 1,
 );
 
-has print_progress => (
-    documentation => 'Print import progress with Term::ProgressBar',
-    isa           => Bool,
-    is            => 'ro',
-    default       => sub {
-        my ($self) = @_;
-        $self->_is_interactive();
-    },
-);
-
 has order => (
-    documentation => "Markov order",
     isa           => Int,
-    is            => "ro",
+    is            => 'rw',
     default       => 2,
 );
 
-has brain_resource => (
-    documentation => "Load/save brain to/from FILE",
+has brain => (
     isa           => Str,
-    is            => "ro",
+    is            => 'rw',
 );
 
+has brain_resource => (
+    documentation => "Alias for `brain' for backwards compatability",
+    isa           => Str,
+    is            => 'rw',
+    trigger       => sub {
+        my ($self, $brain) = @_;
+        $self->brain($brain);
+    },
+);
+    
 # working classes
 has storage_class => (
-    documentation => "Use storage CLASS",
     isa           => Str,
     is            => "ro",
     default       => "SQLite",
 );
 
 has tokenizer_class => (
-    documentation => "Use tokenizer CLASS",
     isa           => Str,
     is            => "ro",
     default       => "Words",
 );
 
 has ui_class => (
-    documentation => "Use UI CLASS",
     isa           => Str,
     is            => "ro",
     default       => "ReadLine",
@@ -97,35 +91,35 @@ has ui_args => (
 );
 
 # Working objects
-has _storage_obj => (
+has _storage => (
     does        => 'Hailo::Role::Storage',
     lazy_build  => 1,
     is          => 'ro',
     init_arg    => undef,
 );
 
-has _tokenizer_obj => (
+has _tokenizer => (
     does        => 'Hailo::Role::Tokenizer',
     lazy_build  => 1,
     is          => 'ro',
     init_arg    => undef,
 );
 
-has _ui_obj => (
+has _ui => (
     does        => 'Hailo::Role::UI',
     lazy_build  => 1,
     is          => 'ro',
     init_arg    => undef,
 );
 
-sub _build__storage_obj {
+sub _build__storage {
     my ($self) = @_;
     my $obj = $self->_new_class(
         "Storage",
         $self->storage_class,
         {
-            (defined $self->brain_resource
-             ? (brain => $self->brain_resource)
+            (defined $self->brain
+             ? (brain => $self->brain)
              : ()),
             order           => $self->order,
             arguments       => $self->storage_args,
@@ -135,7 +129,7 @@ sub _build__storage_obj {
     return $obj;
 }
 
-sub _build__tokenizer_obj {
+sub _build__tokenizer {
     my ($self) = @_;
     my $obj = $self->_new_class(
         "Tokenizer",
@@ -148,7 +142,7 @@ sub _build__tokenizer_obj {
     return $obj;
 }
 
-sub _build__ui_obj {
+sub _build__ui {
     my ($self) = @_;
     my $obj = $self->_new_class(
         "UI",
@@ -186,91 +180,53 @@ sub _new_class {
 }
 
 sub save {
-    my $self = shift;
-    $self->_storage_obj->save(@_);
+    my ($self) = @_;
+    $self->_storage->save(@_);
     return;
 }
 
 sub train {
     my ($self, $input) = @_;
-    my $storage = $self->_storage_obj;
-    $storage->start_training();
 
-    my $got_filename = ref $input eq '';
+    $self->_storage->start_training();
 
-    my $fh;
-    if (ref $input eq 'GLOB') {
-        $fh = $input;
-    }
-    elsif (defined $input and $input eq "-") {
-        die "You must provide STDIN along with --train=-" if $self->_is_interactive(*STDIN);
-        $fh = *STDIN;
-    }
-    elsif ($got_filename) {
-        open $fh, '<:encoding(utf8)', $input;
-    }
-
-    if ($self->print_progress and ref $input ne 'ARRAY' ) {
-        $self->_train_progress($fh, $input);
-    }
-    elsif (ref $input eq 'ARRAY') {
-        for my $line (@$input) {
-            $self->_learn_one($line);
+    given ($input) {
+        # With STDIN
+        when (not ref and defined and $_ eq '-') {
+            die "You must provide STDIN when training from '-'" if $self->_is_interactive(*STDIN);
+            $self->_train_fh(*STDIN);
         }
-    }
-    else {
-        while (my $line = <$fh>) {
-            chomp $line;
-            $self->_learn_one($line);
+        # With a filehandle
+        when (ref eq 'GLOB') {
+            $self->_train_fh($input);
+        }
+        # With a file
+        when (not ref) {
+            open my $fh, '<:encoding(utf8)', $input;
+            $self->_train_fh($fh, $input);
+        }
+        # With an Array
+        when (ref eq 'ARRAY') {
+            $self->_learn_one($_) for @$input;
+        }
+        # With something naughty
+        default {
+            die "Unknown input: $input";
         }
     }
 
-    close $fh if $got_filename;
-    $storage->stop_training();
+    $self->_storage->stop_training();
+
     return;
 }
 
-before _train_progress => sub {
-    require Term::ProgressBar;
-    Term::ProgressBar->import(2.00);
-    require File::CountLines;
-    File::CountLines->import('count_lines');
-    require Time::HiRes;
-    Time::HiRes->import(qw(gettimeofday tv_interval));
-    return;
-};
-
-sub _train_progress {
+sub _train_fh {
     my ($self, $fh, $filename) = @_;
-    my $lines = count_lines($filename);
-    my $progress = Term::ProgressBar->new({
-        name => "training from $filename",
-        count => $lines,
-        remove => 1,
-        ETA => 'linear',
-    });
-    $progress->minor(0);
-    my $next_update = 0;
-    my $start_time = [gettimeofday()];
 
-    my $i = 1; while (my $line = <$fh>) {
+    while (my $line = <$fh>) {
         chomp $line;
         $self->_learn_one($line);
-        if ($i >= $next_update) {
-            $next_update = $progress->update($.);
-
-            # The default Term::ProgressBar estimate for next updates
-            # is way too concervative. With a ~200k line file we only
-            # update every ~2k lines which is 10 seconds or so.
-            $next_update = (($next_update-$i) / 10) + $i;
-        }
-    } continue { $i++ }
-
-    $progress->update($lines) if $lines >= $next_update;
-    my $elapsed = tv_interval($start_time);
-    say "Imported in $elapsed seconds";
-
-    return;
+    }
 }
 
 sub learn {
@@ -284,7 +240,7 @@ sub learn {
         $inputs = [$input];
     }
 
-    my $storage = $self->_storage_obj;
+    my $storage = $self->_storage;
 
     $storage->start_learning();
     $self->_learn_one($_) for @$inputs;
@@ -294,10 +250,10 @@ sub learn {
 
 sub _learn_one {
     my ($self, $input) = @_;
-    my $storage = $self->_storage_obj;
+    my $storage = $self->_storage;
     my $order   = $storage->order;
 
-    my $tokens = $self->_tokenizer_obj->make_tokens($input);
+    my $tokens = $self->_tokenizer->make_tokens($input);
 
     # only learn from inputs which are long enough
     return if @$tokens < $order;
@@ -314,8 +270,8 @@ sub learn_reply {
 
 sub reply {
     my ($self, $input) = @_;
-    my $storage = $self->_storage_obj;
-    my $toke    = $self->_tokenizer_obj;
+    my $storage = $self->_storage;
+    my $toke    = $self->_tokenizer;
 
     my $reply;
     if (defined $input) {
@@ -332,8 +288,8 @@ sub reply {
 
 sub stats {
     my ($self) = @_;
-    my $storage = $self->_storage_obj;
-    return $storage->totals();
+
+    return $self->_storage->totals();
 }
 
 sub DEMOLISH {
@@ -555,9 +511,9 @@ In short, learning is lossy so an accurate conversion is impossible.
 
 =head1 ATTRIBUTES
 
-=head2 C<brain_resource>
+=head2 C<brain>
 
-The name of the resource (file name, database name) to use as storage.
+The name of the brain (file name, database name) to use as storage.
 There is no default. Whether this gets used at all depends on the
 storage backend, currently only SQLite uses it.
 
@@ -631,14 +587,6 @@ be passed as-is to the backend.
 
 Takes no arguments. Returns the number of tokens, expressions, previous
 token links and next token links.
-
-=head1 PRIVATE METHODS
-
-=head2 C<run>
-
-Run Hailo in accordance with the the attributes that were passed to
-it, this method is called by the L<hailo> command-line utility and the
-Hailo test suite, it's behavior is subject to change.
 
 =head1 SUPPORT
 

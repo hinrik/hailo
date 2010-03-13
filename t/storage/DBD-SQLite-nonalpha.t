@@ -6,8 +6,7 @@ use Hailo;
 # this tests the retrieval of non-alphanumeric tokens
 
 my $hailo = Hailo->new(
-    brain_resource => ':memory:',
-    print_progress => 0,
+    brain => ':memory:',
 );
 my @lines = split /\n/, do { local $/ = undef; <DATA> };
 $hailo->train(\@lines);
