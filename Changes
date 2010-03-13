@@ -18,6 +18,10 @@ Revision history for Hailo
     - DEMOLISH was broken. it would build storage objects during
       global destruction if they didn't exist.
 
+    - Add --examples switch to be used as --help --examples, examples
+      are now not part of --help by default since they took up most of
+      the terminal & obscured the option help output.
+
     - A lot has been changed in the test suite. Below is a partial
       summary:
 
@@ -25,6 +29,9 @@ Revision history for Hailo
       only a subset of its functionality was tested. The only thing
       that isn't tested completely is the invocation of
       Hailo::UI::ReadLine via ->run.
+
+    - Completely test the ->train and ->learn methods and make
+      ->learn() die on unknown input like HashRefs.
 
     - Test the --help output.
 
