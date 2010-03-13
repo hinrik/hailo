@@ -1,8 +1,9 @@
 use 5.010;
 use strict;
 use warnings;
+use Hailo;
 use Hailo::Command;
-use Test::More tests => 15;
+use Test::More tests => 19;
 
 my $hc = Hailo::Command->new;
 
@@ -36,3 +37,15 @@ is($hc->_go_ui_class, undef, "Default Command ui");
 $hc->_go_ui_class("Wx");
 is($hc->ui_class, "Wx", "Hailo ui matches set command ui");
 
+# Arguments being passed to storage
+{
+   my $hailo = Hailo->new( brain => q[:memory:] );
+   ok($hailo->_storage->ready, "Hailo ready");
+   is($hailo->_storage->brain, ":memory:", "Memory brain");
+}
+
+{
+   my $hailo = Hailo::Command->new( _go_brain => q[:memory:] );
+   ok($hailo->_storage->ready, "Hailo ready");
+   is($hailo->_storage->brain, ":memory:", "Memory brain");
+}
