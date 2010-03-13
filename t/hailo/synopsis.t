@@ -1,30 +1,18 @@
-use autodie;
+use 5.010;
 use strict;
 use warnings;
 use Test::More tests => 1;
+eval "use Test::Synopsis";
+plan skip_all => "Test::Synopsis required for testing SYNOPSIS" if $@;
+
+my ($synopsis) = Test::Synopsis::extract_synopsis('lib/Hailo.pm');
+$synopsis =~ s/^.*?(?=\s+use)//s;
+
+local $@;
+eval <<'SYNOPSIS';
 open my $filehandle, '<', __FILE__;
 chdir 't/lib/Hailo/Test';
+$synopsis
+SYNOPSIS
 
-    # Hailo requires Perl 5.10
-    use 5.010;
-    use Hailo;
-   
-    # Construct a new in-memory Hailo using the SQLite backend. See
-    # backend documentation for other options.
-    my $hailo = Hailo->new;
-   
-    # Various ways to learn
-    my @train_this = qw< I like big butts and I can not lie >;
-    $hailo->learn(\@train_this);
-    $hailo->learn($_) for @train_this;
-   
-    # Heavy-duty training interface. Backends may drop some safety
-    # features like journals or synchronous IO to train faster using
-    # this mode.
-    $hailo->train("megahal.trn");
-    $hailo->train($filehandle);
-
-    # Make the brain babble
-    say $hailo->reply("hello good sir.");
-
-pass("Synopsis OK");
+is($@, '', "No errors in SYNOPSIS");
