@@ -4,9 +4,8 @@ use warnings;
 use Test::More tests => 9;
 use Test::Exception;
 
-# Using both these modules and running the tests below gives silly
-# "Use of uninitialized value $class in regexp compilation" warnings
-# under Mouse.
+# These are here because they don't build storage and can turn up odd
+# errors during DEMOLISH
 
 use Hailo;
 use Hailo::Command;

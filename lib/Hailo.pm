@@ -303,7 +303,7 @@ sub stats {
 
 sub DEMOLISH {
     my ($self) = @_;
-    $self->save if $self->save_on_exit;
+    $self->save_on_exit if $self->{_storage} and $self->save;
     return;
 }
 

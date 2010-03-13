@@ -15,6 +15,9 @@ Revision history for Hailo
     - A lot of miscellaneous cleanups in the code made possible by
       splitting the core of Hailo from the command line UI.
 
+    - DEMOLISH was broken. it would build storage objects during
+      global destruction if they didn't exist.
+
     - A lot has been changed in the test suite. Below is a partial
       summary:
 
