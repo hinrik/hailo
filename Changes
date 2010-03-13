@@ -5,7 +5,8 @@ Revision history for Hailo
     - Split the X::Getopt parts of Hailo into Hailo::Command. This way
       the speed / memory penalty of loading all the command-line
       related modules is only applicable if running the command-line
-      interface.
+      interface. using Hailo takes 1MB less memory now and loads a
+      total of 56 modules instead of 74.
 
     - Due to the split it was possible to rename the `brain_resource'
       attribute to `brain'. The former is still provided for backwards
