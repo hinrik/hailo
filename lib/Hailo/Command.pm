@@ -15,6 +15,8 @@ extends 'Hailo';
 
 with any_moose('X::Getopt::Dashes');
 
+## Our internal Getopts method that Hailo.pm doesn't care about.
+
 has help => (
     traits        => [ qw/ Getopt / ],
     cmd_aliases   => 'h',
@@ -40,16 +42,6 @@ has _go_examples => (
     documentation => 'Print examples along with the help message',
     isa           => Bool,
     is            => 'ro',
-);
-
-has _go_autosave => (
-    traits        => [ qw/ Getopt / ],
-    cmd_aliases   => 'a',
-    cmd_flag      => 'autosave',
-    documentation => 'Save the brain on exit (on by default)',
-    isa           => Bool,
-    is            => 'ro',
-    default       => 1,
 );
 
 has _go_progress => (
@@ -101,13 +93,37 @@ has _go_reply => (
     is            => "ro",
 );
 
+has _go_stats => (
+    traits        => [ qw/ Getopt / ],
+    cmd_aliases   => "s",
+    cmd_flag      => "stats",
+    documentation => "Print statistics about the brain",
+    isa           => Bool,
+    is            => "ro",
+);
+
+## Things we have to pass to Hailo.pm via triggers when they're set
+
+has _go_autosave => (
+    traits        => [ qw/ Getopt / ],
+    cmd_aliases   => 'a',
+    cmd_flag      => 'autosave',
+    documentation => 'Save the brain on exit (on by default)',
+    isa           => Bool,
+    is            => 'rw',
+    trigger       => sub {
+        my ($self, $bool) = @_;
+        $self->save_on_exit($bool);
+    },
+);
+
 has _go_order => (
     traits        => [ qw/ Getopt / ],
     cmd_aliases   => "o",
     cmd_flag      => "order",
     documentation => "Markov order",
     isa           => Int,
-    is            => "ro",
+    is            => "rw",
     trigger       => sub {
         my ($self, $order) = @_;
         $self->order($order);
@@ -127,25 +143,18 @@ has _go_brain => (
     },
 );
 
-has _go_stats => (
-    traits        => [ qw/ Getopt / ],
-    cmd_aliases   => "s",
-    cmd_flag      => "stats",
-    documentation => "Print statistics about the brain",
-    isa           => Bool,
-    is            => "ro",
-);
-
-
 # working classes
 has _go_storage_class => (
     traits        => [ qw/ Getopt / ],
     cmd_aliases   => "S",
     cmd_flag      => "storage",
     isa           => Str,
-    is            => "ro",
-    default       => "SQLite",
+    is            => "rw",
     documentation => "Use storage CLASS",
+    trigger       => sub {
+        my ($self, $class) = @_;
+        $self->storage_class($class);
+    },
 );
 
 has _go_tokenizer_class => (
@@ -153,8 +162,12 @@ has _go_tokenizer_class => (
     cmd_aliases   => "T",
     cmd_flag      => "tokenizer",
     isa           => Str,
-    is            => "ro",
+    is            => "rw",
     documentation => "Use tokenizer CLASS",
+    trigger       => sub {
+        my ($self, $class) = @_;
+        $self->tokenizer_class($class);
+    },
 );
 
 has _go_ui_class => (
@@ -162,9 +175,12 @@ has _go_ui_class => (
     cmd_aliases   => "u",
     cmd_flag      => "ui",
     isa           => Str,
-    is            => "ro",
-    default       => "ReadLine",
+    is            => "rw",
     documentation => "Use UI CLASS",
+    trigger       => sub {
+        my ($self, $class) = @_;
+        $self->ui_class($class);
+    },
 );
 
 # Stop Hailo from polluting our command-line interface

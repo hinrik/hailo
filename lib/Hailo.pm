@@ -21,21 +21,21 @@ use Module::Pluggable (
 use List::Util qw(first);
 use namespace::clean -except => [ qw(meta plugins) ];
 
-has save_on_exit => (
-    isa           => Bool,
-    is            => 'ro',
-    default       => 1,
+has brain => (
+    isa => Str,
+    is  => 'rw',
 );
 
 has order => (
-    isa           => Int,
-    is            => 'rw',
-    default       => 2,
+    isa     => Int,
+    is      => 'rw',
+    default => 2,
 );
 
-has brain => (
-    isa           => Str,
-    is            => 'rw',
+has save_on_exit => (
+    isa     => Bool,
+    is      => 'rw',
+    default => 1,
 );
 
 has brain_resource => (
@@ -51,19 +51,19 @@ has brain_resource => (
 # working classes
 has storage_class => (
     isa           => Str,
-    is            => "ro",
+    is            => "rw",
     default       => "SQLite",
 );
 
 has tokenizer_class => (
     isa           => Str,
-    is            => "ro",
+    is            => "rw",
     default       => "Words",
 );
 
 has ui_class => (
     isa           => Str,
-    is            => "ro",
+    is            => "rw",
     default       => "ReadLine",
 );
 
