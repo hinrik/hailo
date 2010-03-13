@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use Test::More tests => 1;
 open my $filehandle, '<', __FILE__;
+chdir 't/lib/Hailo/Test';
 
     # Hailo requires Perl 5.10
     use 5.010;
