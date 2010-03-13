@@ -350,6 +350,8 @@ command-line invocation.
 
     # Make the brain babble
     say $hailo->reply("hello good sir.");
+    # Just say something at random
+    say $hailo->reply();
 
 =head1 DESCRIPTION
 
