@@ -359,6 +359,11 @@ __PACKAGE__->meta->make_immutable;
 
 Hailo::Command - Class for the L<hailo> command-line interface to L<Hailo>
 
+=head1 DESCRIPTION
+
+This is an internal class L<hailo> uses for its command-line
+interface. See L<Hailo> for the public interface.
+
 =head1 PRIVATE METHODS
 
 =head2 C<run>
