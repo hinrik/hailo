@@ -20,8 +20,8 @@ open my $filehandle, '<', __FILE__;
     # Heavy-duty training interface. Backends may drop some safety
     # features like journals or synchronous IO to train faster using
     # this mode.
-    $hailo->learn("megahal.trn");
-    $hailo->learn($filehandle);
+    $hailo->train("megahal.trn");
+    $hailo->train($filehandle);
 
     # Make the brain babble
     say $hailo->reply("hello good sir.");
