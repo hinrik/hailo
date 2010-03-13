@@ -2,6 +2,13 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Update README.pod which hadn't been bumped since 0.25
+
+    - Fix example in Hailo.pm's SYNOPSIS that didn't work and add an
+      example for a bare ->reply().
+
+    - Fix some code perlcritic whined about.
+
 0.27 2010-03-13 09:41:46
 
     - Stop depending on Term::ReadLine::Gnu and use Term::ReadLine
