@@ -2,7 +2,7 @@ use 5.010;
 use strict;
 use warnings;
 use Test::Script::Run;
-use Test::More 'no_plan';
+use Test::More tests => 50;
 
 my $app = 'hailo';
 
@@ -15,6 +15,12 @@ run_ok( $app, [ '--version' ], 'hailo with --version' );
 
 ## --no-help
 run_ok( $app, [ '--no-help' ], "Don't help me" );
+
+## --examples
+{
+    my ($return, $stdout, $stderr) = run_script( $app, [ '--help', '--examples']);
+    like($stdout, qr{examples:}, "no examples on normal output");
+}
 
 ## --help
 {
