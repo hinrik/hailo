@@ -2,6 +2,8 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+0.26 2010-03-13 08:04:32
+
     - Split the X::Getopt parts of Hailo into Hailo::Command. This way
       the speed / memory penalty of loading all the command-line
       related modules is only applicable if running the command-line
