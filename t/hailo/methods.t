@@ -73,17 +73,14 @@ dies_ok {
     $h->train();
 } "train: undef input";
 
-#stdout_like(
-#    sub {
-        dies_ok {
-#            no warnings 'redefine';
-#            local *Hailo::_is_interactive = sub { 1 };
-            my $h = Hailo->new;
-            $h->train("-");
-        } "train: undef input";
-#    },
-#    qr/You must provide STDIN/,
-#);
+
+dies_ok {
+    local *STDIN = *DATA;
+    no warnings 'redefine';
+    local *Hailo::_is_interactive = sub { 1 };
+    my $h = Hailo->new;
+    $h->train("-");
+} "train: - input";
 
 lives_ok {
     my $h = Hailo->new;
