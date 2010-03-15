@@ -10,7 +10,7 @@ use Hailo;
 # Dir to store our brains
 my $dir = tempdir( "hailo-test-dbd-so-XXXX", CLEANUP => 1, TMPDIR => 1 );
 
-my ($fh, $brain_file) = tempfile( DIR => $dir, SUFFIX => '.sqlite' );
+my ($fh, $brain_file) = tempfile( DIR => $dir, SUFFIX => '.sqlite', EXLOCK => 1 );
 
 my $trainfile = catfile(qw<t lib Hailo Test starcraft.trn>);
 my @train = split /\n/, slurp($trainfile);
