@@ -80,7 +80,7 @@ sub _build_tmpfile {
     # Dir to store our brains
     my $dir = $self->tmpdir;
 
-    my ($fh, $filename) = tempfile( DIR => $dir, SUFFIX => '.trn', EXLOCK => 1 );
+    my ($fh, $filename) = tempfile( DIR => $dir, SUFFIX => '.trn', EXLOCK => 0 );
     $fh->autoflush(1);
 
     return [$fh, $filename];
