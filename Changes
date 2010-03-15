@@ -2,6 +2,8 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+0.30 2010-03-15 15:18:01
+
     - Don't set EXLOCK on temporary files we create. This completely
       broke Hailo tests on platforms like FreeBSD which aren't as
       promiscuous as Linux about file locking.
