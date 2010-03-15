@@ -278,6 +278,17 @@ sub train_a_few_tokens {
     return ($@, \@random_tokens);
 }
 
+sub test_trivial {
+    my ($self) = @_;
+    my $hailo = $self->hailo;
+    my $storage = $self->storage;
+
+    my $string = 'Hello there';
+
+    $hailo->learn($string);
+    is($hailo->reply('there'), "$string.", "$storage: Learned string correctly");
+}
+
 sub test_congress {
     my ($self) = @_;
     my $hailo = $self->hailo;
