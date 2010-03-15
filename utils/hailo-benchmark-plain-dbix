@@ -1,0 +1,15 @@
+#!/usr/bin/env perl
+use 5.010;
+use strict;
+use Benchmark ':all';
+
+my $tests = $ARGV[0] // 5;
+
+cmpthese($tests, {
+    "DBIx::Class" => sub {
+        system q< ANY_MOOSE=Mouse prove -Ilib -r $(find t -type f -name '*.t'|grep -v switch-order) >;
+    },
+    "Hailo + DBI" => sub {
+        system q< ANY_MOOSE=Mouse prove       -r $(find t -type f -name '*.t'|grep -v switch-order) >;
+    }
+});
