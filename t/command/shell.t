@@ -2,19 +2,14 @@ use 5.010;
 use strict;
 use warnings;
 use Test::Script::Run;
-use Test::More;
+use Test::More tests => 50;
 
 my $app = 'hailo';
 
 ## --examples
 {
     my ($return, $stdout, $stderr) = run_script( $app, [ '--help', '--examples']);
-    if ($stderr and $stderr ~~ /Cannot find current script/) {
-        plan skip_all => "Skipping run_script tests et al. This system ($^O) has an odd IPC3::Run + FindBin (maybe FreeBSD?)";
-    } else {
-        plan tests => 50;
-        like($stdout, qr{examples:}, "no examples on normal output");
-    }
+    like($stdout, qr{examples:}, "no examples on normal output");
 }
 
 ## Basic usage
