@@ -25,10 +25,7 @@ if ($^O eq 'linux') {
 }
 
 # I want my mommy!
-{
-    no strict 'vars';
-    $Hailo::Command::HERE_MOMMY = __DIR__;
-}
+$Hailo::Command::HERE_MOMMY = __DIR__;
 
 # Show help if run without arguments
 @ARGV = qw(--help) unless @ARGV;
