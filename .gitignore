@@ -16,3 +16,6 @@ cover_db
 *.sqlite
 *.#*
 *.mp4
+nytprof*
+*.gz
+*.bz2
