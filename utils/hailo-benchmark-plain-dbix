@@ -7,9 +7,9 @@ my $tests = $ARGV[0] // 5;
 
 cmpthese($tests, {
     "DBIx::Class" => sub {
-        system q< ANY_MOOSE=Mouse prove -Ilib -r $(find t -type f -name '*.t'|grep -v switch-order) >;
+        system q< ANY_MOOSE=Mouse prove -Ilib -r $(find t -type f -name '*.t'|grep -v -e switch-order -e babble -e exhaustive -e command/run ) >;
     },
     "Hailo + DBI" => sub {
-        system q< ANY_MOOSE=Mouse prove       -r $(find t -type f -name '*.t'|grep -v switch-order) >;
+        system q< ANY_MOOSE=Mouse prove       -r $(find t -type f -name '*.t'|grep -v -e switch-order -e babble -e exhaustive -e command/run ) >;
     }
 });
