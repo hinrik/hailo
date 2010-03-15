@@ -6,8 +6,10 @@ Revision history for Hailo
       broke Hailo tests on platforms like FreeBSD which aren't as
       promiscuous as Linux about file locking.
 
-    - Skip t/command/shell.t tests on FreeBSD and other platforms
-      where IPC3::Run + FindBin don't play nice together.
+    - Use Dir::Self in hailo/Hailo::Command to work around the 0.29
+      bug in t/command/shell.t on some platforms like FreeBSD where
+      IPC3::Run calling a script that called FindBin didn't work
+      as expected.
 
     - Add more testing including a really basic test for DBIx::Class
       debugging (from the dbix-class branch) and making TAP output

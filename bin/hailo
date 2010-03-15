@@ -1,6 +1,7 @@
 #!/usr/bin/env perl
 use 5.010;
 use open qw< :encoding(utf8) :std >;
+use Dir::Self;
 use Any::Moose;
 use Encode qw(decode);
 use Hailo::Command;
@@ -21,6 +22,12 @@ if ($^O eq 'linux') {
         require Sys::Prctl;
         Sys::Prctl::prctl_name('hailo');
     };
+}
+
+# I want my mommy!
+{
+    no strict 'vars';
+    $Hailo::Command::HERE_MOMMY = __DIR__;
 }
 
 # Show help if run without arguments

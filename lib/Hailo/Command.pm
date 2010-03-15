@@ -335,12 +335,13 @@ sub _getopt_full_usage {
         my $out;
         open my $fh, '>', \$out;
 
-        require FindBin;
-        require File::Spec;
         no warnings 'once';
 
+        my $hailo = File::Spec->catfile($Hailo::Command::HERE_MOMMY, 'hailo');
+        # Try not to fail on Win32 or other odd systems which might have hailo.pl not hailo
+        $hailo = ((glob("$hailo*"))[0]) unless -f $hailo;
         Pod::Usage::pod2usage(
-            -input => File::Spec->catfile($FindBin::Bin, $FindBin::Script),
+            -input => $hailo,
             -sections => 'SYNOPSIS',
             -output   => $fh,
             -exitval  => 'noexit',
