@@ -5,6 +5,8 @@ use warnings;
 use Hailo::Test;
 use Test::More;
 
+plan(skip_all => "Set TEST_EXHAUSTIVE= to run all exhaustive tests, these take a lot of time") unless $ENV{TEST_EXHAUSTIVE};
+
 my $test = Hailo::Test->new(
     storage => "SQLite",
     in_memory => 0,
