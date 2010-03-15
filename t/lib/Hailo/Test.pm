@@ -263,6 +263,7 @@ sub train_a_few_tokens {
     my @chr = map { chr } 50..120;
     my @random_tokens = map { $chr[rand @chr] } 1 .. 30;
 
+    pass("About to learn from <<@random_tokens>>");
     # Learn from it
     if ((int rand 2) == 1) {
         eval {
@@ -399,6 +400,7 @@ sub test_babble {
         my ($err, $tokens) = $self->train_a_few_tokens();
 
         my $input = $tokens->[5];
+        pass("Training on <<$input>>");
         my $reply = $hailo->reply($input);
         # Hailo replies
         cmp_ok(length($reply) * 2, '>', length($input), "$storage: Hailo knows how to babble, said '$reply' given '$input'");
@@ -412,7 +414,7 @@ sub test_starcraft {
 
 
   SKIP: {
-    skip "$storage: We have to implement a method for clearing brains, or construct a new brain for each test", 4;
+    skip "$storage: We have to implement a method for clearing brains, or construct a new brain for each test", 4 unless $ENV{TEST_STARCRAFT};
 
     $self->train_filename("starcraft.trn");
 
@@ -422,6 +424,7 @@ sub test_starcraft {
 
     my %reply;
     for (1 .. 500) {
+        pass("Getting a random reply $_/500");
         $reply{ $hailo->reply("that") } = 1;
     }
 
@@ -448,10 +451,10 @@ sub test_all_plan {
 
     plan skip_all => "Skipping $storage tests, can't create storage" unless $ok;
     if ($self->exhaustive) {
-        plan(tests => 29947);
+        plan(tests => 29977);
         $self->test_exhaustive;
     } else {
-        plan(tests => 977);
+        plan(tests => 997);
         $self->test_all;
     }
   }
