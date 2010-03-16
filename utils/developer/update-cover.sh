@@ -15,7 +15,7 @@ export TEST_MYSQL=1
 export HARNESS_OPTIONS=j1
 # Must set $MYSQL_ROOT_PASSWORD externally
 
-perl -I ~avar/g/dist-zilla/lib -I ~avar/g/dist-zilla-plugin-readmefrompod/lib -Iinc $(which dzil) build
+dzil build
 cd Hailo-*
 perl Makefile.PL
 cover -test
