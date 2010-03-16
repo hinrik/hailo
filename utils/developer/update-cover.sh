@@ -18,7 +18,7 @@ export HARNESS_OPTIONS=j1
 dzil build
 cd Hailo-*
 perl Makefile.PL
-cover -test
+cover -ignore_re ReadLine -test
 
 rm -rfv ~avar/www/cover_db
 rsync -av --progress /tmp/hailo-cover/hailo/Hailo-0.*/cover_db ~avar/www/
