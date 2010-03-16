@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Usage: utils/developer/nytprof-file t/storage/DBD-SQLite-memory.t
+
+rm -rf nytprof*
+perl -Ilib -d:NYTProf $@ 
+nytprofhtml
+
+git_branch=$(git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
+mv nytprof profiling-Hailo.$git_branch
