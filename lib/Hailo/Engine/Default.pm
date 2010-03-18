@@ -199,10 +199,7 @@ sub _add_expr {
 
     # add the expression
     $self->storage->sth->{add_expr}->execute(@$token_ids);
-
-    # get the new expr id
-    $self->storage->sth->{last_expr_rowid}->execute();
-    return $self->storage->sth->{last_expr_rowid}->fetchrow_array;
+    return $self->storage->dbh->last_insert_id(undef, undef, "expr", undef);
 }
 
 # look up an expression id based on tokens
@@ -243,8 +240,7 @@ sub _token_similar {
 sub _add_token {
     my ($self, $token_info) = @_;
     $self->storage->sth->{add_token}->execute(@$token_info);
-    $self->storage->sth->{last_token_rowid}->execute();
-    return $self->storage->sth->{last_token_rowid}->fetchrow_array;
+    return $self->storage->dbh->last_insert_id(undef, undef, "token", undef);
 }
 
 # return a random expression containing the given token

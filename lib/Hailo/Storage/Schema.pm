@@ -2,6 +2,11 @@ package Hailo::Storage::Schema;
 
 use 5.010;
 use Any::Moose;
+BEGIN {
+    return unless Any::Moose::moose_is_preferred();
+    require MooseX::StrictConstructor;
+    MooseX::StrictConstructor->import;
+}
 
 has dbd   => (is => 'ro');
 has dbh   => (is => 'ro');
@@ -147,16 +152,12 @@ sub sth {
     given ($dbd) {
         when ('SQLite') {
             # Optimize these for SQLite
-            $state{last_expr_rowid}  = qq[SELECT last_insert_rowid();];
-            $state{last_token_rowid} = qq[SELECT last_insert_rowid();];
             $state{expr_total}       = qq[SELECT seq FROM sqlite_sequence WHERE name = 'expr';];
             $state{token_total}      = qq[SELECT seq FROM sqlite_sequence WHERE name = 'token';];
             $state{prev_total}       = qq[SELECT seq FROM sqlite_sequence WHERE name = 'prev_token';];
             $state{next_total}       = qq[SELECT seq FROM sqlite_sequence WHERE name = 'next_token';];
         }
         when ('Pg') {
-            $state{add_token} .= ' RETURNING id';
-            $state{add_expr}  .= ' RETURNING id';
             $state{exists_db} = qq[SELECT count(*) FROM information_schema.columns WHERE table_name ='info';];
         }
         when ('mysql') {

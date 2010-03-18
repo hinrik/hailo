@@ -55,19 +55,6 @@ sub ready {
     return exists $self->arguments->{dbname};
 }
 
-# These two are optimized to use PostgreSQL >8.2's INSERT ... RETURNING
-sub _add_expr {
-    my ($self, $token_ids) = @_;
-    $self->sth->{add_expr}->execute(@$token_ids);
-    return $self->sth->{add_expr}->fetchrow_array;
-}
-
-sub _add_token {
-    my ($self, $token_info) = @_;
-    $self->sth->{add_token}->execute(@$token_info);
-    return $self->sth->{add_token}->fetchrow_array;
-}
-
 __PACKAGE__->meta->make_immutable;
 
 =encoding utf8
