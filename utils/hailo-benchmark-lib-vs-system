@@ -1,0 +1,26 @@
+#!/usr/bin/env perl
+use 5.010;
+use autodie ':all';
+use strict;
+use Benchmark ':all';
+
+my $tests     = $ARGV[0] // 5;
+my $testfiles = $ARGV[1] // 't';
+
+my %tests = (
+    '/lib Hailo' =>   [ '-Ilib' ],
+    'System Hailo' => [ '' ],
+);
+
+cmpthese($tests, {
+    map {
+        my $_ = $_;
+        $_ => sub {
+            state $test = 1;
+            my $cmd = qq[ANY_MOOSE=Mouse prove $tests{$_}[0] -r $testfiles];
+            say STDERR "Testing $_ $test/$tests (command: <<$cmd>>)";
+            system $cmd;
+            $test++;
+        }
+    } keys %tests,
+});
