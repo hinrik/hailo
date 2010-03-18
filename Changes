@@ -2,6 +2,8 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+0.31 2010-03-18 21:45:25
+
     - Optimization and cleanup release. Hailo is now much much
       snappier and eats less memory. Here's how long it takes to run
       the test suite before/after 0.30:
