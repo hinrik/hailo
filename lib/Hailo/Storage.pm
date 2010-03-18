@@ -103,8 +103,7 @@ has sth => (
 
 sub _build_sth {
     my ($self) = @_;
-    my ($sections, $prefix) = $self->_schema->_sth_sections_static();
-    return $self->_schema->_prepare_sth($sections, $prefix);
+    return $self->_schema->sth;
 }
 
 has _boundary_token_id => (
@@ -136,14 +135,7 @@ sub _engage {
         my $id = $self->sth->{last_token_rowid}->fetchrow_array();
         $self->_boundary_token_id($id);
     }
-
-    # prepare SQL statements which depend on the Markov order
-    my ($sections, $prefix) = $self->_schema->_sth_sections_dynamic();
-    my $sth = $self->_schema->_prepare_sth($sections, $prefix);
-    while (my ($query, $st) = each %$sth) {
-        $self->sth->{$query} = $st;
-    }
-
+    
     $self->_engaged(1);
 
     return;

@@ -1,4 +1,5 @@
 package Hailo::Storage::MySQL;
+
 use 5.010;
 use Any::Moose;
 BEGIN {

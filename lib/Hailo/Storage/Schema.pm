@@ -3,14 +3,6 @@ package Hailo::Storage::Schema;
 use 5.010;
 use Any::Moose;
 
-use Data::Section qw(-setup);
-use Template;
-use namespace::clean -except => [ qw(meta
-                                     section_data
-                                     section_data_names
-                                     merged_section_data
-                                     merged_section_data_names) ];
-
 has dbd   => (is => 'ro');
 has dbh   => (is => 'ro');
 has order => (is => 'ro');
@@ -18,250 +10,182 @@ has order => (is => 'ro');
 ## Soup to spawn the database itself / create statement handles
 sub deploy {
     my ($self) = @_;
+    my $dbd    = $self->dbd;
+    my $order  = $self->order;
+    my @orders = (0 .. $order-1);
 
-    my @statements = $self->_get_create_db_sql;
+    my $int_primary_key = "INTEGER PRIMARY KEY AUTOINCREMENT";
+    $int_primary_key    = "INTEGER PRIMARY KEY AUTOINCREMENT" if $dbd eq "mysql";
+    $int_primary_key    = "SERIAL UNIQUE" if $dbd eq "Pg";
 
-    for (@statements) {
+    my $text = 'TEXT';
+    $text    = 'VARCHAR(255)' if $dbd eq 'mysql';
+
+    my $text_primary = 'TEXT NOT NULL PRIMARY KEY';
+    $text_primary    = 'TEXT NOT NULL' if $dbd eq 'mysql';
+
+    my @tables;
+
+    push @tables => <<"TABLE";
+CREATE TABLE info (
+    attribute $text_primary,
+    text      TEXT NOT NULL
+);
+TABLE
+
+    push @tables => <<"TABLE";
+CREATE TABLE token (
+    id      $int_primary_key,
+    spacing INTEGER NOT NULL,
+    text    $ text NOT NULL,
+    count   INTEGER NOT NULL
+);
+TABLE
+
+    my $token_n = join ",\n    ", map { "token${_}_id INTEGER NOT NULL REFERENCES token (id)" } @orders;
+    push @tables => <<"TABLE";
+CREATE TABLE expr (
+    id  $int_primary_key,
+    $token_n
+);
+TABLE
+
+    push @tables => <<"TABLE";
+CREATE TABLE next_token (
+    id       $int_primary_key,
+    expr_id  INTEGER NOT NULL REFERENCES expr (id),
+    token_id INTEGER NOT NULL REFERENCES token (id),
+    count    INTEGER NOT NULL
+);
+TABLE
+
+    push @tables => <<"TABLE";
+CREATE TABLE prev_token (
+    id       $int_primary_key,
+    expr_id  INTEGER NOT NULL REFERENCES expr (id),
+    token_id INTEGER NOT NULL REFERENCES token (id),
+    count    INTEGER NOT NULL
+);
+TABLE
+
+    for my $i (@orders) {
+        push @tables => "CREATE INDEX expr_token${i}_id on expr (token${i}_id);"
+    }
+
+    my $columns = join(', ', map { "token${_}_id" } @orders);
+    push @tables => "CREATE INDEX expr_token_ids on expr ($columns);";
+    
+    push @tables => 'CREATE INDEX token_text on token (text);';
+    push @tables => 'CREATE INDEX next_token_expr_id ON next_token (expr_id);';
+    push @tables => 'CREATE INDEX prev_token_expr_id ON prev_token (expr_id);';
+
+
+    for (@tables) {
         $self->dbh->do($_);
     }
 
     return;
 }
 
-sub _get_create_db_sql {
-    my ($self) = @_;
-    my $sql;
-
-    for my $section (qw(info token expr next_token prev_token indexes)) {
-        my $template = $self->section_data("table_$section");
-        Template->new->process(
-            $template,
-            {
-                columns => join(', ', map { "token${_}_id" } 0 .. $self->order-1),
-                orders  => [ 0 .. $self->order-1 ],
-                dbd     => $self->dbd,
-            },
-            \$sql,
-        );
-    }
-
-    return ($sql =~ /\s*(.*?);/gs);
-}
-
 # create statement handle objects
-sub _prepare_sth {
-    my ($self, $sections, $prefix) = @_;
+sub sth {
+    my ($self)  = @_;
+    my $dbd     = $self->dbd;
+    my $order   = $self->order;
+    my @orders  = (0 .. $order-1);
+    my @columns = map { "token${_}_id" } 0 .. $order-1;
+    my $columns = join(', ', @columns);
+    my @ids     = join(', ', ('?') x @columns);
+    my $ids     = join(', ', @ids);
 
-    my %state;
-    while (my ($name, $options) = each %$sections) {
-        my $section = $options->{section} // $name;
-        my %options = %{ $options->{options} // {} };
-        my $template = $self->section_data("$prefix$section");
-        my $sql;
-        Template->new->process(
-            $template,
-            {
-                orders => [ 0 .. $self->order-1 ],
-                dbd    => $self->dbd,
-                %options,
-            },
-            \$sql,
-        );
-        $state{$name} = $sql;
+    my $q_rand = 'RANDOM()';
+    $q_rand    = 'RAND()' if $dbd eq 'mysql';
+
+    my $q_rand_id = "(abs($q_rand) % (SELECT max(id) FROM expr))";
+    $q_rand_id    = "(random()*id+1)::int" if $dbd eq 'Pg';
+
+    my %state = (
+        get_order        => qq[SELECT text FROM info WHERE attribute = 'markov_order';],
+        set_order        => qq[INSERT INTO info (attribute, text) VALUES ('markov_order', ?);],
+
+        random_expr      => qq[SELECT * FROM expr WHERE id >= $q_rand_id LIMIT 1;],
+        token_id         => qq[SELECT id FROM token WHERE spacing = ? AND text = ?;],
+        token_info       => qq[SELECT spacing, text FROM token WHERE id = ?;],
+        token_similar    => qq[SELECT id, spacing FROM token WHERE text = ? ORDER BY $q_rand LIMIT 1;] ,
+        add_token        => qq[INSERT INTO token (spacing, text, count) VALUES (?, ?, 0)],
+        inc_token_count  => qq[UPDATE token SET count = count + 1 WHERE id = ?],
+
+        # ->stats()
+        expr_total       => qq[SELECT COUNT(*) FROM expr;],
+        token_total      => qq[SELECT COUNT(*) FROM token;],
+        prev_total       => qq[SELECT COUNT(*) FROM prev_token;],
+        next_total       => qq[SELECT COUNT(*) FROM next_token;],
+
+        # Defaults, overriden in SQLite
+        last_expr_rowid  => qq[SELECT id FROM expr ORDER BY id DESC LIMIT 1;],
+        last_token_rowid => qq[SELECT id FROM token ORDER BY id DESC LIMIT 1;],
+
+        next_token_count => qq[SELECT count FROM next_token WHERE expr_id = ? AND token_id = ?;],
+        prev_token_count => qq[SELECT count FROM prev_token WHERE expr_id = ? AND token_id = ?;],
+        next_token_inc   => qq[UPDATE next_token SET count = count + 1 WHERE expr_id = ? AND token_id = ?],
+        prev_token_inc   => qq[UPDATE prev_token SET count = count + 1 WHERE expr_id = ? AND token_id = ?],
+        next_token_add   => qq[INSERT INTO next_token (expr_id, token_id, count) VALUES (?, ?, 1);],
+        prev_token_add   => qq[INSERT INTO prev_token (expr_id, token_id, count) VALUES (?, ?, 1);],
+        next_token_get   => qq[SELECT token_id, count FROM next_token WHERE expr_id = ?;],
+        prev_token_get   => qq[SELECT token_id, count FROM prev_token WHERE expr_id = ?;],
+
+        token_count      => qq[SELECT count FROM token WHERE id = ?;],
+
+        add_expr         => qq[INSERT INTO expr ($columns) VALUES ($ids)],
+        expr_id          => qq[SELECT id FROM expr WHERE ] . join(' AND ', map { "token${_}_id = ?" } @orders),
+    );
+
+    for (@orders) {
+        $state{"expr_by_token${_}_id"} = qq[SELECT * FROM expr WHERE token${_}_id = ? ORDER BY $q_rand LIMIT 1;];
     }
 
-    $state{$_} = $self->dbh->prepare($state{$_}) for keys %state;
-    return \%state;
-}
-
-# return SQL statements which are not dependent on the Markov order
-sub _sth_sections_static {
-    my ($self) = @_;
-    my %sections;
-    my $prefix = 'static_query_';
-
-    # () sections are magical
-    my @plain_sections = grep { /^$prefix/ and not /\(.*?\)/ } $self->section_data_names;
-    s[^$prefix][] for @plain_sections;
-
-    $sections{$_} = undef for @plain_sections;
-
-    for my $np (qw(next_token prev_token)) {
-        for my $ciag (qw(count inc add get)) {
-            $sections{$np . '_' . $ciag} = {
-                section => "(next_token|prev_token)_$ciag",
-                options => { table => $np },
-            };
+    # DBD specific queries / optimizations / munging
+    given ($dbd) {
+        when ('SQLite') {
+            # Optimize these for SQLite
+            $state{last_expr_rowid}  = qq[SELECT last_insert_rowid();];
+            $state{last_token_rowid} = qq[SELECT last_insert_rowid();];
+            $state{expr_total}       = qq[SELECT seq FROM sqlite_sequence WHERE name = 'expr';];
+            $state{token_total}      = qq[SELECT seq FROM sqlite_sequence WHERE name = 'token';];
+            $state{prev_total}       = qq[SELECT seq FROM sqlite_sequence WHERE name = 'prev_token';];
+            $state{next_total}       = qq[SELECT seq FROM sqlite_sequence WHERE name = 'next_token';];
+        }
+        when ('Pg') {
+            $state{add_token} .= ' RETURNING id';
+            $state{add_expr}  .= ' RETURNING id';
+            $state{exists_db} = qq[SELECT count(*) FROM information_schema.columns WHERE table_name ='info';];
+        }
+        when ('mysql') {
+            $state{exists_db} = qq[SHOW TABLES;];
         }
     }
 
-    return \%sections, $prefix;;
-}
 
-# return SQL statements which are dependent on the Markov order
-sub _sth_sections_dynamic {
-    my ($self) = @_;
-    my %sections;
-    my $prefix = 'dynamic_query_';
+    my %sth = map { $_ => $self->dbh->prepare($state{$_}) } keys %state;
 
-    # () sections are magical
-    my @plain_sections = grep { /^$prefix/ and not /\(.*?\)/ } $self->section_data_names;
-    s[^$prefix][] for @plain_sections;
-
-    $sections{$_} = undef for @plain_sections;
-
-    for my $order (0 .. $self->order-1) {
-        $sections{"expr_by_token${order}_id"} = {
-            section => 'expr_by_token(NUM)_id',
-            options => { column => "token${order}_id" },
-        };
-    }
-
-    {
-        my @columns = map { "token${_}_id" } 0 .. $self->order-1;
-        my @ids = join(', ', ('?') x @columns);
-        $sections{add_expr} = {
-            section => '(add_expr)',
-            options => {
-                columns => join(', ', @columns),
-                ids     => join(', ', @ids),
-            }
-        }
-    }
-
-    return \%sections, $prefix;
+    return \%sth;
 }
 
 __PACKAGE__->meta->make_immutable;
 
-__DATA__
-__[ table_info ]__
-CREATE TABLE info (
-    attribute [% SWITCH dbd %]
-                  [% CASE 'mysql' %]TEXT NOT NULL,
-                  [% CASE DEFAULT %]TEXT NOT NULL PRIMARY KEY,
-              [% END %]
-    text      TEXT NOT NULL
-);
-__[ table_token ]__
-CREATE TABLE token (
-    id   [% SWITCH dbd %]
-            [% CASE 'Pg'    %]SERIAL UNIQUE,
-            [% CASE 'mysql' %]INTEGER PRIMARY KEY AUTO_INCREMENT,
-            [% CASE DEFAULT %]INTEGER PRIMARY KEY AUTOINCREMENT,
-         [% END %]
-    spacing INTEGER NOT NULL,
-    text [% IF dbd == 'mysql' %] VARCHAR(255) [% ELSE %] TEXT [% END %] NOT NULL,
-    count INTEGER NOT NULL
-);
-__[ table_expr ]__
-CREATE TABLE expr (
-    id  [% SWITCH dbd %]
-            [% CASE 'Pg'    %]SERIAL UNIQUE
-            [% CASE 'mysql' %]INTEGER PRIMARY KEY AUTO_INCREMENT
-            [% CASE DEFAULT %]INTEGER PRIMARY KEY AUTOINCREMENT
-        [% END %],
-[% FOREACH i IN orders %]
-    token[% i %]_id INTEGER NOT NULL REFERENCES token (id)[% UNLESS loop.last %],[% END %]
-[% END %]
-);
-__[ table_next_token ]__
-CREATE TABLE next_token (
-    id       [% SWITCH dbd %]
-                 [% CASE 'Pg'    %]SERIAL UNIQUE,
-                 [% CASE 'mysql' %]INTEGER PRIMARY KEY AUTO_INCREMENT,
-                 [% CASE DEFAULT %]INTEGER PRIMARY KEY AUTOINCREMENT,
-             [% END %]
-    expr_id  INTEGER NOT NULL REFERENCES expr (id),
-    token_id INTEGER NOT NULL REFERENCES token (id),
-    count    INTEGER NOT NULL
-);
-__[ table_prev_token ]__
-CREATE TABLE prev_token (
-    id       [% SWITCH dbd %]
-                 [% CASE 'Pg'    %]SERIAL UNIQUE,
-                 [% CASE 'mysql' %]INTEGER PRIMARY KEY AUTO_INCREMENT,
-                 [% CASE DEFAULT %]INTEGER PRIMARY KEY AUTOINCREMENT,
-             [% END %]
-    expr_id  INTEGER NOT NULL REFERENCES expr (id),
-    token_id INTEGER NOT NULL REFERENCES token (id),
-    count    INTEGER NOT NULL
-);
-__[ table_indexes ]__
-CREATE INDEX token_text on token (text);
-[% FOREACH i IN orders %]
-    CREATE INDEX expr_token[% i %]_id on expr (token[% i %]_id);
-[% END %]
-CREATE INDEX expr_token_ids on expr ([% columns %]);
-CREATE INDEX next_token_expr_id ON next_token (expr_id);
-CREATE INDEX prev_token_expr_id ON prev_token (expr_id);
-__[ static_query_get_order ]__
-SELECT text FROM info WHERE attribute = 'markov_order';
-__[ static_query_set_order ]__
-INSERT INTO info (attribute, text) VALUES ('markov_order', ?);
-__[ static_query_token_total ]__
-SELECT COUNT(id) FROM token;
-__[ static_query_expr_total ]__
-SELECT COUNT(id) FROM expr;
-__[ static_query_prev_total ]__
-SELECT COUNT(id) FROM prev_token;
-__[ static_query_next_total ]__
-SELECT COUNT(id) FROM next_token;
-__[ static_query_random_expr ]__
-SELECT * from expr
-[% SWITCH dbd %]
-    [% CASE 'Pg'    %]WHERE id >= (random()*id+1)::int
-    [% CASE 'mysql' %]WHERE id >= (abs(rand()) % (SELECT max(id) FROM expr))
-    [% CASE DEFAULT %]WHERE id >= (abs(random()) % (SELECT max(id) FROM expr))
-[% END %]
-  LIMIT 1;
-__[ static_query_token_id ]__
-SELECT id FROM token WHERE spacing = ? AND text = ?;
-__[ static_query_token_info ]__
-SELECT spacing, text FROM token WHERE id = ?;
-__[ static_query_token_similar ]__
-SELECT id, spacing FROM token WHERE text = ?
-[% SWITCH dbd %]
-    [% CASE 'mysql'  %]ORDER BY RAND()   LIMIT 1;
-    [% CASE DEFAULT  %]ORDER BY RANDOM() LIMIT 1;
-[% END %]
-__[ static_query_add_token ]__
-INSERT INTO token (spacing, text, count) VALUES (?, ?, 0)
-[% IF dbd == 'Pg' %] RETURNING id[% END %];
-__[ static_query_inc_token_count ]__
-UPDATE token SET count = count + 1 WHERE id = ?;
-__[ static_query_last_expr_rowid ]_
-SELECT id FROM expr ORDER BY id DESC LIMIT 1;
-__[ static_query_last_token_rowid ]__
-SELECT id FROM token ORDER BY id DESC LIMIT 1;
-__[ static_query_(next_token|prev_token)_count ]__
-SELECT count FROM [% table %] WHERE expr_id = ? AND token_id = ?;
-__[ static_query_(next_token|prev_token)_inc ]__
-UPDATE [% table %] SET count = count + 1 WHERE expr_id = ? AND token_id = ?
-__[ static_query_(next_token|prev_token)_add ]__
-INSERT INTO [% table %] (expr_id, token_id, count) VALUES (?, ?, 1);
-__[ static_query_(next_token|prev_token)_get ]__
-SELECT token_id, count FROM [% table %] WHERE expr_id = ?;
-__[ static_query_token_count ]__
-SELECT count FROM token WHERE id = ?;
-__[ dynamic_query_(add_expr) ]__
-INSERT INTO expr ([% columns %]) VALUES ([% ids %])
-[% IF dbd == 'Pg' %] RETURNING id[% END %];
-__[ dynamic_query_expr_by_token(NUM)_id ]__
-SELECT * FROM expr WHERE [% column %] = ?
-[% SWITCH dbd %]
-    [% CASE 'mysql'  %]ORDER BY RAND()   LIMIT 1;
-    [% CASE DEFAULT  %]ORDER BY RANDOM() LIMIT 1;
-[% END %]
-__[ dynamic_query_expr_id ]__
-SELECT id FROM expr WHERE
-[% FOREACH i IN orders %]
-    token[% i %]_id = ? [% UNLESS loop.last %] AND [% END %]
-[% END %]
-__[ static_query_exists_db ]__
-[% SWITCH dbd %]
-    [% CASE 'Pg'     %]SELECT count(*) FROM information_schema.columns WHERE table_name ='info';
-    [% CASE 'mysql'  %]SHOW TABLES;
-    [% DEFAULT       %]
-[% END %]
+=head1 NAME
 
+Hailo::Storage::Schema - Deploy the database schema Hailo uses
+
+=head1 AUTHOR
+
+E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2010 E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason
+
+This program is free software, you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut

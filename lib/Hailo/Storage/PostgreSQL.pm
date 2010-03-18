@@ -1,4 +1,5 @@
 package Hailo::Storage::PostgreSQL;
+
 use 5.010;
 use Any::Moose;
 BEGIN {
@@ -57,10 +58,7 @@ sub ready {
 # These two are optimized to use PostgreSQL >8.2's INSERT ... RETURNING
 sub _add_expr {
     my ($self, $token_ids) = @_;
-    # add the expression
     $self->sth->{add_expr}->execute(@$token_ids);
-
-    # get the new expr id
     return $self->sth->{add_expr}->fetchrow_array;
 }
 
