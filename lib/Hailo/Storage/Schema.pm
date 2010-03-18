@@ -5,7 +5,7 @@ use strict;
 
 ## Soup to spawn the database itself / create statement handles
 sub deploy {
-    my ($self, $dbd, $dbh, $order) = @_;
+    my (undef, $dbd, $dbh, $order) = @_;
     my @orders = (0 .. $order-1);
 
     my $int_primary_key = "INTEGER PRIMARY KEY AUTOINCREMENT";
@@ -83,7 +83,7 @@ TABLE
 
 # create statement handle objects
 sub sth {
-    my ($self, $dbd, $dbh, $order)  = @_;
+    my (undef, $dbd, $dbh, $order)  = @_;
     my @orders  = (0 .. $order-1);
     my @columns = map { "token${_}_id" } 0 .. $order-1;
     my $columns = join(', ', @columns);
@@ -165,6 +165,13 @@ sub sth {
 =head1 NAME
 
 Hailo::Storage::Schema - Deploy the database schema Hailo uses
+
+=head1 DESCRIPTION
+
+Implements functions to create the database schema and prepared
+database queries L<Hailo::Storage> needs.
+
+This class is internal to Hailo and has no public interface.
 
 =head1 AUTHOR
 
