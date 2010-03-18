@@ -164,8 +164,10 @@ sub sth {
         }
     }
 
-
-    my %sth = map { $_ => $self->dbh->prepare($state{$_}) } keys %state;
+    # Sort to make error output easier to read if this fails. The
+    # order doesn't matter.
+    my @queries = sort keys %state;
+    my %sth = map { $_ => $self->dbh->prepare($state{$_}) } @queries;
 
     return \%sth;
 }
