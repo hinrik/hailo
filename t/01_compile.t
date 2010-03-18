@@ -46,7 +46,7 @@ SKIP: {
 
         cmp_ok(
             ${"${_}::VERSION"},
-            '==',
+            'eq',
             $Hailo::VERSION,
             qq[$_\::VERSION matches \$Hailo::VERSION. If not use perl-reversion --current ${"${_}::VERSION"} -bump]
         );
