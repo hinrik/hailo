@@ -19,3 +19,4 @@ cover_db
 nytprof*
 *.gz
 *.bz2
+profiling*
