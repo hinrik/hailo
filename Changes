@@ -2,6 +2,22 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Split out Hailo::Storage::* into Hailo::Engine::* and
+      Hailo::Storage::*. This makes it possible to write pluggable
+      engines again (that ability was removed in 0.09). It's the
+      intent to write a XS version of the Default engine.
+
+    - Rather than use the ad-hoc Data::Section + Template::Toolkit way
+      of generating our SQL just use an ugly pure-perl-based class.
+
+      Hailo now uses ~7.2MB of memory when starting up & replying
+      rather than ~10MB as it did before. The startup time is also
+      reduced from around 250ms to 140ms.
+
+    - Don't manually use SQLite's `SELECT last_insert_rowid()' or
+      PostgreSQL's `INSERT ... RETURNING' in the engine. Instead use
+      DBI's `last_insert_id()' which uses those two automatically.
+
 0.30 2010-03-15 15:18:01
 
     - Don't set EXLOCK on temporary files we create. This completely
