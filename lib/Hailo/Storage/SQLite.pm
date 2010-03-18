@@ -1,6 +1,6 @@
 package Hailo::Storage::SQLite;
 
- use 5.010;
+use 5.010;
 use Any::Moose;
 BEGIN {
     return unless Any::Moose::moose_is_preferred();
