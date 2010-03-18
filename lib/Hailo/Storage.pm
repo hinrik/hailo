@@ -116,9 +116,17 @@ sub _engage {
     my ($self) = @_;
 
     if ($self->_exists_db) {
-        $self->sth->{get_order}->execute();
-        my $order = $self->sth->{get_order}->fetchrow_array();
-        $self->order($order);
+        my $sth = $self->dbh->prepare(qq[SELECT text FROM info WHERE attribute = ?;]);
+        $sth->execute('markov_order');
+        my $db_order = $sth->fetchrow_array();
+
+        my $my_order = $self->order;
+        if ($my_order != $db_order) {
+            # TODO: Die loudly if we know the user manually supplied
+            # an order conflicting with the database order
+            #die "You tried to load a database with order = `$db_order' with a Hailo object configured for order = `$my_order'";
+            $self->order($db_order);
+        }
 
         $self->sth->{token_id}->execute(0, '');
         my $id = $self->sth->{token_id}->fetchrow_array;
