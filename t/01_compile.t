@@ -9,15 +9,19 @@ use Test::Script;
 # find lib -type f | perl -pe 's[^lib/][    ]; s[.pm$][]; s[/][::]g'
 my @classes = qw(
     Hailo
-    Hailo::Storage::DBD
-    Hailo::Storage::DBD::SQLite
-    Hailo::Storage::DBD::mysql
-    Hailo::Storage::DBD::Pg
-    Hailo::Role::Arguments
+    Hailo::Storage::MySQL
+    Hailo::Storage::SQLite
+    Hailo::Storage::Schema
+    Hailo::Storage::PostgreSQL
+    Hailo::Command
+    Hailo::Role::Engine
     Hailo::Role::UI
     Hailo::Role::Storage
+    Hailo::Role::Arguments
     Hailo::Role::Tokenizer
+    Hailo::Storage
     Hailo::UI::ReadLine
+    Hailo::Engine::Default
     Hailo::Tokenizer::Words
     Hailo::Tokenizer::Chars
 );
