@@ -20,7 +20,7 @@ sub deploy {
     my @orders = (0 .. $order-1);
 
     my $int_primary_key = "INTEGER PRIMARY KEY AUTOINCREMENT";
-    $int_primary_key    = "INTEGER PRIMARY KEY AUTOINCREMENT" if $dbd eq "mysql";
+    $int_primary_key    = "INTEGER PRIMARY KEY AUTO_INCREMENT" if $dbd eq "mysql";
     $int_primary_key    = "SERIAL UNIQUE" if $dbd eq "Pg";
 
     my $text = 'TEXT';
