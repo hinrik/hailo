@@ -16,6 +16,16 @@ Revision history for Hailo
       intent to write a XS version of the Default engine to make Hailo
       even faster.
 
+    - In addition the storage backends have been moved
+      around. Hailo::Storage::DBD is now just Hailo::Storage and
+      DBD::Pg, DBD::mysql and DBD::SQLite are now directly under the
+      Hailo::Storage namespace as Hailo::Storage::PostgreSQL,
+      Hailo::Storage::MySQL and Hailo::Storage::SQLite.
+
+      For now "Pg" and "mysql" as short names for the storage backends
+      are supported for backwards compatability but this support may
+      be removed in a future release.
+
     - Rather than use the ad-hoc Data::Section + Template::Toolkit way
       of generating our SQL just use an ugly pure-perl-based class.
 
