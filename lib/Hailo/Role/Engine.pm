@@ -24,11 +24,6 @@ A C<Hailo::Engine::*> should implement the following attributes:
 
 A L<storage|Hailo::Role::Storage> object the engine should use to get data from.
 
-=head2 C<tokenizer>
-
-A L<tokenizer|Hailo::Role::Tokenizer> object the engine should use to
-tokenize data with.
-
 =head1 METHODS
 
 =head2 C<new>
