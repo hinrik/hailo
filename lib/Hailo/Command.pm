@@ -144,6 +144,19 @@ has _go_brain => (
 );
 
 # working classes
+has _go_engine_class => (
+    traits        => [ qw/ Getopt / ],
+    cmd_aliases   => "E",
+    cmd_flag      => "engine",
+    isa           => Str,
+    is            => "rw",
+    documentation => "Use engine CLASS",
+    trigger       => sub {
+        my ($self, $class) = @_;
+        $self->engine_class($class);
+    },
+);
+
 has _go_storage_class => (
     traits        => [ qw/ Getopt / ],
     cmd_aliases   => "S",
@@ -184,7 +197,7 @@ has _go_ui_class => (
 );
 
 # Stop Hailo from polluting our command-line interface
-for (qw/ save_on_exit order brain /, map { qq[${_}_class] } qw/ storage tokenizer ui /) {
+for (qw/ save_on_exit order brain /, map { qq[${_}_class] } qw/ engine storage tokenizer ui /) {
     has "+$_" => (
         traits => [ qw/ NoGetopt / ],
     );

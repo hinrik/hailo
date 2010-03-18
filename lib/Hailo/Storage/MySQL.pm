@@ -1,4 +1,5 @@
-package Hailo::Storage::DBD::mysql;
+package Hailo::Storage::MySQL;
+
 use 5.010;
 use Any::Moose;
 BEGIN {
@@ -9,7 +10,7 @@ BEGIN {
 use List::MoreUtils qw< all >;
 use namespace::clean -except => 'meta';
 
-extends 'Hailo::Storage::DBD';
+extends 'Hailo::Storage';
 with qw(Hailo::Role::Arguments Hailo::Role::Storage);
 
 sub _build_dbd { return 'mysql' };
@@ -60,7 +61,7 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Hailo::Storage::DBD::mysql - A storage backend for L<Hailo|Hailo> using
+Hailo::Storage::MySQL - A storage backend for L<Hailo|Hailo> using
 L<DBD::mysql|DBD::mysql>
 
 =head1 SYNOPSIS
@@ -177,7 +178,3 @@ This program is free software, you can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut
-
-__DATA__
-__[ static_query_exists_db ]__
-SHOW TABLES;

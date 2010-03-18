@@ -10,12 +10,16 @@ BEGIN {
     MooseX::StrictConstructor->import;
 }
 use Module::Pluggable (
-    search_path => [ map { "Hailo::$_" } qw(Storage Tokenizer UI) ],
+    search_path => [ map { "Hailo::$_" } qw(Engine Storage Tokenizer UI) ],
     except      => [
         # If an old version of Hailo is already istalled these modules
         # may be lying around. Ignore them manually; and make sure to
         # update this list if we move things around again.
-        map( { qq[Hailo::Storage::$_] } qw(SQL SQLite Pg mysql)),
+        map( { qq[Hailo::Storage::Mixin::$_] } qw(Storable Hash CHI DBD Hash::Flat) ),
+        map( { qq[Hailo::Storage::DBD::$_] }   qw(SQLite Pg mysql) ),
+        map( { qq[Hailo::Storage::CHI::$_] }   qw(Memory File BerkeleyDB) ),
+        map( { qq[Hailo::Storage::$_] }        qw(DBD Schema SQL Pg mysql Perl Perl::Flat) ),
+        map( { qq[Hailo::Tokenizer::$_] }      qw(Characters) ),
     ],
 );
 use List::Util qw(first);
@@ -49,6 +53,12 @@ has brain_resource => (
 );
     
 # working classes
+has engine_class => (
+    isa           => Str,
+    is            => "rw",
+    default       => "Default",
+);
+
 has storage_class => (
     isa           => Str,
     is            => "rw",
@@ -68,6 +78,14 @@ has ui_class => (
 );
 
 # Object arguments
+has engine_args => (
+    documentation => "Arguments for the Engine class",
+    isa           => HashRef,
+    coerce        => 1,
+    is            => "ro",
+    default       => sub { +{} },
+);
+
 has storage_args => (
     documentation => "Arguments for the Storage class",
     isa           => HashRef,
@@ -91,6 +109,13 @@ has ui_args => (
 );
 
 # Working objects
+has _engine => (
+    does        => 'Hailo::Role::Engine',
+    lazy_build  => 1,
+    is          => 'ro',
+    init_arg    => undef,
+);
+
 has _storage => (
     does        => 'Hailo::Role::Storage',
     lazy_build  => 1,
@@ -111,6 +136,20 @@ has _ui => (
     is          => 'ro',
     init_arg    => undef,
 );
+
+sub _build__engine {
+    my ($self) = @_;
+    my $obj = $self->_new_class(
+        "Engine",
+        $self->engine_class,
+        {
+            storage   => $self->_storage,
+            arguments => $self->engine_args,
+        },
+    );
+
+    return $obj;
+}
 
 sub _build__storage {
     my ($self) = @_;
@@ -158,9 +197,15 @@ sub _build__ui {
 sub _new_class {
     my ($self, $type, $class, $args) = @_;
 
+    # Backwards compatability hack. Plugins were renamed in 0.31
+    $class =~ s/DBD:://;
+    $class =~ s/^Pg$/PostgreSQL/;
+    $class =~ s/^mysql$/MySQL/;
+
     # Be fuzzy about includes, e.g. DBD::SQLite or SQLite or sqlite will go
     my $pkg = first { / $type : .* : $class /ix }
-              sort { length $a <=> length $b } $self->plugins;
+              sort { length $a <=> length $b }
+              $self->plugins;
 
     unless ($pkg) {
         local $" = ', ';
@@ -261,15 +306,11 @@ sub learn {
 
 sub _learn_one {
     my ($self, $input) = @_;
-    my $storage = $self->_storage;
-    my $order   = $storage->order;
+    my $engine  = $self->_engine;
 
     my $tokens = $self->_tokenizer->make_tokens($input);
+    $engine->learn($tokens);
 
-    # only learn from inputs which are long enough
-    return if @$tokens < $order;
-
-    $storage->learn_tokens($tokens);
     return;
 }
 
@@ -281,20 +322,25 @@ sub learn_reply {
 
 sub reply {
     my ($self, $input) = @_;
-    my $storage = $self->_storage;
-    my $toke    = $self->_tokenizer;
+    my $engine    = $self->_engine;
+    my $storage   = $self->_storage;
+    my $tokenizer = $self->_tokenizer;
+
+    # start_training() hasn't been called so we can't guarentee that
+    # the storage has been engaged at this point.
+    $storage->_engage() unless $storage->_engaged;
 
     my $reply;
     if (defined $input) {
-        my $tokens = $toke->make_tokens($input);
-        $reply = $storage->make_reply($tokens);
+        my $tokens = $tokenizer->make_tokens($input);
+        $reply = $engine->reply($tokens);
     }
     else {
-        $reply = $storage->make_reply();
+        $reply = $engine->reply();
     }
 
     return if !defined $reply;
-    return $toke->make_output($reply);
+    return $tokenizer->make_output($reply);
 }
 
 sub stats {
@@ -385,11 +431,11 @@ command-line utility.
 =head2 Storage
 
 Hailo can currently store its data in either a
-L<SQLite|Hailo::Storage::DBD::SQLite>,
-L<PostgreSQL|Hailo::Storage::DBD::Pg> or
-L<MySQL|Hailo::Storage::DBD::mysql> database, more backends were
-supported in earlier versions but they were removed as they had no
-redeeming quality.
+L<SQLite|Hailo::Storage::SQLite>,
+L<PostgreSQL|Hailo::Storage::PostgreSQL> or
+L<MySQL|Hailo::Storage::MySQL> database, more backends were supported
+in earlier versions but they were removed as they had no redeeming
+quality.
 
 SQLite is the primary target for Hailo. It's much faster and uses less
 resources than the other two. It's highly recommended that you use it.
@@ -541,6 +587,10 @@ L<save|/save> at C<DEMOLISH> time.
 The Markov order (chain length) you want to use for an empty brain.
 The default is 2.
 
+=head2 C<engine_class>
+
+The storage backend to use. Default: 'Default'.
+
 =head2 C<storage_class>
 
 The storage backend to use. Default: 'SQLite'.
@@ -553,14 +603,17 @@ The tokenizer to use. Default: 'Words';
 
 The UI to use. Default: 'ReadLine';
 
+=head2 C<engine_args>
+
 =head2 C<storage_args>
 
 =head2 C<tokenizer_args>
 
 =head2 C<ui_args>
 
-A C<HashRef> of arguments for storage/tokenizer/ui backends. See the
-documentation for the backends for what sort of arguments they accept.
+A C<HashRef> of arguments for engine/storage/tokenizer/ui
+backends. See the documentation for the backends for what sort of
+arguments they accept.
 
 =head1 METHODS
 
