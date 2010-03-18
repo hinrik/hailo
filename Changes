@@ -2,10 +2,19 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Optimization and cleanup release. Hailo is now much much
+      snappier and eats less memory. Here's how long it takes to run
+      the test suite before/after 0.30:
+
+                      s/iter   0.30 Hailo    0.31 Hailo
+        0.30 Hailo      20.2           --          -16%
+        0.31 Hailo      16.9          19%            --
+
     - Split out Hailo::Storage::* into Hailo::Engine::* and
       Hailo::Storage::*. This makes it possible to write pluggable
       engines again (that ability was removed in 0.09). It's the
-      intent to write a XS version of the Default engine.
+      intent to write a XS version of the Default engine to make Hailo
+      even faster.
 
     - Rather than use the ad-hoc Data::Section + Template::Toolkit way
       of generating our SQL just use an ugly pure-perl-based class.
@@ -13,6 +22,10 @@ Revision history for Hailo
       Hailo now uses ~7.2MB of memory when starting up & replying
       rather than ~10MB as it did before. The startup time is also
       reduced from around 250ms to 140ms.
+
+      See http://blogs.perl.org/users/aevar_arnfjor_bjarmason/2010/03/benchmarking-dbixclass-vs-plain-dbi-on-hailo.html
+      for some of the other things that I tried before settling
+      on this hack.
 
     - Don't manually use SQLite's `SELECT last_insert_rowid()' or
       PostgreSQL's `INSERT ... RETURNING' in the engine. Instead use
