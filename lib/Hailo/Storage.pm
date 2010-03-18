@@ -76,24 +76,6 @@ has _engaged => (
     documentation => 'Have we done setup work to get this database going?',
 );
 
-has _schema => (
-    is         => 'ro',
-    lazy_build => 1,
-    documentation => 'A Hailo::Storage::Schema object',
-);
-
-sub _build__schema {
-    my ($self) = @_;
-
-    my $schema = Hailo::Storage::Schema->new(
-        order => $self->order,
-        dbd   => $self->dbd,
-        dbh   => $self->dbh,
-    );
-
-    return $schema;
-}
-
 has sth => (
     isa        => HashRef,
     is         => 'ro',
@@ -103,7 +85,7 @@ has sth => (
 
 sub _build_sth {
     my ($self) = @_;
-    return $self->_schema->sth;
+    return Hailo::Storage::Schema->sth($self->dbd, $self->dbh, $self->order);
 }
 
 has _boundary_token_id => (
@@ -133,7 +115,7 @@ sub _engage {
         $self->_boundary_token_id($id);
     }
     else {
-        $self->_schema->deploy;
+        Hailo::Storage::Schema->deploy($self->dbd, $self->dbh, $self->order);
 
         my $order = $self->order;
         $self->sth->{set_order}->execute($order);

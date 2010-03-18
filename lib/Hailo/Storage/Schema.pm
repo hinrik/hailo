@@ -1,22 +1,11 @@
 package Hailo::Storage::Schema;
 
 use 5.010;
-use Any::Moose;
-BEGIN {
-    return unless Any::Moose::moose_is_preferred();
-    require MooseX::StrictConstructor;
-    MooseX::StrictConstructor->import;
-}
-
-has dbd   => (is => 'ro');
-has dbh   => (is => 'ro');
-has order => (is => 'ro');
+use strict;
 
 ## Soup to spawn the database itself / create statement handles
 sub deploy {
-    my ($self) = @_;
-    my $dbd    = $self->dbd;
-    my $order  = $self->order;
+    my ($self, $dbd, $dbh, $order) = @_;
     my @orders = (0 .. $order-1);
 
     my $int_primary_key = "INTEGER PRIMARY KEY AUTOINCREMENT";
@@ -86,7 +75,7 @@ TABLE
 
 
     for (@tables) {
-        $self->dbh->do($_);
+        $dbh->do($_);
     }
 
     return;
@@ -94,9 +83,7 @@ TABLE
 
 # create statement handle objects
 sub sth {
-    my ($self)  = @_;
-    my $dbd     = $self->dbd;
-    my $order   = $self->order;
+    my ($self, $dbd, $dbh, $order)  = @_;
     my @orders  = (0 .. $order-1);
     my @columns = map { "token${_}_id" } 0 .. $order-1;
     my $columns = join(', ', @columns);
@@ -168,12 +155,12 @@ sub sth {
     # Sort to make error output easier to read if this fails. The
     # order doesn't matter.
     my @queries = sort keys %state;
-    my %sth = map { $_ => $self->dbh->prepare($state{$_}) } @queries;
+    my %sth = map { $_ => $dbh->prepare($state{$_}) } @queries;
 
     return \%sth;
 }
 
-__PACKAGE__->meta->make_immutable;
+1;
 
 =head1 NAME
 
