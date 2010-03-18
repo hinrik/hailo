@@ -606,7 +606,7 @@ tokenizer or ui backends.
 
 By default this is B<Default> for the engine, B<SQLite> for storage,
 B<Words> for the tokenizer and B<ReadLine> for the UI. The UI backend
-is only useb by the L<hailo> command-line interface.
+is only used by the L<hailo> command-line interface.
 
 You can only specify the short name of one of the packages Hailo
 itself ships with. If you need another class then just prefix the
