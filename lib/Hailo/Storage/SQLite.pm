@@ -1,4 +1,4 @@
-package Hailo::Storage::DBD::SQLite;
+package Hailo::Storage::SQLite;
 use 5.010;
 use Any::Moose;
 BEGIN {
@@ -8,7 +8,7 @@ BEGIN {
 }
 use namespace::clean -except => 'meta';
 
-extends 'Hailo::Storage::DBD';
+extends 'Hailo::Storage';
 with qw(Hailo::Role::Arguments Hailo::Role::Storage);
 
 sub _build_dbd { return 'SQLite' };
@@ -132,8 +132,7 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Hailo::Storage::DBD::SQLite - A storage backend for L<Hailo|Hailo> using
-L<DBD::SQLite|DBD::SQLite>
+Hailo::Storage::SQLite - A storage backend for L<Hailo|Hailo> using L<DBD::SQLite>
 
 =head1 SYNOPSIS
 

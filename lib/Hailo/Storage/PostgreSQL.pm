@@ -1,4 +1,4 @@
-package Hailo::Storage::DBD::Pg;
+package Hailo::Storage::PostgreSQL;
 use 5.010;
 use Any::Moose;
 BEGIN {
@@ -8,7 +8,7 @@ BEGIN {
 }
 use namespace::clean -except => 'meta';
 
-extends 'Hailo::Storage::DBD';
+extends 'Hailo::Storage';
 with qw(Hailo::Role::Arguments Hailo::Role::Storage);
 
 sub _build_dbd { return 'Pg' };
@@ -76,8 +76,7 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Hailo::Storage::DBD::Pg - A storage backend for L<Hailo|Hailo> using
-L<DBD::Pg|DBD::Pg>
+Hailo::Storage::PostgreSQL - A storage backend for L<Hailo|Hailo> using L<DBD::Pg>
 
 =head1 SYNOPSIS
 
@@ -158,13 +157,6 @@ B<'username'>, the username to use.
 
 B<'password'>, the password to use.
 
-=head1 CAVEATS
-
-It's around 8x-10x slower than L<the SQLite
-backend|Hailo::Storage::DBD::SQLite> in my tests. Maybe this is due to
-an unoptimal PostgreSQL configuration (I used the Debian defaults) or
-perhaps the schema we're using simply suits SQLite better.
-
 =head1 AUTHOR
 
 E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
@@ -177,7 +169,3 @@ This program is free software, you can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut
-
-__DATA__
-__[ static_query_exists_db ]__
-SELECT count(*) FROM information_schema.columns WHERE table_name ='info';

@@ -15,7 +15,11 @@ use Module::Pluggable (
         # If an old version of Hailo is already istalled these modules
         # may be lying around. Ignore them manually; and make sure to
         # update this list if we move things around again.
-        map( { qq[Hailo::Storage::$_] } qw(SQL SQLite Pg mysql)),
+        map( { qq[Hailo::Storage::Mixin::$_] } qw(Storable Hash CHI DBD Hash::Flat) ),
+        map( { qq[Hailo::Storage::DBD::$_] }   qw(SQLite Pg mysql) ),
+        map( { qq[Hailo::Storage::CHI::$_] }   qw(Memory File BerkeleyDB) ),
+        map( { qq[Hailo::Storage::$_] }        qw(DBD Schema SQL Pg mysql Perl Perl::Flat) ),
+        map( { qq[Hailo::Tokenizer::$_] }      qw(Characters) ),
     ],
 );
 use List::Util qw(first);
@@ -193,9 +197,15 @@ sub _build__ui {
 sub _new_class {
     my ($self, $type, $class, $args) = @_;
 
+    # Backwards compatability hack. Plugins were renamed in 0.31
+    $class =~ s/DBD:://;
+    $class =~ s/^Pg$/PostgreSQL/;
+    $class =~ s/^mysql$/MySQL/;
+
     # Be fuzzy about includes, e.g. DBD::SQLite or SQLite or sqlite will go
     my $pkg = first { / $type : .* : $class /ix }
-              sort { length $a <=> length $b } $self->plugins;
+              sort { length $a <=> length $b }
+              $self->plugins;
 
     unless ($pkg) {
         local $" = ', ';
@@ -421,11 +431,11 @@ command-line utility.
 =head2 Storage
 
 Hailo can currently store its data in either a
-L<SQLite|Hailo::Storage::DBD::SQLite>,
-L<PostgreSQL|Hailo::Storage::DBD::Pg> or
-L<MySQL|Hailo::Storage::DBD::mysql> database, more backends were
-supported in earlier versions but they were removed as they had no
-redeeming quality.
+L<SQLite|Hailo::Storage::SQLite>,
+L<PostgreSQL|Hailo::Storage::PostgreSQL> or
+L<MySQL|Hailo::Storage::MySQL> database, more backends were supported
+in earlier versions but they were removed as they had no redeeming
+quality.
 
 SQLite is the primary target for Hailo. It's much faster and uses less
 resources than the other two. It's highly recommended that you use it.
