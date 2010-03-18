@@ -140,9 +140,9 @@ Hailo::Storage::SQLite - A storage backend for L<Hailo|Hailo> using L<DBD::SQLit
 As a module:
 
     my $hailo = Hailo->new(
-        train_file    => 'hailo.trn',
         storage_class => 'SQLite',
     );
+    $hailo->train("hailo.trn");
 
 From the command line:
 

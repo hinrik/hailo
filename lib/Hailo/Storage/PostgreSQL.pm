@@ -76,17 +76,16 @@ First create a PostgreSQL database for failo:
 As a module:
 
     my $hailo = Hailo->new(
-        train_file    => 'hailo.trn',
         storage_class => 'Pg',
         storage_args => {
             dbname   => 'hailo',
         },
     );
+    $hailo->train("hailo.trn");
 
 Or with complex connection options:
 
     my $hailo = Hailo->new(
-        train_file    => 'hailo.trn',
         storage_class => 'Pg',
         storage_args => {
             dbname   => 'hailo',
@@ -97,6 +96,7 @@ Or with complex connection options:
             password => 'hailo'
         },
     );
+    $hailo->train("hailo.trn");
 
 From the command line:
 

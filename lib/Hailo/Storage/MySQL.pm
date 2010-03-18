@@ -69,7 +69,6 @@ L<DBD::mysql|DBD::mysql>
 As a module:
 
     my $hailo = Hailo->new(
-        train_file    => 'hailo.trn',
         storage_class => 'mysql',
         storage_args  => {
             database  => 'hailo',
@@ -79,6 +78,7 @@ As a module:
             password  => 'hailo'
         },
     );
+    $hailo->train("hailo.trn");
 
 From the command line:
 
