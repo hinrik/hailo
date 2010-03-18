@@ -31,6 +31,11 @@ Revision history for Hailo
       PostgreSQL's `INSERT ... RETURNING' in the engine. Instead use
       DBI's `last_insert_id()' which uses those two automatically.
 
+    - Ditch Module::Pluggable: Hailo now can only load one of its
+      hardcoded core modules as a plugin or alternatively a foreign
+      module if it's prefixed with + before the module name. See
+      Hailo's main documentation for more info.
+
 0.30 2010-03-15 15:18:01
 
     - Don't set EXLOCK on temporary files we create. This completely
