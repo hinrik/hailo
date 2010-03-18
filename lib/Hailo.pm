@@ -9,21 +9,8 @@ BEGIN {
     require MooseX::StrictConstructor;
     MooseX::StrictConstructor->import;
 }
-use Module::Pluggable (
-    search_path => [ map { "Hailo::$_" } qw(Engine Storage Tokenizer UI) ],
-    except      => [
-        # If an old version of Hailo is already istalled these modules
-        # may be lying around. Ignore them manually; and make sure to
-        # update this list if we move things around again.
-        map( { qq[Hailo::Storage::Mixin::$_] } qw(Storable Hash CHI DBD Hash::Flat) ),
-        map( { qq[Hailo::Storage::DBD::$_] }   qw(SQLite Pg mysql) ),
-        map( { qq[Hailo::Storage::CHI::$_] }   qw(Memory File BerkeleyDB) ),
-        map( { qq[Hailo::Storage::$_] }        qw(DBD Schema SQL Pg mysql Perl Perl::Flat) ),
-        map( { qq[Hailo::Tokenizer::$_] }      qw(Characters) ),
-    ],
-);
 use List::Util qw(first);
-use namespace::clean -except => [ qw(meta plugins) ];
+use namespace::clean -except => 'meta';
 
 has brain => (
     isa => Str,
@@ -194,6 +181,16 @@ sub _build__ui {
     return $obj;
 }
 
+sub plugins { qw[
+    Hailo::Engine::Default
+    Hailo::Storage::MySQL
+    Hailo::Storage::PostgreSQL
+    Hailo::Storage::SQLite
+    Hailo::Tokenizer::Chars
+    Hailo::Tokenizer::Words
+    Hailo::UI::ReadLine
+] }
+
 sub _new_class {
     my ($self, $type, $class, $args) = @_;
 
@@ -202,16 +199,24 @@ sub _new_class {
     $class =~ s/^Pg$/PostgreSQL/;
     $class =~ s/^mysql$/MySQL/;
 
-    # Be fuzzy about includes, e.g. DBD::SQLite or SQLite or sqlite will go
-    my $pkg = first { / $type : .* : $class /ix }
-              sort { length $a <=> length $b }
-              $self->plugins;
 
-    unless ($pkg) {
-        local $" = ', ';
-        my @plugins = grep { /$type/ } $self->plugins;
-        die "Couldn't find a class name matching '$class' in plugins '@plugins'";
+    my $pkg;
+    if ($class =~ m[^\+(?<custom_plugin>.+)$]) {
+        $pkg = $+{custom_plugin};
+    } else {
+        # Be fuzzy about includes, e.g. DBD::SQLite or SQLite or sqlite will go
+        $pkg = first { / $type : .* : $class /ix }
+               sort { length $a <=> length $b }
+               $self->plugins;
+
+        unless ($pkg) {
+            local $" = ', ';
+            my @plugins = grep { /$type/ } $self->plugins;
+            die "Couldn't find a class name matching '$class' in plugins '@plugins'";
+        }
     }
+
+
 
     if (Any::Moose::moose_is_preferred()) {
         require Class::MOP;
@@ -589,19 +594,22 @@ The default is 2.
 
 =head2 C<engine_class>
 
-The storage backend to use. Default: 'Default'.
-
 =head2 C<storage_class>
-
-The storage backend to use. Default: 'SQLite'.
 
 =head2 C<tokenizer_class>
 
-The tokenizer to use. Default: 'Words';
-
 =head2 C<ui_class>
 
-The UI to use. Default: 'ReadLine';
+A a short name name of the class we use for the engine, storage,
+tokenizer or ui backends.
+
+By default this is B<Default> for the engine, B<SQLite> for storage,
+B<Words> for the tokenizer and B<ReadLine> for the UI. The UI backend
+is only useb by the L<hailo> command-line interface.
+
+You can only specify the short name of one of the packages Hailo
+itself ships with. If you need another class then just prefix the
+package with a plus (Catalyst style), e.g. C<+My::Foreign::Tokenizer>.
 
 =head2 C<engine_args>
 
