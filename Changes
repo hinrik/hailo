@@ -46,6 +46,9 @@ Revision history for Hailo
       module if it's prefixed with + before the module name. See
       Hailo's main documentation for more info.
 
+    - Fix incorrect SYNOPSIS examples in the documentation for the
+      PostgreSQL, SQLite and MySQL backends.
+
 0.30 2010-03-15 15:18:01
 
     - Don't set EXLOCK on temporary files we create. This completely
