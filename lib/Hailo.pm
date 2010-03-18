@@ -407,9 +407,10 @@ command-line invocation.
 =head1 DESCRIPTION
 
 Hailo is a fast and lightweight markov engine intended to replace
-L<AI::MegaHAL|AI::MegaHAL>. It has a L<Mouse|Mouse> (or L<Moose|Moose>)
-based core with pluggable L<storage|Hailo::Role::Storage> and
-L<tokenizer|Hailo::Role::Tokenizer> backends.
+L<AI::MegaHAL|AI::MegaHAL>. It has a L<Mouse|Mouse> (or
+L<Moose|Moose>) based core with pluggable
+L<storage|Hailo::Role::Storage>, L<tokenizer|Hailo::Role::Tokenizer>
+and L<engine|Hailo::Role::Engine> backends.
 
 It is similar to MegaHAL in functionality, the main differences (with the
 default backends) being better scalability, drastically less memory usage,
