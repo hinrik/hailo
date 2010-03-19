@@ -16,6 +16,7 @@ with qw(Hailo::Role::Arguments
 
 sub BUILD {
     $ENV{PERL_RL} = 'Perl o=0' unless $ENV{PERL_RL};
+    return;
 }
 
 sub run {
