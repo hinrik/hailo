@@ -327,13 +327,16 @@ sub learn_reply {
 
 sub reply {
     my ($self, $input) = @_;
-    my $engine    = $self->_engine;
-    my $storage   = $self->_storage;
-    my $tokenizer = $self->_tokenizer;
 
+    my $storage   = $self->_storage;
     # start_training() hasn't been called so we can't guarentee that
-    # the storage has been engaged at this point.
+    # the storage has been engaged at this point. This must be called
+    # before ->_engine() is called anywhere to ensure that the
+    # lazy-loading in the engine works.
     $storage->_engage() unless $storage->_engaged;
+
+    my $engine    = $self->_engine;
+    my $tokenizer = $self->_tokenizer;
 
     my $reply;
     if (defined $input) {

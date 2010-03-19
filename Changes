@@ -2,6 +2,14 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Alter Hailo::Engine::Default to use less method calls. On
+      t/hailo/real_workload.t (i.e. mass replies) this speeds up Hailo
+      by 8%:
+
+                     s/iter System Hailo    lib Hailo
+        System Hailo   74.8           --          -7%
+        lib Hailo      69.4           8%           --
+
 0.32 2010-03-19 12:00:22
 
     - t/storage/dbd-options.t wasn't updated to take into account the

@@ -25,6 +25,22 @@ has repeat_limit => (
     }
 );
 
+sub BUILD {
+    my ($self) = @_;
+
+    # This performance hack is here because in our tight loops calling
+    # $self->storage->sth->{...} is actually a significant part of the
+    # overall program execution time since we're doing two method
+    # calls and hash dereferences for each call to the database.
+
+    my $sth = $self->storage->sth;
+    while (my ($k, $v) = each %$sth) {
+        $self->{"_sth_$k"} = $v;
+    }
+
+    return;
+}
+
 ## no critic (Subroutines::ProhibitExcessComplexity)
 sub reply {
     my $self = shift;
@@ -103,8 +119,8 @@ sub reply {
     my @reply;
     for my $id (@token_ids) {
         if (!exists $token_cache{$id}) {
-            $self->storage->sth->{token_info}->execute($id);
-            $token_cache{$id} = [$self->storage->sth->{token_info}->fetchrow_array];
+            $self->{_sth_token_info}->execute($id);
+            $token_cache{$id} = [$self->{_sth_token_info}->fetchrow_array];
         }
         push @reply, $token_cache{$id};
     }
@@ -133,7 +149,7 @@ sub learn {
 
         if (!defined $expr_id) {
             $expr_id = $self->_add_expr(\@expr);
-            $self->storage->sth->{inc_token_count}->execute($_) for uniq(@expr);
+            $self->{_sth_inc_token_count}->execute($_) for uniq(@expr);
         }
 
         # add link to next token for this expression, if any
@@ -165,8 +181,8 @@ sub _find_rare_tokens {
     my %links;
     for my $id (@$token_ids) {
         next if exists $links{$id};
-        $self->storage->sth->{token_count}->execute($id);
-        $links{$id} = $self->storage->sth->{token_count}->fetchrow_array;
+        $self->{_sth_token_count}->execute($id);
+        $links{$id} = $self->{_sth_token_count}->fetchrow_array;
     }
 
     # remove tokens which are too rare
@@ -181,14 +197,14 @@ sub _find_rare_tokens {
 sub _inc_link {
     my ($self, $type, $expr_id, $token_id) = @_;
 
-    $self->storage->sth->{"${type}_count"}->execute($expr_id, $token_id);
-    my $count = $self->storage->sth->{"${type}_count"}->fetchrow_array;
+    $self->{"_sth_${type}_count"}->execute($expr_id, $token_id);
+    my $count = $self->{"_sth_${type}_count"}->fetchrow_array;
 
     if (defined $count) {
-        $self->storage->sth->{"${type}_inc"}->execute($expr_id, $token_id);
+        $self->{"_sth_${type}_inc"}->execute($expr_id, $token_id);
     }
     else {
-        $self->storage->sth->{"${type}_add"}->execute($expr_id, $token_id);
+        $self->{"_sth_${type}_add"}->execute($expr_id, $token_id);
     }
 
     return;
@@ -199,23 +215,23 @@ sub _add_expr {
     my ($self, $token_ids) = @_;
 
     # add the expression
-    $self->storage->sth->{add_expr}->execute(@$token_ids);
+    $self->{_sth_add_expr}->execute(@$token_ids);
     return $self->storage->dbh->last_insert_id(undef, undef, "expr", undef);
 }
 
 # look up an expression id based on tokens
 sub _expr_id {
     my ($self, $tokens) = @_;
-    $self->storage->sth->{expr_id}->execute(@$tokens);
-    return $self->storage->sth->{expr_id}->fetchrow_array();
+    $self->{_sth_expr_id}->execute(@$tokens);
+    return $self->{_sth_expr_id}->fetchrow_array();
 }
 
 # return token id if the token exists
 sub _token_id {
     my ($self, $token_info) = @_;
 
-    $self->storage->sth->{token_id}->execute(@$token_info);
-    my $token_id = $self->storage->sth->{token_id}->fetchrow_array();
+    $self->{_sth_token_id}->execute(@$token_info);
+    my $token_id = $self->{_sth_token_id}->fetchrow_array();
 
     return if !defined $token_id;
     return $token_id;
@@ -233,14 +249,14 @@ sub _token_id_add {
 # return all tokens (regardless of spacing) that consist of this text
 sub _token_similar {
     my ($self, $token_text) = @_;
-    $self->storage->sth->{token_similar}->execute($token_text);
-    return $self->storage->sth->{token_similar}->fetchrow_arrayref;
+    $self->{_sth_token_similar}->execute($token_text);
+    return $self->{_sth_token_similar}->fetchrow_arrayref;
 }
 
 # add a new token and return its id
 sub _add_token {
     my ($self, $token_info) = @_;
-    $self->storage->sth->{add_token}->execute(@$token_info);
+    $self->{_sth_add_token}->execute(@$token_info);
     return $self->storage->dbh->last_insert_id(undef, undef, "token", undef);
 }
 
@@ -251,8 +267,8 @@ sub _random_expr {
     my $expr;
 
     if (!defined $token_id) {
-        $self->storage->sth->{random_expr}->execute();
-        $expr = $self->storage->sth->{random_expr}->fetchrow_arrayref();
+        $self->{_sth_random_expr}->execute();
+        $expr = $self->{_sth_random_expr}->fetchrow_arrayref();
     }
     else {
         # try the positions in a random order
@@ -260,8 +276,8 @@ sub _random_expr {
             my $column = "token${pos}_id";
 
             # get a random expression which includes the token at this position
-            $self->storage->sth->{"expr_by_$column"}->execute($token_id);
-            $expr = $self->storage->sth->{"expr_by_$column"}->fetchrow_arrayref();
+            $self->{"_sth_expr_by_$column"}->execute($token_id);
+            $expr = $self->{"_sth_expr_by_$column"}->fetchrow_arrayref();
             last if defined $expr;
         }
     }
@@ -274,8 +290,8 @@ sub _random_expr {
 sub _pos_token {
     my ($self, $pos, $expr_id, $key_tokens) = @_;
 
-    $self->storage->sth->{"${pos}_token_get"}->execute($expr_id);
-    my $pos_tokens = $self->storage->sth->{"${pos}_token_get"}->fetchall_hashref('token_id');
+    $self->{"_sth_${pos}_token_get"}->execute($expr_id);
+    my $pos_tokens = $self->{"_sth_${pos}_token_get"}->fetchall_hashref('token_id');
 
     if (defined $key_tokens) {
         for my $i (0 .. $#{ $key_tokens }) {
