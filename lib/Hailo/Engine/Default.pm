@@ -1,4 +1,5 @@
 package Hailo::Engine::Default;
+
 use 5.010;
 use Any::Moose;
 use Any::Moose 'X::Types::'.any_moose() => [qw< Int >];
@@ -291,3 +292,31 @@ sub _pos_token {
 }
 
 __PACKAGE__->meta->make_immutable;
+
+=encoding utf8
+
+=head1 NAME
+
+Hailo::Engine::Default - The default engine backend for L<Hailo|Hailo>
+
+=head1 DESCRIPTION
+
+This backend implements the logic of replying to and learning from
+input using the resources given to the L<engine
+roles|Hailo::Role::Engine>.
+
+=head1 AUTHORS
+
+Hinrik E<Ouml>rn SigurE<eth>sson, hinrik.sig@gmail.com
+
+E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2010 Hinrik E<Ouml>rn SigurE<eth>sson and
+E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
+
+This program is free software, you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
