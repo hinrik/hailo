@@ -2,11 +2,6 @@ Revision history for Hailo
 
 {{$NEXT}}
 
-    - Optimize: Add /o to regexes in Hailo::Tokenizer::Words. Before
-      it recompiled rexeges every time a new string was parsed, now
-      they're compiled once per process. This made the 36s exhaustive
-      test run in ~35s.
-
 0.31 2010-03-18 21:45:25
 
     - Optimization and cleanup release. Hailo is now much much
