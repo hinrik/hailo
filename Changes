@@ -2,6 +2,8 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+0.32 2010-03-19 12:00:22
+
     - t/storage/dbd-options.t wasn't updated to take into account the
       renaming of modules done in 0.31. It would fail on machines that
       didn't have an older version of Hailo installed when running
