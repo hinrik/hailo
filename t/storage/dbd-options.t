@@ -2,16 +2,15 @@ use 5.010;
 use strict;
 use warnings;
 use Test::More tests => 4;
-use Hailo;
-use Hailo::Storage::DBD;
-use Hailo::Storage::DBD::Pg;
-use Hailo::Storage::DBD::SQLite;
-use Hailo::Storage::DBD::mysql;
+use Hailo::Storage;
+use Hailo::Storage::SQLite;
+use Hailo::Storage::MySQL;
+use Hailo::Storage::PostgreSQL;
 
-my $sql    = Hailo::Storage::DBD->new;
-my $pg     = Hailo::Storage::DBD::Pg->new;
-my $sqlite = Hailo::Storage::DBD::SQLite->new;
-my $mysql  = Hailo::Storage::DBD::mysql->new;
+my $sql    = Hailo::Storage->new;
+my $pg     = Hailo::Storage::PostgreSQL->new;
+my $sqlite = Hailo::Storage::SQLite->new;
+my $mysql  = Hailo::Storage::MySQL->new;
 
 # SQL
 is_deeply(
@@ -19,7 +18,7 @@ is_deeply(
     {
         RaiseError => 1,
     },
-    "SQL options"
+    "Storage options"
 );
 
 # Pg
@@ -29,7 +28,7 @@ is_deeply(
         pg_enable_utf8 => 1,
         RaiseError => 1,
     },
-    "Pg options"
+    "PostgreSQL options"
 );
 
 # SQLite
@@ -49,7 +48,5 @@ is_deeply(
         mysql_enable_utf8 => 1,
         RaiseError => 1,
     },
-    "mysql options"
+    "MySQL options"
 );
-
-
