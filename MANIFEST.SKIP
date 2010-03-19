@@ -12,4 +12,5 @@
 ^blib/
 \.#
 ^utils/developer/
+^xt/
 ^RELEASE
