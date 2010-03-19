@@ -181,7 +181,7 @@ sub _build__ui {
     return $obj;
 }
 
-sub plugins { qw[
+sub _plugins { qw[
     Hailo::Engine::Default
     Hailo::Storage::MySQL
     Hailo::Storage::PostgreSQL
@@ -207,7 +207,7 @@ sub _new_class {
         # Be fuzzy about includes, e.g. DBD::SQLite or SQLite or sqlite will go
         $pkg = first { / $type : .* : $class /ix }
                sort { length $a <=> length $b }
-               $self->plugins;
+               $self->_plugins;
 
         unless ($pkg) {
             local $" = ', ';
