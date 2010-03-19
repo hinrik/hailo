@@ -291,18 +291,21 @@ sub _pos_token {
     my ($self, $pos, $expr_id, $key_tokens) = @_;
 
     $self->{"_sth_${pos}_token_get"}->execute($expr_id);
-    my $pos_tokens = $self->{"_sth_${pos}_token_get"}->fetchall_hashref('token_id');
+    my $pos_tokens = $self->{"_sth_${pos}_token_get"}->fetchall_arrayref();
 
     if (defined $key_tokens) {
         for my $i (0 .. $#{ $key_tokens }) {
-            next if !exists $pos_tokens->{ @$key_tokens[$i] };
+            my $want_id = $key_tokens->[$i];
+            my @ids     = map { map { @$_  } $_ } @$pos_tokens;
+            my $has_id  = grep { $_ == $want_id } @ids;
+            next unless $has_id;
             return splice @$key_tokens, $i, 1;
         }
     }
 
     my @novel_tokens;
-    for my $token (keys %$pos_tokens) {
-        push @novel_tokens, ($token) x $pos_tokens->{$token}{count};
+    for my $token (@$pos_tokens) {
+        push @novel_tokens, ($token->[0]) x $token->[1];
     }
     return $novel_tokens[rand @novel_tokens];
 }

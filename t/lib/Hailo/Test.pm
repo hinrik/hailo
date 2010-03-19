@@ -386,11 +386,11 @@ sub test_timtoady {
     my $file     = $self->test_file($filename);
     my $fh       = $self->test_fh($filename);
     my $lns      = $lines // count_lines($file);
-    $lns         = ($self->brief) ? 1000 : $lns;
+    $lns         = ($self->brief) ? 300 : $lns;
 
     $self->train_filename($filename, $lns);
 
-    my @tokens = $self->some_tokens($filename, $lns * 0.2);
+    my @tokens = $self->some_tokens($filename, $lns * 0.1);
 
     for (@tokens) {
         my $reply = $hailo->reply($_);
@@ -467,7 +467,7 @@ sub test_all_plan {
     plan skip_all => "Skipping $storage tests, can't create storage" unless $ok;
     if ($self->exhaustive) {
         if ($self->brief) {
-            plan(tests => 2358) 
+            plan(tests => 788);
         } else {
             plan(tests => 29977);
         }
