@@ -7,6 +7,16 @@ Revision history for Hailo
       didn't have an older version of Hailo installed when running
       `make test'.
 
+    - t/hailo/non_standard_plugin.t whines with `Issuing rollback()
+      due to DESTROY without explicit disconnect()' on some systems
+      since it doesn't use the Hailo::Test framework.
+
+      Issuing rollbacks at the right time is an open issue with
+      Hailo. I haven't been able to make it do the right thing by
+      sprinkling around destructors in the main code, that'll cause
+      things to be destroyed prematurely (probably some silly race
+      condition).
+
 0.31 2010-03-18 21:45:25
 
     - Optimization and cleanup release. Hailo is now much much
