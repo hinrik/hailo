@@ -17,6 +17,9 @@ Revision history for Hailo
       things to be destroyed prematurely (probably some silly race
       condition).
 
+    - Re-add Data::Section dependency. We need it for the
+      Words-utf8-text.t test.
+
 0.31 2010-03-18 21:45:25
 
     - Optimization and cleanup release. Hailo is now much much
