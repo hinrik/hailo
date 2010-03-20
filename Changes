@@ -2,8 +2,25 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+0.34 2010-03-20 23:26:27
+
     - Reword the UPGRADING section in Hailo's POD to be less
       confusing.
+
+    - Die if the user manually specified an order that isn't
+      equivalent to the existing database he's loading from.
+
+    - Hailo now uses CPAN's RT as its default bugtracker instead of
+      GitHub's issue tracker. RT sucks but at least we can get at our
+      issues using something that isn't a web interface if we use RT.
+
+    - Link to our new website at http://hailo.github.com and mention
+      the Hailo web interface at http://www.dhdo.org in the POD.
+
+    - Enforce arguments being HashRef[Str] (instead of just HashRef)
+      in Hailo::Role::Arguments.
+
+    - Code cleanup in Hailo.pm to remove duplication.
 
 0.33 2010-03-20 01:57:33
 
