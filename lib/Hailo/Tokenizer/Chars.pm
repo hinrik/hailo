@@ -1,4 +1,5 @@
 package Hailo::Tokenizer::Chars;
+
 use 5.010;
 use Any::Moose;
 BEGIN {

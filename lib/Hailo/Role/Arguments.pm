@@ -1,4 +1,5 @@
 package Hailo::Role::Arguments;
+
 use 5.010;
 use Any::Moose '::Role';
 use Any::Moose 'X::Types::'.any_moose() => [qw/HashRef Str/];

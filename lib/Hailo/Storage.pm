@@ -1,4 +1,5 @@
 package Hailo::Storage;
+
 use 5.010;
 use Any::Moose;
 use Any::Moose 'X::Types::'.any_moose() => [qw<ArrayRef HashRef Int Str Bool>];

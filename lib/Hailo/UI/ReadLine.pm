@@ -1,4 +1,5 @@
 package Hailo::UI::ReadLine;
+
 use 5.010;
 use Any::Moose;
 BEGIN {

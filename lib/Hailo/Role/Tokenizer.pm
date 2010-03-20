@@ -1,4 +1,5 @@
 package Hailo::Role::Tokenizer;
+
 use 5.010;
 use Any::Moose '::Role';
 use Any::Moose 'X::Types::'.any_moose() => [qw/HashRef Int/];
