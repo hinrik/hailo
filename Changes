@@ -2,13 +2,28 @@ Revision history for Hailo
 
 {{$NEXT}}
 
-    - Alter Hailo::Engine::Default to use less method calls. On
+    - Optimize Hailo::Engine::Default to use less method calls. On
       t/hailo/real_workload.t (i.e. mass replies) this speeds up Hailo
       by 8%:
 
-                     s/iter System Hailo    lib Hailo
-        System Hailo   74.8           --          -7%
-        lib Hailo      69.4           8%           --
+                         s/iter System Hailo    lib Hailo
+            System Hailo   74.8           --          -7%
+            lib Hailo      69.4           8%           --
+    
+      Furthermore replace the use of ->fetchall_hashref in a tight
+      loop with ->fetchall_arrayref. This sped up mass replies by
+      almost 60% (added to the 8% above):
+
+                         s/iter System Hailo    lib Hailo
+            System Hailo   68.2           --         -36%
+            lib Hailo      43.6          57%           --
+    
+      But aside from selective benchmarking this made Hailo around 5%
+      faster in the common case:
+        
+                         s/iter System Hailo    lib Hailo
+            System Hailo   21.5           --          -6%
+            lib Hailo      20.3           6%           --
 
 0.32 2010-03-19 12:00:22
 
