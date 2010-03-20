@@ -21,6 +21,18 @@ has order => (
     isa     => Int,
     is      => 'rw',
     default => 2,
+    trigger => sub {
+        my ($self, $order) = @_;
+        $self->_custom_order(1);
+    },
+);
+
+has _custom_order => (
+    isa           => Bool,
+    is            => 'rw',
+    default       => 0,
+    init_arg      => undef,
+    documentation => "Here so we can differentiate between the default value of order being explictly set and being set by default",
 );
 
 has save_on_exit => (
@@ -104,7 +116,10 @@ for my $k (keys %has) {
                  ? (storage   => $self->_storage)
                  : ()),
                 (($k ~~ [ qw< storage > ] and defined $self->brain)
-                 ? (brain => $self->brain)
+                 ? (
+                     hailo => $self,
+                     brain => $self->brain
+                 )
                  : ()),
             },
         );

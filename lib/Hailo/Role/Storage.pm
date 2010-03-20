@@ -15,6 +15,11 @@ has order => (
     is  => 'rw',
 );
 
+has hailo => (
+    isa => 'Hailo',
+    is  => 'ro',
+);
+
 requires 'ready';
 requires 'save';
 requires 'start_learning';

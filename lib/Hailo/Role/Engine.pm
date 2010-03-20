@@ -14,7 +14,7 @@ has storage => (
 has order => (
     required      => 1,
     isa           => Int,
-    is            => 'ro',
+    is            => 'rw',
     documentation => "Our copy of the current markov order",
 );
 

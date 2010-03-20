@@ -105,10 +105,24 @@ sub _engage {
 
         my $my_order = $self->order;
         if ($my_order != $db_order) {
-            # TODO: Die loudly if we know the user manually supplied
-            # an order conflicting with the database order
-            #die "You tried to load a database with order = `$db_order' with a Hailo object configured for order = `$my_order'";
+            if ($self->hailo->_custom_order) {
+                die <<'DIE';
+You've manually supplied an order of `$my_order' to Hailo but you're
+loading a brain that has the order `$db_order'.
+
+Hailo will automatically load the order from existing brains, however
+you've constructed Hailo and manually specified an order not
+equivalent to the existing order of the database.
+
+Either supply the correct order or omit the order attribute
+altogether. We could continue but I'd rather die since you're probably
+expecting something I can't deliver.
+DIE
+            }
+
             $self->order($db_order);
+            $self->hailo->order($db_order);
+            $self->hailo->_engine->order($db_order);
         }
 
         $self->sth->{token_id}->execute(0, '');
