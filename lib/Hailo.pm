@@ -97,14 +97,14 @@ for my $k (keys %has) {
             $self->$method_class,
             {
                 arguments => $self->$method_args,
+                ($k ~~ [ qw< engine storage > ]
+                 ? (order     => $self->order)
+                 : ()),
                 ($k ~~ [ qw< engine > ]
                  ? (storage   => $self->_storage)
                  : ()),
-                ($k ~~ [ qw< storage > ]
-                 ? ((defined $self->brain
-                     ? (brain => $self->brain)
-                     : ()),
-                    order => $self->order)
+                (($k ~~ [ qw< storage > ] and defined $self->brain)
+                 ? (brain => $self->brain)
                  : ()),
             },
         );

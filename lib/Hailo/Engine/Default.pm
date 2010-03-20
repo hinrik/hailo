@@ -8,19 +8,13 @@ use List::MoreUtils qw<uniq>;
 
 with qw[ Hailo::Role::Arguments Hailo::Role::Engine ];
 
-has storage => (
-    required      => 1,
-    is            => 'ro',
-    documentation => "Our copy of the current Storage object",
-);
-
 has repeat_limit => (
     isa     => Int,
     is      => 'rw',
     lazy    => 1,
     default => sub {
         my ($self) = @_;
-        my $order = $self->storage->order;
+        my $order = $self->order;
         return min(($order * 10), 50);
     }
 );
@@ -45,7 +39,7 @@ sub BUILD {
 sub reply {
     my $self = shift;
     my $tokens = shift // [];
-    my $order = $self->storage->order;
+    my $order = $self->order;
 
     # we will favor these tokens when making the reply
     my @key_tokens = @$tokens;
@@ -129,7 +123,7 @@ sub reply {
 
 sub learn {
     my ($self, $tokens) = @_;
-    my $order = $self->storage->order;
+    my $order = $self->order;
 
     # only learn from inputs which are long enough
     return if @$tokens < $order;
@@ -272,7 +266,7 @@ sub _random_expr {
     }
     else {
         # try the positions in a random order
-        for my $pos (shuffle 0 .. $self->storage->order-1) {
+        for my $pos (shuffle 0 .. $self->order-1) {
             my $column = "token${pos}_id";
 
             # get a random expression which includes the token at this position
