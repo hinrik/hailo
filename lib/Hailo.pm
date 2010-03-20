@@ -543,27 +543,16 @@ list of existing words.
 
 Hailo makes no promises about brains generated with earlier versions
 being compatable with future version and due to the way Hailo works
-there's no practical way to make that promise.
+there's no practical way to make that promise. Learning in Hailo is
+lossy so an accurate conversion is impossible.
 
 If you're maintaining a Hailo brain that you want to keep using you
 should save the input you trained it on and re-train when you upgrade.
 
-The reason for not offering a database schema upgrade for Hailo is
-twofold:
-
-=over
-
-=item * We're too lazy to maintain database upgrade scripts for every version.
-
-=item * Even if we weren't there's no way to do it right.
-
-=back
-
-The reason it can't be done right is that Hailo is always going to
-lose information present in the input you give it. How input tokens
-get split up and saved to the storage backend depends on the version
-of the tokenizer being used and how that input gets saved to the
-database.
+Hailo is always going to lose information present in the input you
+give it. How input tokens get split up and saved to the storage
+backend depends on the version of the tokenizer being used and how
+that input gets saved to the database.
 
 For instance if an earlier version of Hailo tokenized C<"foo+bar">
 simply as C<"foo+bar"> but a later version split that up into
@@ -571,11 +560,19 @@ C<"foo", "+", "bar">, then an input of C<"foo+bar are my favorite
 metasyntactic variables"> wouldn't take into account the existing
 C<"foo+bar"> string in the database.
 
-Tokenizer changes like this would cause the brains to accumulate garbage
-and would leave other parts in a state they wouldn't otherwise have gotten
-into. There have been similar changes to the database format itself.
+Tokenizer changes like this would cause the brains to accumulate
+garbage and would leave other parts in a state they wouldn't otherwise
+have gotten into.
 
-In short, learning is lossy so an accurate conversion is impossible.
+There have been more drastic changes to the database format itself in
+the past.
+
+Having said all that the database format and the tokenizer are
+relatively stable. At the time of writing 0.33 is the latest release
+and it's compatable with brains down to at least 0.17. If you're
+upgrading and there isn't a big notice about the storage format being
+incompatable in the F<Changes> file your old brains will probably work
+just fine.
 
 =head1 ATTRIBUTES
 

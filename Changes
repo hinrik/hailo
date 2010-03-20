@@ -2,6 +2,9 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Reword the UPGRADING section in Hailo's POD to be less
+      confusing.
+
 0.33 2010-03-20 01:57:33
 
     - Optimize Hailo::Engine::Default to use less method calls. On
