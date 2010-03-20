@@ -158,7 +158,7 @@ sub _new_class {
 
         unless ($pkg) {
             local $" = ', ';
-            my @plugins = grep { /$type/ } $self->plugins;
+            my @plugins = grep { /$type/ } $self->_plugins;
             die "Couldn't find a class name matching '$class' in plugins '@plugins'";
         }
     }
