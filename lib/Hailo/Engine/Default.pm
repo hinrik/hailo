@@ -296,7 +296,7 @@ sub _pos_token {
     if (defined $key_tokens) {
         for my $i (0 .. $#{ $key_tokens }) {
             my $want_id = $key_tokens->[$i];
-            my @ids     = map { map { @$_  } $_ } @$pos_tokens;
+            my @ids     = map { $_->[0] } @$pos_tokens;
             my $has_id  = grep { $_ == $want_id } @ids;
             next unless $has_id;
             return splice @$key_tokens, $i, 1;
