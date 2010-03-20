@@ -39,146 +39,78 @@ has brain_resource => (
     },
 );
     
-# working classes
-has engine_class => (
-    isa           => Str,
-    is            => "rw",
-    default       => "Default",
+my %has = (
+    engine => {
+        name => 'Engine',
+        default => 'Default',
+    },
+    storage => {
+        name => 'Storage',
+        default => 'SQLite',
+    },
+    tokenizer => {
+        name => 'Tokenizer',
+        default => 'Words',
+    },
+    ui => {
+        name => 'UI',
+        default => 'ReadLine',
+    },
 );
 
-has storage_class => (
-    isa           => Str,
-    is            => "rw",
-    default       => "SQLite",
-);
+for my $k (keys %has) {
+    my $name          = $has{$k}->{name};
+    my $default       = $has{$k}->{default};
+    my $method_class  = "${k}_class";
+    my $method_args   = "${k}_args";
 
-has tokenizer_class => (
-    isa           => Str,
-    is            => "rw",
-    default       => "Words",
-);
-
-has ui_class => (
-    isa           => Str,
-    is            => "rw",
-    default       => "ReadLine",
-);
-
-# Object arguments
-has engine_args => (
-    documentation => "Arguments for the Engine class",
-    isa           => HashRef,
-    coerce        => 1,
-    is            => "ro",
-    default       => sub { +{} },
-);
-
-has storage_args => (
-    documentation => "Arguments for the Storage class",
-    isa           => HashRef,
-    coerce        => 1,
-    is            => "ro",
-    default       => sub { +{} },
-);
-
-has tokenizer_args => (
-    documentation => "Arguments for the Tokenizer class",
-    isa           => HashRef,
-    is            => "ro",
-    default       => sub { +{} },
-);
-
-has ui_args => (
-    documentation => "Arguments for the UI class",
-    isa           => HashRef,
-    is            => "ro",
-    default       => sub { +{} },
-);
-
-# Working objects
-has _engine => (
-    does        => 'Hailo::Role::Engine',
-    lazy_build  => 1,
-    is          => 'ro',
-    init_arg    => undef,
-);
-
-has _storage => (
-    does        => 'Hailo::Role::Storage',
-    lazy_build  => 1,
-    is          => 'ro',
-    init_arg    => undef,
-);
-
-has _tokenizer => (
-    does        => 'Hailo::Role::Tokenizer',
-    lazy_build  => 1,
-    is          => 'ro',
-    init_arg    => undef,
-);
-
-has _ui => (
-    does        => 'Hailo::Role::UI',
-    lazy_build  => 1,
-    is          => 'ro',
-    init_arg    => undef,
-);
-
-sub _build__engine {
-    my ($self) = @_;
-    my $obj = $self->_new_class(
-        "Engine",
-        $self->engine_class,
-        {
-            storage   => $self->_storage,
-            arguments => $self->engine_args,
-        },
+    # working classes
+    has "${k}_class" => (
+        isa           => Str,
+        is            => "rw",
+        default       => $default,
     );
 
-    return $obj;
-}
-
-sub _build__storage {
-    my ($self) = @_;
-    my $obj = $self->_new_class(
-        "Storage",
-        $self->storage_class,
-        {
-            (defined $self->brain
-             ? (brain => $self->brain)
-             : ()),
-            order           => $self->order,
-            arguments       => $self->storage_args,
-        }
+    # Object arguments
+    has "${k}_args" => (
+        documentation => "Arguments for the $name class",
+        isa           => HashRef,
+        coerce        => 1,
+        is            => "ro",
+        default       => sub { +{} },
     );
 
-    return $obj;
-}
-
-sub _build__tokenizer {
-    my ($self) = @_;
-    my $obj = $self->_new_class(
-        "Tokenizer",
-        $self->tokenizer_class,
-        {
-            arguments => $self->tokenizer_args,
-        },
+    # Working objects
+    has "_${k}" => (
+        does        => "Hailo::Role::$name",
+        lazy_build  => 1,
+        is          => 'ro',
+        init_arg    => undef,
     );
 
-    return $obj;
-}
+    # Generate the object itself
+    no strict 'refs';
+    *{"_build__${k}"} = sub {
+        my ($self) = @_;
+        my $obj = $self->_new_class(
+            $name,
+            $self->$method_class,
+            {
+                arguments => $self->$method_args,
+                ($k ~~ [ qw< engine > ]
+                 ? (storage   => $self->_storage)
+                 : ()),
+                ($k ~~ [ qw< storage > ]
+                 ? ((defined $self->brain
+                     ? (brain => $self->brain)
+                     : ()),
+                    order => $self->order)
+                 : ()),
+            },
+        );
 
-sub _build__ui {
-    my ($self) = @_;
-    my $obj = $self->_new_class(
-        "UI",
-        $self->ui_class,
-        {
-            arguments => $self->ui_args,
-        },
-    );
-
-    return $obj;
+        return $obj;
+    };
 }
 
 sub _plugins { qw[
