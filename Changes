@@ -2,6 +2,8 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+0.33 2010-03-20 01:57:33
+
     - Optimize Hailo::Engine::Default to use less method calls. On
       t/hailo/real_workload.t (i.e. mass replies) this speeds up Hailo
       by 8%:
