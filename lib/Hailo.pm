@@ -676,8 +676,6 @@ tracker on Github|http://github.com/hinrik/hailo/issues>.
 
 =over
 
-=item * L<Hailo::UI::Web> - A L<Catalyst> and jQuery powered web interface to Hailo
-
 =item * L<POE::Component::Hailo> - A non-blocking POE wrapper around Hailo
 
 =item * L<POE::Component::IRC::Plugin::Hailo> - A Hailo IRC bot plugin
@@ -685,6 +683,16 @@ tracker on Github|http://github.com/hinrik/hailo/issues>.
 =item * L<http://github.com/hinrik/failo> - Failo, an IRC bot that uses Hailo
 
 =item * L<http://github.com/bingos/gumbybrain> - GumbyBRAIN, a more famous IRC bot that uses Hailo
+
+=item * L<Hailo::UI::Web> - A L<Catalyst> and jQuery powered web
+interface to Hailo available at L<hailo.nix.is|http://hailo.nix.is>
+and as L<hailo-ui-web|http://github.com/avar/hailo-ui-web> on
+L<GitHub|http://github.com>
+
+=item * L<HALBot> - Another L<Catalyst> Dojo powered web interface to
+Hailo available at L<www.dhdo.org|http://www.dhdo.org> and as
+L<halbot-on-the-web|http://gitorious.org/halbot-on-the-web/halbot-on-the-web>
+at L<gitorious|http://gitorious.org>
 
 =item * L<http://github.com/pteichman/cobe> - cobe, a Python port of MegaHAL "inspired by the success of Hailo"
 
