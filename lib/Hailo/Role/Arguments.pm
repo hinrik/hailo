@@ -1,11 +1,11 @@
 package Hailo::Role::Arguments;
 use 5.010;
 use Any::Moose '::Role';
-use Any::Moose 'X::Types::'.any_moose() => [qw/HashRef/];
+use Any::Moose 'X::Types::'.any_moose() => [qw/HashRef Str/];
 use namespace::clean -except => 'meta';
 
 has arguments => (
-    isa           => HashRef,
+    isa           => HashRef[Str],
     is            => 'ro',
     documentation => "Arguments passed from Hailo",
     auto_deref    => 1,
@@ -23,7 +23,7 @@ Hailo::Role::Arguments - A role which adds an 'arguments' attribute
 
 =head2 C<arguments>
 
-A C<HashRef> of arguments passed to us from L<Hailo|Hailo>'s
+A C<HashRef[Str]> of arguments passed to us from L<Hailo|Hailo>'s
 L<storage|Hailo/storage_args>, or
 L<tokenizer|Hailo/tokenizer_args> arguments.
 
