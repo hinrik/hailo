@@ -106,7 +106,7 @@ sub _engage {
         my $my_order = $self->order;
         if ($my_order != $db_order) {
             if ($self->hailo->_custom_order) {
-                die <<'DIE';
+                die <<"DIE";
 You've manually supplied an order of `$my_order' to Hailo but you're
 loading a brain that has the order `$db_order'.
 
