@@ -2,6 +2,8 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Move some of our test data into the new Bot::Training dist.
+
 0.34 2010-03-20 23:26:27
 
     - Reword the UPGRADING section in Hailo's POD to be less
