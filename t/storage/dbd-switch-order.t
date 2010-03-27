@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 613;
+use Test::More tests => 815;
 use Test::Exception;
 use File::Temp qw<tempdir tempfile>;
 use File::Slurp qw<slurp>;
@@ -18,6 +18,7 @@ my @train = split /\n/, slurp($trainfile);
 my $initial_order = 3;
 
 {
+    ok(-f $brain_file, "$brain_file is still -f");
     my $hailo = Hailo->new(
         brain  => $brain_file,
         order  => $initial_order,
@@ -30,6 +31,7 @@ my $initial_order = 3;
 }
 
 {
+    ok(-f $brain_file, "$brain_file is still -f");
     my $hailo = Hailo->new(
         brain  => $brain_file,
     );
@@ -45,6 +47,7 @@ my $initial_order = 3;
 }
 
 for my $order (1 .. 200) {
+    ok(-f $brain_file, "$brain_file is still -f");
     my $hailo = Hailo->new(
         brain  => $brain_file,
         order  => $order,
