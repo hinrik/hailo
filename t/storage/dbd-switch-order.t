@@ -64,6 +64,6 @@ for my $order (1 .. 200) {
     } else {
         local $@;
         eval { $hailo->reply() };
-        like($@, qr/manually/, "Tried to reply after setting custom order $order");
+        like($@, qr/You've manually supplied an order of `\d+'/, "Tried to reply after setting custom order $order");
     }
 }
