@@ -2,6 +2,8 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+0.35 2010-03-27 21:27:33
+
     - The error "You've manually supplied an order of" error message
       was always incorrect. It contained variables that weren't being
       interpolated.
