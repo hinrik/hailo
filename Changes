@@ -2,6 +2,10 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - The error "You've manually supplied an order of" error message
+      was always incorrect. It contained variables that weren't being
+      interpolated.
+
     - Move some of our test data into the new Bot::Training dist.
 
 0.34 2010-03-20 23:26:27
