@@ -2,6 +2,8 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+0.36 2010-03-29 00:15:35
+
     - Add a test to try to smoke out a test failure we've been having
       for a while. See the commit message for
       21f68bd79d2fc59505887311042d6d16c5cf79dd for a very long and
