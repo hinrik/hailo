@@ -2,6 +2,11 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Add a test to try to smoke out a test failure we've been having
+      for a while. See the commit message for
+      21f68bd79d2fc59505887311042d6d16c5cf79dd for a very long and
+      boring explanation.
+
 0.35 2010-03-27 21:27:33
 
     - The error "You've manually supplied an order of" error message
