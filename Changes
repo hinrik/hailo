@@ -2,6 +2,9 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Very minor release. Switch to using
+      Dist::Zilla::Plugin::MakeMaker::Awesome for the build tools.
+
 0.36 2010-03-29 00:15:35
 
     - Add a test to try to smoke out a test failure we've been having
