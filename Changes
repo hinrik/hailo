@@ -2,6 +2,8 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+0.37 2010-03-31 14:28:46
+
     - Very minor release. Switch to using
       Dist::Zilla::Plugin::MakeMaker::Awesome for the build tools.
 
