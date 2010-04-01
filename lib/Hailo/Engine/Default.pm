@@ -81,15 +81,18 @@ sub reply {
     $self->_construct_reply('prev', $expr_id, \@token_ids, \@key_ids);
 
     # translate token ids to token spacing/text
-    my @reply;
-    for my $id (@token_ids) {
-        if (!exists $token_cache{$id}) {
-            $self->{_sth_token_info}->execute($id);
-            $token_cache{$id} = [$self->{_sth_token_info}->fetchrow_array];
-        }
-        push @reply, $token_cache{$id};
-    }
+    my @reply = map {
+        $token_cache{$_} // ($token_cache{$_} = $self->_token_info($_))
+    } @token_ids;
     return \@reply;
+}
+
+sub _token_info {
+    my ($self, $id) = @_;
+
+    $self->{_sth_token_info}->execute($id);
+    my @res = $self->{_sth_token_info}->fetchrow_array;
+    return \@res;
 }
 
 sub learn {
