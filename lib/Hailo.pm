@@ -163,8 +163,6 @@ sub _new_class {
         }
     }
 
-
-
     if (Any::Moose::moose_is_preferred()) {
         require Class::MOP;
         eval { Class::MOP::load_class($pkg) };
