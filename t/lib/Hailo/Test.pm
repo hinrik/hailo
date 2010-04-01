@@ -10,6 +10,7 @@ use List::Util qw(shuffle min);
 use File::Temp qw(tempfile tempdir);
 use File::CountLines qw(count_lines);
 use Hailo::Tokenizer::Words;
+use Bot::Training;
 use namespace::clean -except => 'meta';
 
 sub all_storages {
@@ -243,12 +244,6 @@ has storage => (
     isa => 'Str',
 );
 
-# learn from various sources
-sub train_megahal_trn {
-    my ($self) = @_;
-    $self->train_file("megahal.trn");
-}
-
 sub train_file {
     my ($self, $file) = @_;
     my $hailo = $self->hailo;
@@ -321,9 +316,10 @@ sub test_badger {
     my $hailo = $self->hailo;
     my $storage = $self->storage;
     my $brief = $self->brief;
+    my $file = $self->test_file("badger.trn");
 
     SKIP: {
-        $self->train_filename("badger.trn");
+        $self->train_filename($file);
 
         my $tests = $brief ? 5 : 50;
         skip "Badger test doesn't work with Words tokenizer", $tests + $tests * 5 * 2;
@@ -347,9 +343,8 @@ sub train_filename {
     my ($self, $filename, $lines) = @_;
     my $hailo   = $self->hailo;
     my $storage = $self->storage;
-    my $file    = $self->test_file($filename);
     my $fh      = $self->test_fh($filename);
-    my $lns     = $lines // count_lines($file);
+    my $lns     = $lines // count_lines($filename);
 
     for my $l (1 .. $lns) {
         chomp(my $_ = <$fh>);
@@ -362,13 +357,13 @@ sub test_megahal {
     my ($self, $lines) = @_;
     my $hailo   = $self->hailo;
     my $storage = $self->storage;
-    my $file    = $self->test_file("megahal.trn");
+    my $file    = Bot::Training->new->file("megahal")->file;
     my $lns     = $lines // count_lines($file);
     $lns        = ($self->brief) ? 30 : $lns;
 
 
-    $self->train_filename("megahal.trn", $lns);
-    my @tokens = $self->some_tokens("megahal.trn", $lns * 0.1);
+    $self->train_filename($file, $lns);
+    my @tokens = $self->some_tokens($file, $lns * 0.1);
 
     for (@tokens) {
         my $reply = $hailo->reply($_);
@@ -380,17 +375,16 @@ sub test_megahal {
 
 sub test_timtoady {
     my ($self, $lines) = @_;
-    my $filename = "TimToady.trn";
     my $hailo    = $self->hailo;
     my $storage  = $self->storage;
-    my $file     = $self->test_file($filename);
-    my $fh       = $self->test_fh($filename);
+    my $file     = $self->test_file('TimToady.trn');
+    my $fh       = $self->test_fh($file);
     my $lns      = $lines // count_lines($file);
     $lns         = ($self->brief) ? 300 : $lns;
 
-    $self->train_filename($filename, $lns);
+    $self->train_filename($file, $lns);
 
-    my @tokens = $self->some_tokens($filename, $lns * 0.1);
+    my @tokens = $self->some_tokens($file, $lns * 0.1);
 
     for (@tokens) {
         my $reply = $hailo->reply($_);
@@ -426,12 +420,13 @@ sub test_starcraft {
     my ($self) = @_;
     my $hailo = $self->hailo;
     my $storage = $self->storage;
+    my $file = Bot::Training->new->file("starcraft")->file;
 
 
   SKIP: {
     skip "$storage: We have to implement a method for clearing brains, or construct a new brain for each test", 4 unless $ENV{TEST_STARCRAFT};
 
-    $self->train_filename("starcraft.trn");
+    $self->train_filename($file);
 
     ok(defined $hailo->reply("Gogogo"), "$storage: Got a random reply");
     ok(defined $hailo->reply("Naturally"), "$storage: Got a random reply");
@@ -527,7 +522,7 @@ sub test_exhaustive {
 sub some_tokens {
     my ($self, $file, $lines) = @_;
     $lines //= 50;
-    my $trn = slurp($self->test_file($file));
+    my $trn = slurp($file);
 
     my @trn = split /\n/, $trn;
     my @small_trn = @trn[0 .. min(scalar(@trn), $lines)];
@@ -545,9 +540,7 @@ sub some_tokens {
 sub test_fh {
     my ($self, $file) = @_;
 
-    my $f = $self->test_file($file);
-
-    open my $fh, '<:encoding(utf8)', $f;
+    open my $fh, '<:encoding(utf8)', $file;
     return $fh;
 }
 

@@ -2,6 +2,29 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+0.37 2010-03-31 14:28:46
+
+    - Very minor release. Switch to using
+      Dist::Zilla::Plugin::MakeMaker::Awesome for the build tools.
+
+0.36 2010-03-29 00:15:35
+
+    - Add a test to try to smoke out a test failure we've been having
+      for a while. See the commit message for
+      21f68bd79d2fc59505887311042d6d16c5cf79dd for a very long and
+      boring explanation.
+
+0.35 2010-03-27 21:27:33
+
+    - The error "You've manually supplied an order of" error message
+      was always incorrect. It contained variables that weren't being
+      interpolated.
+
+    - Move some of our test data into the new Bot::Training dist.
+
+    - Fix 'v-string in use/require non-portable' warnings from a osx
+      smoker by using 5.010 instead of 5.10.0.
+
 0.34 2010-03-20 23:26:27
 
     - Reword the UPGRADING section in Hailo's POD to be less

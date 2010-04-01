@@ -39,24 +39,21 @@ sub BUILD {
 sub reply {
     my $self = shift;
     my $tokens = shift // [];
-    my $order = $self->order;
 
-    # we will favor these tokens when making the reply
-    my @key_tokens = @$tokens;
-
-    # shuffle the tokens and discard half of them
-    @key_tokens = do {
+    # we will favor these tokens when making the reply> shuffle them
+    # and discard half.
+    my @key_tokens = do {
         my $i = 0;
-        grep { $i++ % 2 == 0 } shuffle(@key_tokens);
+        grep { $i++ % 2 == 0 } shuffle(@$tokens);
     };
 
     my (@key_ids, %token_cache);
     for my $token_info (@key_tokens) {
         my $text = $token_info->[1];
         my $info = $self->_token_similar($text);
-        next if !defined $info;
+        next unless defined $info;
         my ($id, $spacing) = @$info;
-        next if !defined $id;
+        next unless defined $id;
         push @key_ids, $id;
         next if exists $token_cache{$id};
         $token_cache{$id} = [$spacing, $text];
@@ -68,57 +65,32 @@ sub reply {
     # get the middle expression
     my $seed_token_id = shift @key_ids;
     my ($orig_expr_id, @token_ids) = $self->_random_expr($seed_token_id);
-    return if !defined $orig_expr_id; # we don't know any expressions yet
+    return unless defined $orig_expr_id; # we don't know any expressions yet
 
     # remove key tokens we're already using
     @key_ids = grep { my $used = $_; !first { $_ == $used } @token_ids } @key_ids;
 
-    my $repeat_limit = $self->repeat_limit;
     my $expr_id = $orig_expr_id;
 
     # construct the end of the reply
-    my $i = 0;
-    while (1) {
-        if (($i % $order) == 0 and
-            (($i >= $repeat_limit * 3) ||
-             ($i >= $repeat_limit and uniq(@token_ids) <= $order))) {
-            last;
-        }
-        my $next_id = $self->_pos_token('next', $expr_id, \@key_ids);
-        last if $next_id eq $self->storage->_boundary_token_id;
-        push @token_ids, $next_id;
-        $expr_id = $self->_expr_id([@token_ids[-$order..-1]]);
-    } continue {
-        $i++;
-    }
-
-    $expr_id = $orig_expr_id;
+    $self->_construct_reply('next', $expr_id, \@token_ids, \@key_ids);
 
     # construct the beginning of the reply
-    $i = 0; while (1) {
-        if (($i % $order) == 0 and
-            (($i >= $repeat_limit * 3) ||
-             ($i >= $repeat_limit and uniq(@token_ids) <= $order))) {
-            last;
-        }
-        my $prev_id = $self->_pos_token('prev', $expr_id, \@key_ids);
-        last if $prev_id eq $self->storage->_boundary_token_id;
-        unshift @token_ids, $prev_id;
-        $expr_id = $self->_expr_id([@token_ids[0..$order-1]]);
-    } continue {
-        $i++;
-    }
+    $self->_construct_reply('prev', $expr_id, \@token_ids, \@key_ids);
 
     # translate token ids to token spacing/text
-    my @reply;
-    for my $id (@token_ids) {
-        if (!exists $token_cache{$id}) {
-            $self->{_sth_token_info}->execute($id);
-            $token_cache{$id} = [$self->{_sth_token_info}->fetchrow_array];
-        }
-        push @reply, $token_cache{$id};
-    }
+    my @reply = map {
+        $token_cache{$_} // ($token_cache{$_} = $self->_token_info($_))
+    } @token_ids;
     return \@reply;
+}
+
+sub _token_info {
+    my ($self, $id) = @_;
+
+    $self->{_sth_token_info}->execute($id);
+    my @res = $self->{_sth_token_info}->fetchrow_array;
+    return \@res;
 }
 
 sub learn {
@@ -170,7 +142,7 @@ sub learn {
 # sort token ids based on how rare they are
 sub _find_rare_tokens {
     my ($self, $token_ids, $min) = @_;
-    return if !@$token_ids;
+    return unless @$token_ids;
 
     my %links;
     for my $id (@$token_ids) {
@@ -227,7 +199,7 @@ sub _token_id {
     $self->{_sth_token_id}->execute(@$token_info);
     my $token_id = $self->{_sth_token_id}->fetchrow_array();
 
-    return if !defined $token_id;
+    return unless defined $token_id;
     return $token_id;
 }
 
@@ -236,7 +208,7 @@ sub _token_id_add {
     my ($self, $token_info) = @_;
 
     my $token_id = $self->_token_id($token_info);
-    $token_id = $self->_add_token($token_info) if !defined $token_id;
+    $token_id = $self->_add_token($token_info) unless defined $token_id;
     return $token_id;
 }
 
@@ -276,7 +248,7 @@ sub _random_expr {
         }
     }
 
-    return if !defined $expr;
+    return unless defined $expr;
     return @$expr;
 }
 
@@ -302,6 +274,40 @@ sub _pos_token {
         push @novel_tokens, ($token->[0]) x $token->[1];
     }
     return $novel_tokens[rand @novel_tokens];
+}
+
+sub _construct_reply {
+    my ($self, $what, $expr_id, $token_ids, $key_ids) = @_;
+    my $order          = $self->order;
+    my $repeat_limit   = $self->repeat_limit;
+    my $boundary_token = $self->storage->_boundary_token_id;
+
+    my $i = 0;
+    while (1) {
+        if (($i % $order) == 0 and
+            (($i >= $repeat_limit * 3) ||
+             ($i >= $repeat_limit and uniq(@$token_ids) <= $order))) {
+            last;
+        }
+
+        my $id = $self->_pos_token($what, $expr_id, $key_ids);
+        last if $id eq $boundary_token;
+
+        given ($what) {
+            when ('next') {
+                push @$token_ids, $id;
+                $expr_id = $self->_expr_id([@$token_ids[-$order..-1]]);
+            }
+            when ('prev') {
+                unshift @$token_ids, $id;
+                $expr_id = $self->_expr_id([@$token_ids[0..$order-1]]);
+            }
+        }
+    } continue {
+        $i++;
+    }
+
+    return;
 }
 
 __PACKAGE__->meta->make_immutable;

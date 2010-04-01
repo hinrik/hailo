@@ -163,8 +163,6 @@ sub _new_class {
         }
     }
 
-
-
     if (Any::Moose::moose_is_preferred()) {
         require Class::MOP;
         eval { Class::MOP::load_class($pkg) };
@@ -294,7 +292,7 @@ sub reply {
         $reply = $engine->reply();
     }
 
-    return if !defined $reply;
+    return unless defined $reply;
     return $tokenizer->make_output($reply);
 }
 

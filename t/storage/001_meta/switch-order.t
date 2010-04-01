@@ -1,10 +1,10 @@
 use strict;
 use warnings;
-use Test::More tests => 613;
+use Test::More tests => 815;
 use Test::Exception;
-use File::Spec::Functions qw<catfile>;
 use File::Temp qw<tempdir tempfile>;
 use File::Slurp qw<slurp>;
+use Bot::Training;
 use Hailo;
 
 # Dir to store our brains
@@ -12,12 +12,13 @@ my $dir = tempdir( "hailo-test-dbd-so-XXXX", CLEANUP => 1, TMPDIR => 1 );
 
 my ($fh, $brain_file) = tempfile( DIR => $dir, SUFFIX => '.sqlite', EXLOCK => 0 );
 
-my $trainfile = catfile(qw<t lib Hailo Test starcraft.trn>);
+my $trainfile = Bot::Training->new->file("starcraft")->file;
 my @train = split /\n/, slurp($trainfile);
 
 my $initial_order = 3;
 
 {
+    ok(-f $brain_file, "$brain_file is still -f");
     my $hailo = Hailo->new(
         brain  => $brain_file,
         order  => $initial_order,
@@ -30,6 +31,7 @@ my $initial_order = 3;
 }
 
 {
+    ok(-f $brain_file, "$brain_file is still -f");
     my $hailo = Hailo->new(
         brain  => $brain_file,
     );
@@ -45,6 +47,7 @@ my $initial_order = 3;
 }
 
 for my $order (1 .. 200) {
+    ok(-f $brain_file, "$brain_file is still -f");
     my $hailo = Hailo->new(
         brain  => $brain_file,
         order  => $order,
@@ -61,6 +64,6 @@ for my $order (1 .. 200) {
     } else {
         local $@;
         eval { $hailo->reply() };
-        like($@, qr/manually/, "Tried to reply after setting custom order $order");
+        like($@, qr/You've manually supplied an order of `\d+'/, "Tried to reply after setting custom order $order");
     }
 }
