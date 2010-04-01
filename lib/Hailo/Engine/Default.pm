@@ -40,13 +40,11 @@ sub reply {
     my $self = shift;
     my $tokens = shift // [];
 
-    # we will favor these tokens when making the reply
-    my @key_tokens = @$tokens;
-
-    # shuffle the tokens and discard half of them
-    @key_tokens = do {
+    # we will favor these tokens when making the reply> shuffle them
+    # and discard half.
+    my @key_tokens = do {
         my $i = 0;
-        grep { $i++ % 2 == 0 } shuffle(@key_tokens);
+        grep { $i++ % 2 == 0 } shuffle(@$tokens);
     };
 
     my (@key_ids, %token_cache);
