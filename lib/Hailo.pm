@@ -292,7 +292,7 @@ sub reply {
         $reply = $engine->reply();
     }
 
-    return if !defined $reply;
+    return unless defined $reply;
     return $tokenizer->make_output($reply);
 }
 

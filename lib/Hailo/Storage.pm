@@ -148,7 +148,7 @@ DIE
 
 sub start_training {
     my ($self) = @_;
-    $self->_engage() if !$self->_engaged;
+    $self->_engage() unless $self->_engaged;
     $self->start_learning();
     return;
 }
@@ -161,7 +161,7 @@ sub stop_training {
 
 sub start_learning {
     my ($self) = @_;
-    $self->_engage() if !$self->_engaged;
+    $self->_engage() unless $self->_engaged;
 
     # start a transaction
     $self->dbh->begin_work;
@@ -178,7 +178,7 @@ sub stop_learning {
 # return some statistics
 sub totals {
     my ($self) = @_;
-    $self->_engage() if !$self->_engaged;
+    $self->_engage() unless $self->_engaged;
 
     $self->sth->{token_total}->execute();
     my $token = $self->sth->{token_total}->fetchrow_array - 1;

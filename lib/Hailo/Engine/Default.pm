@@ -53,9 +53,9 @@ sub reply {
     for my $token_info (@key_tokens) {
         my $text = $token_info->[1];
         my $info = $self->_token_similar($text);
-        next if !defined $info;
+        next unless defined $info;
         my ($id, $spacing) = @$info;
-        next if !defined $id;
+        next unless defined $id;
         push @key_ids, $id;
         next if exists $token_cache{$id};
         $token_cache{$id} = [$spacing, $text];
@@ -67,7 +67,7 @@ sub reply {
     # get the middle expression
     my $seed_token_id = shift @key_ids;
     my ($orig_expr_id, @token_ids) = $self->_random_expr($seed_token_id);
-    return if !defined $orig_expr_id; # we don't know any expressions yet
+    return unless defined $orig_expr_id; # we don't know any expressions yet
 
     # remove key tokens we're already using
     @key_ids = grep { my $used = $_; !first { $_ == $used } @token_ids } @key_ids;
@@ -141,7 +141,7 @@ sub learn {
 # sort token ids based on how rare they are
 sub _find_rare_tokens {
     my ($self, $token_ids, $min) = @_;
-    return if !@$token_ids;
+    return unless @$token_ids;
 
     my %links;
     for my $id (@$token_ids) {
@@ -198,7 +198,7 @@ sub _token_id {
     $self->{_sth_token_id}->execute(@$token_info);
     my $token_id = $self->{_sth_token_id}->fetchrow_array();
 
-    return if !defined $token_id;
+    return unless defined $token_id;
     return $token_id;
 }
 
@@ -207,7 +207,7 @@ sub _token_id_add {
     my ($self, $token_info) = @_;
 
     my $token_id = $self->_token_id($token_info);
-    $token_id = $self->_add_token($token_info) if !defined $token_id;
+    $token_id = $self->_add_token($token_info) unless defined $token_id;
     return $token_id;
 }
 
@@ -247,7 +247,7 @@ sub _random_expr {
         }
     }
 
-    return if !defined $expr;
+    return unless defined $expr;
     return @$expr;
 }
 
