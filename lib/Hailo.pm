@@ -656,6 +656,9 @@ MegaHAL, A blog posting about the motivation behind Hailo
 More blog posts about Hailo on E<AElig>var ArnfjE<ouml>rE<eth>
 Bjarmason's L<blogs.perl.org|http://blogs.perl.org> blog
 
+=item * Hailo on L<freshmeat|http://freshmeat.net/projects/hailo> and
+L<ohloh|https://www.ohloh.net/p/hailo>
+
 =back
 
 =head1 AUTHORS
