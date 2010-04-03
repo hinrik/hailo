@@ -2,6 +2,15 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Clean up the code in Hailo::Engine::Default. It's now easier to
+      read and doesn't have duplication.
+
+    - Depend on IPC::System::Simple. Used by autodie to run
+      utils/hailo-benchmark-lib-vs-system
+
+    - Link to http://hailo.org and the freshmeat and ohloh pages for
+      hailo.
+
 0.37 2010-03-31 14:28:46
 
     - Very minor release. Switch to using
