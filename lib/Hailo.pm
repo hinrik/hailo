@@ -647,7 +647,7 @@ at L<gitorious|http://gitorious.org>
 
 =over
 
-=item * L<hailo.github.com|http://hailo.github.com> - Hailo's website at GitHub.com
+=item * L<hailo.org|http://hailo.org> - Hailo's website
 
 =item * L<http://bit.ly/hailo_rewrite_of_megahal> - Hailo: A Perl rewrite of
 MegaHAL, A blog posting about the motivation behind Hailo
