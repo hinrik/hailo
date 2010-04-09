@@ -41,6 +41,10 @@ subtest make_tokens => sub {
     # Similarly we should preserve capitalization on words split by '
     $t->("I FYIQ'ed that job.", [ qw< I FYIQ'ed that job . > ]);
     $t->("That guy was KIA'd.", [ qw< that guy was KIA'd . > ]);
+
+    # Preserve mixed capitalization
+    $t->("GumbyBRAIN", [ qw< GumbyBRAIN > ]);
+    $t->("\"GumbyBRAIN\"", [ qw< " GumbyBRAIN " > ]);
   }
 
     done_testing();
