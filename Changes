@@ -2,6 +2,17 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+0.39 2010-04-09 13:21:22
+
+    - Set the homepage field in META.yml to http://hailo.org
+
+    - Add TODO tests for the Words tokenizer. There are some
+      sub-optimal capitalization behaviors we'd like to fix.
+
+    - Use Prereq phases in Dist::Zilla. Hailo will have proper
+      Runtime/Test/Recommends dependencies when META.yml 2.0 comes
+      out.
+
 0.38 2010-04-03 18:15:17
 
     - Clean up the code in Hailo::Engine::Default. It's now easier to
