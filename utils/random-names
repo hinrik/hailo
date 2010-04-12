@@ -1,0 +1,24 @@
+#!/usr/bin/env perl
+use 5.010;
+use Mouse;
+use Hailo;
+
+# Usage e.g.:
+## apt-cache search . | ack '^\S{2,5} -'|awk '{print $1}' | perl utils/random-names
+
+my @names = split /\n/, do { local $/, scalar <> };
+my %names; @names{@names} = ();
+
+my $hailo = Hailo->new(
+    tokenizer_class => 'Chars',
+);
+
+$hailo->learn($_) for @names;
+
+my %spewed;
+while (1) {
+    my $reply = $hailo->reply();
+    say $reply if not exists $names{$reply} and not exists $spewed{$reply};
+    $spewed{$reply} = 1;
+}
+
