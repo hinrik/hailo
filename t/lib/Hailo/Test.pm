@@ -393,8 +393,8 @@ sub test_timtoady {
         ok(defined $reply, "$storage: Got a reply to <<$_>> = <<$reply>>");
     }
 
-    for my $i (0 .. $lns) {
-        chomp(my $line = <$fh>);
+    for my $i (0 .. ($lns-1)) {
+        my $line = <$fh>;
         my $reply = $hailo->reply($line);
         ok(defined $reply, "$storage: Got a reply to <<$line>> = <<$reply>>");
     }
@@ -465,13 +465,13 @@ sub test_all_plan {
     plan skip_all => "Skipping $storage tests, can't create storage" unless $ok;
     if ($self->exhaustive) {
         if ($self->brief) {
-            plan(tests => 788);
+            plan(tests => 797);
         } else {
-            plan(tests => 29977);
+            plan(tests => 253420);
         }
         $self->test_exhaustive;
     } else {
-        plan(tests => 997);
+        plan(tests => 1007);
         $self->test_all;
     }
   }
