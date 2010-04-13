@@ -2,6 +2,10 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Solved bug in the t/storage/DBD-SQLite-memory/babble.t test. The
+      test was skipped due to intermittent failures. Failures were due
+      to a programming error in the tests.
+
 0.39 2010-04-09 13:21:22
 
     - Set the homepage field in META.yml to http://hailo.org

@@ -261,14 +261,16 @@ sub train_a_few_tokens {
     my @chr = map { chr } 50..120;
     my @random_tokens = map { $chr[rand @chr] } 1 .. 30;
 
-    pass("About to learn from <<@random_tokens>>");
     # Learn from it
     if ((int rand 2) == 1) {
         eval {
-            $hailo->learn( \@random_tokens );
+            pass("About to learn from <<@random_tokens>>. Via ArrayRef");
+            $DB::single = 1;
+            $hailo->learn( [ "@random_tokens" ] );
         };
     } else {
         eval {
+            pass("About to learn from <<@random_tokens>>. Via Str");
             $hailo->learn( "@random_tokens" );
         };
     }
@@ -407,9 +409,10 @@ sub test_babble {
 
     for (1 .. 10) {
         my ($err, $tokens) = $self->train_a_few_tokens();
+        ok(!$err, "No error: '$err'");
 
         my $input = $tokens->[5];
-        pass("Training on <<$input>>");
+        pass("Replying to <<$input>>");
         my $reply = $hailo->reply($input);
         # Hailo replies
         cmp_ok(length($reply) * 2, '>', length($input), "$storage: Hailo knows how to babble, said '$reply' given '$input'");
