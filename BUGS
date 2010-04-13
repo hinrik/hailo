@@ -49,3 +49,18 @@ backend. MegaHAL loops for 1 second and cobe loops for 5 iterations
 
 This will generate more surprising replies. Sometimes we spit the
 input string unmodified or almost unmodified at the user.
+
+* Solve the -s bug on Mac OS X
+
+Currently we assume that if we do:
+
+    my $dbh = DBI->connect("dbi:SQLite:dbname=$brain_file","","");
+    cmp_ok(-s $brain_file, '==', 0, "$_: $_: A connected $brain_file has size 0");
+
+(See t/storage/001_meta/exists.t)
+
+This doesn't hold on Mac OS X where empty databases are 1 byte. Find a
+better way to see if a SQLite database is fresh. Maybe `select * from
+info'. Or alternatively something like PostgreSQL's `SELECT count(*)
+FROM information_schema.columns WHERE table_name ='info';'.
+
