@@ -4,7 +4,6 @@ use warnings;
 use Class::MOP;
 use File::Spec::Functions 'catfile';
 use Test::More;
-use Test::Script;
 
 # find lib -type f | perl -pe 's[^lib/][    ]; s[.pm$][]; s[/][::]g'
 my @classes = qw(
