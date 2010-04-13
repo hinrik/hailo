@@ -40,3 +40,12 @@ And extended use like this:
     hailo --connect dbi:SQLite:dbname=file.sqlite
 
 --brain wolud then be optional when --connect is supplied.
+
+* Add a looping ->reply() Engine backend
+
+Extend the Default engine so that it supports a looping
+backend. MegaHAL loops for 1 second and cobe loops for 5 iterations
+(with token scoring).
+
+This will generate more surprising replies. Sometimes we spit the
+input string unmodified or almost unmodified at the user.
