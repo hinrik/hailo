@@ -1,0 +1,57 @@
+-*- outline-mode -*-
+
+* Save Tokenizer setting to the database
+
+We only save the order and not the tokenizer to the database. Save it
+and warn if the user tries to use it like e.g. this:
+
+    hailo --train file.trn --brain file.sqlite --tokenizer Chars
+    hailo --brain file.sqlite --tokenizer Words --reply foo
+
+* Add utils/random-names to synopsis/usage example
+
+This is a very useful and easy to show use case of Hailo.
+
+* Show Bot::Training in --help output
+
+Getting started with e.g. the MegaHAL training file is nice.
+
+* Add --random-reply
+
+Due to how MX::Getopts works we can't have '--reply' and '--reply foo'
+so we don't expose $hailo->reply($str) v.s. $hailo->reply() to
+generate a random reply.
+
+Add a --random-reply to rectify this. There's untested work for this
+on the hailo-command-random-reply branch.
+
+* Don't pass the DBI connection string with --storage-args
+
+There's lots of per-driver syntax in the DBI connection string that we
+don't support. We don't support the MySQL syntax for reading auth
+details from ~/.my.cnf for example.
+
+Make Hailo be used like this:
+
+    hailo --brain file-or-db-name
+
+And extended use like this:
+
+    hailo --connect dbi:SQLite:dbname=file.sqlite
+
+And for user/pass:
+
+    hailo --connect='["dbi:SQLite:my.db", "", ""]'
+
+See what dbicadmin(1) does.
+
+--brain wolud then be optional when --connect is supplied.
+
+* Add a looping ->reply() Engine backend
+
+Extend the Default engine so that it supports a looping
+backend. MegaHAL loops for 1 second and cobe loops for 5 iterations
+(with token scoring).
+
+This will generate more surprising replies. Sometimes we spit the
+input string unmodified or almost unmodified at the user.

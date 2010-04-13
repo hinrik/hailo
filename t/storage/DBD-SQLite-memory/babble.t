@@ -4,8 +4,7 @@ use strict;
 use warnings;
 use Hailo::Test;
 use Test::More;
-
-plan skip_all => "This fails intermittently and I'm not sure whether it should or not";
+use Test::More tests => 40;
 
 my $test = Hailo::Test->new(
     storage => "SQLite",

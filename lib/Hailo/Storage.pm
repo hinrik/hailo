@@ -98,7 +98,7 @@ has _boundary_token_id => (
 sub _engage {
     my ($self) = @_;
 
-    if ($self->_exists_db) {
+    if ($self->initialized) {
         my $sth = $self->dbh->prepare(qq[SELECT text FROM info WHERE attribute = ?;]);
         $sth->execute('markov_order');
         my $db_order = $sth->fetchrow_array();
@@ -133,7 +133,7 @@ DIE
         Hailo::Storage::Schema->deploy($self->dbd, $self->dbh, $self->order);
 
         my $order = $self->order;
-        $self->sth->{set_order}->execute($order);
+        $self->sth->{set_info}->execute('markov_order', $order);
 
         $self->sth->{add_token}->execute(0, '');
         $self->sth->{last_token_rowid}->execute();
@@ -173,6 +173,25 @@ sub stop_learning {
     # finish a transaction
     $self->dbh->commit;
     return;
+}
+
+# See if SELECT count(*) FROM info; fails. If not we assume that we
+# have an up and running database.
+sub initialized {
+    my ($self) = @_;
+    my $dbh = $self->dbh;
+
+    my ($err, $warn, $res);
+    eval {
+        # SQLite will warn 'no such table info'
+        local $SIG{__WARN__} = sub { $err = $_[0] };
+
+        # If it doesn't warn trust that it dies here
+        local ($@, $!);
+        $res = $dbh->do("SELECT count(*) FROM info;");
+    };
+
+    return (not $err and not $warn and defined $res);
 }
 
 # return some statistics
@@ -220,7 +239,7 @@ Subclasses can override this method to add options of their own. E.g:
         };
     };
 
-=head2 C<_exists_db>
+=head2 C<initialized>
 
 Should return a true value if the database has already been created.
 
