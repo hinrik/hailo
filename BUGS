@@ -8,3 +8,10 @@ and warn if the user tries to use it like e.g. this:
     hailo --train file.trn --brain file.sqlite --tokenizer Chars
     hailo --brain file.sqlite --tokenizer Words --reply foo
 
+* Add utils/random-names to synopsis/usage example
+
+This is a very useful and easy to show use case of Hailo.
+
+* Show Bot::Training in --help output
+
+Getting started with e.g. the MegaHAL training file is nice.
