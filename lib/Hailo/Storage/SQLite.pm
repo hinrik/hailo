@@ -79,17 +79,10 @@ after stop_training => sub {
 override initialized => sub {
     my ($self) = @_;
 
-    warn "Checking if SQLITE is init";
-
     my $brain = $self->brain;
-    return unless defined $self->brain;
-    return if $self->brain eq ':memory:';
-    my $super = super();
-    warn "  Super was $super with brain: " . `file $brain`;
-    my $ret = -e $self->brain && $super;
-
-    warn "    Returning " . ($ret ? 'true' : 'false') . " bitches (brain: <$brain>; super: <$super>";
-    return $ret;
+    return unless defined $brain;
+    return if $brain eq ':memory:';
+    return -e $brain && super();
 };
 
 sub ready {

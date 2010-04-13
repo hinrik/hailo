@@ -99,8 +99,6 @@ sub _engage {
     my ($self) = @_;
 
     if ($self->initialized) {
-        $DB::single = 1;
-        warn "Using existing db " . $self->brain . ' which is ' . -s $self->brain;
         my $sth = $self->dbh->prepare(qq[SELECT text FROM info WHERE attribute = ?;]);
         $sth->execute('markov_order');
         my $db_order = $sth->fetchrow_array();
@@ -122,8 +120,6 @@ expecting something I can't deliver.
 DIE
             }
 
-            undef $self->{sth};
-            $self->{_sth} = $self->_build_sth;
             $self->order($db_order);
             $self->hailo->order($db_order);
             $self->hailo->_engine->order($db_order);
@@ -134,7 +130,6 @@ DIE
         $self->_boundary_token_id($id);
     }
     else {
-        warn "Populating new db " . $self->brain;
         Hailo::Storage::Schema->deploy($self->dbd, $self->dbh, $self->order);
 
         my $order = $self->order;
@@ -193,10 +188,7 @@ sub initialized {
 
         # If it doesn't warn trust that it dies here
         local ($@, $!);
-        $self->sth->{initialized}->execute();
-
-        # And if not returns a non-zero result
-        $res = $self->sth->{initialized}->fetchrow_array;
+        $res = $dbh->do("SELECT count(*) FROM info;");
     };
 
     return (not $err and not $warn and defined $res);
