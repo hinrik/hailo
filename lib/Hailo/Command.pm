@@ -309,7 +309,7 @@ sub train_progress {
     my ($self, $fh, $filename) = @_;
     my $lines = count_lines($filename);
     my $progress = Term::ProgressBar->new({
-        name => "training from $filename",
+        name => "Training from $filename",
         count => $lines,
         remove => 1,
         ETA => 'linear',
@@ -333,7 +333,7 @@ sub train_progress {
 
     $progress->update($lines) if $lines >= $next_update;
     my $elapsed = tv_interval($start_time);
-    say "Imported in $elapsed seconds";
+    say sprintf "Trained from %d lines in %.2f seconds; %.2f lines/s", $i, $elapsed, ($i / $elapsed);
 
     return;
 }

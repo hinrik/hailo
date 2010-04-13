@@ -2,6 +2,10 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Improved formatting for --train on the command line. Now outputs
+      how many lines/s were trained, e.g. "Trained from 11587 lines in
+      36.97 seconds; 313.40/"
+
     - Fixed a bug on Mac OS X and probably some other
       systems. Previously the SQLite code would assume that a file
       that was `-s $file' was an empty database.
