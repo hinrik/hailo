@@ -15,3 +15,12 @@ This is a very useful and easy to show use case of Hailo.
 * Show Bot::Training in --help output
 
 Getting started with e.g. the MegaHAL training file is nice.
+
+* Add --random-reply
+
+Due to how MX::Getopts works we can't have '--reply' and '--reply foo'
+so we don't expose $hailo->reply($str) v.s. $hailo->reply() to
+generate a random reply.
+
+Add a --random-reply to rectify this. There's untested work for this
+on the hailo-command-random-reply branch.
