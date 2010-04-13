@@ -25,6 +25,8 @@ Revision history for Hailo
     - DBD-SQLite-file-exhaustive-all.t is now run on
       TEST_EXHAUSTIVE_ALL=1. Previously this test was unreachable.
 
+    - Add example utility to spew random names in random-names.
+
 0.39 2010-04-09 13:21:22
 
     - Set the homepage field in META.yml to http://hailo.org
