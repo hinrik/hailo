@@ -6,6 +6,9 @@ Revision history for Hailo
       test was skipped due to intermittent failures. Failures were due
       to a programming error in the tests.
 
+    - DBD-SQLite-file-exhaustive-all.t is now run on
+      TEST_EXHAUSTIVE_ALL=1. Previously this test was unreachable.
+
 0.39 2010-04-09 13:21:22
 
     - Set the homepage field in META.yml to http://hailo.org
