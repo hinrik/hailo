@@ -97,7 +97,7 @@ sub sth {
     $q_rand_id    = "(random()*id+1)::int" if $dbd eq 'Pg';
 
     my %state = (
-        set_order        => qq[INSERT INTO info (attribute, text) VALUES ('markov_order', ?);],
+        set_info         => qq[INSERT INTO info (attribute, text) VALUES (?, ?);],
 
         random_expr      => qq[SELECT * FROM expr WHERE id >= $q_rand_id LIMIT 1;],
         token_id         => qq[SELECT id FROM token WHERE spacing = ? AND text = ?;],

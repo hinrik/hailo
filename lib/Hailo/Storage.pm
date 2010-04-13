@@ -133,7 +133,7 @@ DIE
         Hailo::Storage::Schema->deploy($self->dbd, $self->dbh, $self->order);
 
         my $order = $self->order;
-        $self->sth->{set_order}->execute($order);
+        $self->sth->{set_info}->execute('markov_order', $order);
 
         $self->sth->{add_token}->execute(0, '');
         $self->sth->{last_token_rowid}->execute();
