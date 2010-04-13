@@ -97,6 +97,7 @@ sub sth {
     $q_rand_id    = "(random()*id+1)::int" if $dbd eq 'Pg';
 
     my %state = (
+        initialized      => qq[SELECT count(*) FROM info;],
         set_order        => qq[INSERT INTO info (attribute, text) VALUES ('markov_order', ?);],
 
         random_expr      => qq[SELECT * FROM expr WHERE id >= $q_rand_id LIMIT 1;],
@@ -143,12 +144,6 @@ sub sth {
             $state{token_total}      = qq[SELECT seq FROM sqlite_sequence WHERE name = 'token';];
             $state{prev_total}       = qq[SELECT seq FROM sqlite_sequence WHERE name = 'prev_token';];
             $state{next_total}       = qq[SELECT seq FROM sqlite_sequence WHERE name = 'next_token';];
-        }
-        when ('Pg') {
-            $state{exists_db} = qq[SELECT count(*) FROM information_schema.columns WHERE table_name ='info';];
-        }
-        when ('mysql') {
-            $state{exists_db} = qq[SHOW TABLES;];
         }
     }
 

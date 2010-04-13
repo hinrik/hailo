@@ -55,7 +55,7 @@ before _engage => sub {
     # Set any user-defined pragmas
     $self->_set_pragmas;
 
-    if ($self->_exists_db and $self->_backup_memory_to_disk) {
+    if ($self->initialized and $self->_backup_memory_to_disk) {
         $self->dbh->sqlite_backup_from_file($self->brain);
     }
 
@@ -76,13 +76,21 @@ after stop_training => sub {
     return;
 };
 
-sub _exists_db {
+override initialized => sub {
     my ($self) = @_;
+
+    warn "Checking if SQLITE is init";
+
     my $brain = $self->brain;
     return unless defined $self->brain;
     return if $self->brain eq ':memory:';
-    return -s $self->brain;
-}
+    my $super = super();
+    warn "  Super was $super with brain: " . `file $brain`;
+    my $ret = -e $self->brain && $super;
+
+    warn "    Returning " . ($ret ? 'true' : 'false') . " bitches (brain: <$brain>; super: <$super>";
+    return $ret;
+};
 
 sub ready {
     my ($self) = @_;

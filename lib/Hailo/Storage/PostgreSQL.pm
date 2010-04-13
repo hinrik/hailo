@@ -43,12 +43,6 @@ sub _build_dbi_options {
     return \@options;
 }
 
-sub _exists_db {
-    my ($self) = @_;
-    $self->sth->{exists_db}->execute();
-    return int $self->sth->{exists_db}->fetchrow_array;
-}
-
 sub ready {
     my ($self) = @_;
 

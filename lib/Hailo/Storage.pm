@@ -98,7 +98,9 @@ has _boundary_token_id => (
 sub _engage {
     my ($self) = @_;
 
-    if ($self->_exists_db) {
+    if ($self->initialized) {
+        $DB::single = 1;
+        warn "Using existing db " . $self->brain . ' which is ' . -s $self->brain;
         my $sth = $self->dbh->prepare(qq[SELECT text FROM info WHERE attribute = ?;]);
         $sth->execute('markov_order');
         my $db_order = $sth->fetchrow_array();
@@ -120,6 +122,8 @@ expecting something I can't deliver.
 DIE
             }
 
+            undef $self->{sth};
+            $self->{_sth} = $self->_build_sth;
             $self->order($db_order);
             $self->hailo->order($db_order);
             $self->hailo->_engine->order($db_order);
@@ -130,6 +134,7 @@ DIE
         $self->_boundary_token_id($id);
     }
     else {
+        warn "Populating new db " . $self->brain;
         Hailo::Storage::Schema->deploy($self->dbd, $self->dbh, $self->order);
 
         my $order = $self->order;
@@ -173,6 +178,28 @@ sub stop_learning {
     # finish a transaction
     $self->dbh->commit;
     return;
+}
+
+# See if SELECT count(*) FROM info; fails. If not we assume that we
+# have an up and running database.
+sub initialized {
+    my ($self) = @_;
+    my $dbh = $self->dbh;
+
+    my ($err, $warn, $res);
+    eval {
+        # SQLite will warn 'no such table info'
+        local $SIG{__WARN__} = sub { $err = $_[0] };
+
+        # If it doesn't warn trust that it dies here
+        local ($@, $!);
+        $self->sth->{initialized}->execute();
+
+        # And if not returns a non-zero result
+        $res = $self->sth->{initialized}->fetchrow_array;
+    };
+
+    return (not $err and not $warn and defined $res);
 }
 
 # return some statistics
@@ -220,7 +247,7 @@ Subclasses can override this method to add options of their own. E.g:
         };
     };
 
-=head2 C<_exists_db>
+=head2 C<initialized>
 
 Should return a true value if the database has already been created.
 

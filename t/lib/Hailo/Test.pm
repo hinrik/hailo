@@ -265,7 +265,6 @@ sub train_a_few_tokens {
     if ((int rand 2) == 1) {
         eval {
             pass("About to learn from <<@random_tokens>>. Via ArrayRef");
-            $DB::single = 1;
             $hailo->learn( [ "@random_tokens" ] );
         };
     } else {
