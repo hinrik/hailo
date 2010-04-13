@@ -1,0 +1,10 @@
+-*- outline-mode -*-
+
+* Save Tokenizer setting to the database
+
+We only save the order and not the tokenizer to the database. Save it
+and warn if the user tries to use it like e.g. this:
+
+    hailo --train file.trn --brain file.sqlite --tokenizer Chars
+    hailo --brain file.sqlite --tokenizer Words --reply foo
+
