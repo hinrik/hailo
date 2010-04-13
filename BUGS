@@ -16,15 +16,6 @@ This is a very useful and easy to show use case of Hailo.
 
 Getting started with e.g. the MegaHAL training file is nice.
 
-* Add --random-reply
-
-Due to how MX::Getopts works we can't have '--reply' and '--reply foo'
-so we don't expose $hailo->reply($str) v.s. $hailo->reply() to
-generate a random reply.
-
-Add a --random-reply to rectify this. There's untested work for this
-on the hailo-command-random-reply branch.
-
 * Don't pass the DBI connection string with --storage-args
 
 There's lots of per-driver syntax in the DBI connection string that we

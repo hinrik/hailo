@@ -2,6 +2,9 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Add --reply-random to the hailo command-line interface. Allows
+      command-line babbling at random.
+
     - Improved formatting for --train on the command line. Now outputs
       how many lines/s were trained, e.g. "Trained from 11587 lines in
       36.97 seconds; 313.40/"

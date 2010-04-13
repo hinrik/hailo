@@ -97,7 +97,7 @@ has _go_random_reply => (
     traits        => [ qw/ Getopt / ],
     cmd_aliases   => "R",
     cmd_flag      => "random-reply",
-    documentation => "Reply randomly",
+    documentation => "Like --reply but takes no STRING; Babble at random",
     isa           => Bool,
     is            => "ro",
 );

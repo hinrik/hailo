@@ -2,7 +2,7 @@ use 5.010;
 use strict;
 use warnings;
 use Test::Script::Run;
-use Test::More tests => 54;
+use Test::More tests => 57;
 
 my $app = 'hailo';
 
@@ -48,3 +48,20 @@ run_ok( $app, [ '--no-help' ], "Don't help me" );
     like($stdout, qr/$_\b/, "stdout contained $_ option") for @opt;
 }
 
+## XXX: Doesn't work!
+# ## --reply
+# {
+#     $DB::single = 1;
+#     my ($return, $stdout, $stderr) = run_script( $app, [ '--brain', ':memory:', '--train', '/home/avar/g/hailo/t/command/shell.t', 'my' ]);
+#     cmp_ok($return, '==', 0, 'Exit status is correct');
+#     like($stderr, qr/^$/s, 'no stderr');
+#     ok($stdout, "stdout: $stdout");
+# }
+
+# ## --random-reply
+# {
+#     my ($return, $stdout, $stderr) = run_script( $app, [ '--brain', ':memory:', '--train', abs_path(__FILE__), '--random-reply' ]);
+#     cmp_ok($return, '==', 0, 'Exit status is correct');
+#     like($stderr, qr/^$/s, 'no stderr');
+#     ok($stdout, "stdout: $stdout");
+# }
