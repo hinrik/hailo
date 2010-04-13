@@ -24,3 +24,19 @@ generate a random reply.
 
 Add a --random-reply to rectify this. There's untested work for this
 on the hailo-command-random-reply branch.
+
+* Don't pass the DBI connection string with --storage-args
+
+There's lots of per-driver syntax in the DBI connection string that we
+don't support. We don't support the MySQL syntax for reading auth
+details from ~/.my.cnf for example.
+
+Make Hailo be used like this:
+
+    hailo --brain file-or-db-name
+
+And extended use like this:
+
+    hailo --connect dbi:SQLite:dbname=file.sqlite
+
+--brain wolud then be optional when --connect is supplied.
