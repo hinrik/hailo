@@ -39,6 +39,12 @@ And extended use like this:
 
     hailo --connect dbi:SQLite:dbname=file.sqlite
 
+And for user/pass:
+
+    hailo --connect='["dbi:SQLite:my.db", "", ""]'
+
+See what dbicadmin(1) does.
+
 --brain wolud then be optional when --connect is supplied.
 
 * Add a looping ->reply() Engine backend
