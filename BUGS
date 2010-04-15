@@ -36,7 +36,46 @@ And for user/pass:
 
 See what dbicadmin(1) does.
 
---brain wolud then be optional when --connect is supplied.
+--brain would then be optional when --connect is supplied. Here's more
+  examples:
+    
+    Hailo->new(
+        # Simply like this:
+        brain => ':memory:',
+    );
+    Hailo->new(
+        # Or with a custom storage
+        brain => 'hailo',
+        storage_class => 'Pg', # Will connect to dbi:Pg:dbname=hailo
+    );
+    Hailo->new(
+        # Or more verbosely:
+        storage_class => 'SQLite',
+        storage_connect => "dbi:SQLite:dbname=:memory:",
+    );
+    Hailo->new(
+        # Or with Pg
+        storage_class => 'Pg',
+        storage_connect => "dbi:Pg:dbname=hailo",
+    );
+    Hailo->new(
+        # Pg with user/pass:
+        storage_class => 'Pg',
+        storage_connect => [ "dbi:Pg:dbname=hailo", "user", "pass" ],
+    );
+    Hailo->new(
+        # Custom connect args
+        storage_class => 'Pg',
+        storage_connect => [ "dbi:Pg:dbname=hailo", "user", "pass", { RaiseError => 0, pg_unicode => 0 } ],
+    );
+    Hailo->new(
+        # With an existing dbh (like DBIx::Class):
+        storage_class => 'SQLite',
+        storage_dbh => sub {
+            DBI->connect("dbi:SQLite:dbname=:memory:", "", "" { sqlite_unicode => 1 });
+        },
+    );
+    
 
 * Add a looping ->reply() Engine backend
 
