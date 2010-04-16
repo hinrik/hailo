@@ -1,0 +1,28 @@
+#!/usr/bin/env perl
+use 5.010;
+use autodie ':all';
+use strict;
+use Benchmark ':all';
+
+my $p1        = $ARGV[0] // 'perl';
+my $p2        = $ARGV[0] // 'perl5.13.0';
+my $tests     = $ARGV[0] // 5;
+my $testfiles = $ARGV[1] // 't';
+
+my %tests = (
+    $p1 => [ '-Ilib' ],
+    $p2 => [ '-Ilib' ],
+);
+
+cmpthese($tests, {
+    map {
+        my $_ = $_;
+        $_ => sub {
+            state $test = 1;
+            my $cmd = qq[ANY_MOOSE=Mouse prove -e '$_' $tests{$_}[0] -r $testfiles];
+            say STDERR "Testing $_ $test/$tests (command: <<$cmd>>)";
+            system $cmd;
+            $test++;
+        }
+    } keys %tests,
+});
