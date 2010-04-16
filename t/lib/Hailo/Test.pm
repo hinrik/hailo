@@ -466,7 +466,7 @@ sub test_all_plan {
         if ($self->brief) {
             plan(tests => 797);
         } else {
-            plan(tests => 253420);
+            plan(tests => 25342);
         }
         $self->test_exhaustive;
     } else {
