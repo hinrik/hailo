@@ -5,9 +5,9 @@ use strict;
 use Benchmark ':all';
 
 my $p1        = $ARGV[0] // 'perl';
-my $p2        = $ARGV[0] // 'perl5.13.0';
-my $tests     = $ARGV[0] // 5;
-my $testfiles = $ARGV[1] // 't';
+my $p2        = $ARGV[1] // 'perl5.13.0';
+my $tests     = $ARGV[2] // 5;
+my $testfiles = $ARGV[3] // 't';
 
 my %tests = (
     $p1 => [ '-Ilib' ],
