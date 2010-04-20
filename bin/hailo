@@ -16,7 +16,7 @@ $_ = decode('utf8', $_) for @ARGV;
 # Set programname
 $0 = 'hailo';
 
-if ($^O eq 'linux') {
+if ($] < 5.013000 and $^O eq 'linux') {
     local $@;
     eval {
         require Sys::Prctl;
