@@ -6,6 +6,9 @@ Revision history for Hailo
       was made redundant in perl core commit 7636ea95c5 by yours
       truly.
 
+    - A script to benchmark Hailo on different locally installed
+      perls.
+
 0.40 2010-04-13 15:10:23
 
     - Add --reply-random to the hailo command-line interface. Allows
