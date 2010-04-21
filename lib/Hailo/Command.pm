@@ -24,7 +24,7 @@ has help => (
     isa           => Bool,
     is            => 'ro',
     default       => 0,
-    documentation => 'This help message',
+    documentation => "You're soaking it in",
 );
 
 has _go_version => (
