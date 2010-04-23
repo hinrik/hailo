@@ -634,7 +634,7 @@ and as L<hailo-ui-web|http://github.com/avar/hailo-ui-web> on
 L<GitHub|http://github.com>
 
 =item * L<HALBot> - Another L<Catalyst> Dojo powered web interface to
-Hailo available at L<www.dhdo.org|http://www.dhdo.org> and as
+Hailo available at L<bifurcat.es|http://bifurcat.es/> and as
 L<halbot-on-the-web|http://gitorious.org/halbot-on-the-web/halbot-on-the-web>
 at L<gitorious|http://gitorious.org>
 
