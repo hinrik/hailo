@@ -2,6 +2,8 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+0.41 2010-04-23 00:24:24
+
     - Don't (optionally) use Sys::Prctl on Perl 5.13.0 and above. It
       was made redundant in perl core commit 7636ea95c5 by yours
       truly.
