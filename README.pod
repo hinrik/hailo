@@ -11,8 +11,7 @@ command-line invocation.
 
     # Hailo requires Perl 5.10
     use 5.010;
-    use strict;
-    use warnings;
+    use Any::Moose;
     use Hailo;
 
     # Construct a new in-memory Hailo using the SQLite backend. See
@@ -318,7 +317,7 @@ and as L<hailo-ui-web|http://github.com/avar/hailo-ui-web> on
 L<GitHub|http://github.com>
 
 =item * L<HALBot> - Another L<Catalyst> Dojo powered web interface to
-Hailo available at L<www.dhdo.org|http://www.dhdo.org> and as
+Hailo available at L<bifurcat.es|http://bifurcat.es/> and as
 L<halbot-on-the-web|http://gitorious.org/halbot-on-the-web/halbot-on-the-web>
 at L<gitorious|http://gitorious.org>
 
