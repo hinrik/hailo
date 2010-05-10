@@ -2,6 +2,9 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Hailo should now work on Windows. Dependency on two modules that
+      had Windows failures in their dependencies has been dropped.
+
     - Remove Term::ProgressBar dependency, use Term::Sk
       instead. Unlike Term::ProgressBar it doesn't depend on
       Class::MethodMaker and Term::ReadKey. Those contributed a lot to
