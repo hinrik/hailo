@@ -21,7 +21,7 @@ sub parsed_pod {
 
     my $dir = tempdir( CLEANUP => 1 );
     my ($out_fh, $filename) = tempfile( DIR => $dir );
-    
+
     my $parser = Pod::Text->new();
     $parser->output_fh( $out_fh );
     $parser->parse_string_document( $slurp );

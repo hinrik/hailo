@@ -140,7 +140,7 @@ DIE
         my $id = $self->sth->{last_token_rowid}->fetchrow_array();
         $self->_boundary_token_id($id);
     }
-    
+
     $self->_engaged(1);
 
     return;

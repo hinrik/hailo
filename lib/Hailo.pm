@@ -50,7 +50,7 @@ has brain_resource => (
         $self->brain($brain);
     },
 );
-    
+
 my %has = (
     engine => {
         name => 'Engine',
