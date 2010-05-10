@@ -2,7 +2,6 @@ package Hailo::Storage;
 
 use 5.010;
 use Any::Moose;
-use Any::Moose 'X::Types::'.any_moose() => [qw<ArrayRef HashRef Int Str Bool>];
 BEGIN {
     return unless Any::Moose::moose_is_preferred();
     require MooseX::StrictConstructor;
@@ -12,14 +11,14 @@ use DBI;
 use Hailo::Storage::Schema;
 
 has dbd => (
-    isa           => Str,
+    isa           => 'Str',
     is            => 'ro',
     lazy_build    => 1,
     documentation => "The DBD::* driver we're using",
 );
 
 has dbd_options => (
-    isa           => HashRef,
+    isa           => 'HashRef',
     is            => 'ro',
     lazy_build    => 1,
     documentation => 'Options passed as the last argument to DBI->connect()',
@@ -47,7 +46,7 @@ sub _build_dbh {
 };
 
 has dbi_options => (
-    isa           => ArrayRef,
+    isa           => 'ArrayRef',
     is            => 'ro',
     auto_deref    => 1,
     lazy_build    => 1,
@@ -71,14 +70,14 @@ sub _build_dbi_options {
 }
 
 has _engaged => (
-    isa           => Bool,
+    isa           => 'Bool',
     is            => 'rw',
     default       => 0,
     documentation => 'Have we done setup work to get this database going?',
 );
 
 has sth => (
-    isa        => HashRef,
+    isa        => 'HashRef',
     is         => 'ro',
     lazy_build => 1,
     documentation => 'A HashRef of prepared DBI statement handles',
@@ -90,7 +89,7 @@ sub _build_sth {
 }
 
 has _boundary_token_id => (
-    isa => Int,
+    isa => 'Int',
     is  => 'rw',
 );
 

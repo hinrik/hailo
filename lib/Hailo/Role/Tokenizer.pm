@@ -2,11 +2,10 @@ package Hailo::Role::Tokenizer;
 
 use 5.010;
 use Any::Moose '::Role';
-use Any::Moose 'X::Types::'.any_moose() => [qw/HashRef Int/];
 use namespace::clean -except => 'meta';
 
 has spacing => (
-    isa     => HashRef[Int],
+    isa     => 'HashRef[Int]',
     is      => 'rw',
     default => sub { {
         normal  => 0,

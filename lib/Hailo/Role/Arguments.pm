@@ -2,11 +2,10 @@ package Hailo::Role::Arguments;
 
 use 5.010;
 use Any::Moose '::Role';
-use Any::Moose 'X::Types::'.any_moose() => [qw/HashRef Str/];
 use namespace::clean -except => 'meta';
 
 has arguments => (
-    isa           => HashRef[Str],
+    isa           => 'HashRef[Str]',
     is            => 'ro',
     documentation => "Arguments passed from Hailo",
     auto_deref    => 1,

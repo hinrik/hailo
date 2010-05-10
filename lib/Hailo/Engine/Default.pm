@@ -2,14 +2,13 @@ package Hailo::Engine::Default;
 
 use 5.010;
 use Any::Moose;
-use Any::Moose 'X::Types::'.any_moose() => [qw< Int >];
 use List::Util qw<min first shuffle>;
 use List::MoreUtils qw<uniq>;
 
 with qw[ Hailo::Role::Arguments Hailo::Role::Engine ];
 
 has repeat_limit => (
-    isa     => Int,
+    isa     => 'Int',
     is      => 'rw',
     lazy    => 1,
     default => sub {

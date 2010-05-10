@@ -18,6 +18,9 @@ Revision history for Hailo
       Filter::Util::Call which had some failures. Now only used if
       it's installed on the system already.
 
+    - Remove MouseX/MooseX::Types dependency. We don't use any of the
+      fancy type features, so there's no point in using this.
+
 0.41 2010-04-23 00:24:24
 
     - Don't (optionally) use Sys::Prctl on Perl 5.13.0 and above. It
