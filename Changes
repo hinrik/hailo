@@ -2,6 +2,11 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Remove Term::ProgressBar dependency, use Term::Sk
+      instead. Unlike Term::ProgressBar it doesn't depend on
+      Class::MethodMaker and Term::ReadKey. Those contributed a lot to
+      our failures on Windows.
+    
     - Don't hard depend on Test::Expect. It depends IO::Tty which does
       not work under any version of Windows, except under Cygwin (it
       calls fcntl(*fd, F_DUPFD, 3)).

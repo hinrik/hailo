@@ -28,7 +28,7 @@ run_ok( $app, [ '--no-help' ], "Don't help me" );
     cmp_ok($return, '==', 1, 'Exit status is correct');
     like($stderr, qr/^$/s, 'no stderr');
     like($stdout, qr{usage: hailo}, 'Got usage header');
-    like($stdout, qr{--progress\s+Print import progress}, 'Got --progress');
+    like($stdout, qr{--progress\s+Display progress}, 'Got --progress');
     like($stdout, qr{files are assumed to be UTF-8 encoded}, 'Got UTF-8 note');
     unlike($stdout, qr{examples:}, "no examples on normal output");
 }
@@ -39,7 +39,7 @@ run_ok( $app, [ '--no-help' ], "Don't help me" );
     like($stderr, qr/^$/s, 'no stderr');
     like($stdout, qr/Unknown option: blah-blah-blah/, 'Unknown option');
     like($stdout, qr{usage: hailo}, 'Got usage header');
-    like($stdout, qr{--progress\s+Print import progress}, 'Got --progress');
+    like($stdout, qr{--progress\s+Display progress}, 'Got --progress');
     like($stdout, qr{files are assumed to be UTF-8 encoded}, 'Got UTF-8 note');
     unlike($stdout, qr{examples:}, "no examples on error");
 

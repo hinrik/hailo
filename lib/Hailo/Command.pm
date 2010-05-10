@@ -48,7 +48,7 @@ has _go_progress => (
     traits        => [ qw/ Getopt / ],
     cmd_aliases   => 'p',
     cmd_flag      => 'progress',
-    documentation => 'Print import progress with Term::ProgressBar',
+    documentation => 'Display progress during the import',
     isa           => Bool,
     is            => 'ro',
     default       => sub {
@@ -296,8 +296,7 @@ override _train_fh => sub {
 };
 
 before train_progress => sub {
-    require Term::ProgressBar;
-    Term::ProgressBar->import(2.00);
+    require Term::Sk;
     require File::CountLines;
     File::CountLines->import('count_lines');
     require Time::HiRes;
@@ -308,30 +307,25 @@ before train_progress => sub {
 sub train_progress {
     my ($self, $fh, $filename) = @_;
     my $lines = count_lines($filename);
-    my $progress = Term::ProgressBar->new({
-        name => "Training from $filename",
-        count => $lines,
-        remove => 1,
-        ETA => 'linear',
-    });
-    $progress->minor(0);
+    my $progress = Term::Sk->new('%d Elapsed: %8t %21b %4p %2d (%8c of %11m)', {
+        # Start at line 1, not 0
+        base => 1,
+        target => $lines,
+        # Every 0.1 seconds for long files
+        freq => ($lines < 10_000 ? 10 : 'd'),
+    }) or die "Error in Term::Sk->new: (code $Term::Sk::errcode) $Term::Sk::errmsg";
+
     my $next_update = 0;
     my $start_time = [gettimeofday()];
 
     my $i = 1; while (my $line = <$fh>) {
         chomp $line;
         $self->_learn_one($line);
-        if ($i >= $next_update) {
-            $next_update = $progress->update($.);
-
-            # The default Term::ProgressBar estimate for next updates
-            # is way too concervative. With a ~200k line file we only
-            # update every ~2k lines which is 10 seconds or so.
-            $next_update = (($next_update-$i) / 10) + $i;
-        }
+        $progress->up;
     } continue { $i++ }
 
-    $progress->update($lines) if $lines >= $next_update;
+    $progress->close;
+
     my $elapsed = tv_interval($start_time);
     say sprintf "Trained from %d lines in %.2f seconds; %.2f lines/s", $i, $elapsed, ($i / $elapsed);
 
