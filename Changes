@@ -2,6 +2,10 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Don't hard depend on Test::Expect. It depends IO::Tty which does
+      not work under any version of Windows, except under Cygwin (it
+      calls fcntl(*fd, F_DUPFD, 3)).
+
 0.41 2010-04-23 00:24:24
 
     - Don't (optionally) use Sys::Prctl on Perl 5.13.0 and above. It

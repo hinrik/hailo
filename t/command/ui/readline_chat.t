@@ -1,9 +1,20 @@
 use 5.010;
 use strict;
 use warnings;
-use Test::Expect;
-use Test::More tests => 5;
 use Hailo;
+use Test::More;
+BEGIN {
+    # This roundabout way of doing things is due to:
+    ## Can't locate object method "hard_close" via package
+    ## "expect_handle" (perhaps you forgot to load "expect_handle"?)
+    # If I just do C<eval 'use Test::Expect'> or C<eval { require
+    # Test::Expect; Test::Expect->import }>. Too lazy to find out why
+    eval 'require Test::Expect';
+    plan skip_all => "Test::Expect required for testing readline chat" if $@;
+}
+use Test::Expect;
+
+plan tests => 5;
 
 expect_run(
     command => "$^X bin/hailo -o 2 -b :memory:",
