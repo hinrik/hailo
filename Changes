@@ -2,6 +2,8 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+0.42 2010-05-10 21:26:45
+
     - Hailo should now work on Windows. Dependency on two modules that
       had Windows failures in their dependencies has been dropped.
 
