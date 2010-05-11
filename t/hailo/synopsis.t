@@ -1,9 +1,9 @@
 use 5.010;
 use strict;
 use warnings;
-use Test::More tests => 1;
-eval "use Test::Synopsis";
-plan skip_all => "Test::Synopsis required for testing SYNOPSIS" if $@;
+use Test::More;
+plan skip_all => "Test::Synopsis required for testing SYNOPSIS" unless eval { require Test::Synopsis };
+plan tests => 1;
 
 my ($synopsis) = Test::Synopsis::extract_synopsis('lib/Hailo.pm');
 $synopsis =~ s/^.*?(?=\s+use)//s;
