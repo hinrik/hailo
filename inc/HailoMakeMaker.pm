@@ -13,8 +13,12 @@ package MY;
 sub test {
     my $inherited = shift->SUPER::test(@_);
 
-    # Run tests with Moose and Mouse
-    $inherited =~ s/^test_dynamic :: pure_all\n\t(.*?)\n/test_dynamic :: pure_all\n\tANY_MOOSE=Mouse $1\n\tANY_MOOSE=Moose $1\n/m;
+    # This trickery fails with Windows's dmake, see
+    # http://www.cpantesters.org/cpan/report/07242729-b19f-3f77-b713-d32bba55d77f
+    unless ($^O eq 'MSWin32') {
+        # Run tests with Moose and Mouse
+        $inherited =~ s/^test_dynamic :: pure_all\n\t(.*?)\n/test_dynamic :: pure_all\n\tANY_MOOSE=Mouse $1\n\tANY_MOOSE=Moose $1\n/m;
+    }
 
     return $inherited;
 }
