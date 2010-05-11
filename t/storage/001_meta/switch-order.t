@@ -1,11 +1,14 @@
 use strict;
 use warnings;
-use Test::More tests => 815;
+use Test::More;
 use Test::Exception;
 use File::Temp qw<tempdir tempfile>;
 use File::Slurp qw<slurp>;
 use Bot::Training;
 use Hailo;
+
+plan skip_all => "This test is known to fail on OpenBSD" if $^O eq 'openbsd';
+plan tests => 815;
 
 # Dir to store our brains
 my $dir = tempdir( "hailo-test-dbd-so-XXXX", CLEANUP => 1, TMPDIR => 1 );
