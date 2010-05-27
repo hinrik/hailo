@@ -34,6 +34,9 @@ Revision history for Hailo
   
       - Eliminate some redundant use of the regex engine in the Words
         tokenizer.
+
+    - The utils/hailo-benchmark script had been broken for some time
+      due to a trivial API change in Hailo::Test. Now it works again.
   
 0.43 2010-05-11 19:54:36
 

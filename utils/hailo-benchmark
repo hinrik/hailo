@@ -64,7 +64,7 @@ for my $s (@s) {
         state $iter = 0;
         my $hailo = $hailos{$name}->[$iter];
 
-        $hailo->test_known();
+        $hailo->test_all();
 
         $iter++;
     };
