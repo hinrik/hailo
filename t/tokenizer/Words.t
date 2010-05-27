@@ -42,14 +42,10 @@ subtest make_tokens => sub {
     $t->("HoRRiBle", [ qw< HoRRiBle > ]);
     $t->("hoRRiBle", [ qw< hoRRiBle > ]);
 
-  TODO: {
-    local $TODO = "Make these tokenizer cases work";
-
     # Similarly we should preserve capitalization on words split by '
+    # and other \W characters
     $t->("I FYIQ'ed that job.", [ qw< I FYIQ'ed that job . > ]);
     $t->("That guy was KIA'd.", [ qw< that guy was KIA'd . > ]);
-
-  }
 
     done_testing();
 };

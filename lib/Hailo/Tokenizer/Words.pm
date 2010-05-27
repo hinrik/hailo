@@ -67,7 +67,10 @@ sub make_tokens {
                 $word = lc $word
                     if $word ne uc $word
                        # Mixed-case words like "WoW"
-                       and $word !~ /^ (\p{Upper}+|\p{Lower}+)+ \p{Upper}+ (\p{Lower}+|\p{Upper}+)* $/x;
+                       and $word !~ /^ (\p{Upper}+|\p{Lower}+)+ \p{Upper}+ (\p{Lower}+|\p{Upper}+)* $/x
+                       # Words that are upper case followed by a non-word character.
+                       # {2,} so it doesn't match I'm
+                       and $word !~ /^ \p{Upper}{2,} \W+ \p{Lower}+ $/x;
 
                 push @tokens, [$self->spacing->{normal}, $word];
                 $got_word = 1;

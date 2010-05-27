@@ -14,6 +14,11 @@ Revision history for Hailo
       etc. Previously these and others that weren't 100% upper-case
       would all be lower cased.
 
+    - Preserve the capitalization of words that are all upper-case
+      followed by a non-word character followed by lower-case. This
+      preserves words like KIA'd, FYIQ'ed and other things that are
+      likely to be partial acronyms.
+
 0.43 2010-05-11 19:54:36
 
     - Tests failed on 0.42 without Test::Synopsis due to invalid test plan.
