@@ -296,8 +296,8 @@ You can join the IRC channel I<#hailo> on FreeNode if you have questions.
 
 =head1 BUGS
 
-Bugs, feature requests and other issues are tracked in L<Hailo's issue
-tracker on Github|http://github.com/hinrik/hailo/issues>.
+Bugs, feature requests and other issues are tracked in L<Hailo's RT on
+rt.cpan.org|https://rt.cpan.org/Dist/Display.html?Name=Hailo>
 
 =head1 SEE ALSO
 

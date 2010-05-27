@@ -40,6 +40,9 @@ Revision history for Hailo
 
     - The utils/hailo-benchmark script had been broken for some time
       due to a trivial API change in Hailo::Test. Now it works again.
+
+    - Stop pointing to the GitHub issue tracker in the
+      documentation. We now use RT instead.
   
 0.43 2010-05-11 19:54:36
 
