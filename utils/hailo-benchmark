@@ -47,7 +47,7 @@ for my $s (@s) {
             storage => $storage,
             brief => 1,
             %$opts,
-            ($storage =~ /Pg|mysql/
+            ($storage =~ /PostgreSQL|MySQL/
              ? (brain => "hailo_benchmark_db_test_${toke}_$i")
              : ()),
         );

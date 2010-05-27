@@ -2,6 +2,11 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Removed the backwards-compatible "Pg" and "mysql" aliases for
+      the storage backends and the "DBD::" prefix. This use has been
+      deprecated since 0.31. Simply use "PostgreSQL", "MySQL" or
+      "SQLite" instead.
+
     - This release contains improvements for the default Words
       tokenizer. It's recommended that users rebuild their Hailo
       brains when upgrading. See UPGRADING in the Hailo manual.

@@ -51,14 +51,14 @@ my $h_sqlite_mem = Hailo->new(
 );
 
 my $h_pg = Hailo->new(
-    storage_class   => 'Pg',
+    storage_class   => 'PostgreSQL',
     storage_args => {
         dbname => 'failo',
     }
 );
 
 my $h_mysql = Hailo->new(
-    storage_class   => 'mysql',
+    storage_class   => 'MySQL',
     storage_args => {
         database => 'hailo',
         username => 'hailo',

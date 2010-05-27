@@ -140,12 +140,6 @@ sub _plugins { qw[
 sub _new_class {
     my ($self, $type, $class, $args) = @_;
 
-    # Backwards compatibility hack. Plugins were renamed in 0.31
-    $class =~ s/DBD:://;
-    $class =~ s/^Pg$/PostgreSQL/;
-    $class =~ s/^mysql$/MySQL/;
-
-
     my $pkg;
     if ($class =~ m[^\+(?<custom_plugin>.+)$]) {
         $pkg = $+{custom_plugin};

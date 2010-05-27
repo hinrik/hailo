@@ -18,7 +18,7 @@ SKIP: {
 for (qw/ _go_reply _go_train _go_learn _go_learn_reply /) {
     my $cmd = Hailo::Command->new(
         $_ => "blah",
-        _go_storage_class => "Pg",
+        _go_storage_class => "PostgreSQL",
     );
     local $@;
     eval { $cmd->run };

@@ -14,7 +14,7 @@ use Bot::Training;
 use namespace::clean -except => 'meta';
 
 sub all_storages {
-    return qw(DBD::SQLite DBD::Pg DBD::mysql);
+    return qw(SQLite PostgreSQL MySQL);
 }
 
 sub simple_storages {
@@ -109,7 +109,7 @@ sub get_brain {
     my $brainrs = $self->brain;
 
     given ($storage) {
-        when (/mysql/) {
+        when ('MySQL') {
             my $name = $self->tmpfile->[1];
             $name =~ s[[^A-Za-z]][_]g;
             return $name;
@@ -127,8 +127,8 @@ sub spawn_storage {
     my $ok = 1;
 
     my %classes = (
-        Pg                => 'DBD::Pg',
-        mysql             => 'DBD::mysql',
+        PostgreSQL => 'DBD::Pg',
+        MySQL      => 'DBD::mysql',
     );
 
     if (exists $classes{$storage}) {
@@ -144,7 +144,7 @@ sub spawn_storage {
     }
 
     given ($storage) {
-        when (/Pg/) {
+        when ('PostgreSQL') {
             plan skip_all => "You must set TEST_POSTGRESQL= and have permission to createdb(1) to test PostgreSQL" unless $ENV{TEST_POSTGRESQL};
 
             # It doesn't use the file to store data obviously, it's just a convenient random token.
@@ -156,7 +156,7 @@ sub spawn_storage {
                 $SIG{__WARN__} = sub { print STDERR @_ if $_[0] !~ m/NOTICE:\s*CREATE TABLE/; };
             }
         }
-        when (/mysql/) {
+        when ('MySQL') {
             plan skip_all => "You must set TEST_MYSQL= and MYSQL_ROOT_PASSWORD= to test MySQL" unless $ENV{TEST_MYSQL} and $ENV{MYSQL_ROOT_PASSWORD};
             system qq[echo "CREATE DATABASE $brainrs;" | mysql -u root -p$ENV{MYSQL_ROOT_PASSWORD}] and die $!;
             system qq[echo "GRANT ALL ON $brainrs.* TO hailo\@localhost IDENTIFIED BY 'hailo';;" | mysql -u root -p$ENV{MYSQL_ROOT_PASSWORD}] and die $!;
@@ -179,16 +179,16 @@ sub unspawn_storage {
     };
 
     given ($storage) {
-        when (/Pg/) {
+        when ('PostgreSQL') {
             if ($self->{_created_pg}) {
                 $nuke_db->();
                 system "dropdb '$brainrs'";
             }
         }
-        when (/SQLite/) {
+        when ('SQLite') {
             $nuke_db->();
         }
-        when (/mysql/) {
+        when ('MySQL') {
             if ($self->{_created_mysql}) {
                 system qq[echo "DROP DATABASE $brainrs;" | mysql -u root -p$ENV{MYSQL_ROOT_PASSWORD}] and die $!;
             }
@@ -203,7 +203,7 @@ sub _connect_opts {
     my %opts;
 
     given ($storage) {
-        when (/SQLite/) {
+        when ('SQLite') {
             %opts = (
                 brain => ($self->in_memory  ? ':memory:' : $self->get_brain),
                 storage_args => {
@@ -211,14 +211,14 @@ sub _connect_opts {
                 },
             );
         }
-        when (/Pg/) {
+        when ('PostgreSQL') {
             %opts = (
                 storage_args => {
                     dbname => $self->get_brain
                 },
             );
         }
-        when (/mysql/) {
+        when ('MySQL') {
             %opts = (
                 storage_args => {
                     database => $self->get_brain,

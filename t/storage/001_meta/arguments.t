@@ -14,7 +14,7 @@ my $arguments = {
 };
 
 my $hailo = Hailo->new(
-    storage_class => "Pg",
+    storage_class => "PostgreSQL",
     storage_args  => $arguments,
 );
 
