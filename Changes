@@ -2,6 +2,8 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+0.44 2010-05-27 15:55:30
+
     - Removed the backwards-compatible "Pg" and "mysql" aliases for
       the storage backends and the "DBD::" prefix. This use has been
       deprecated since 0.31. Simply use "PostgreSQL", "MySQL" or
