@@ -39,6 +39,34 @@ Hailo::Command->new_with_options->run;
 
 hailo - Command-line interface to the L<Hailo|Hailo> Markov bot
 
+=head1 USAGE
+
+    usage: hailo [-abEhLlopRrSsTtuv] [long options...]
+	-v --version           Print version and exit
+	-u --ui                Use UI CLASS
+	-t --train             Learn from all the lines in FILE, use - for STDIN
+	-s --stats             Print statistics about the brain
+	-r --reply             Reply to STRING
+	-p --progress          Display progress during the import
+	-o --order             Markov order; How deep the rabbit hole goes
+	-l --learn             Learn from STRING
+	-h --help              You're soaking it in
+	-b --brain             Load/save brain to/from FILE
+	-a --autosave          Save the brain on exit (on by default)
+	-T --tokenizer         Use tokenizer CLASS
+	-S --storage           Use storage CLASS
+	-R --random-reply      Like --reply but takes no STRING; Babble at random
+	-L --learn-reply       Learn from STRING and reply to it
+	-E --engine            Use engine CLASS
+	--ui-args              Arguments for the UI class
+	--tokenizer-args       Arguments for the Tokenizer class
+	--storage-args         Arguments for the Storage class
+	--examples             Print examples along with the help message
+	--engine-args          Arguments for the Engine class
+	--brain-resource       Alias for `brain' for backwards compatibility
+
+	Note: All input/output and files are assumed to be UTF-8 encoded.
+
 =head1 SYNOPSIS
 
 Train in-memory from fortune files and reply:

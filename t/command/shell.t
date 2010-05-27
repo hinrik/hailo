@@ -2,7 +2,7 @@ use 5.010;
 use strict;
 use warnings;
 use Test::Script::Run;
-use Test::More tests => 57;
+use Test::More tests => 58;
 
 my $app = 'hailo';
 
@@ -31,6 +31,36 @@ run_ok( $app, [ '--no-help' ], "Don't help me" );
     like($stdout, qr{--progress\s+Display progress}, 'Got --progress');
     like($stdout, qr{files are assumed to be UTF-8 encoded}, 'Got UTF-8 note');
     unlike($stdout, qr{examples:}, "no examples on normal output");
+}
+
+# --help matches POD in bin/hailo
+{
+  SKIP: {
+    my ($return, $stdout, $stderr) = run_script( $app, [ '--help' ]);
+
+    my $hailo = 'bin/hailo';
+
+    skip "There's no bin/hailo", 1 unless -r $hailo;
+
+    my $content = do {
+        local $/;
+        open my $fh, "<", $hailo or skip "Couldn't open $hailo: $!", 1;
+        <$fh>;
+    };
+
+    my $usage = ($content =~ m/^=head1\s+USAGE(.+?)\n^=head1/ms)[0];
+    $usage =~ s/^\s*//s;
+
+    my @usage  = split /\n/, $usage;
+    my @stdout = split /\n/, $stdout;
+
+    subtest "bin/hailo POD matches --help" => sub {
+        for (my $i = 0; $i < @stdout; $i++) {
+            is($usage[$i], $stdout[$i], "Line #$i of POD usage matched --help");
+        }
+        done_testing();
+    }
+  }
 }
 
 {

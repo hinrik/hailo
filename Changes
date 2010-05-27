@@ -35,6 +35,9 @@ Revision history for Hailo
       - Eliminate some redundant use of the regex engine in the Words
         tokenizer.
 
+    - Include --help in bin/hailo's POD. It's now easier to read it
+      standalone, and `man hailo' has the same info as `hailo --help`.
+
     - The utils/hailo-benchmark script had been broken for some time
       due to a trivial API change in Hailo::Test. Now it works again.
   
