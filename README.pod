@@ -69,9 +69,9 @@ command-line utility.
 Hailo can currently store its data in either a
 L<SQLite|Hailo::Storage::SQLite>,
 L<PostgreSQL|Hailo::Storage::PostgreSQL> or
-L<MySQL|Hailo::Storage::MySQL> database, more backends were supported
-in earlier versions but they were removed as they had no redeeming
-quality.
+L<MySQL|Hailo::Storage::MySQL> database. Some NoSQL backends were
+supported in earlier versions, but they were removed as they had no
+redeeming quality.
 
 SQLite is the primary target for Hailo. It's much faster and uses less
 resources than the other two. It's highly recommended that you use it.
