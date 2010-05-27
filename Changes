@@ -2,6 +2,8 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+0.46 2010-05-27 22:47:45
+
     - The Regexp::Common pattern added in 0.44 slowed down Hailo by up
       to 45% in pathological cases (tests doing lots of
       tokenization), overall test suite slowdown was closer to 10%.
