@@ -41,7 +41,7 @@ has save_on_exit => (
 );
 
 has brain_resource => (
-    documentation => "Alias for `brain' for backwards compatability",
+    documentation => "Alias for `brain' for backwards compatibility",
     isa           => 'Str',
     is            => 'rw',
     trigger       => sub {
@@ -140,7 +140,7 @@ sub _plugins { qw[
 sub _new_class {
     my ($self, $type, $class, $args) = @_;
 
-    # Backwards compatability hack. Plugins were renamed in 0.31
+    # Backwards compatibility hack. Plugins were renamed in 0.31
     $class =~ s/DBD:://;
     $class =~ s/^Pg$/PostgreSQL/;
     $class =~ s/^mysql$/MySQL/;
