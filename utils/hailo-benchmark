@@ -9,8 +9,8 @@ use Test::More;
 use namespace::clean -except => 'meta';
 
 # Notes:
-#   ROOT=.. (for i in $(echo 'show databases;' | mysql -u root -p$ROOT|grep ^hailo_); do echo "drop database $i;" | mysql -u root -p$ROOT; done)
-#   for i in $(psql -A -l | perl -pe 's/\|.*//'|grep ^hailo_); do dropdb $i; done
+#   for i in $(echo 'show databases;' | mysql -u root -proot | grep hailo-test); do echo "drop database $i;" | mysql -u root -proot; done
+#   for i in $(psql -A -l | perl -pe 's/\|.*//'|grep hailo-test); do dropdb $i; done
 
 my $test_count = $ARGV[0] // 10;
 my @storages = $ARGV[1] ? (split /[\s,]+/, $ARGV[1]) : Hailo::Test::all_storages();
