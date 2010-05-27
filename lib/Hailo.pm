@@ -11,6 +11,16 @@ BEGIN {
 use List::Util qw(first);
 use namespace::clean -except => 'meta';
 
+use constant PLUGINS => [ qw[
+    Hailo::Engine::Default
+    Hailo::Storage::MySQL
+    Hailo::Storage::PostgreSQL
+    Hailo::Storage::SQLite
+    Hailo::Tokenizer::Chars
+    Hailo::Tokenizer::Words
+    Hailo::UI::ReadLine
+] ];
+
 has brain => (
     isa => 'Str',
     is  => 'rw',
@@ -127,16 +137,6 @@ for my $k (keys %has) {
     };
 }
 
-sub _plugins { qw[
-    Hailo::Engine::Default
-    Hailo::Storage::MySQL
-    Hailo::Storage::PostgreSQL
-    Hailo::Storage::SQLite
-    Hailo::Tokenizer::Chars
-    Hailo::Tokenizer::Words
-    Hailo::UI::ReadLine
-] }
-
 sub _new_class {
     my ($self, $type, $class, $args) = @_;
 
@@ -144,15 +144,16 @@ sub _new_class {
     if ($class =~ m[^\+(?<custom_plugin>.+)$]) {
         $pkg = $+{custom_plugin};
     } else {
+        my @plugins = @{ $self->PLUGINS };
         # Be fuzzy about includes, e.g. DBD::SQLite or SQLite or sqlite will go
         $pkg = first { / $type : .* : $class /ix }
                sort { length $a <=> length $b }
-               $self->_plugins;
+               @plugins;
 
         unless ($pkg) {
             local $" = ', ';
-            my @plugins = grep { /$type/ } $self->_plugins;
-            die "Couldn't find a class name matching '$class' in plugins '@plugins'";
+            my @p = grep { /$type/ } @plugins;
+            die "Couldn't find a class name matching '$class' in plugins '@p'";
         }
     }
 
