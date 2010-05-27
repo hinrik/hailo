@@ -123,6 +123,17 @@ subtest make_output => sub {
             'http://foo.BAR/bAz',
         ],
         [
+            'http://www.example.com/some/path?funny**!(),,:;@=&=',
+            [ 'http://www.example.com/some/path?funny**!(),,:;@=&=' ],
+            'http://www.example.com/some/path?funny**!(),,:;@=&=',
+        ],
+        [
+            # TODO: Support + in URIs
+            'svn+ssh://svn.wikimedia.org/svnroot/mediawiki',
+            [ qw< svn + ssh :// svn . wikimedia . org / svnroot / mediawiki > ],
+            'svn+ssh://svn.wikimedia.org/svnroot/mediawiki',
+        ],
+        [
             "foo bar baz. i said i'll do this",
             [qw<foo bar baz . i said i'll do this>],
             "Foo bar baz. I said I'll do this.",
