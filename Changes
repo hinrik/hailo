@@ -23,6 +23,10 @@ Revision history for Hailo
       preserves words like KIA'd, FYIQ'ed and other things that are
       likely to be partial acronyms.
 
+    - Twitter names. I.e. tokens matching @[A-Za-z0-9_]+ will be
+      tokenized as-is. This ensures that Hailo users like
+      Bot::Twatterhose don't corrupt their Twitter names.
+
 0.43 2010-05-11 19:54:36
 
     - Tests failed on 0.42 without Test::Synopsis due to invalid test plan.

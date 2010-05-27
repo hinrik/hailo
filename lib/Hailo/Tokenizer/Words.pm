@@ -19,6 +19,7 @@ my $DECIMAL    = qr/[.,]/;
 my $NUMBER     = qr/$DECIMAL?\d+(?:$DECIMAL\d+)*/;
 my $APOSTROPHE = qr/['’]/;
 my $APOST_WORD = qr/[[:alpha:]]+(?:$APOSTROPHE(?:[[:alpha:]]+))+/;
+my $TWAT_NAME  = qr/ \@ [A-Za-z0-9_]+ /x;
 my $PLAIN_WORD = qr/\w+/;
 my $WORD       = qr/$NUMBER|$APOST_WORD|$PLAIN_WORD/;
 
@@ -57,6 +58,15 @@ sub make_tokens {
             if (my ($url) = $chunk =~ /^($RE{URI})/) {
                 $chunk =~ s/^\Q$url//;
                 push @tokens, [$self->spacing->{normal}, $url];
+                $got_word = 1;
+            }
+            # Twitter names
+            elsif (my ($name) = $chunk =~ /^($TWAT_NAME)/) {
+                # Names on Twitter/Identi.ca can only match
+                # @[A-Za-z0-9_]+. I tested this on ~800k Twatterhose
+                # names.
+                $chunk =~ s/^\Q$name//;
+                push @tokens, [$self->spacing->{normal}, $name];
                 $got_word = 1;
             }
             # normal words
