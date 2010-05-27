@@ -2,6 +2,10 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - This release contains improvements for the default Words
+      tokenizer. It's recommended that users rebuild their Hailo
+      brains when upgrading. See UPGRADING in the Hailo manual.
+
     - Add URI support to the Words tokenizer. It will now use
       Regexp::Common's URI regex to tokenize URIs as-is.
 
