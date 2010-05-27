@@ -6,6 +6,9 @@ Revision history for Hailo
       of MiXeD CaSe was pathological. Changed it to a simpler one that
       works better.
 
+    - The --no-progress option to hailo to suppress the progress bar
+      now works again. It had been broken since 0.26 at least.
+
 0.44 2010-05-27 15:55:30
 
     - Removed the backwards-compatible "Pg" and "mysql" aliases for
