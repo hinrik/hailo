@@ -118,9 +118,9 @@ subtest make_output => sub {
             'Pretty girl like her "peak". Oh and you’re touching yourself.',
         ],
         [
-            'http://foo.bar/baz',
-            [qw<http :// foo . bar / baz>],
-            'http://foo.bar/baz',
+            'http://foo.BAR/bAz',
+            [qw<http://foo.BAR/bAz>],
+            'http://foo.BAR/bAz',
         ],
         [
             "foo bar baz. i said i'll do this",
@@ -194,7 +194,7 @@ subtest make_output => sub {
         ],
         [
             'Where did I go? http://foo.bar/',
-            [qw<where did I go ? http :// foo . bar />],
+            [qw<where did I go ? http://foo.bar/>],
             'Where did I go? http://foo.bar/'
         ],
         [

@@ -20,6 +20,7 @@ my $APOSTROPHE = qr/['’]/;
 my $APOST_WORD = qr/[[:alpha:]]+(?:$APOSTROPHE(?:[[:alpha:]]+))+/;
 my $PLAIN_WORD = qr/\w+/;
 my $WORD       = qr/$NUMBER|$APOST_WORD|$PLAIN_WORD/;
+my $URL        = qr{\w+://\S*};
 
 # capitalization
 # The rest of the regexes are pretty hairy. The goal here is to catch the
@@ -52,8 +53,14 @@ sub make_tokens {
         my $got_word;
 
         while (length $chunk) {
+            # urls
+            if (my ($url) = $chunk =~ /^($URL)/) {
+                $chunk =~ s/^\Q$url//;
+                push @tokens, [$self->spacing->{normal}, $url];
+                $got_word = 1;
+            }
             # normal words
-            if (my ($word) = $chunk =~ /^($WORD)/) {
+            elsif (my ($word) = $chunk =~ /^($WORD)/) {
                 $chunk =~ s/^\Q$word//;
                 $word = lc($word) if $word ne uc($word);
                 push @tokens, [$self->spacing->{normal}, $word];
