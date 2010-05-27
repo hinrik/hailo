@@ -41,6 +41,31 @@ subtest make_tokens => sub {
     $t->("HoRRiBlE", [ qw< HoRRiBlE > ]);
     $t->("HoRRiBle", [ qw< HoRRiBle > ]);
     $t->("hoRRiBle", [ qw< hoRRiBle > ]);
+    {
+        my $warn = '';
+        local $SIG{__WARN__} = sub { $warn .= $_[0] };
+        $t->($_, [ $_ ]) for "n" . "o" x 500;
+        is($warn, '', "Didn't get Complex regular subexpression recursion limit (32766) exceeded");
+    }
+
+    my @want = ( qw[
+        WoW 1
+        foo 0
+        Foo 0
+        FoO 1
+        fOO 1
+        foO 1
+        foO 1
+        GumbyBRAIN 1
+        gumbyBRAIN 1
+        HoRRiBlE 1
+        HoRRiBle 1
+        hoRRiBle 1
+    ] );
+
+    while (my ($word, $should) = splice @want, 0, 2) {
+        $t->($word, [ $should ? $word : lc $word ]);
+    }
 
     # Similarly we should preserve capitalization on words split by '
     # and other \W characters
