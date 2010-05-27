@@ -2,6 +2,8 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+0.45 2010-05-27 19:56:31
+
     - The regular expression introduced in 0.44 to check if a word was
       of MiXeD CaSe was pathological. Changed it to a simpler one that
       works better.
