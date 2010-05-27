@@ -31,20 +31,24 @@ subtest make_tokens => sub {
     $t->("foo bar", [ qw<foo bar> ]);
     $t->("Æ", [ 'Æ' ]);
 
-  TODO: {
-    local $TODO = "Make these tokenizer cases work";
-
     # Words like WoW and other odd things that change capitalization
     # mid-way should retain their capitalization.
     $t->("I hate WoW.", [ qw< I hate WoW . > ]);
+
+    # Preserve mixed capitalization
+    $t->("GumbyBRAIN", [ qw< GumbyBRAIN > ]);
+    $t->("\"GumbyBRAIN\"", [ qw< " GumbyBRAIN " > ]);
+    $t->("HoRRiBlE", [ qw< HoRRiBlE > ]);
+    $t->("HoRRiBle", [ qw< HoRRiBle > ]);
+    $t->("hoRRiBle", [ qw< hoRRiBle > ]);
+
+  TODO: {
+    local $TODO = "Make these tokenizer cases work";
 
     # Similarly we should preserve capitalization on words split by '
     $t->("I FYIQ'ed that job.", [ qw< I FYIQ'ed that job . > ]);
     $t->("That guy was KIA'd.", [ qw< that guy was KIA'd . > ]);
 
-    # Preserve mixed capitalization
-    $t->("GumbyBRAIN", [ qw< GumbyBRAIN > ]);
-    $t->("\"GumbyBRAIN\"", [ qw< " GumbyBRAIN " > ]);
   }
 
     done_testing();

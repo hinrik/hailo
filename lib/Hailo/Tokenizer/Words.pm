@@ -62,7 +62,13 @@ sub make_tokens {
             # normal words
             elsif (my ($word) = $chunk =~ /^($WORD)/) {
                 $chunk =~ s/^\Q$word//;
-                $word = lc($word) if $word ne uc($word);
+
+                # Maybe preserve the casing of this word
+                $word = lc $word
+                    if $word ne uc $word
+                       # Mixed-case words like "WoW"
+                       and $word !~ /^ (\p{Upper}+|\p{Lower}+)+ \p{Upper}+ (\p{Lower}+|\p{Upper}+)* $/x;
+
                 push @tokens, [$self->spacing->{normal}, $word];
                 $got_word = 1;
             }

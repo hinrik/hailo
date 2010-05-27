@@ -9,6 +9,11 @@ Revision history for Hailo
       previously Hailo would split them up nonsensically, which would
       inflate the token table a lot with little gain.
 
+    - Preserve the capitalization of words that change case in the
+      middle of the word. Examples include GumbyBRAIN, WoW, HoRRiBlE
+      etc. Previously these and others that weren't 100% upper-case
+      would all be lower cased.
+
 0.43 2010-05-11 19:54:36
 
     - Tests failed on 0.42 without Test::Synopsis due to invalid test plan.
