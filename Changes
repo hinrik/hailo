@@ -27,6 +27,9 @@ Revision history for Hailo
       tokenized as-is. This ensures that Hailo users like
       Bot::Twatterhose don't corrupt their Twitter names.
 
+    - Eliminate some redundant use of the regex engine in the Words
+      tokenizer.
+
 0.43 2010-05-11 19:54:36
 
     - Tests failed on 0.42 without Test::Synopsis due to invalid test plan.

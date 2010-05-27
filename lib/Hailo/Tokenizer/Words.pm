@@ -55,24 +55,21 @@ sub make_tokens {
 
         while (length $chunk) {
             # urls
-            if (my ($url) = $chunk =~ /^($RE{URI})/) {
-                $chunk =~ s/^\Q$url//;
-                push @tokens, [$self->spacing->{normal}, $url];
+            if ($chunk =~ s/ ^ (?<uri> $RE{URI} ) //x) {
+                push @tokens, [$self->spacing->{normal}, $+{uri}];
                 $got_word = 1;
             }
             # Twitter names
-            elsif (my ($name) = $chunk =~ /^($TWAT_NAME)/) {
+            elsif ($chunk =~ s/ ^ (?<twat> $TWAT_NAME ) //x) {
                 # Names on Twitter/Identi.ca can only match
                 # @[A-Za-z0-9_]+. I tested this on ~800k Twatterhose
                 # names.
-                $chunk =~ s/^\Q$name//;
-                push @tokens, [$self->spacing->{normal}, $name];
+                push @tokens, [$self->spacing->{normal}, $+{twat}];
                 $got_word = 1;
             }
             # normal words
-            elsif (my ($word) = $chunk =~ /^($WORD)/) {
-                $chunk =~ s/^\Q$word//;
-
+            elsif ($chunk =~ s/ ^ (?<word> $WORD ) //x) {
+                my $word = $+{word};
                 # Maybe preserve the casing of this word
                 $word = lc $word
                     if $word ne uc $word
@@ -86,8 +83,8 @@ sub make_tokens {
                 $got_word = 1;
             }
             # everything else
-            elsif (my ($non_word) = $chunk =~ /^(\W+)/) {
-                $chunk =~ s/^\Q$non_word//;
+            elsif (my ($non_word) = $chunk =~ s/ ^ (?<non_word> \W+ ) //x) {
+                my $non_word = $+{non_word};
 
                 # lowercase it if it's not all-uppercase
                 $non_word = lc($non_word) if $non_word ne uc($non_word);
