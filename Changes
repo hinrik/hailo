@@ -2,7 +2,12 @@ Revision history for Hailo
 
 {{$NEXT}}
 
-    - Preserve the structure and casing of urls.
+    - Add URI support to the Words tokenizer. It will now use
+      Regexp::Common's URI regex to tokenize URIs as-is.
+
+      This improves performance a lot on input that contains URIs,
+      previously Hailo would split them up nonsensically, which would
+      inflate the token table a lot with little gain.
 
 0.43 2010-05-11 19:54:36
 

@@ -2,7 +2,7 @@ use 5.010;
 use strict;
 use warnings;
 use Data::Section -setup;
-use Test::More tests => 2497;
+use Test::More tests => 2473;
 use Hailo::Tokenizer::Words;
 
 my $self = bless {} => __PACKAGE__;
@@ -334,59 +334,11 @@ __[ Data::Dumper result ]__
           ],
           [
             0,
-            'http'
-          ],
-          [
-            3,
-            '://'
-          ],
-          [
-            0,
-            'www'
-          ],
-          [
-            3,
-            '.'
-          ],
-          [
-            0,
-            'cl'
-          ],
-          [
-            3,
-            '.'
-          ],
-          [
-            0,
-            'cam'
-          ],
-          [
-            3,
-            '.'
-          ],
-          [
-            0,
-            'ac'
-          ],
-          [
-            3,
-            '.'
-          ],
-          [
-            0,
-            'uk'
-          ],
-          [
-            3,
-            '/~'
-          ],
-          [
-            0,
-            'mgk25'
+            'http://www.cl.cam.ac.uk/~mgk25/'
           ],
           [
             2,
-            '/>'
+            '>'
           ],
           [
             0,

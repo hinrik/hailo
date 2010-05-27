@@ -8,6 +8,7 @@ BEGIN {
     require MooseX::StrictConstructor;
     MooseX::StrictConstructor->import;
 }
+use Regexp::Common qw/ URI /;
 use namespace::clean -except => 'meta';
 
 with qw(Hailo::Role::Arguments
@@ -20,7 +21,6 @@ my $APOSTROPHE = qr/['’]/;
 my $APOST_WORD = qr/[[:alpha:]]+(?:$APOSTROPHE(?:[[:alpha:]]+))+/;
 my $PLAIN_WORD = qr/\w+/;
 my $WORD       = qr/$NUMBER|$APOST_WORD|$PLAIN_WORD/;
-my $URL        = qr{\w+://\S*};
 
 # capitalization
 # The rest of the regexes are pretty hairy. The goal here is to catch the
@@ -54,7 +54,7 @@ sub make_tokens {
 
         while (length $chunk) {
             # urls
-            if (my ($url) = $chunk =~ /^($URL)/) {
+            if (my ($url) = $chunk =~ /^($RE{URI})/) {
                 $chunk =~ s/^\Q$url//;
                 push @tokens, [$self->spacing->{normal}, $url];
                 $got_word = 1;
