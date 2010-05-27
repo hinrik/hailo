@@ -10,31 +10,31 @@ Revision history for Hailo
     - This release contains improvements for the default Words
       tokenizer. It's recommended that users rebuild their Hailo
       brains when upgrading. See UPGRADING in the Hailo manual.
-
-    - Add URI support to the Words tokenizer. It will now use
-      Regexp::Common's URI regex to tokenize URIs as-is.
-
-      This improves performance a lot on input that contains URIs,
-      previously Hailo would split them up nonsensically, which would
-      inflate the token table a lot with little gain.
-
-    - Preserve the capitalization of words that change case in the
-      middle of the word. Examples include GumbyBRAIN, WoW, HoRRiBlE
-      etc. Previously these and others that weren't 100% upper-case
-      would all be lower cased.
-
-    - Preserve the capitalization of words that are all upper-case
-      followed by a non-word character followed by lower-case. This
-      preserves words like KIA'd, FYIQ'ed and other things that are
-      likely to be partial acronyms.
-
-    - Twitter names. I.e. tokens matching @[A-Za-z0-9_]+ will be
-      tokenized as-is. This ensures that Hailo users like
-      Bot::Twatterhose don't corrupt their Twitter names.
-
-    - Eliminate some redundant use of the regex engine in the Words
-      tokenizer.
-
+  
+      - Add URI support to the Words tokenizer. It will now use
+        Regexp::Common's URI regex to tokenize URIs as-is.
+  
+        This improves performance a lot on input that contains URIs,
+        previously Hailo would split them up nonsensically, which
+        would inflate the token table a lot with little gain.
+  
+      - Preserve the capitalization of words that change case in the
+        middle of the word. Examples include GumbyBRAIN, WoW, HoRRiBlE
+        etc. Previously these and others that weren't 100% upper-case
+        would all be lower cased.
+  
+      - Preserve the capitalization of words that are all upper-case
+        followed by a non-word character followed by lower-case. This
+        preserves words like KIA'd, FYIQ'ed and other things that are
+        likely to be partial acronyms.
+  
+      - Twitter names. I.e. tokens matching @[A-Za-z0-9_]+ will be
+        tokenized as-is. This ensures that Hailo users like
+        Bot::Twatterhose don't corrupt their Twitter names.
+  
+      - Eliminate some redundant use of the regex engine in the Words
+        tokenizer.
+  
 0.43 2010-05-11 19:54:36
 
     - Tests failed on 0.42 without Test::Synopsis due to invalid test plan.
