@@ -1,4 +1,4 @@
-package main;
+use 5.010;
 use open qw< :encoding(utf8) :std >;
 use autodie;
 use strict;
@@ -24,7 +24,7 @@ my $hailo = Hailo->new(
 );
 
 my $lns = count_lines($ENV{LOG});
-open my $log, '<:encoding(utf8)', $ENV{LOG};
+open my $log, '<', $ENV{LOG};
 my $every = 100;
 
 plan(tests => int($lns / $every));
@@ -33,5 +33,7 @@ my $i = 1; while (<$log>) {
     chomp;
     s/^\w+: //;
     my $reply = $hailo->reply($_);
-    pass("$i/$lns: Got reply '$reply' from Hailo given input '$_'") if $i % $every == 0;
+    if ($i % $every == 0) {
+        pass("$i/$lns: Got reply '$reply' from Hailo given input '$_'");
+    }
 } continue { $i++ }
