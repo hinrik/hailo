@@ -15,6 +15,22 @@ has spacing => (
     } },
 );
 
+sub BUILD {
+    my ($self) = @_;
+
+    # This performance hack is here because calling
+    # $self->spacing->{...} was significant part Tokenizer execution
+    # time (~20s / ~1200s) since we're doing one method call and a
+    # hash dereference
+
+    my $spacing = $self->spacing;
+    while (my ($k, $v) = each %$spacing) {
+        $self->{"_spacing_$k"} = $v;
+    }
+
+    return;
+}
+
 requires 'make_tokens';
 requires 'make_output';
 
@@ -59,13 +75,16 @@ array reference as described in L<C<make_tokens>|/make_tokens>. The tokens
 will be joined together into a sentence according to the whitespace
 attributes associated with the tokens.
 
-=head1 AUTHOR
+=head1 AUTHORS
 
 Hinrik E<Ouml>rn SigurE<eth>sson, hinrik.sig@gmail.com
 
+E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
+
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2010 Hinrik E<Ouml>rn SigurE<eth>sson
+Copyright 2010 Hinrik E<Ouml>rn SigurE<eth>sson and
+E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
 
 This program is free software, you can redistribute it and/or modify
 it under the same terms as Perl itself.

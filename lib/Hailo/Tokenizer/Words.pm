@@ -58,7 +58,7 @@ sub make_tokens {
         while (length $chunk) {
             # urls
             if ($chunk =~ s/ ^ (?<uri> $RE{URI} ) //xo) {
-                push @tokens, [$self->spacing->{normal}, $+{uri}];
+                push @tokens, [$self->{_spacing_normal}, $+{uri}];
                 $got_word = 1;
             }
             # Twitter names
@@ -66,7 +66,7 @@ sub make_tokens {
                 # Names on Twitter/Identi.ca can only match
                 # @[A-Za-z0-9_]+. I tested this on ~800k Twatterhose
                 # names.
-                push @tokens, [$self->spacing->{normal}, $+{twat}];
+                push @tokens, [$self->{_spacing_normal}, $+{twat}];
                 $got_word = 1;
             }
             # normal words
@@ -81,7 +81,7 @@ sub make_tokens {
                        # {2,} so it doesn't match I'm
                        and $word !~ $UPPER_NONW;
 
-                push @tokens, [$self->spacing->{normal}, $word];
+                push @tokens, [$self->{_spacing_normal}, $word];
                 $got_word = 1;
             }
             # everything else
@@ -91,17 +91,17 @@ sub make_tokens {
                 # lowercase it if it's not all-uppercase
                 $non_word = lc($non_word) if $non_word ne uc($non_word);
 
-                my $spacing = $self->spacing->{normal};
+                my $spacing = $self->{_spacing_normal};
 
                 # was the previous token a word?
                 if ($got_word) {
                     $spacing = length $chunk
-                        ? $self->spacing->{infix}
-                        : $self->spacing->{postfix};
+                        ? $self->{_spacing_infix}
+                        : $self->{_spacing_postfix};
                 }
                 # do we still have more tokens?
                 elsif (length $chunk) {
-                    $spacing = $self->spacing->{prefix};
+                    $spacing = $self->{_spacing_prefix};
                 }
 
                 push @tokens, [$spacing, $non_word];
@@ -124,11 +124,11 @@ sub make_output {
         # and this is not the last token, and the next token is not
         # a postfix/infix token
         if ($pos != $#{ $tokens }
-            && $spacing != $self->spacing->{prefix}
-            && $spacing != $self->spacing->{infix}
+            && $spacing != $self->{_spacing_prefix}
+            && $spacing != $self->{_spacing_infix}
             && !($pos < $#{ $tokens }
-                && ($tokens->[$pos+1][0] == $self->spacing->{postfix}
-                || $tokens->[$pos+1][0] == $self->spacing->{infix})
+                && ($tokens->[$pos+1][0] == $self->{_spacing_postfix}
+                || $tokens->[$pos+1][0] == $self->{_spacing_infix})
                 )
             ) {
             $reply .= ' ';

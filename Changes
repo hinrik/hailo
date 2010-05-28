@@ -2,6 +2,11 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Optimize Hailo::Tokenizer::Words to use less subroutine calls in
+      critical code. Changed the time being spent in that file from
+      5.14s to 3.72s out of a total runtime of 35.6s when running
+      t/hailo/real_workload.t.
+
 0.46 2010-05-27 22:47:45
 
     - The Regexp::Common pattern added in 0.44 slowed down Hailo by up
