@@ -2,6 +2,10 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - The hailo(1) command-line interface now has a much better
+      interface. It now supports SQLite-like command syntax, and has a
+      built-in help system.
+
     - Replace fortune(1) in hailo's --examples output with bot-training(1)
 
 0.47 2010-05-29 13:08:51

@@ -85,7 +85,11 @@ Create an on-disk brain for later use:
 Interact with the brain using readline:
 
     hailo --brain hailo.sqlite
-    hailo> hello there
+    Welcome to the Hailo interactive shell!
+    Enter ".help" to show the built-in commands.
+    Input that's not a command will be passed to Hailo to learn, and it'll
+    reply back.
+    Hailo> Hello there
     # ==> Wife asked "what have you got there?" replied he, "just my cup of fur".
 
 =head1 DESCRIPTION
