@@ -1,7 +1,6 @@
 use strict;
 use warnings;
 use Test::More;
-use Test::Exception;
 use File::Temp qw<tempdir tempfile>;
 use File::Slurp qw<slurp>;
 use Bot::Training;
