@@ -2,6 +2,8 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+0.47 2010-05-29 13:08:51
+
     - Optimize Hailo::Tokenizer::Words to use less subroutine calls in
       critical code. Changed the time being spent in that file from
       5.14s to 3.72s out of a total runtime of 35.6s when running
