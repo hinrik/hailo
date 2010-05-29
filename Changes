@@ -2,6 +2,9 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Term::Sk fixed RT #57902 and RT #57903 which I reported. hailo's
+      progress bar now looks better as a result.
+
 0.48 2010-05-29 15:16:18
 
     - The hailo(1) command-line interface now has a much better
