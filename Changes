@@ -7,6 +7,10 @@ Revision history for Hailo
       5.14s to 3.72s out of a total runtime of 35.6s when running
       t/hailo/real_workload.t.
 
+    - Rename tests file in t/ to drop the DBD- prefix. Tests like
+      Words-*.t are were also moved into
+      sub-directories. e.g. Words/*.t.
+
 0.46 2010-05-27 22:47:45
 
     - The Regexp::Common pattern added in 0.44 slowed down Hailo by up
