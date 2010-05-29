@@ -69,21 +69,22 @@ hailo - Command-line interface to the L<Hailo|Hailo> Markov bot
 
 =head1 SYNOPSIS
 
-Train in-memory from fortune files and reply:
+Train in-memory using L<bot-training|Bot::Training>'s F<megahal.trn>
+and reply:
 
-    for i in {1..1000}; do fortune >> /tmp/fortune.trn; done
-    hailo --brain :memory: --train /tmp/fortune.trn --reply art
-    # ==> He hath eaten me out of an art deeper than we ourselves.
+    bot-training -f megahal | hailo --brain :memory: --train - --random-reply
+    # ==> Time flies like a banana.
 
 Create an on-disk brain for later use:
 
-    hailo --brain hailo.brn --train /tmp/fortune.trn
-    hailo --brain hailo.brn --reply "is"
-    # ==> Earth is ballasted with bones of millions of dollars.
+    bot-training -f megahal > megahal.trn
+    hailo --brain hailo.sqlite --train megahal.trn
+    hailo --brain hailo.sqlite --reply 'Reply to this, silly robot!'
+    # ==> No way! I don't want to think.
 
 Interact with the brain using readline:
 
-    hailo --brain hailo.brn
+    hailo --brain hailo.sqlite
     hailo> hello there
     # ==> Wife asked "what have you got there?" replied he, "just my cup of fur".
 

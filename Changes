@@ -2,6 +2,8 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Replace fortune(1) in hailo's --examples output with bot-training(1)
+
 0.47 2010-05-29 13:08:51
 
     - Optimize Hailo::Tokenizer::Words to use less subroutine calls in

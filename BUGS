@@ -4,10 +4,6 @@
 
 This is a very useful and easy to show use case of Hailo.
 
-* Show Bot::Training in --help output
-
-Getting started with e.g. the MegaHAL training file is nice.
-
 * Don't pass the DBI connection string with --storage-args
 
 There's lots of per-driver syntax in the DBI connection string that we
