@@ -2,6 +2,8 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+0.48 2010-05-29 15:16:18
+
     - The hailo(1) command-line interface now has a much better
       interface. It now supports SQLite-like command syntax, and has a
       built-in help system.
