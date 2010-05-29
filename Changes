@@ -7,6 +7,26 @@ Revision history for Hailo
       5.14s to 3.72s out of a total runtime of 35.6s when running
       t/hailo/real_workload.t.
 
+    - The initial tokenizer class is now saved as metadata to the
+      database, and loaded into Hailo from existing brains.
+
+      This means that this now works as expected:
+
+          hailo --brain db.sqlite --tokenizer Chars --train file.trn 
+          hailo --brain db.sqlite --reply foo
+
+      I.e. Hailo will note that it used the Chars tokenizer in the
+      database, and load the correct tokenizer in the future. However
+      this will cause Hailo to die:
+
+          hailo --brain db.sqlite --tokenizer Chars --train file.trn 
+          hailo --brain db.sqlite --tokenizer Words --reply foo
+
+      It spots that you've explicitly said you want a tokenizer that's
+      incompatible with the one in the database for doing replies and
+      dies. This is what it did before if you did the exact same thing
+      with the --order switch.
+
     - Rename tests file in t/ to drop the DBD- prefix. Tests like
       Words-*.t are were also moved into
       sub-directories. e.g. Words/*.t.

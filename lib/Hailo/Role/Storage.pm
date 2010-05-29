@@ -19,6 +19,11 @@ has hailo => (
     is  => 'ro',
 );
 
+has tokenizer_class => (
+    isa => 'Str',
+    is  => 'rw',
+);
+
 requires 'ready';
 requires 'initialized';
 requires 'save';

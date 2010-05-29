@@ -98,14 +98,54 @@ sub _engage {
     my ($self) = @_;
 
     if ($self->initialized) {
-        my $sth = $self->dbh->prepare(qq[SELECT text FROM info WHERE attribute = ?;]);
-        $sth->execute('markov_order');
-        my $db_order = $sth->fetchrow_array();
+        # Check the order we've been given and retrieve it from the
+        # database if there's nothing odd going on.
+        $self->_engage_initialized_check_and_set_order;
 
-        my $my_order = $self->order;
-        if ($my_order != $db_order) {
-            if ($self->hailo->_custom_order) {
-                die <<"DIE";
+        # Likewise for the Tokenizer
+        $self->_engage_initialized_check_and_set_tokenizer;
+
+        $self->sth->{token_id}->execute(0, '');
+        my $id = $self->sth->{token_id}->fetchrow_array;
+        $self->_boundary_token_id($id);
+    }
+    else {
+        Hailo::Storage::Schema->deploy($self->dbd, $self->dbh, $self->order);
+
+        # Set metadata in the database for use by subsequent
+        # invocations
+        {
+            # Don't change order again
+            my $order = $self->order;
+            $self->sth->{set_info}->execute('markov_order', $order);
+
+            # Warn if the tokenizer changes
+            my $tokenizer = $self->tokenizer_class;
+            $self->sth->{set_info}->execute('tokenizer_class', $tokenizer);
+        }
+
+        $self->sth->{add_token}->execute(0, '');
+        $self->sth->{last_token_rowid}->execute();
+        my $id = $self->sth->{last_token_rowid}->fetchrow_array();
+        $self->_boundary_token_id($id);
+    }
+
+    $self->_engaged(1);
+
+    return;
+}
+
+sub _engage_initialized_check_and_set_order {
+    my ($self) = @_;
+
+    my $sth = $self->dbh->prepare(qq[SELECT text FROM info WHERE attribute = ?;]);
+    $sth->execute('markov_order');
+    my $db_order = $sth->fetchrow_array();
+
+    my $my_order = $self->order;
+    if ($my_order != $db_order) {
+        if ($self->hailo->_custom_order) {
+            die <<"DIE";
 You've manually supplied an order of `$my_order' to Hailo but you're
 loading a brain that has the order `$db_order'.
 
@@ -117,30 +157,47 @@ Either supply the correct order or omit the order attribute
 altogether. We could continue but I'd rather die since you're probably
 expecting something I can't deliver.
 DIE
-            }
-
-            $self->order($db_order);
-            $self->hailo->order($db_order);
-            $self->hailo->_engine->order($db_order);
         }
 
-        $self->sth->{token_id}->execute(0, '');
-        my $id = $self->sth->{token_id}->fetchrow_array;
-        $self->_boundary_token_id($id);
-    }
-    else {
-        Hailo::Storage::Schema->deploy($self->dbd, $self->dbh, $self->order);
-
-        my $order = $self->order;
-        $self->sth->{set_info}->execute('markov_order', $order);
-
-        $self->sth->{add_token}->execute(0, '');
-        $self->sth->{last_token_rowid}->execute();
-        my $id = $self->sth->{last_token_rowid}->fetchrow_array();
-        $self->_boundary_token_id($id);
+        $self->order($db_order);
+        $self->hailo->order($db_order);
+        $self->hailo->_engine->order($db_order);
     }
 
-    $self->_engaged(1);
+    return;
+}
+
+sub _engage_initialized_check_and_set_tokenizer {
+    my ($self) = @_;
+
+    my $sth = $self->dbh->prepare(qq[SELECT text FROM info WHERE attribute = ?;]);
+    $sth->execute('tokenizer_class');
+    my $db_tokenizer_class = $sth->fetchrow_array;
+    my $my_tokenizer_class = $self->tokenizer_class;
+
+    # defined() because we can't count on old brains having this
+    if (defined $db_tokenizer_class
+        and $my_tokenizer_class ne $db_tokenizer_class) {
+        if ($self->hailo->_custom_tokenizer_class) {
+            die <<"DIE";
+You've manually supplied a tokenizer class `$my_tokenizer_class' to
+Hailo, but you're loading a brain that has the tokenizer class
+`$db_tokenizer_class'.
+
+Hailo will automatically load the tokenizer class from existing
+brains, however you've constructed Hailo and manually specified an
+tokenizer class not equivalent to the existing tokenizer class of the
+database.
+
+Either supply the correct tokenizer class or omit the order attribute
+altogether. We could continue but I'd rather die since you're probably
+expecting something I can't deliver.
+DIE
+        }
+
+        $self->tokenizer_class($db_tokenizer_class);
+        $self->hailo->tokenizer_class($db_tokenizer_class);
+    }
 
     return;
 }

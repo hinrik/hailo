@@ -1,13 +1,5 @@
 -*- outline -*-
 
-* Save Tokenizer setting to the database
-
-We only save the order and not the tokenizer to the database. Save it
-and warn if the user tries to use it like e.g. this:
-
-    hailo --train file.trn --brain file.sqlite --tokenizer Chars
-    hailo --brain file.sqlite --tokenizer Words --reply foo
-
 * Add utils/random-names to synopsis/usage example
 
 This is a very useful and easy to show use case of Hailo.
