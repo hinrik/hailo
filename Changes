@@ -2,6 +2,9 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Fix the script compilation test in t/01_compile.t. Test::Script
+      renamed its script_compiles function to script_compiles_ok.
+
 0.49 2010-05-29 19:20:26
 
     - Term::Sk fixed RT #57902 and RT #57903 which I reported. hailo's

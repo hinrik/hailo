@@ -58,5 +58,10 @@ SKIP: {
 
 SKIP: {
     skip "There's no blib", 1 unless -d "blib" and -f catfile qw(blib script hailo);
-    script_compiles_ok(catfile('bin', 'hailo'));
+    skip "No Test::Script here", 1 unless eval {
+        require Test::Script;
+        Test::Script->VERSION(1.07);
+        Test::Script->import;
+    };
+    script_compiles(catfile('bin', 'hailo'));
 };
