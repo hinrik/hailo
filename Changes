@@ -2,6 +2,8 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+0.50 2010-05-30 12:44:25
+
     - Hailo hadn't been installed with the hailo command-line script
       since release 0.34. Now it's built with MakeMaker::Awesome 0.08
       with fixes this error.
