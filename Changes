@@ -2,6 +2,10 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Hailo hadn't been installed with the hailo command-line script
+      since release 0.34. Now it's built with MakeMaker::Awesome 0.08
+      with fixes this error.
+
     - Fix the script compilation test in t/01_compile.t. Test::Script
       renamed its script_compiles function to script_compiles_ok.
 
