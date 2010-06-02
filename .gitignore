@@ -11,6 +11,7 @@ cover_db
 *.brn
 *.trn
 *.txt
+*.log
 *.bak
 *.sql
 *.sqlite
@@ -21,3 +22,5 @@ nytprof*
 *.bz2
 profiling*
 .build*
+*.patch
+*.diff

@@ -4,6 +4,9 @@
 \.bak$
 \.git
 \.txt$
+\.log$
+\.patch$
+\.diff$
 \.db$
 \.sql(?:ite)?$
 ^[^/\\]*\.trn$
