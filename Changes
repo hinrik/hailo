@@ -5,6 +5,9 @@ Revision history for Hailo
     - Mouse now supports MouseX::StrictConstructor, so we can delete
       code that only used it if we were running under Moose.
 
+    - Put bin/hailo in package hailo, because Moose will whine about
+      not exporting sugar to main.
+
 0.50 2010-05-30 12:44:25
 
     - Hailo hadn't been installed with the hailo command-line script

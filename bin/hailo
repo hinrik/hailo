@@ -1,4 +1,5 @@
 #!/usr/bin/env perl
+package hailo;
 use 5.010;
 use open qw< :encoding(utf8) :std >;
 use Dir::Self;
