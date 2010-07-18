@@ -153,6 +153,7 @@ sub spawn_storage {
             } else {
                 $self->{_created_pg} = 1;
                 # Kill Pg notices
+                no warnings; # Bizarre "Variable "$_" is not available" warning for the following line
                 $SIG{__WARN__} = sub { print STDERR @_ if $_[0] !~ m/NOTICE:\s*CREATE TABLE/; };
             }
         }
