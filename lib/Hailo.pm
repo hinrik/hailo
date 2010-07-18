@@ -106,7 +106,6 @@ for my $k (keys %has) {
     has "${k}_args" => (
         documentation => "Arguments for the $name class",
         isa           => 'HashRef',
-        coerce        => 1,
         is            => "ro",
         default       => sub { +{} },
     );
