@@ -12,12 +12,7 @@ $SIG{__WARN__} = sub {
 };
 
 # new
-SKIP: {
-    if (Any::Moose::mouse_is_preferred()) {
-        skip "Mouse doesn't have X::StrictConstructor", 1;
-    }
-    dies_ok { Hailo->new( qw( a b c d ) ) } "Hailo dies on unknown arguments";
-}
+dies_ok { Hailo->new( qw( a b c d ) ) } "Hailo dies on unknown arguments";
 
 # Invalid train file
 dies_ok { Hailo->new( train_file => "/this-does-not-exist/$$" )->run }  "Calling Hailo with an invalid training file";

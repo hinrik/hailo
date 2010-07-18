@@ -2,6 +2,9 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Mouse now supports MouseX::StrictConstructor, so we can delete
+      code that only used it if we were running under Moose.
+
 0.50 2010-05-30 12:44:25
 
     - Hailo hadn't been installed with the hailo command-line script

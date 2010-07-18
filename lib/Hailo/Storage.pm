@@ -2,11 +2,7 @@ package Hailo::Storage;
 
 use 5.010;
 use Any::Moose;
-BEGIN {
-    return unless Any::Moose::moose_is_preferred();
-    require MooseX::StrictConstructor;
-    MooseX::StrictConstructor->import;
-}
+use Any::Moose 'X::StrictConstructor';
 use DBI;
 use Hailo::Storage::Schema;
 

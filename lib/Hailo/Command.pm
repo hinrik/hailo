@@ -3,11 +3,7 @@ package Hailo::Command;
 use 5.010;
 use Any::Moose;
 use Any::Moose 'X::Getopt';
-BEGIN {
-    return unless Any::Moose::moose_is_preferred();
-    require MooseX::StrictConstructor;
-    MooseX::StrictConstructor->import;
-}
+use Any::Moose 'X::StrictConstructor';
 use namespace::clean -except => 'meta';
 
 extends 'Hailo';

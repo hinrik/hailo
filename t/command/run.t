@@ -7,12 +7,7 @@ use Test::Output;
 use Hailo::Command;
 use Test::More tests => 17;
 
-SKIP: {
-    if (Any::Moose::mouse_is_preferred()) {
-        skip "Mouse doesn't have X::StrictConstructor", 1;
-    }
-    dies_ok { Hailo::Command->new( qw( a b c d ) ) } "Hailo dies on unknown arguments";
-}
+dies_ok { Hailo::Command->new( qw( a b c d ) ) } "Hailo dies on unknown arguments";
 
 ## before run
 for (qw/ _go_reply _go_train _go_learn _go_learn_reply /) {

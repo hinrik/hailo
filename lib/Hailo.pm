@@ -3,11 +3,7 @@ package Hailo;
 use 5.010;
 use autodie qw(open close);
 use Any::Moose;
-BEGIN {
-    return unless Any::Moose::moose_is_preferred();
-    require MooseX::StrictConstructor;
-    MooseX::StrictConstructor->import;
-}
+use Any::Moose 'X::StrictConstructor';
 use List::Util qw(first);
 use namespace::clean -except => 'meta';
 
