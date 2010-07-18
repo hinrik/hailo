@@ -1,8 +1,8 @@
 #!/usr/bin/env perl
 
-# Usage: perl utils/developer/bump-requires Makefile.PL
+# Usage: perl utils/developer/bump-requires dist.ini
 
-# Bumps the Makefile.PL versions to whatever's working on the computer it's run on
+# Bumps the dist.ini versions to whatever's working on the computer it's run on
 
 # perl -pi
 BEGIN { $^I = ""; }
@@ -10,27 +10,34 @@ BEGIN { $^I = ""; }
 use 5.010;
 use Moose;
 use Class::MOP;
+use Module::CoreList;
 
 my $module_get = qr/
-    ^(?<what>requires|recommends|test_requires|author_requires)
+    ^
+    (?<mod>[\w:]+)
     (?<white>\s*)
-    \(
-    '(?<mod>.*?)'
-    (?<white2>\s*)
-    => \s*
-    '(?<vers>.*?)'
-    \);
+    = \s*
+    (?<vers>.+)
+    $
 /x;
 
+my $seen_prereq;
 while (<>) {
     chomp $_;
 
-    if ($_ ~~ $module_get) {
-        if ($+{vers} eq '0' and $+{mod} ne 'Term::ReadLine::Gnu') {
+    $seen_prereq = 1 if /^\[Prereq/;
+
+    if ($seen_prereq and $_ ~~ $module_get) {
+        my $in_core = Module::CoreList->first_release($+{mod});
+        if (not $in_core
+            and $+{vers} ne '0'
+            and $+{mod} ne 'Term::ReadLine::Gnu'
+            and $+{mod} ne 'perl') {
             Class::MOP::load_class($+{mod});
+
             no strict 'refs';
             if (my $ver = ${ $+{mod} . '::VERSION' }) {
-                say $+{what}, $+{white}, "('$+{mod}'", $+{white2}, "=> '$ver');";
+                say $+{mod}, $+{white}, "= $ver";
                 next;
             }
         }
