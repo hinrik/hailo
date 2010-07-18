@@ -2,11 +2,10 @@ Revision history for Hailo
 
 {{$NEXT}}
 
-    - Mouse now supports MouseX::StrictConstructor, so we can delete
-      code that only used it if we were running under Moose.
-
-    - Put bin/hailo in package hailo, because Moose will whine about
-      not exporting sugar to main.
+    - Bump dependencies for all modules to the latest CPAN
+      versions. This avoids the issues Moose had with I<Can't locate
+      object method "add_method" via package "Moose::Meta::Role">, and
+      various other problems that might be present in older modules.
 
     - MooseX::Getopt renames its help attribute to help_flag in
       0.30. That broke hailo --help, work around it by checking if the
@@ -14,6 +13,12 @@ Revision history for Hailo
       any_moose('X::Getopt::GLD')->meta->get_attribute_list. By
       checking we'll also be compatible if Mouse ever switches to the
       new system.
+
+    - Mouse now supports MouseX::StrictConstructor, so we can delete
+      code that only used it if we were running under Moose.
+
+    - Put bin/hailo in package hailo, because Moose will whine about
+      not exporting sugar to main.
 
 0.50 2010-05-30 12:44:25
 
