@@ -2,6 +2,8 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+0.51 2010-07-18 15:49:41
+
     - Bump dependencies for all modules to the latest CPAN
       versions. This avoids the issues Moose had with I<Can't locate
       object method "add_method" via package "Moose::Meta::Role">, and
