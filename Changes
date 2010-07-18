@@ -9,7 +9,11 @@ Revision history for Hailo
       not exporting sugar to main.
 
     - MooseX::Getopt renames its help attribute to help_flag in
-      0.30. That broke hailo --help, work around it.
+      0.30. That broke hailo --help, work around it by checking if the
+      help_flag attribute exists in
+      any_moose('X::Getopt::GLD')->meta->get_attribute_list. By
+      checking we'll also be compatible if Mouse ever switches to the
+      new system.
 
 0.50 2010-05-30 12:44:25
 

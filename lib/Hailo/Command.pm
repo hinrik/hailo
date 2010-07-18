@@ -14,9 +14,9 @@ with any_moose('X::Getopt::Dashes');
 
 # MooseX::Getopt 81b19ed83c by Karen Etheridge changed the help
 # attribute to help_flag.
-my $help_attr = Any::Moose::moose_is_preferred() && $MooseX::Getopt::Dashes::VERSION >= 0.30
-    ? 'help_flag'
-    : 'help';
+{
+my @go_attrs = any_moose('X::Getopt::GLD')->meta->get_attribute_list;
+my $help_attr = 'help_flag' ~~ @go_attrs ? 'help_flag' : 'help';
 
 has $help_attr => (
     traits        => [ qw/ Getopt / ],
@@ -27,6 +27,7 @@ has $help_attr => (
     default       => 0,
     documentation => "You're soaking it in",
 );
+}
 
 has _go_version => (
     traits        => [ qw/ Getopt / ],
