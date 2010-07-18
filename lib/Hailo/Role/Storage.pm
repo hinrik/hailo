@@ -15,8 +15,9 @@ has order => (
 );
 
 has hailo => (
-    isa => 'Hailo',
+    isa => 'HashRef',
     is  => 'ro',
+    documentation => "Miscellaneous private callbacks that Hailo provides to communicate with it",
 );
 
 has tokenizer_class => (

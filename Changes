@@ -2,6 +2,14 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Hailo no longer passes references to itself to its slave
+      classes, so it's garbage collected at the right time.
+
+      This bug broke the hybrid disk <-> in_memory SQLite mode, it's
+      now fixed again. The test that was supposed to check whether the
+      hybrid in-memory backend worked did the opposite of what it was
+      supposed to do, and didn't work anyway due to how it was set up.
+
     - Giving arguments to Hailo's save method (they're passed to the
       Storage class) never worked due to a trivial error. Now it does.
 
