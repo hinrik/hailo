@@ -181,8 +181,8 @@ sub _new_class {
 }
 
 sub save {
-    my ($self) = @_;
-    $self->_storage->save(@_);
+    my ($self, @args) = @_;
+    $self->_storage->save(@args);
     return;
 }
 

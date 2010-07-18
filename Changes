@@ -2,6 +2,9 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Giving arguments to Hailo's save method (they're passed to the
+      Storage class) never worked due to a trivial error. Now it does.
+
 0.51 2010-07-18 15:49:41
 
     - Bump dependencies for all modules to the latest CPAN
