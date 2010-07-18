@@ -12,7 +12,13 @@ with any_moose('X::Getopt::Dashes');
 
 ## Our internal Getopts method that Hailo.pm doesn't care about.
 
-has help => (
+# MooseX::Getopt 81b19ed83c by Karen Etheridge changed the help
+# attribute to help_flag.
+my $help_attr = Any::Moose::moose_is_preferred() && $MooseX::Getopt::Dashes::VERSION >= 0.30
+    ? 'help_flag'
+    : 'help';
+
+has $help_attr => (
     traits        => [ qw/ Getopt / ],
     cmd_aliases   => 'h',
     cmd_flag      => 'help',

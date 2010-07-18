@@ -8,6 +8,9 @@ Revision history for Hailo
     - Put bin/hailo in package hailo, because Moose will whine about
       not exporting sugar to main.
 
+    - MooseX::Getopt renames its help attribute to help_flag in
+      0.30. That broke hailo --help, work around it.
+
 0.50 2010-05-30 12:44:25
 
     - Hailo hadn't been installed with the hailo command-line script
