@@ -7,6 +7,9 @@ Revision history for Hailo
     - hailo command: Fix off-by-one error when reporting the number of lines
       learned.
 
+    - Word tokenizer: Recognize a compound word like "anti-scientology" as a
+      single word.
+
 0.52 2010-07-18 22:40:02
 
     - Hailo no longer passes references to itself to its slave

@@ -185,17 +185,17 @@ subtest make_output => sub {
         ],
         [
             'anti-scientology demonstration in london? hella-cool',
-            [qw<anti - scientology demonstration in london ? hella - cool>],
+            [qw<anti-scientology demonstration in london ? hella-cool>],
             'Anti-scientology demonstration in london? Hella-cool.'
         ],
         [
             'This. compound-words are cool',
-            [qw<this . compound - words are cool>],
+            [qw<this . compound-words are cool>],
             'This. Compound-words are cool.'
         ],
         [
             'Foo. Compound-word',
-            [qw<foo .  compound - word>],
+            [qw<foo .  compound-word>],
             'Foo. Compound-word.'
         ],
         [
@@ -210,7 +210,7 @@ subtest make_output => sub {
         ],
         [
             'cpanm is a true "anti-religion"',
-            [qw<cpanm is a true " anti - religion ">],
+            [qw<cpanm is a true " anti-religion ">],
             'Cpanm is a true "anti-religion".'
         ],
         [
@@ -287,6 +287,11 @@ subtest make_output => sub {
             'she´ll be doing it now',
             [qw<she´ll be doing it now>],
             'She´ll be doing it now.',
+        ],
+        [
+            'CPAN upload: Crypt-Rijndael-MySQL-0.02 by SATOH',
+            [qw<CPAN upload : Crypt-Rijndael-MySQL-0.02 by SATOH>],
+            'CPAN upload: Crypt-Rijndael-MySQL-0.02 by SATOH.',
         ],
     );
 

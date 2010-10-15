@@ -17,7 +17,8 @@ my $APOSTROPHE = qr/['’´]/;
 my $APOST_WORD = qr/[[:alpha:]]+(?:$APOSTROPHE(?:[[:alpha:]]+))+/;
 my $TWAT_NAME  = qr/ \@ [A-Za-z0-9_]+ /x;
 my $PLAIN_WORD = qr/\w+/;
-my $WORD       = qr/$NUMBER|$APOST_WORD|$PLAIN_WORD/;
+my $WORD_TYPES = qr/$NUMBER|$APOST_WORD|$PLAIN_WORD/;
+my $WORD       = qr/$WORD_TYPES(?:-$WORD_TYPES)*/;
 my $MIXED_CASE = qr/ \p{Lower}+ \p{Upper} /x;
 my $UPPER_NONW = qr/^ \p{Upper}{2,} \W+ \p{Lower}+ $/x;
 
