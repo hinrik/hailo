@@ -20,6 +20,8 @@ Revision history for Hailo
     - Word tokenizer: Convert chunks to ASCII before looking for a URI to
       work around a limitation in Regexp::Common
 
+    - Word tokenizer: Recognize ssh:// (and foo+ssh://) URIs
+
 0.52 2010-07-18 22:40:02
 
     - Hailo no longer passes references to itself to its slave

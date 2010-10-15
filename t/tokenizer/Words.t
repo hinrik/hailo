@@ -153,9 +153,8 @@ subtest make_output => sub {
             'http://www.example.com/some/path?funny**!(),,:;@=&=',
         ],
         [
-            # TODO: Support + in URIs
             'svn+ssh://svn.wikimedia.org/svnroot/mediawiki',
-            [ qw< svn + ssh :// svn . wikimedia . org / svnroot / mediawiki > ],
+            [ qw< svn+ssh://svn.wikimedia.org/svnroot/mediawiki > ],
             'svn+ssh://svn.wikimedia.org/svnroot/mediawiki',
         ],
         [
