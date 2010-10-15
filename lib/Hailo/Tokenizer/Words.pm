@@ -67,7 +67,7 @@ sub make_tokens {
                 $got_word = 1;
             }
             # normal words
-            elsif ($chunk =~ s/ ^ (?<word> $WORD ) //xo) {
+            elsif ($chunk =~ s/ ^ (?<word> $WORD )(?! $WORD ) //xo) {
                 my $word = $+{word};
                 # Maybe preserve the casing of this word
                 $word = lc $word

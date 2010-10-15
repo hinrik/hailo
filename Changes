@@ -10,6 +10,10 @@ Revision history for Hailo
     - Word tokenizer: Recognize a compound word like "anti-scientology" as a
       single word.
 
+    - Word tokenizer: Put additional constraints on where a "normal word" can
+      be matched. This enables it to match things like "3D" and "800x600" as
+      single words.
+
 0.52 2010-07-18 22:40:02
 
     - Hailo no longer passes references to itself to its slave

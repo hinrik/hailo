@@ -293,6 +293,16 @@ subtest make_output => sub {
             [qw<CPAN upload : Crypt-Rijndael-MySQL-0.02 by SATOH>],
             'CPAN upload: Crypt-Rijndael-MySQL-0.02 by SATOH.',
         ],
+        [
+            "I use a resolution of 800x600 on my computer",
+            [qw<I use a resolution of 800x600 on my computer>],
+            "I use a resolution of 800x600 on my computer.",
+        ],
+        [
+            "WOAH 3D",
+            [qw<WOAH 3D>],
+            "WOAH 3D.",
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();
