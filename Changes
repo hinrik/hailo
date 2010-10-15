@@ -2,27 +2,22 @@ Revision history for Hailo
 
 {{$NEXT}}
 
-    - Word tokenizer: Recognize "´" as an apostrophe when matching words.
-
     - hailo command: Fix off-by-one error when reporting the number of lines
-      learned.
+      learned when training.
 
-    - Word tokenizer: Recognize a compound word like "anti-scientology" as a
-      single word.
+    - Don't truncate the brain file after loading it with in_memory enabled.
 
-    - Word tokenizer: Put additional constraints on where a "normal word" can
-      be matched. This enables it to match things like "3D" and "800x600" as
-      single words.
-
-    - Word tokenizer: Fix capitalization of words after sentences which end
-      with dashed words like "anti-scientology".
-
-    - Word tokenizer: Convert chunks to ASCII before looking for a URI to
-      work around a limitation in Regexp::Common
-
-    - Word tokenizer: Recognize ssh:// (and foo+ssh://) URIs
-
-    - Don't truncate the brain file after loading it with in_memory enabled
+    - Word tokenizer improvements:
+      * Recognize "´" as an apostrophe when matching words.
+      * Recognize a compound word like "anti-scientology" as a single word.
+      * Put additional constraints on where a "normal word" can be matched.
+        This enables it to match things like "3D" and "800x600" as single
+        words.
+      * Fix capitalization of words after sentences which end with dashed
+        words like "anti-scientology".
+      * Convert chunks to ASCII before looking for a URI to work around a
+        limitation in Regexp::Common.
+      * Recognize ssh:// (and foo+ssh://) URIs.
 
 0.52 2010-07-18 22:40:02
 
