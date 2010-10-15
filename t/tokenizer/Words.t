@@ -308,6 +308,11 @@ subtest make_output => sub {
             [qw<jarl sounds like yankee negro-lovers . britain was even into old men .>],
             "Jarl sounds like yankee negro-lovers. Britain was even into old men.",
         ],
+        [
+            "just look at http://beint.lýðræði.is does it turn tumi metrosexual",
+            [qw<just look at http://beint.lýðræði.is does it turn tumi metrosexual>],
+            "Just look at http://beint.lýðræði.is does it turn tumi metrosexual.",
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();

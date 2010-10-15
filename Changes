@@ -17,6 +17,9 @@ Revision history for Hailo
     - Word tokenizer: Fix capitalization of words after sentences which end
       with dashed words like "anti-scientology".
 
+    - Word tokenizer: Convert chunks to ASCII before looking for a URI to
+      work around a limitation in Regexp::Common
+
 0.52 2010-07-18 22:40:02
 
     - Hailo no longer passes references to itself to its slave

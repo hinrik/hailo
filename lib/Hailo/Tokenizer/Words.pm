@@ -5,6 +5,7 @@ use utf8;
 use Any::Moose;
 use Any::Moose 'X::StrictConstructor';
 use Regexp::Common qw/ URI /;
+use Text::Unidecode;
 use namespace::clean -except => 'meta';
 
 with qw(Hailo::Role::Arguments
@@ -52,9 +53,16 @@ sub make_tokens {
         my $got_word;
 
         while (length $chunk) {
+            # We convert it to ASCII and then look for a URI because $RE{URI}
+            # from Regexp::Common doesn't support non-ASCII domain names
+            my $ascii = unidecode($chunk);
+
             # urls
-            if ($chunk =~ s/ ^ (?<uri> $RE{URI} ) //xo) {
-                push @tokens, [$self->{_spacing_normal}, $+{uri}];
+            if ($ascii =~ / ^ $RE{URI} /xo) {
+                my $uri = $chunk;
+                $chunk = '';
+
+                push @tokens, [$self->{_spacing_normal}, $uri];
                 $got_word = 1;
             }
             # Twitter names
