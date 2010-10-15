@@ -312,6 +312,11 @@ subtest make_output => sub {
             [qw<just look at http://beint.lýðræði.is does it turn tumi metrosexual>],
             "Just look at http://beint.lýðræði.is does it turn tumi metrosexual.",
         ],
+        [
+            'du: Invalid option --^',
+            [qw<du : invalid option --^>],
+            'Du: Invalid option --^',
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();
