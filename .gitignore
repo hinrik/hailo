@@ -1,11 +1,5 @@
 _Inline
-Makefile
-Makefile.old
 Hailo-*
-blib
-inc
-pm_to_blib
-META.yml
 cover_db
 *.db
 *.brn

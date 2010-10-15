@@ -1,8 +1,5 @@
-^Makefile$
 ^Hailo-
-\.old$
 \.bak$
-\.git
 \.txt$
 \.log$
 \.patch$
@@ -10,9 +7,7 @@
 \.db$
 \.sql(?:ite)?$
 ^[^/\\]*\.trn$
-^pm_to_blib$
 \.brn$
-^blib/
 \.#
 ^utils/developer/
 ^xt/
