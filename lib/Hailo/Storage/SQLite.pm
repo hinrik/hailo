@@ -51,7 +51,7 @@ before _engage => sub {
     # Set any user-defined pragmas
     $self->_set_pragmas;
 
-    if ($self->initialized and $self->_backup_memory_to_disk) {
+    if ($self->_backup_memory_to_disk) {
         $self->dbh->sqlite_backup_from_file($self->brain);
     }
 

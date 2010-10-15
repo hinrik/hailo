@@ -52,12 +52,12 @@ my $after_train_size;
     );
 
     ok($hailo->_storage->_backup_memory_to_disk, "SQLite is running in disk->memory->disk mode");
-    ok(!$hailo->reply("mooYou"), "got no reply to a word that doesn't exist yet");
+    unlike($hailo->reply("mooYou"), qr/mooYou/, "Got a random from the loaded brain");
     $hailo->train([ map { "moo$_" } @train ]);
     $after_train_size = -s $brain_file;
     {
         my $r = $hailo->reply("mooYou");
-        ok($r, "got a reply to a word that now exist: $r");
+        like($r, qr/mooYou/i, "got a reply to a word that now exist: $r");
     }
     is($after_train_size, $orig_size, "Hailo is writing to memory, not disk. Brain was $orig_size, now $after_train_size");
 }

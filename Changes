@@ -22,6 +22,8 @@ Revision history for Hailo
 
     - Word tokenizer: Recognize ssh:// (and foo+ssh://) URIs
 
+    - Don't truncate the brain file after loading it with in_memory enabled
+
 0.52 2010-07-18 22:40:02
 
     - Hailo no longer passes references to itself to its slave
