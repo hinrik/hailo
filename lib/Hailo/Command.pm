@@ -328,11 +328,12 @@ sub train_progress {
     my $next_update = 0;
     my $start_time = [gettimeofday()];
 
-    my $i = 1; while (my $line = <$fh>) {
+    my $i = 0; while (my $line = <$fh>) {
+        $i++;
         chomp $line;
         $self->_learn_one($line);
         $progress->up;
-    } continue { $i++ }
+    }
 
     $progress->close;
 
