@@ -283,6 +283,11 @@ subtest make_output => sub {
             [qw<loves2spooge>],
             "Loves2spooge.",
         ],
+        [
+            'she´ll be doing it now',
+            [qw<she´ll be doing it now>],
+            'She´ll be doing it now.',
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();

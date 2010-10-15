@@ -13,7 +13,7 @@ with qw(Hailo::Role::Arguments
 # tokenization
 my $DECIMAL    = qr/[.,]/;
 my $NUMBER     = qr/$DECIMAL?\d+(?:$DECIMAL\d+)*/;
-my $APOSTROPHE = qr/['’]/;
+my $APOSTROPHE = qr/['’´]/;
 my $APOST_WORD = qr/[[:alpha:]]+(?:$APOSTROPHE(?:[[:alpha:]]+))+/;
 my $TWAT_NAME  = qr/ \@ [A-Za-z0-9_]+ /x;
 my $PLAIN_WORD = qr/\w+/;
