@@ -14,6 +14,9 @@ Revision history for Hailo
       be matched. This enables it to match things like "3D" and "800x600" as
       single words.
 
+    - Word tokenizer: Fix capitalization of words after sentences which end
+      with dashed words like "anti-scientology".
+
 0.52 2010-07-18 22:40:02
 
     - Hailo no longer passes references to itself to its slave

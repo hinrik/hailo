@@ -303,6 +303,11 @@ subtest make_output => sub {
             [qw<WOAH 3D>],
             "WOAH 3D.",
         ],
+        [
+            "jarl sounds like yankee negro-lovers. britain was even into old men.",
+            [qw<jarl sounds like yankee negro-lovers . britain was even into old men .>],
+            "Jarl sounds like yankee negro-lovers. Britain was even into old men.",
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();
