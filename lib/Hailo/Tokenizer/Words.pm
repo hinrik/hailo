@@ -17,8 +17,10 @@ my $NUMBER     = qr/$DECIMAL?\d+(?:$DECIMAL\d+)*/;
 my $APOSTROPHE = qr/['’´]/;
 my $APOST_WORD = qr/[[:alpha:]]+(?:$APOSTROPHE(?:[[:alpha:]]+))+/;
 my $TWAT_NAME  = qr/ \@ [A-Za-z0-9_]+ /x;
-my $PLAIN_WORD = qr/\w+/;
-my $WORD_TYPES = qr/$NUMBER|$APOST_WORD|$PLAIN_WORD/;
+my $NON_WORD   = qr/[^_\d[:alpha:]]+/;
+my $PLAIN_WORD = qr/[_[:alpha:]]+/;
+my $ALPHA_WORD = qr/$APOST_WORD|$PLAIN_WORD/;
+my $WORD_TYPES = qr/$NUMBER|$ALPHA_WORD/;
 my $WORD       = qr/$WORD_TYPES(?:-$WORD_TYPES)*/;
 my $MIXED_CASE = qr/ \p{Lower}+ \p{Upper} /x;
 my $UPPER_NONW = qr/^ \p{Upper}{2,} \W+ \p{Lower}+ $/x;
@@ -34,11 +36,12 @@ my $TERMINATOR  = qr/(?:[?!‽]+|(?<!\.)\.)/;
 my $ADDRESS     = qr/:/;
 my $PUNCTUATION = qr/[?!‽,;.:]/;
 my $BOUNDARY    = qr/$CLOSE_QUOTE?(?:\s*$TERMINATOR|$ADDRESS)\s+$OPEN_QUOTE?\s*/;
-my $SPLIT_WORD  = qr{$WORD(?:/$WORD)?(?=$PUNCTUATION(?: |$)|$CLOSE_QUOTE|$TERMINATOR| |$)};
+my $LOOSE_WORD  = qr/(?:$NUMBER|$APOST_WORD|\w+)(?:-(?:$NUMBER|$APOST_WORD|\w+))*/;
+my $SPLIT_WORD  = qr{$LOOSE_WORD(?:/$LOOSE_WORD)?(?=$PUNCTUATION(?: |$)|$CLOSE_QUOTE|$TERMINATOR| |$)};
 
 # we want to capitalize words that come after "On example.com?"
 # or "You mean 3.2?", but not "Yes, e.g."
-my $DOTTED_STRICT = qr/$WORD(?:$DECIMAL(?:\d+|\w{2,}))?/;
+my $DOTTED_STRICT = qr/$LOOSE_WORD(?:$DECIMAL(?:\d+|\w{2,}))?/;
 my $WORD_STRICT   = qr/$DOTTED_STRICT(?:$APOSTROPHE$DOTTED_STRICT)*/;
 
 # input -> tokens
@@ -79,27 +82,56 @@ sub make_tokens {
                 $got_word = 1;
             }
             # normal words
-            elsif ($chunk =~ s/ ^ (?<word> $WORD )(?! $WORD ) //xo) {
-                my $word = $+{word};
-                # Maybe preserve the casing of this word
-                $word = lc $word
-                    if $word ne uc $word
-                       # Mixed-case words like "WoW"
-                       and $word !~ $MIXED_CASE
-                       # Words that are upper case followed by a non-word character.
-                       # {2,} so it doesn't match I'm
-                       and $word !~ $UPPER_NONW;
+            elsif ($chunk =~ / ^ $WORD /xo) {
+                # there's probably a simpler way to accomplish this
+                my @words;
+                while (1) {
+                    last if $chunk !~ s/^($WORD)//o;
+                    push @words, $1;
+                }
 
-                push @tokens, [$self->{_spacing_normal}, $word];
+                for my $word (@words) {
+                    # Maybe preserve the casing of this word
+                    $word = lc $word
+                        if $word ne uc $word
+                        # Mixed-case words like "WoW"
+                        and $word !~ $MIXED_CASE
+                        # Words that are upper case followed by a non-word character.
+                        # {2,} so it doesn't match I'm
+                        and $word !~ $UPPER_NONW;
+                }
+
+                if (@words == 1) {
+                    push @tokens, [$self->{_spacing_normal}, $words[0]];
+                }
+                elsif (@words == 2) {
+                    # When there are two words joined together, we need to
+                    # decide if it's normal+postfix (e.g. "4.1GB") or
+                    # prefix+normal (e.g. "v2.3")
+
+                    if ($words[0] =~ /$NUMBER/ && $words[1] =~ /$ALPHA_WORD/) {
+                        push @tokens, [$self->{_spacing_normal}, $words[0]];
+                        push @tokens, [$self->{_spacing_postfix}, $words[1]];
+                    }
+                    elsif ($words[0] =~ /$ALPHA_WORD/ && $words[1] =~ /$NUMBER/) {
+                        push @tokens, [$self->{_spacing_prefix}, $words[0]];
+                        push @tokens, [$self->{_spacing_normal}, $words[1]];
+                    }
+                }
+                else {
+                    # When 3 or more words are together, (e.g. "800x600"),
+                    # we treat them as two normal tokens surrounding one or
+                    # more infix tokens
+                    push @tokens, [$self->{_spacing_normal}, $_] for $words[0];
+                    push @tokens, [$self->{_spacing_infix},  $_] for @words[1..$#words-1];
+                    push @tokens, [$self->{_spacing_normal}, $_] for $words[-1];
+                }
+
                 $got_word = 1;
             }
             # everything else
-            elsif (my ($non_word) = $chunk =~ s/ ^ (?<non_word> \W+ ) //xo) {
+            if ($chunk =~ s/ ^ (?<non_word> $NON_WORD ) //xo) {
                 my $non_word = $+{non_word};
-
-                # lowercase it if it's not all-uppercase
-                $non_word = lc($non_word) if $non_word ne uc($non_word);
-
                 my $spacing = $self->{_spacing_normal};
 
                 # was the previous token a word?
@@ -108,7 +140,7 @@ sub make_tokens {
                         ? $self->{_spacing_infix}
                         : $self->{_spacing_postfix};
                 }
-                # do we still have more tokens?
+                # do we still have more tokens in this chunk?
                 elsif (length $chunk) {
                     $spacing = $self->{_spacing_prefix};
                 }

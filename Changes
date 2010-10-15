@@ -2,6 +2,12 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Scrap the "normal word" matching constraint from the previous release.
+      It was failing to match words like "4.1GB", causing an infinite loop.
+      Instead, we now assign different spacing attributes to components of
+      conjoined words of varying types (e.g. recognizing that "4.1GB" is a
+      normal word ("4.1") followed by a postfix ("GB").
+
 0.54 2010-10-16 10:10:19
 
     - Fix the previously broken `save_on_exit' so that it does what

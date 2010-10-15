@@ -279,7 +279,7 @@ subtest make_output => sub {
         ],
         [
             "loves2spooge",
-            [qw<loves2spooge>],
+            [qw<loves 2 spooge>],
             "Loves2spooge.",
         ],
         [
@@ -294,12 +294,12 @@ subtest make_output => sub {
         ],
         [
             "I use a resolution of 800x600 on my computer",
-            [qw<I use a resolution of 800x600 on my computer>],
+            [qw<I use a resolution of 800 x 600 on my computer>],
             "I use a resolution of 800x600 on my computer.",
         ],
         [
             "WOAH 3D",
-            [qw<WOAH 3D>],
+            [qw<WOAH 3 D>],
             "WOAH 3D.",
         ],
         [
@@ -316,6 +316,11 @@ subtest make_output => sub {
             'du: Invalid option --^',
             [qw<du : invalid option --^>],
             'Du: Invalid option --^',
+        ],
+        [
+            '4.1GB downloaded, 95GB uploaded',
+            [qw<4.1 GB downloaded>, ',', qw<95 GB uploaded>],
+            '4.1GB downloaded, 95GB uploaded.',
         ],
     );
 
