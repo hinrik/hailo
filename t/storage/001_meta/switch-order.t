@@ -29,7 +29,7 @@ my $initial_order = 3;
     is($hailo->order, $initial_order, "order = $initial_order");
     $hailo->train(\@train);
     my ($tokens) = $hailo->stats;
-    is($tokens, 397, "Hailo now knows about 397 tokens");
+    is($tokens, 395, "Hailo now knows about 395 tokens");
 }
 
 {
@@ -45,7 +45,7 @@ my $initial_order = 3;
     is($hailo->_engine->order, $initial_order, "Order has been propagated from the database -> engine");
     is($hailo->_storage->order, $initial_order, "Order has been propagated from the database -> storage");
     my ($tokens) = $hailo->stats;
-    is($tokens, 397, "Hailo still knows about 397 tokens");
+    is($tokens, 395, "Hailo still knows about 395 tokens");
 }
 
 for my $order (1 .. 200) {
@@ -62,7 +62,7 @@ for my $order (1 .. 200) {
         is($hailo->_engine->order, $initial_order, "Order has been propagated from the database -> engine");
         is($hailo->_storage->order, $initial_order, "Order has been propagated from the database -> storage");
         my ($tokens) = $hailo->stats;
-        is($tokens, 397, "Hailo still knows about 397 tokens");
+        is($tokens, 395, "Hailo still knows about 395 tokens");
     } else {
         local $@;
         eval { $hailo->reply() };
