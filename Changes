@@ -2,7 +2,7 @@ Revision history for Hailo
 
 {{$NEXT}}
 
-    - Add Test::Expect to TestRequires
+    - Add Test::Expect and Test::Synopsis to TestRequires
 
 0.55 2010-10-16 17:58:00
 
