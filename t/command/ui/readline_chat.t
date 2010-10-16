@@ -10,7 +10,7 @@ BEGIN {
     # If I just do C<eval 'use Test::Expect'> or C<eval { require
     # Test::Expect; Test::Expect->import }>. Too lazy to find out why
     eval 'require Test::Expect';
-    plan skip_all => "Test::Expect required for testing readline chat" if $@;
+    plan skip_all => "Failed to load Test::Expect for readline chat test" if $@;
 }
 use Test::Expect;
 
@@ -53,7 +53,7 @@ expect_send('.train "' . __FILE__ . '"', 'Train from this file: ' . __FILE__);
 expect_like(qr/Trained from/, "successful training");
 
 expect_send('.stats', 'Ask for statistics');
-expect_like(qr/\(169, 269, 302, 316\)/, "Get statistics");
+expect_like(qr/\(167, 269, 304, 318\)/, "Get statistics");
 
 expect_send('.help', 'Ask for some help');
 expect_like(qr/The commands are just method calls/, "Get help from ReadLine");
