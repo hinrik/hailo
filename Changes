@@ -2,6 +2,8 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+0.55 2010-10-16 17:58:00
+
     - Scrap the "normal word" matching constraint from the previous release.
       It was failing to match words like "4.1GB", causing an infinite loop.
       Instead, we now assign different spacing attributes to components of
