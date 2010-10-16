@@ -4,7 +4,7 @@ use warnings;
 use open qw< :encoding(utf8) :std >;
 use Encode qw<decode_utf8>;
 use Data::Section -setup;
-use Test::More tests => 2693;
+use Test::More tests => 2695;
 use Hailo::Tokenizer::Words;
 
 my $self = bless {} => __PACKAGE__;
@@ -297,7 +297,11 @@ __[ Data::Dumper result ]__
   ],
   [
     0,
-    'http://www.cl.cam.ac.uk/~mgk25/>'
+    'http://www.cl.cam.ac.uk/~mgk25/'
+  ],
+  [
+    2,
+    '>'
   ],
   [
     0,

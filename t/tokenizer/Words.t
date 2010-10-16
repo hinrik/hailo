@@ -322,6 +322,11 @@ subtest make_output => sub {
             [qw<4.1 GB downloaded>, ',', qw<95 GB uploaded>],
             '4.1GB downloaded, 95GB uploaded.',
         ],
+        [
+            'Use <http://google.com> as your homepage',
+            [qw{use < http://google.com > as your homepage}],
+            'Use <http://google.com> as your homepage.',
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();

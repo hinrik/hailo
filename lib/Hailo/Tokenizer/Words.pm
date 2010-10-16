@@ -60,10 +60,18 @@ sub make_tokens {
             # from Regexp::Common doesn't support non-ASCII domain names
             my $ascii = unidecode($chunk);
 
-            # urls
+            # URIs
             if ($ascii =~ / ^ $RE{URI} /xo) {
                 my $uri = $chunk;
-                $chunk = '';
+                # $RE{URI} makes matches '>' in URIs, making
+                # "<http://google.com> problematic. Work around it.
+                if ($chunk =~ />$/) {
+                    $uri =~ s/>$//;
+                    $chunk = '>';
+                }
+                else {
+                    $chunk = '';
+                }
 
                 push @tokens, [$self->{_spacing_normal}, $uri];
                 $got_word = 1;

@@ -8,6 +8,8 @@ Revision history for Hailo
       conjoined words of varying types (e.g. recognizing that "4.1GB" is a
       normal word ("4.1") followed by a postfix ("GB").
 
+    - Don't match '>' as part of the URI in "<http://google.com>".
+
 0.54 2010-10-16 10:10:19
 
     - Fix the previously broken `save_on_exit' so that it does what
