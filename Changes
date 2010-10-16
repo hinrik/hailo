@@ -2,6 +2,8 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+0.54 2010-10-16 10:10:19
+
     - Fix the previously broken `save_on_exit' so that it does what
       it's supposed to do.
 
