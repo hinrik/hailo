@@ -5,7 +5,7 @@ use Hailo;
 use File::Temp qw(tempdir tempfile);
 use File::Slurp qw<slurp>;
 use Bot::Training;
-use Test::More tests => 11;
+use Test::More tests => 18;
 
 # Dir to store our brains
 my $dir = tempdir( "hailo-test-sqlite-in-memory-XXXX", CLEANUP => 1, TMPDIR => 1 );
@@ -37,43 +37,57 @@ my @train = split /\n/, slurp($trainfile);
     isnt($new_size, $orig_size, "Hailo wrote the things it learned to disk. Brain was $orig_size, now $new_size");
 }
 
-## Train *in* memory
-my $after_train_size;
-{
-    ok(-f $brain_file, "$brain_file still exists");
-
-    my $orig_size = -s $brain_file;
-    my $hailo = Hailo->new(
-        storage_class  => 'SQLite',
-        brain          => $brain_file,
-        storage_args   => {
-            in_memory      => 1,
-        },
-    );
-
-    ok($hailo->_storage->_backup_memory_to_disk, "SQLite is running in disk->memory->disk mode");
-    unlike($hailo->reply("mooYou"), qr/mooYou/, "Got a random from the loaded brain");
-    $hailo->train([ map { "moo$_" } @train ]);
-    $after_train_size = -s $brain_file;
+for my $save_on_exit (0, 1) {
+    ## Train *in* memory
+    my $after_train_size;
     {
-        my $r = $hailo->reply("mooYou");
-        like($r, qr/mooYou/i, "got a reply to a word that now exist: $r");
+        ok(-f $brain_file, "$brain_file still exists");
+
+        my $orig_size = -s $brain_file;
+        my $hailo = Hailo->new(
+            save_on_exit   => $save_on_exit,
+            storage_class  => 'SQLite',
+            brain          => $brain_file,
+            storage_args   => {
+                in_memory      => 1,
+            },
+        );
+
+        ok($hailo->_storage->_backup_memory_to_disk, "SQLite is running in disk->memory->disk mode");
+        unlike($hailo->reply("mooYou"), qr/mooYou/, "Got a random from the loaded brain");
+        $hailo->train([ map { "moo-$save_on_exit-$_" } @train ]);
+        $after_train_size = -s $brain_file;
+        {
+            my $r = $hailo->reply("moo-$save_on_exit-You");
+            like($r, qr/moo-$save_on_exit-You/i, "got a reply to a word that now exist: $r");
+        }
+        is($after_train_size, $orig_size, "Hailo is writing to memory, not disk. Brain was $orig_size, now $after_train_size");
     }
-    is($after_train_size, $orig_size, "Hailo is writing to memory, not disk. Brain was $orig_size, now $after_train_size");
-}
 
-## Test that it was saved to disk
-{
-    my $after_save_size = -s $brain_file;
-    cmp_ok($after_train_size, "<", $after_save_size, "Hailo was saved to disk, was $after_train_size, now $after_save_size");
-
-    my $hailo = Hailo->new(
-        storage_class  => 'SQLite',
-        brain          => $brain_file,
-    );
-
+    ## Test that it was saved to disk
     {
-        my $r = $hailo->reply("mooYou");
-        ok($r, "got a reply to a word that now exist: $r");
+        my $get_hailo = sub {
+            my $hailo = Hailo->new(
+                storage_class  => 'SQLite',
+                brain          => $brain_file,
+            );
+        };
+        my $after_save_size = -s $brain_file;
+
+        given ($save_on_exit) {
+            when (0) {
+                cmp_ok($after_train_size, "==", $after_save_size, "Hailo wasn't saved to disk, was $after_train_size, now $after_save_size");
+                my $hailo = $get_hailo->();
+                my $r = $hailo->reply("moo-$save_on_exit-You");
+                unlike($r, qr/moo-$save_on_exit-You/i, "got a reply to a word that now exist: $r");
+            }
+            when (1) {
+                cmp_ok($after_train_size, "<", $after_save_size, "Hailo was saved to disk, was $after_train_size, now $after_save_size");
+                my $hailo = $get_hailo->();
+                my $r = $hailo->reply("moo-$save_on_exit-You");
+                like($r, qr/moo-$save_on_exit-You/i, "got a reply to a word that now exist: $r");
+            }
+            default { die }
+        }
     }
 }

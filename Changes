@@ -2,6 +2,14 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Fix the previously broken `save_on_exit' so that it does what
+      it's supposed to do.
+
+      The `save_on_exit' option in Hailo.pm never worked, and nor did
+      hailo's corresponding --autosave option. Fixed that by
+      correcting some method name confusion, and solved a BUG by
+      finally adding a test for this option.
+
 0.53 2010-10-15 21:29:02
 
     - hailo command: Fix off-by-one error when reporting the number of lines

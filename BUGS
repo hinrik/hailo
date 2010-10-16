@@ -106,15 +106,3 @@ anything, to e.g. init Pg and then import into it efficiently using
 hacky means (like feeding it a sqlite dump).
 
     I've now added ->initialized which is 1/2 of this -avar
-
-* No tests for save_on_exit
-
-ack --nocolor --nogroup  -- save_on_exit
-t/lib/Hailo/Test.pm:231:        save_on_exit   => 0,
-utils/hailo-benchmark-replies:47:    save_on_exit    => 0,
-lib/Hailo.pm:24:has save_on_exit => (
-lib/Hailo.pm:297:    $self->save if $self->save_on_exit;
-lib/Hailo.pm:520:=head2 C<save_on_exit>
-lib/Hailo/Storage/DBD/SQLite.pm:198:L<C<save_on_exit>|Hailo/save_on_exit>). This is disabled by default.
-lib/Hailo/Command.pm:171:for (qw/ save_on_exit order brain /, map { qq[${_}_class] } qw/ storage tokenizer ui /) {
-README.pod:213:=head2 C<save_on_exit>

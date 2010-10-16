@@ -140,6 +140,9 @@ A boolean value indicating whether Hailo should save its state before
 its object gets destroyed. This defaults to true and will simply call
 L<save|/save> at C<DEMOLISH> time.
 
+See L<Hailo::Storage::SQLite/"in_memory"> for how the SQLite backend
+uses this option in conjunction with its C<in_memory> option.
+
 =head2 C<order>
 
 The Markov order (chain length) you want to use for an empty brain.
