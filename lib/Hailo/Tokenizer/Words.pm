@@ -138,7 +138,7 @@ sub make_tokens {
                 $got_word = 1;
             }
             # everything else
-            if ($chunk =~ s/ ^ (?<non_word> $NON_WORD ) //xo) {
+            elsif ($chunk =~ s/ ^ (?<non_word> $NON_WORD ) //xo) {
                 my $non_word = $+{non_word};
                 my $spacing = $self->{_spacing_normal};
 
