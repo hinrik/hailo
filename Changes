@@ -4,6 +4,9 @@ Revision history for Hailo
 
     - Add Test::Expect and Test::Synopsis to TestRequires
 
+    - Use YAML::XS in utf8-text.t for clarity, and make the test
+      optional.
+
 0.55 2010-10-16 17:58:00
 
     - Scrap the "normal word" matching constraint from the previous release.
