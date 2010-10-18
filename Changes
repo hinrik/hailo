@@ -2,6 +2,8 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+0.56 2010-10-18 05:15:10
+
     - Add Test::Expect and Test::Synopsis to TestRequires
 
     - Use YAML::XS in utf8-text.t for clarity, and make the test
