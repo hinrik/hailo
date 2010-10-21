@@ -2,6 +2,9 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Fix typo in Schema.pm which messed up the type of the token.text
+      SQL column (only relevant to non-SQLite DBs)
+
 0.56 2010-10-18 05:15:10
 
     - Add Test::Expect and Test::Synopsis to TestRequires

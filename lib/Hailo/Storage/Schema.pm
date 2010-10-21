@@ -31,7 +31,7 @@ TABLE
 CREATE TABLE token (
     id      $int_primary_key,
     spacing INTEGER NOT NULL,
-    text    $ text NOT NULL,
+    text    $text NOT NULL,
     count   INTEGER NOT NULL
 );
 TABLE
