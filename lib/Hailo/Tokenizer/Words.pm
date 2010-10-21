@@ -58,20 +58,14 @@ sub make_tokens {
         while (length $chunk) {
             # We convert it to ASCII and then look for a URI because $RE{URI}
             # from Regexp::Common doesn't support non-ASCII domain names
-            my $ascii = unidecode($chunk);
+            my $ascii = $chunk;
+            $ascii =~ s/[^[:ascii:]]/a/g;
 
             # URIs
             if ($ascii =~ / ^ $RE{URI} /xo) {
-                my $uri = $chunk;
-                # $RE{URI} makes matches '>' in URIs, making
-                # "<http://google.com> problematic. Work around it.
-                if ($chunk =~ />$/) {
-                    $uri =~ s/>$//;
-                    $chunk = '>';
-                }
-                else {
-                    $chunk = '';
-                }
+                my $uri_end = $+[0];
+                my $uri = substr $chunk, 0, $uri_end;
+                $chunk =~ s/^\Q$uri//;
 
                 push @tokens, [$self->{_spacing_normal}, $uri];
                 $got_word = 1;

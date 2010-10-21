@@ -327,6 +327,21 @@ subtest make_output => sub {
             [qw{use < http://google.com > as your homepage}],
             'Use <http://google.com> as your homepage.',
         ],
+        [
+            'Foo http://æðislegt.is,>>> bar',
+            [qw{foo http://æðislegt.is}, ',>>>', 'bar'],
+            'Foo http://æðislegt.is,>>> bar.',
+        ],
+        [
+            'Foo http://æðislegt.is,$ bar',
+            [qw<foo http://æðislegt.is>, ',$', 'bar'],
+            'Foo http://æðislegt.is,$ bar.',
+        ],
+        [
+            'http://google.is/search?q="stiklað+á+stóru"',
+            [qw{http://google.is/search?q= " stiklað + á + stóru "}],
+            'http://google.is/search?q="stiklað+á+stóru"',
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();
