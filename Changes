@@ -5,6 +5,8 @@ Revision history for Hailo
     - Forgot to remove "use Text::Unidecode;" from Words.pm after dropping
       that dependency in the previous release.
 
+    - Skip utf8-text.t on Perl <5.12 due to differences in Unicode matching.
+
 0.57 2010-10-21 01:25:09
 
     - Fix typo in Schema.pm which messed up the type of the token.text

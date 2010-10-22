@@ -7,6 +7,10 @@ use Test::More;
 use Hailo::Tokenizer::Words;
 
 BEGIN {
+    if ($] < 5.012000) {
+        plan skip_all => "This test relies on Perl >=5.12's Unicode support";
+    }
+
     my $got_yaml;
     eval {
         require YAML::XS;
