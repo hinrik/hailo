@@ -2,6 +2,9 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Forgot to remove "use Text::Unidecode;" from Words.pm after dropping
+      that dependency in the previous release.
+
 0.57 2010-10-21 01:25:09
 
     - Fix typo in Schema.pm which messed up the type of the token.text

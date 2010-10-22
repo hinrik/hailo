@@ -5,7 +5,6 @@ use utf8;
 use Any::Moose;
 use Any::Moose 'X::StrictConstructor';
 use Regexp::Common qw/ URI /;
-use Text::Unidecode;
 use namespace::clean -except => 'meta';
 
 with qw(Hailo::Role::Arguments
