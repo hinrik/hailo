@@ -107,27 +107,3 @@ hacky means (like feeding it a sqlite dump).
 
     I've now added ->initialized which is 1/2 of this -avar
 
-* Parallelize Hailo
-
-Some operations in Hailo could be done in parallel.
-
-** Learning
-
-Learning from an input line consists of adding unknown tokens to the database,
-finding out the IDs of all tokens, and then adding every expression which the
-input line consists of. That last part could be done in parallel.
-
-** Replying
-
-To construct a reply, we throw away half of the tokens in the input, look up
-the IDs of the remaining ones (ignoring unknown ones), and sort the known
-ones by how rare they are. Then we take one of the tokens, find an expression
-containing it, and use that as a starting point. We conclude by constructing
-the end of the reply by working forward from the starting expression, and
-constructing the beginning of the reply working backwards from the starting
-expression. Instead we could construct the beginning and end in parallel.
-Some things would need to be worked out. For example, while constructing a
-beginning or an end, we favor tokens in the list we constructed earlier, and
-remove tokens from that list if we happen to use them. If the two beginning/end
-jobs were to consist of separate UNIX processes, perhaps the list of favored
-tokens should be divided between them.
