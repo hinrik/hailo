@@ -342,6 +342,11 @@ subtest make_output => sub {
             [qw{http://google.is/search?q= " stiklað + á + stóru "}],
             'http://google.is/search?q="stiklað+á+stóru"',
         ],
+        [
+            'this is STARGΛ̊TE',
+            [qw<this is STARGΛ̊TE>],
+            'This is STARGΛ̊TE.',
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();

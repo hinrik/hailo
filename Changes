@@ -2,6 +2,8 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Word tokenizer: Match combining characters in words on Perl >=5.12
+
 0.58 2010-10-22 03:34:08
 
     - Forgot to remove "use Text::Unidecode;" from Words.pm after dropping

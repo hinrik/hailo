@@ -1,14 +1,17 @@
 use 5.010;
+use utf8;
 use strict;
 use warnings;
-use Encode qw<decode_utf8>;
+use Encode qw<encode_utf8>;
 use Data::Section -setup;
 use Test::More;
 use Hailo::Tokenizer::Words;
 
+binmode $_, ':encoding(utf8)' for (*STDOUT, *STDERR);
+
 BEGIN {
     if ($] < 5.012000) {
-        plan skip_all => "This test relies on Perl >=5.12's Unicode support";
+        plan skip_all => "This test relies on Perl >=5.12's Unicode matching";
     }
 
     my $got_yaml;
@@ -20,10 +23,10 @@ BEGIN {
     plan skip_all => "Haven't got YAML::XS" if !$got_yaml;
 }
 
-plan tests => '2695';
+plan tests => '2519';
 
 my $self = bless {} => __PACKAGE__;
-my $text = decode_utf8(${ $self->section_data("UTF-8 encoded sample plain-text file") });
+my $text = ${ $self->section_data("UTF-8 encoded sample plain-text file") };
 my $toke = Hailo::Tokenizer::Words->new();
 my $parsed = $toke->make_tokens($text);
 
@@ -31,13 +34,13 @@ my $parsed = $toke->make_tokens($text);
 #print STDERR Dump($parsed);
 #exit;
 
-my $perl = Load(${ $self->section_data("YAML::XS result") });
-for (my $i = 0; $i < @$perl; $i++) {
-    is($parsed->[$i][0], $perl->[$i][0], "Token #$i: type matches");
-    is($parsed->[$i][1], $perl->[$i][1], "Token #$i: content matches");
+my $yaml = Load(encode_utf8(${ $self->section_data("YAML::XS result") }));
+for (my $i = 0; $i < @$yaml; $i++) {
+    is($parsed->[$i][0], $yaml->[$i][0], "Token #$i: type matches");
+    is($parsed->[$i][1], $yaml->[$i][1], "Token #$i: content matches");
 }
 
-is(scalar(@$parsed), scalar(@$perl), "Number of tokens matches");
+is(scalar(@$parsed), scalar(@$yaml), "Number of tokens matches");
 
 __DATA__
 __[ UTF-8 encoded sample plain-text file ]__
@@ -919,11 +922,7 @@ __[ YAML::XS result ]__
 - - 2
   - ':'
 - - 0
-  - STARGΛ
-- - 3
-  - ̊
-- - 0
-  - TE
+  - STARGΛ̊TE
 - - 0
   - SG-1
 - - 2
@@ -933,25 +932,19 @@ __[ YAML::XS result ]__
 - - 0
   - =
 - - 0
-  - v
-- - 2
-  - ̇
+  - v̇
 - - 0
   - =
 - - 0
-  - r
+  - r̈
 - - 2
-  - ̈,
+  - ','
 - - 0
-  - a
-- - 2
-  - ⃑
+  - a⃑
 - - 0
   - ⊥
 - - 0
-  - b
-- - 2
-  - ⃑
+  - b⃑
 - - 0
   - greek
 - - 1
@@ -1745,203 +1738,37 @@ __[ YAML::XS result ]__
 - - 0
   - ๏
 - - 0
-  - แผ
-- - 3
-  - ่
+  - แผ่นดินฮั่นเสื่อมโทรมแสนสังเวช
 - - 0
-  - นดินฮั
-- - 3
-  - ่
+  - พระปกเกศกองบู๊กู้ขึ้นใหม่
 - - 0
-  - นเสื
-- - 3
-  - ่
+  - สิบสองกษัตริย์ก่อนหน้าแลถัดไป
 - - 0
-  - อมโทรมแสนสังเวช
+  - สององค์ไซร้โง่เขลาเบาปัญญา
 - - 0
-  - พระปกเกศกองบู
-- - 3
-  - ๊
+  - ทรงนับถือขันทีเป็นที่พึ่ง
 - - 0
-  - กู
-- - 3
-  - ้
+  - บ้านเมืองจึงวิปริตเป็นนักหนา
 - - 0
-  - ขึ
-- - 3
-  - ้
+  - โฮจิ๋นเรียกทัพทั่วหัวเมืองมา
 - - 0
-  - นใหม
-- - 2
-  - ่
+  - หมายจะฆ่ามดชั่วตัวสำคัญ
 - - 0
-  - สิบสองกษัตริย
-- - 3
-  - ์
+  - เหมือนขับไสไล่เสือจากเคหา
 - - 0
-  - ก
-- - 3
-  - ่
+  - รับหมาป่าเข้ามาเลยอาสัญ
 - - 0
-  - อนหน
-- - 3
-  - ้
+  - ฝ่ายอ้องอุ้นยุแยกให้แตกกัน
 - - 0
-  - าแลถัดไป
+  - ใช้สาวนั้นเป็นชนวนชื่นชวนใจ
 - - 0
-  - สององค
-- - 3
-  - ์
+  - พลันลิฉุยกุยกีกลับก่อเหตุ
 - - 0
-  - ไซร
-- - 3
-  - ้
+  - ช่างอาเพศจริงหนาฟ้าร้องไห้
 - - 0
-  - โง
-- - 3
-  - ่
+  - ต้องรบราฆ่าฟันจนบรรลัย
 - - 0
-  - เขลาเบาปัญญา
-- - 0
-  - ทรงนับถือขันทีเป
-- - 3
-  - ็
-- - 0
-  - นที
-- - 3
-  - ่
-- - 0
-  - พึ
-- - 3
-  - ่
-- - 0
-  - ง
-- - 0
-  - บ
-- - 3
-  - ้
-- - 0
-  - านเมืองจึงวิปริตเป
-- - 3
-  - ็
-- - 0
-  - นนักหนา
-- - 0
-  - โฮจิ
-- - 3
-  - ๋
-- - 0
-  - นเรียกทัพทั
-- - 3
-  - ่
-- - 0
-  - วหัวเมืองมา
-- - 0
-  - หมายจะฆ
-- - 3
-  - ่
-- - 0
-  - ามดชั
-- - 3
-  - ่
-- - 0
-  - วตัวสำคัญ
-- - 0
-  - เหมือนขับไสไล
-- - 3
-  - ่
-- - 0
-  - เสือจากเคหา
-- - 0
-  - รับหมาป
-- - 3
-  - ่
-- - 0
-  - าเข
-- - 3
-  - ้
-- - 0
-  - ามาเลยอาสัญ
-- - 0
-  - ฝ
-- - 3
-  - ่
-- - 0
-  - ายอ
-- - 3
-  - ้
-- - 0
-  - องอุ
-- - 3
-  - ้
-- - 0
-  - นยุแยกให
-- - 3
-  - ้
-- - 0
-  - แตกกัน
-- - 0
-  - ใช
-- - 3
-  - ้
-- - 0
-  - สาวนั
-- - 3
-  - ้
-- - 0
-  - นเป
-- - 3
-  - ็
-- - 0
-  - นชนวนชื
-- - 3
-  - ่
-- - 0
-  - นชวนใจ
-- - 0
-  - พลันลิฉุยกุยกีกลับก
-- - 3
-  - ่
-- - 0
-  - อเหตุ
-- - 0
-  - ช
-- - 3
-  - ่
-- - 0
-  - างอาเพศจริงหนาฟ
-- - 3
-  - ้
-- - 0
-  - าร
-- - 3
-  - ้
-- - 0
-  - องไห
-- - 2
-  - ้
-- - 0
-  - ต
-- - 3
-  - ้
-- - 0
-  - องรบราฆ
-- - 3
-  - ่
-- - 0
-  - าฟันจนบรรลัย
-- - 0
-  - ฤๅหาใครค
-- - 3
-  - ้
-- - 0
-  - ำชูกู
-- - 3
-  - ้
-- - 0
-  - บรรลังก
-- - 2
-  - ์
+  - ฤๅหาใครค้ำชูกู้บรรลังก์
 - - 0
   - ฯ
 - - 1
