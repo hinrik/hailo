@@ -208,7 +208,7 @@ __PACKAGE__->meta->make_immutable;
 =head1 NAME
 
 Hailo::Tokenizer::Words - A tokenizer for L<Hailo|Hailo> which splits
-on whitespace, mostly.
+on whitespace and word boundaries, mostly.
 
 =head1 DESCRIPTION
 

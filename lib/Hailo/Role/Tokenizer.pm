@@ -70,10 +70,11 @@ used:
 
 =head2 C<make_output>
 
-Takes an array reference of tokens and returns a line of output. A token an
-array reference as described in L<C<make_tokens>|/make_tokens>. The tokens
+Takes an array reference of tokens and returns a line of output. A token is
+an array reference as described in L<C<make_tokens>|/make_tokens>. The tokens
 will be joined together into a sentence according to the whitespace
-attributes associated with the tokens.
+attributes associated with the tokens, as well as any formatting provided by
+the tokenizer implementation.
 
 =head1 AUTHORS
 
