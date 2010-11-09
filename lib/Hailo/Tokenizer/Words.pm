@@ -18,6 +18,8 @@ my $DECIMAL    = qr/[.,]/;
 my $NUMBER     = qr/$DECIMAL?\d+(?:$DECIMAL\d+)*/;
 my $APOSTROPHE = qr/['’´]/;
 my $APOST_WORD = qr/$ALPHA+(?:$APOSTROPHE$ALPHA+)+/;
+my $ELLIPSIS   = qr/\.{2,}|…/;
+my $EMAIL      = qr/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i;
 my $TWAT_NAME  = qr/ \@ [A-Za-z0-9_]+ /x;
 my $NON_WORD   = qr/\W+/;
 my $PLAIN_WORD = qr/(?:\w(?<!\d))+/;
@@ -75,6 +77,11 @@ sub make_tokens {
             # ssh:// (and foo+ssh://) URIs
             elsif ($chunk =~ s{ ^ (?<uri> (?:\w+\+) ssh:// \S+ ) }{}xo) {
                 push @tokens, [$self->{_spacing_normal}, $+{uri}];
+                $got_word = 1;
+            }
+            # email addresses
+            elsif ($chunk =~ s/ ^ (?<email> $EMAIL ) //xo) {
+                push @tokens, [$self->{_spacing_normal}, $+{email}];
                 $got_word = 1;
             }
             # Twitter names
@@ -181,7 +188,7 @@ sub make_output {
     }
 
     # capitalize the first word
-    $reply =~ s/^\s*$OPEN_QUOTE?\s*\K($SPLIT_WORD)(?=(?:$TERMINATOR+|$ADDRESS|$PUNCTUATION+)?\b)/\u$1/o;
+    $reply =~ s/^\s*$OPEN_QUOTE?\s*\K($SPLIT_WORD)(?=$ELLIPSIS|(?:(?:$TERMINATOR+|$ADDRESS|$PUNCTUATION+)?\s|$))/\u$1/o;
 
     # capitalize the second word
     $reply =~ s/^\s*$OPEN_QUOTE?\s*$SPLIT_WORD(?:(?:\s*$TERMINATOR|$ADDRESS)\s+)\K($SPLIT_WORD)/\u$1/o;
