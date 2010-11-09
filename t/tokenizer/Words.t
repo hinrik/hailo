@@ -352,6 +352,11 @@ subtest make_output => sub {
             [qw<tumi.st@gmail.com tumi.st@gmail.com tumi.st@gmail.com>],
             'tumi.st@gmail.com tumi.st@gmail.com tumi.st@gmail.com',
         ],
+        [
+            'tumi@foo',
+            [qw<tumi @ foo>],
+            'tumi@foo',
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();

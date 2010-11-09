@@ -66,7 +66,7 @@ sub make_tokens {
             $ascii =~ s/[^[:ascii:]]/a/g;
 
             # URIs
-            if ($ascii =~ / ^ $RE{URI} /xo) {
+            if (!$got_word && $ascii =~ / ^ $RE{URI} /xo) {
                 my $uri_end = $+[0];
                 my $uri = substr $chunk, 0, $uri_end;
                 $chunk =~ s/^\Q$uri//;
@@ -75,17 +75,17 @@ sub make_tokens {
                 $got_word = 1;
             }
             # ssh:// (and foo+ssh://) URIs
-            elsif ($chunk =~ s{ ^ (?<uri> (?:\w+\+) ssh:// \S+ ) }{}xo) {
+            elsif (!$got_word && $chunk =~ s{ ^ (?<uri> (?:\w+\+) ssh:// \S+ ) }{}xo) {
                 push @tokens, [$self->{_spacing_normal}, $+{uri}];
                 $got_word = 1;
             }
             # email addresses
-            elsif ($chunk =~ s/ ^ (?<email> $EMAIL ) //xo) {
+            elsif (!$got_word && $chunk =~ s/ ^ (?<email> $EMAIL ) //xo) {
                 push @tokens, [$self->{_spacing_normal}, $+{email}];
                 $got_word = 1;
             }
             # Twitter names
-            elsif ($chunk =~ s/ ^ (?<twat> $TWAT_NAME ) //xo) {
+            elsif (!$got_word && $chunk =~ s/ ^ (?<twat> $TWAT_NAME ) //xo) {
                 # Names on Twitter/Identi.ca can only match
                 # @[A-Za-z0-9_]+. I tested this on ~800k Twatterhose
                 # names.
