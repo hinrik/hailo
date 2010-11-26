@@ -1,7 +1,7 @@
 use 5.010;
 use strict;
 use warnings;
-use Class::MOP;
+use Class::Load 'try_load_class';
 use File::Spec::Functions 'catfile';
 use Test::More;
 use Test::Script;
@@ -30,9 +30,7 @@ plan tests => scalar(@classes) * 3 + 1;
 
 my $i = 1; for (@classes) {
   SKIP: {
-    eval { Class::MOP::load_class($_) };
-
-    skip "Couldn't compile optional dependency $_", 1 if $@ =~ /Couldn't load class/;
+    skip "Couldn't compile optional dependency $_", 1 if !try_load_class($_);
     pass("Loaded class $_");
   }
 }

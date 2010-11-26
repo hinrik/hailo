@@ -2,6 +2,7 @@ package Hailo::Test;
 use 5.010;
 use autodie;
 use Any::Moose;
+use Class::Load qw(try_load_class);
 use Hailo;
 use Test::More;
 use File::Spec::Functions qw(catfile);
@@ -133,14 +134,7 @@ sub spawn_storage {
 
     if (exists $classes{$storage}) {
         my $pkg = $classes{$storage};
-        if (Any::Moose::moose_is_preferred()) {
-            require Class::MOP;
-            eval { Class::MOP::load_class($pkg) };
-        } else {
-            eval qq[require $pkg];
-        }
-
-        return if $@;
+        return if !try_load_class($pkg);
     }
 
     given ($storage) {

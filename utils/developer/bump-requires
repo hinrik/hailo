@@ -9,7 +9,7 @@ BEGIN { $^I = ""; }
 
 use 5.010;
 use Moose;
-use Class::MOP;
+use Class::Load 'load_class';
 use Module::CoreList;
 
 my $module_get = qr/
@@ -33,7 +33,7 @@ while (<>) {
             and $+{vers} ne '0'
             and $+{mod} ne 'Term::ReadLine::Gnu'
             and $+{mod} ne 'perl') {
-            Class::MOP::load_class($+{mod});
+            load_class($+{mod});
 
             no strict 'refs';
             if (my $ver = ${ $+{mod} . '::VERSION' }) {

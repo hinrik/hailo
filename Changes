@@ -2,6 +2,8 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Use Class::Load instead of Class::MOP::load_class and eval'd require()
+
 0.60 2010-11-09 01:35:49
 
     - Match email addresses and don't capitalize them
