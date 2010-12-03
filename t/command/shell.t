@@ -56,7 +56,7 @@ run_ok( $app, [ '--no-help' ], "Don't help me" );
 
     subtest "bin/hailo POD matches --help" => sub {
         for (my $i = 0; $i < @stdout; $i++) {
-            is($usage[$i], $stdout[$i], "Line #$i of POD usage matched --help");
+            like($stdout[$i], qr/^\Q$usage[$i]/, "Line #$i of POD usage matched --help");
         }
         done_testing();
     }
