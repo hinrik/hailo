@@ -2,6 +2,8 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+0.61 2010-12-03 06:47:22
+
     - Use Class::Load instead of Class::MOP::load_class and eval'd require()
 
     - Fix rare test failure in t/command/shell.t
