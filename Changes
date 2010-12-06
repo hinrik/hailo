@@ -1,6 +1,8 @@
 Revision history for Hailo
 
 {{$NEXT}}
+    - Really fix t/command/shell.t this time. I had the arguments to
+      the test function in the wrong order.
 
 0.61 2010-12-03 06:47:22
 
