@@ -1,6 +1,8 @@
 Revision history for Hailo
 
 {{$NEXT}}
+
+0.63 2010-12-09 09:03:30
     - Mark the failing tests in t/command/shell.t as TODO for now.
 
 0.62 2010-12-06 03:30:07
