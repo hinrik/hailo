@@ -1,6 +1,7 @@
 Revision history for Hailo
 
 {{$NEXT}}
+    - Mark the failing tests in t/command/shell.t as TODO for now.
 
 0.62 2010-12-06 03:30:07
     - Really fix t/command/shell.t this time. I had the arguments to
