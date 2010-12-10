@@ -2,6 +2,8 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+0.64 2010-12-10 11:09:08
+
     - Say "X lines of Y" instead of "X of Y" when training with
       hailo(1).
 
