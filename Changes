@@ -2,6 +2,9 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Say "X lines of Y" instead of "X of Y" when training with
+      hailo(1).
+
 0.63 2010-12-09 09:03:30
     - Mark the failing tests in t/command/shell.t as TODO for now.
 

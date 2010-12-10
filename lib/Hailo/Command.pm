@@ -309,7 +309,7 @@ before train_progress => sub {
 sub train_progress {
     my ($self, $fh, $filename) = @_;
     my $lines = count_lines($filename);
-    my $progress = Term::Sk->new('%d Elapsed: %8t %21b %4p %2d (%c of %m)', {
+    my $progress = Term::Sk->new('%d Elapsed: %8t %21b %4p %2d (%c lines of %m)', {
         # Start at line 1, not 0
         base => 1,
         target => $lines,
