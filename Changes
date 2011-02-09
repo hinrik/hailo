@@ -2,6 +2,9 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Word tokenizer: Recognize "e.g." and other abbreviations as single
+      tokens.
+
 0.64 2010-12-10 11:09:08
 
     - Say "X lines of Y" instead of "X of Y" when training with

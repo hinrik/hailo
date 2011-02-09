@@ -79,7 +79,7 @@ subtest make_output => sub {
     my @tokens = (
         [
             ' " why hello there. «yes». "foo is a bar", e.g. bla ... yes',
-            [qw<" why hello there . « yes ». " foo is a bar>, '",', qw<e . g . bla ... yes>],
+            [qw<" why hello there . « yes ». " foo is a bar>, '",', qw<e.g. bla ... yes>],
             '" Why hello there. «Yes». "Foo is a bar", e.g. bla ... yes.',
         ],
         [
@@ -356,6 +356,11 @@ subtest make_output => sub {
             'tumi@foo',
             [qw<tumi @ foo>],
             'tumi@foo',
+        ],
+        [
+            'e.g. the river',
+            [qw<e.g. the river>],
+            'E.g. the river.',
         ],
     );
 
