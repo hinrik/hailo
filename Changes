@@ -7,6 +7,7 @@ Revision history for Hailo
         Recognize '–' as a word-separating dash.
         Put a full stop after words separated by dots, like "sources.list".
         Fix capitalization problems caused by "..."
+        Capitalize "foo!" and "foo."
 
 0.64 2010-12-10 11:09:08
 

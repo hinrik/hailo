@@ -377,6 +377,16 @@ subtest make_output => sub {
             [qw<huh ? what ? i mean what is your wife a ... goer ... eh ? know what a dude last night ...>],
             'Huh? What? I mean what is your wife a...goer...eh? Know what a dude last night...',
         ],
+        [
+            'neeeigh!',
+            [qw<neeeigh !>],
+            'Neeeigh!',
+        ],
+        [
+            'neeeigh.',
+            [qw<neeeigh .>],
+            'Neeeigh.',
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();
