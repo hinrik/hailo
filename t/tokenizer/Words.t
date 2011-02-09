@@ -270,7 +270,7 @@ subtest make_output => sub {
         [
             "But..what about me? but...no",
             [qw<but .. what about me ? but ... no>],
-            "But..what about me? But...no",
+            "But..what about me? But...no.",
         ],
         [
             "For foo'345",
@@ -371,6 +371,11 @@ subtest make_output => sub {
             'taka úr sources.list',
             [qw<taka úr sources . list>],
             'Taka úr sources.list.',
+        ],
+        [
+            'Huh? what? i mean what is your wife a...goer...eh? know what a dude last night...',
+            [qw<huh ? what ? i mean what is your wife a ... goer ... eh ? know what a dude last night ...>],
+            'Huh? What? I mean what is your wife a...goer...eh? Know what a dude last night...',
         ],
     );
 

@@ -40,9 +40,10 @@ my $CLOSE_QUOTE = qr/['"’“”«»」』›‘]/;
 my $TERMINATOR  = qr/(?:[?!‽]+|(?<!\.)\.)/;
 my $ADDRESS     = qr/:/;
 my $PUNCTUATION = qr/[?!‽,;.:]/;
-my $BOUNDARY    = qr/$CLOSE_QUOTE?(?:\s*$TERMINATOR|$ADDRESS)\s+$OPEN_QUOTE?\s*/;
+my $BOUNDARY    = qr/$CLOSE_QUOTE?(?:\s*$TERMINATOR|$ADDRESS|$ELLIPSIS)\s+$OPEN_QUOTE?\s*/;
 my $LOOSE_WORD  = qr/(?:$WORD_TYPES)|\w+(?:$DASH(?:$WORD_TYPES|\w+))*/;
 my $SPLIT_WORD  = qr{$LOOSE_WORD(?:/$LOOSE_WORD)?(?=$PUNCTUATION(?: |$)|$CLOSE_QUOTE|$TERMINATOR| |$)};
+my $SEPARATOR   = qr/\s+|$ELLIPSIS/;
 
 # we want to capitalize words that come after "On example.com?"
 # or "You mean 3.2?", but not "Yes, e.g."
@@ -189,22 +190,22 @@ sub make_output {
     }
 
     # capitalize the first word
-    $reply =~ s/^\s*$OPEN_QUOTE?\s*\K($SPLIT_WORD)(?=$ELLIPSIS|(?:(?:$TERMINATOR+|$ADDRESS|$PUNCTUATION+)?\s|$))/\u$1/o;
+    $reply =~ s/^\s*$OPEN_QUOTE?\s*\K($SPLIT_WORD)(?=$ELLIPSIS|(?:(?:$TERMINATOR|$ADDRESS|$PUNCTUATION+)?\s|$))/\u$1/o;
 
     # capitalize the second word
     $reply =~ s/^\s*$OPEN_QUOTE?\s*$SPLIT_WORD(?:(?:\s*$TERMINATOR|$ADDRESS)\s+)\K($SPLIT_WORD)/\u$1/o;
 
     # capitalize all other words after word boundaries
     # we do it in two passes because we need to match two words at a time
-    $reply =~ s/ $OPEN_QUOTE?\s*$WORD_STRICT$BOUNDARY\K($SPLIT_WORD)/\x1B\u$1\x1B/go;
+    $reply =~ s/$SEPARATOR$OPEN_QUOTE?\s*$WORD_STRICT$BOUNDARY\K($SPLIT_WORD)/\x1B\u$1\x1B/go;
     $reply =~ s/\x1B$WORD_STRICT\x1B$BOUNDARY\K($SPLIT_WORD)/\u$1/go;
     $reply =~ s/\x1B//go;
 
     # end paragraphs with a period when it makes sense
-    $reply =~ s/(?: |^)$OPEN_QUOTE?(?:$SPLIT_WORD(?:\.$SPLIT_WORD)*)$CLOSE_QUOTE?\K$/./o;
+    $reply =~ s/(?:$SEPARATOR|^)$OPEN_QUOTE?(?:$SPLIT_WORD(?:\.$SPLIT_WORD)*)$CLOSE_QUOTE?\K$/./o;
 
     # capitalize I'm, I've...
-    $reply =~ s{(?: |$OPEN_QUOTE)\Ki(?=$APOSTROPHE$ALPHA)}{I}go;
+    $reply =~ s{(?:$SEPARATOR|$OPEN_QUOTE)\Ki(?=$APOSTROPHE$ALPHA)}{I}go;
 
     return $reply;
 }

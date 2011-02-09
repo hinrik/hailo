@@ -6,6 +6,7 @@ Revision history for Hailo
         Recognize "e.g." and other abbreviations as single tokens.
         Recognize '–' as a word-separating dash.
         Put a full stop after words separated by dots, like "sources.list".
+        Fix capitalization problems caused by "..."
 
 0.64 2010-12-10 11:09:08
 
