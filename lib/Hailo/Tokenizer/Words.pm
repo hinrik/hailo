@@ -201,7 +201,7 @@ sub make_output {
     $reply =~ s/\x1B//go;
 
     # end paragraphs with a period when it makes sense
-    $reply =~ s/(?: |^)$OPEN_QUOTE?$SPLIT_WORD$CLOSE_QUOTE?\K$/./o;
+    $reply =~ s/(?: |^)$OPEN_QUOTE?(?:$SPLIT_WORD(?:\.$SPLIT_WORD)*)$CLOSE_QUOTE?\K$/./o;
 
     # capitalize I'm, I've...
     $reply =~ s{(?: |$OPEN_QUOTE)\Ki(?=$APOSTROPHE$ALPHA)}{I}go;

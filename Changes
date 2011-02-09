@@ -5,6 +5,7 @@ Revision history for Hailo
     - Word tokenizer:
         Recognize "e.g." and other abbreviations as single tokens.
         Recognize '–' as a word-separating dash.
+        Put a full stop after words separated by dots, like "sources.list".
 
 0.64 2010-12-10 11:09:08
 
