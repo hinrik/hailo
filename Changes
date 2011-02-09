@@ -2,8 +2,9 @@ Revision history for Hailo
 
 {{$NEXT}}
 
-    - Word tokenizer: Recognize "e.g." and other abbreviations as single
-      tokens.
+    - Word tokenizer:
+        Recognize "e.g." and other abbreviations as single tokens.
+        Recognize '–' as a word-separating dash.
 
 0.64 2010-12-10 11:09:08
 

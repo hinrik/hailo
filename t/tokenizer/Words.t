@@ -362,6 +362,11 @@ subtest make_output => sub {
             [qw<e.g. the river>],
             'E.g. the river.',
         ],
+        [
+            'dong–licking is a really valuable book.',
+            [qw<dong–licking is a really valuable book .>],
+            'Dong–licking is a really valuable book.',
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();

@@ -14,6 +14,7 @@ with qw(Hailo::Role::Arguments
 my $ALPHA      = qr/(?![_\d])\w/;
 
 # tokenization
+my $DASH       = qr/[–-]/;
 my $DECIMAL    = qr/[.,]/;
 my $NUMBER     = qr/$DECIMAL?\d+(?:$DECIMAL\d+)*/;
 my $APOSTROPHE = qr/['’´]/;
@@ -25,7 +26,7 @@ my $NON_WORD   = qr/\W+/;
 my $PLAIN_WORD = qr/(?:\w(?<!\d))+/;
 my $ALPHA_WORD = qr/$APOST_WORD|$PLAIN_WORD/;
 my $WORD_TYPES = qr/$NUMBER|$PLAIN_WORD\.(?:$PLAIN_WORD\.)+|$ALPHA_WORD/;
-my $WORD       = qr/$WORD_TYPES(?:-$WORD_TYPES)*/;
+my $WORD       = qr/$WORD_TYPES(?:$DASH$WORD_TYPES)*/;
 my $MIXED_CASE = qr/ \p{Lower}+ \p{Upper} /x;
 my $UPPER_NONW = qr/^ \p{Upper}{2,} \W+ \p{Lower}+ $/x;
 
@@ -40,7 +41,7 @@ my $TERMINATOR  = qr/(?:[?!‽]+|(?<!\.)\.)/;
 my $ADDRESS     = qr/:/;
 my $PUNCTUATION = qr/[?!‽,;.:]/;
 my $BOUNDARY    = qr/$CLOSE_QUOTE?(?:\s*$TERMINATOR|$ADDRESS)\s+$OPEN_QUOTE?\s*/;
-my $LOOSE_WORD  = qr/(?:$WORD_TYPES)|\w+(?:-(?:$WORD_TYPES|\w+))*/;
+my $LOOSE_WORD  = qr/(?:$WORD_TYPES)|\w+(?:$DASH(?:$WORD_TYPES|\w+))*/;
 my $SPLIT_WORD  = qr{$LOOSE_WORD(?:/$LOOSE_WORD)?(?=$PUNCTUATION(?: |$)|$CLOSE_QUOTE|$TERMINATOR| |$)};
 
 # we want to capitalize words that come after "On example.com?"
