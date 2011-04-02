@@ -2,6 +2,8 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+    - Expand "~" and such in the brain filename argument.
+
     - Word tokenizer:
         Recognize "e.g." and other abbreviations as single tokens.
         Recognize '–' as a word-separating dash.

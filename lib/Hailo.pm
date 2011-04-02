@@ -4,6 +4,7 @@ use 5.010;
 use autodie qw(open close);
 use Any::Moose;
 use Any::Moose 'X::StrictConstructor';
+use File::Glob ':glob';
 use Class::Load qw(try_load_class);
 use Scalar::Util qw(blessed);
 use List::Util qw(first);
@@ -65,6 +66,14 @@ has brain_resource => (
         $self->brain($brain);
     },
 );
+
+sub BUILD {
+    my ($self) = @_;
+    my $brain = $self->brain;
+    return if !defined $brain;
+    $self->brain(bsd_glob($brain));
+    return;
+}
 
 my %has = (
     engine => {
