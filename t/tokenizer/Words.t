@@ -259,7 +259,7 @@ subtest make_output => sub {
         ],
         [
             'við vorum þar. í norður- eða vesturhlutanum',
-            [qw<við vorum þar . í norður - eða vesturhlutanum>],
+            [qw<við vorum þar . í norður- eða vesturhlutanum>],
             'Við vorum þar. Í norður- eða vesturhlutanum.'
         ],
         [
@@ -386,6 +386,11 @@ subtest make_output => sub {
             'neeeigh.',
             [qw<neeeigh .>],
             'Neeeigh.',
+        ],
+        [
+            'odin-: hello there',
+            [qw<odin- : hello there>],
+            'Odin-: Hello there.',
         ],
     );
 
