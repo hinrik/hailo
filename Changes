@@ -10,6 +10,12 @@ Revision history for Hailo
         Put a full stop after words separated by dots, like "sources.list".
         Fix capitalization problems caused by "..."
         Capitalize "foo!" and "foo."
+        Preserve casing of words such as "POE-Component-IRC"
+        Catch "Acme::POE::Tree" as one word, and preserve its casing
+        Catch "rollin'" as one word when it makes sense
+        Catch 'foo-" as one word when it makes sense, and capitalize at
+        start of a sentence
+        Capitalize quoted words at the start of a line
 
 0.64 2010-12-10 11:09:08
 
