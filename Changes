@@ -2,6 +2,8 @@ Revision history for Hailo
 
 {{$NEXT}}
 
+0.65 2011-04-26 19:28:27
+
     - Expand "~" and such in the brain filename argument.
 
     - Word tokenizer:
