@@ -26,7 +26,7 @@ my $NON_WORD   = qr/\W+/;
 my $PLAIN_WORD = qr/(?:\w(?<!\d))+/;
 my $ALPHA_WORD = qr/$APOST_WORD|$PLAIN_WORD/;
 my $WORD_TYPES = qr/$NUMBER|$PLAIN_WORD\.(?:$PLAIN_WORD\.)+|$ALPHA_WORD/;
-my $WORD       = qr/$WORD_TYPES(?:$DASH$WORD_TYPES*)*/;
+my $WORD       = qr/$WORD_TYPES(?:(?:$DASH$WORD_TYPES*)|$APOSTROPHE(?!$ALPHA|$NUMBER|$APOSTROPHE))*/;
 my $MIXED_CASE = qr/ \p{Lower}+ \p{Upper} /x;
 my $UPPER_NONW = qr/^ \p{Upper}{2,} \W+ \p{Lower}+ $/x;
 
@@ -41,7 +41,7 @@ my $TERMINATOR  = qr/(?:[?!‽]+|(?<!\.)\.)/;
 my $ADDRESS     = qr/:/;
 my $PUNCTUATION = qr/[?!‽,;.:]/;
 my $BOUNDARY    = qr/$CLOSE_QUOTE?(?:\s*$TERMINATOR|$ADDRESS|$ELLIPSIS)\s+$OPEN_QUOTE?\s*/;
-my $LOOSE_WORD  = qr/(?:$WORD_TYPES)|\w+(?:$DASH(?:$WORD_TYPES|\w+)*)*/;
+my $LOOSE_WORD  = qr/(?:$WORD_TYPES)|\w+(?:$DASH(?:$WORD_TYPES|\w+)*||$APOSTROPHE(?!$ALPHA|$NUMBER|$APOSTROPHE))*/;
 my $SPLIT_WORD  = qr{$LOOSE_WORD(?:/$LOOSE_WORD)?(?=$PUNCTUATION(?: |$)|$CLOSE_QUOTE|$TERMINATOR| |$)};
 my $SEPARATOR   = qr/\s+|$ELLIPSIS/;
 

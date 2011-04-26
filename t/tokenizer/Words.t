@@ -392,6 +392,11 @@ subtest make_output => sub {
             [qw<odin- : hello there>],
             'Odin-: Hello there.',
         ],
+        [
+            "struttin' that nigga",
+            [qw<struttin' that nigga>],
+            "Struttin' that nigga.",
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();
