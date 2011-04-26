@@ -190,7 +190,7 @@ sub make_output {
     }
 
     # capitalize the first word
-    $reply =~ s/^\s*$OPEN_QUOTE?\s*\K($SPLIT_WORD)(?=$ELLIPSIS|(?:(?:$TERMINATOR|$ADDRESS|$PUNCTUATION+)?(?:\s|$)))/\u$1/o;
+    $reply =~ s/^\s*$OPEN_QUOTE?\s*\K($SPLIT_WORD)(?=$ELLIPSIS|(?:(?:$CLOSE_QUOTE|$TERMINATOR|$ADDRESS|$PUNCTUATION+)?(?:\s|$)))/\u$1/o;
 
     # capitalize the second word
     $reply =~ s/^\s*$OPEN_QUOTE?\s*$SPLIT_WORD(?:(?:\s*$TERMINATOR|$ADDRESS)\s+)\K($SPLIT_WORD)/\u$1/o;

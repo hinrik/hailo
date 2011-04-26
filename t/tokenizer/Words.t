@@ -397,6 +397,11 @@ subtest make_output => sub {
             [qw<struttin' that nigga>],
             "Struttin' that nigga.",
         ],
+        [
+            '"maybe" and A better deal. "would" still need my coffee with tea.',
+            [qw<" maybe " and A better deal . " would " still need my coffee with tea .>],
+            '"Maybe" and A better deal. "Would" still need my coffee with tea.',
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();
