@@ -53,7 +53,7 @@ expect_send('.train "' . __FILE__ . '"', 'Train from this file: ' . __FILE__);
 expect_like(qr/Trained from/, "successful training");
 
 expect_send('.stats', 'Ask for statistics');
-expect_like(qr/\(167, 269, 304, 318\)/, "Get statistics");
+expect_like(qr/\(166, 267, 299, 312\)/, "Get statistics");
 
 expect_send('.help', 'Ask for some help');
 expect_like(qr/The commands are just method calls/, "Get help from ReadLine");

@@ -273,9 +273,9 @@ subtest make_output => sub {
             "But..what about me? But...no.",
         ],
         [
-            "For foo'345",
-            [qw<for foo ' 345>],
-            "For foo'345",
+            "For foo'345 'foo' bar",
+            [qw<for foo ' 345 ' foo ' bar>],
+            "For foo'345 'foo' bar.",
         ],
         [
             "loves2spooge",
@@ -388,9 +388,9 @@ subtest make_output => sub {
             'Neeeigh.',
         ],
         [
-            'odin-: hello there',
-            [qw<odin- : hello there>],
-            'Odin-: Hello there.',
+            'odin-: foo-- # blah. odin-: yes',
+            [qw<odin- : foo -->, '#', qw<blah . odin- : yes>],
+            'Odin-: Foo-- # blah. Odin-: Yes.',
         ],
         [
             "struttin' that nigga",
@@ -401,6 +401,16 @@ subtest make_output => sub {
             '"maybe" and A better deal. "would" still need my coffee with tea.',
             [qw<" maybe " and A better deal . " would " still need my coffee with tea .>],
             '"Maybe" and A better deal. "Would" still need my coffee with tea.',
+        ],
+        [
+            "This Acme::POE::Tree module is neat. Acme::POE::Tree",
+            [qw<this Acme::POE::Tree module is neat . Acme::POE::Tree>],
+            "This Acme::POE::Tree module is neat. Acme::POE::Tree",
+        ],
+        [
+            "I use POE-Component-IRC",
+            [qw<I use POE-Component-IRC>],
+            "I use POE-Component-IRC.",
         ],
     );
 

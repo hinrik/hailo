@@ -26,9 +26,10 @@ my $NON_WORD   = qr/\W+/;
 my $PLAIN_WORD = qr/(?:\w(?<!\d))+/;
 my $ALPHA_WORD = qr/$APOST_WORD|$PLAIN_WORD/;
 my $WORD_TYPES = qr/$NUMBER|$PLAIN_WORD\.(?:$PLAIN_WORD\.)+|$ALPHA_WORD/;
-my $WORD       = qr/$WORD_TYPES(?:(?:$DASH$WORD_TYPES*)|$APOSTROPHE(?!$ALPHA|$NUMBER|$APOSTROPHE))*/;
+my $WORD_APOST = qr/$WORD_TYPES(?:$DASH$WORD_TYPES)*$APOSTROPHE(?!$ALPHA|$NUMBER)/;
+my $WORD       = qr/$WORD_TYPES(?:(?:$DASH$WORD_TYPES)+|$DASH(?!$DASH))?/;
 my $MIXED_CASE = qr/ \p{Lower}+ \p{Upper} /x;
-my $UPPER_NONW = qr/^ \p{Upper}{2,} \W+ \p{Lower}+ $/x;
+my $UPPER_NONW = qr/^ \p{Upper}{2,} \W+ (?: \p{Upper}* \p{Lower} ) /x;
 
 # capitalization
 # The rest of the regexes are pretty hairy. The goal here is to catch the
@@ -58,6 +59,7 @@ sub make_tokens {
     my @chunks = split /\s+/, $line;
 
     # process all whitespace-delimited chunks
+    my $prev_chunk;
     for my $chunk (@chunks) {
         my $got_word;
 
@@ -74,6 +76,11 @@ sub make_tokens {
                 $chunk =~ s/^\Q$uri//;
 
                 push @tokens, [$self->{_spacing_normal}, $uri];
+                $got_word = 1;
+            }
+            # Perl class names
+            if (!$got_word && $chunk =~ s/ ^ (?<class> \w+ (?:::\w+)+ (?:::)? )//xo) {
+                push @tokens, [$self->{_spacing_normal}, $+{class}];
                 $got_word = 1;
             }
             # ssh:// (and foo+ssh://) URIs
@@ -96,9 +103,18 @@ sub make_tokens {
             }
             # normal words
             elsif ($chunk =~ / ^ $WORD /xo) {
-                # there's probably a simpler way to accomplish this
                 my @words;
-                while (1) {
+
+                # special case to allow matching q{ridin'} as one word, even when
+                # it appears as q{"ridin'"}, but not as q{'ridin'}
+                my $last_char = @tokens ? substr $tokens[-1][1], -1, 1 : '';
+                if (!@tokens && $chunk =~ s/ ^ (?<word>$WORD_APOST) //xo
+                    || $last_char =~ / ^ $APOSTROPHE $ /xo
+                    && $chunk =~ s/ ^ (?<word>$WORD_APOST) (?<! $last_char ) //xo) {
+                    push @words, $+{word};
+                }
+
+                while (length $chunk) {
                     last if $chunk !~ s/^($WORD)//o;
                     push @words, $1;
                 }
