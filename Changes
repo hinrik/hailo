@@ -17,6 +17,8 @@ Revision history for Hailo
         start of a sentence
         Capitalize quoted words at the start of a line
 
+    - The --help option didn't work with Moose >=1.25 (RT #67548). Fixed.
+
 0.64 2010-12-10 11:09:08
 
     - Say "X lines of Y" instead of "X of Y" when training with
