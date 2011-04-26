@@ -214,13 +214,14 @@ before run => sub {
     if (not $self->_storage->ready and
         (defined $self->_go_reply or
          defined $self->_go_train or
+         defined $self->_go_stats or
          defined $self->_go_learn or
          defined $self->_go_learn_reply or
          defined $self->_go_random_reply)) {
         # TODO: Make this spew out the --help reply just like hailo
         # with invalid options does usually, but only if run via
         # ->new_with_options
-        die "To reply/train/learn you must specify options to initialize your storage backend";
+        die "To reply/train/learn/stat you must specify options to initialize your storage backend\n";
     }
 
     return;
