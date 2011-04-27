@@ -279,7 +279,7 @@ subtest make_output => sub {
         ],
         [
             "loves2spooge",
-            [qw<loves 2 spooge>],
+            [qw<loves2spooge>],
             "Loves2spooge.",
         ],
         [
@@ -294,12 +294,12 @@ subtest make_output => sub {
         ],
         [
             "I use a resolution of 800x600 on my computer",
-            [qw<I use a resolution of 800 x 600 on my computer>],
+            [qw<I use a resolution of 800x600 on my computer>],
             "I use a resolution of 800x600 on my computer.",
         ],
         [
             "WOAH 3D",
-            [qw<WOAH 3 D>],
+            [qw<WOAH 3D>],
             "WOAH 3D.",
         ],
         [
@@ -319,7 +319,7 @@ subtest make_output => sub {
         ],
         [
             '4.1GB downloaded, 95GB uploaded',
-            [qw<4.1 GB downloaded>, ',', qw<95 GB uploaded>],
+            [qw<4.1GB downloaded>, ',', qw<95GB uploaded>],
             '4.1GB downloaded, 95GB uploaded.',
         ],
         [
@@ -411,6 +411,16 @@ subtest make_output => sub {
             "I use POE-Component-IRC",
             [qw<I use POE-Component-IRC>],
             "I use POE-Component-IRC.",
+        ],
+        [
+            "You know, 4-3 equals 1",
+            [qw<you know , 4-3 equals 1>],
+            "You know, 4-3 equals 1.",
+        ],
+        [
+            "moo-5 moo-5-moo moo_5",
+            [qw<moo-5 moo-5-moo moo_5>],
+            "Moo-5 moo-5-moo moo_5.",
         ],
     );
 

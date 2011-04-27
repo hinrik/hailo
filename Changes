@@ -4,6 +4,10 @@ Revision history for Hailo
 
     - Die when the user tries --stats without a brain
 
+    - Word tokenizer: stopped matching numbers separately in many cases.
+      "95GB", "3D", "800x600" are all single tokens now. This should reduce
+      the volume of nonsensical word-number pairs in the output.
+
 0.65 2011-04-26 19:28:27
 
     - Expand "~" and such in the brain filename argument.

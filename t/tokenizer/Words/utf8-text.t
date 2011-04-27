@@ -23,7 +23,7 @@ BEGIN {
     plan skip_all => "Haven't got YAML::XS" if !$got_yaml;
 }
 
-plan tests => '2519';
+plan tests => '2503';
 
 my $self = bless {} => __PACKAGE__;
 my $text = ${ $self->section_data("UTF-8 encoded sample plain-text file") };
@@ -31,6 +31,7 @@ my $toke = Hailo::Tokenizer::Words->new();
 my $parsed = $toke->make_tokens($text);
 
 # This is how the YAML::XS output was produced:
+#binmode *STDERR;
 #print STDERR Dump($parsed);
 #exit;
 
@@ -576,9 +577,7 @@ __[ YAML::XS result ]__
 - - 2
   - ⎟⎥⎪
 - - 0
-  - '2'
-- - 2
-  - H
+  - 2H
 - - 2
   - ₂
 - - 0
@@ -590,9 +589,7 @@ __[ YAML::XS result ]__
 - - 0
   - ⇌
 - - 0
-  - '2'
-- - 2
-  - H
+  - 2H
 - - 3
   - ₂
 - - 0
@@ -820,11 +817,7 @@ __[ YAML::XS result ]__
 - - 0
   - •,
 - - 0
-  - '3'
-- - 3
-  - –
-- - 0
-  - '4'
+  - 3–4
 - - 2
   - ','
 - - 0
@@ -862,21 +855,15 @@ __[ YAML::XS result ]__
 - - 2
   - ':'
 - - 0
-  - '1'
-- - 2
-  - lI
+  - 1lI
 - - 2
   - '|,'
 - - 0
-  - '0'
-- - 2
-  - OD
+  - 0OD
 - - 2
   - ','
 - - 0
-  - '8'
-- - 2
-  - B
+  - 8B
 - - 0
   - ║
 - - 0
@@ -1068,9 +1055,7 @@ __[ YAML::XS result ]__
 - - 0
   - the
 - - 0
-  - '4'
-- - 2
-  - th
+  - 4th
 - - 0
   - century
 - - 0

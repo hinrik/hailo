@@ -16,14 +16,14 @@ my $ALPHA      = qr/(?![_\d])\w/;
 # tokenization
 my $DASH       = qr/[–-]/;
 my $DECIMAL    = qr/[.,]/;
-my $NUMBER     = qr/$DECIMAL?\d+(?:$DECIMAL\d+)*/;
+my $NUMBER     = qr/$DECIMAL\d+(?:$DECIMAL\d+)*|\d+(?:$DECIMAL\d+)+\w*/;
 my $APOSTROPHE = qr/['’´]/;
 my $APOST_WORD = qr/$ALPHA+(?:$APOSTROPHE$ALPHA+)+/;
 my $ELLIPSIS   = qr/\.{2,}|…/;
 my $EMAIL      = qr/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i;
 my $TWAT_NAME  = qr/ \@ [A-Za-z0-9_]+ /x;
 my $NON_WORD   = qr/\W+/;
-my $PLAIN_WORD = qr/(?:\w(?<!\d))+/;
+my $PLAIN_WORD = qr/\w+/;
 my $ALPHA_WORD = qr/$APOST_WORD|$PLAIN_WORD/;
 my $WORD_TYPES = qr/$NUMBER|$PLAIN_WORD\.(?:$PLAIN_WORD\.)+|$ALPHA_WORD/;
 my $WORD_APOST = qr/$WORD_TYPES(?:$DASH$WORD_TYPES)*$APOSTROPHE(?!$ALPHA|$NUMBER)/;
@@ -42,7 +42,7 @@ my $TERMINATOR  = qr/(?:[?!‽]+|(?<!\.)\.)/;
 my $ADDRESS     = qr/:/;
 my $PUNCTUATION = qr/[?!‽,;.:]/;
 my $BOUNDARY    = qr/$CLOSE_QUOTE?(?:\s*$TERMINATOR|$ADDRESS|$ELLIPSIS)\s+$OPEN_QUOTE?\s*/;
-my $LOOSE_WORD  = qr/(?:$WORD_TYPES)|\w+(?:$DASH(?:$WORD_TYPES|\w+)*||$APOSTROPHE(?!$ALPHA|$NUMBER|$APOSTROPHE))*/;
+my $LOOSE_WORD  = qr/(?:$WORD_TYPES)|$PLAIN_WORD(?:$DASH(?:$WORD_TYPES|$PLAIN_WORD)*||$APOSTROPHE(?!$ALPHA|$NUMBER|$APOSTROPHE))*/;
 my $SPLIT_WORD  = qr{$LOOSE_WORD(?:/$LOOSE_WORD)?(?=$PUNCTUATION(?: |$)|$CLOSE_QUOTE|$TERMINATOR| |$)};
 my $SEPARATOR   = qr/\s+|$ELLIPSIS/;
 
