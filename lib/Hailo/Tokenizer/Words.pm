@@ -80,7 +80,7 @@ sub make_tokens {
                 $got_word = 1;
             }
             # Perl class names
-            if (!$got_word && $chunk =~ s/ ^ (?<class> $PERL_CLASS )//xo) {
+            elsif (!$got_word && $chunk =~ s/ ^ (?<class> $PERL_CLASS )//xo) {
                 push @tokens, [$self->{_spacing_normal}, $+{class}];
                 $got_word = 1;
             }
