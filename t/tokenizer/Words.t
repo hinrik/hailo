@@ -414,7 +414,7 @@ subtest make_output => sub {
         ],
         [
             "You know, 4-3 equals 1",
-            [qw<you know , 4-3 equals 1>],
+            [qw<you know> ,',', qw<4-3 equals 1>],
             "You know, 4-3 equals 1.",
         ],
         [
