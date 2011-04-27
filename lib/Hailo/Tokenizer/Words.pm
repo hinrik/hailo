@@ -30,7 +30,7 @@ my $MIXED_CASE = qr/ \p{Lower}+ \p{Upper} /x;
 my $UPPER_NONW = qr/^ \p{Upper}{2,} \W+ (?: \p{Upper}* \p{Lower} ) /x;
 my $TWAT_NAME  = qr/ \@ [A-Za-z0-9_]+ /x;
 my $EMAIL      = qr/ [A-Z0-9._%+-]+ @ [A-Z0-9.-]+ \. [A-Z]{2,4} /xi;
-my $PERL_CLASS = qr/ \w+ (?: :: \w+ )+ (?: :: )? /x;
+my $PERL_CLASS = qr/ (?: :: \w+ (?: :: \w+ )* | \w+ (?: :: \w+ )+ ) (?: :: )? | \w+ :: /x;
 my $EXTRA_URI  = qr{ (?: \w+ \+ ) ssh:// \S+ }x;
 
 # capitalization
