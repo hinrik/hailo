@@ -61,7 +61,6 @@ sub make_tokens {
     my @chunks = split /\s+/, $line;
 
     # process all whitespace-delimited chunks
-    my $prev_chunk;
     for my $chunk (@chunks) {
         my $got_word;
 
