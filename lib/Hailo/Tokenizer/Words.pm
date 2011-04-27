@@ -103,7 +103,7 @@ sub make_tokens {
             }
             # normal words
             elsif ($chunk =~ / ^ $WORD /xo) {
-                my @words;
+                my $word;
 
                 # special case to allow matching q{ridin'} as one word, even when
                 # it appears as q{"ridin'"}, but not as q{'ridin'}
@@ -111,51 +111,22 @@ sub make_tokens {
                 if (!@tokens && $chunk =~ s/ ^ (?<word>$WORD_APOST) //xo
                     || $last_char =~ / ^ $APOSTROPHE $ /xo
                     && $chunk =~ s/ ^ (?<word>$WORD_APOST) (?<! $last_char ) //xo) {
-                    push @words, $+{word};
-                }
-
-                while (length $chunk) {
-                    last if $chunk !~ s/^($WORD)//o;
-                    push @words, $1;
-                }
-
-                for my $word (@words) {
-                    # Maybe preserve the casing of this word
-                    $word = lc $word
-                        if $word ne uc $word
-                        # Mixed-case words like "WoW"
-                        and $word !~ $MIXED_CASE
-                        # Words that are upper case followed by a non-word character.
-                        # {2,} so it doesn't match I'm
-                        and $word !~ $UPPER_NONW;
-                }
-
-                if (@words == 1) {
-                    push @tokens, [$self->{_spacing_normal}, $words[0]];
-                }
-                elsif (@words == 2) {
-                    # When there are two words joined together, we need to
-                    # decide if it's normal+postfix (e.g. "4.1GB") or
-                    # prefix+normal (e.g. "v2.3")
-
-                    if ($words[0] =~ /$NUMBER/ && $words[1] =~ /$ALPHA_WORD/) {
-                        push @tokens, [$self->{_spacing_normal}, $words[0]];
-                        push @tokens, [$self->{_spacing_postfix}, $words[1]];
-                    }
-                    elsif ($words[0] =~ /$ALPHA_WORD/ && $words[1] =~ /$NUMBER/) {
-                        push @tokens, [$self->{_spacing_prefix}, $words[0]];
-                        push @tokens, [$self->{_spacing_normal}, $words[1]];
-                    }
+                    $word = $+{word};
                 }
                 else {
-                    # When 3 or more words are together, (e.g. "800x600"),
-                    # we treat them as two normal tokens surrounding one or
-                    # more infix tokens
-                    push @tokens, [$self->{_spacing_normal}, $_] for $words[0];
-                    push @tokens, [$self->{_spacing_infix},  $_] for @words[1..$#words-1];
-                    push @tokens, [$self->{_spacing_normal}, $_] for $words[-1];
+                    $chunk =~ s/^($WORD)//o and $word = $1;
                 }
 
+                # Maybe preserve the casing of this word
+                $word = lc $word
+                    if $word ne uc $word
+                    # Mixed-case words like "WoW"
+                    and $word !~ $MIXED_CASE
+                    # Words that are upper case followed by a non-word character.
+                    # {2,} so it doesn't match I'm
+                    and $word !~ $UPPER_NONW;
+
+                push @tokens, [$self->{_spacing_normal}, $word];
                 $got_word = 1;
             }
             # everything else
