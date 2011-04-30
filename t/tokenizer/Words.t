@@ -427,6 +427,11 @@ subtest make_output => sub {
             [qw<::Class Class:: ::Foo::Bar Foo::Bar:: Foo::Bar>],
             "::Class Class:: ::Foo::Bar Foo::Bar:: Foo::Bar",
         ],
+        [
+            "It's as simple as C-u C-c C-t C-t t",
+            [qw<it's as simple as C-u C-c C-t C-t t>],
+            "It's as simple as C-u C-c C-t C-t t.",
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();

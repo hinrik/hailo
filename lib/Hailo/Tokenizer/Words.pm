@@ -27,7 +27,7 @@ my $WORD_TYPES = qr/$NUMBER|$BARE_WORD\.(?:$BARE_WORD\.)+|$NORM_WORD/;
 my $WORD_APOST = qr/$WORD_TYPES(?:$DASH$WORD_TYPES)*$APOSTROPHE(?!$ALPHABET|$NUMBER)/;
 my $WORD       = qr/$WORD_TYPES(?:(?:$DASH$WORD_TYPES)+|$DASH(?!$DASH))?/;
 my $MIXED_CASE = qr/ \p{Lower}+ \p{Upper} /x;
-my $UPPER_NONW = qr/^ \p{Upper}{2,} \W+ (?: \p{Upper}* \p{Lower} ) /x;
+my $UPPER_NONW = qr/^ (?:\p{Upper}+ \W+)(?<!I') (?: \p{Upper}* \p{Lower} ) /x;
 my $TWAT_NAME  = qr/ \@ [A-Za-z0-9_]+ /x;
 my $EMAIL      = qr/ [A-Z0-9._%+-]+ @ [A-Z0-9.-]+ \. [A-Z]{2,4} /xi;
 my $PERL_CLASS = qr/ (?: :: \w+ (?: :: \w+ )* | \w+ (?: :: \w+ )+ ) (?: :: )? | \w+ :: /x;
@@ -124,7 +124,6 @@ sub make_tokens {
                     # Mixed-case words like "WoW"
                     and $word !~ $MIXED_CASE
                     # Words that are upper case followed by a non-word character.
-                    # {2,} so it doesn't match I'm
                     and $word !~ $UPPER_NONW;
 
                 push @tokens, [$self->{_spacing_normal}, $word];
