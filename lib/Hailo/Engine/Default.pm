@@ -39,7 +39,7 @@ sub reply {
     my $self = shift;
     my $tokens = shift // [];
 
-    # we will favor these tokens when making the reply> shuffle them
+    # we will favor these tokens when making the reply. Shuffle them
     # and discard half.
     my @key_tokens = do {
         my $i = 0;
