@@ -22,6 +22,7 @@ my @classes = qw(
     Hailo::Storage
     Hailo::UI::ReadLine
     Hailo::Engine::Default
+    Hailo::Engine::Scored
     Hailo::Tokenizer::Words
     Hailo::Tokenizer::Chars
 );

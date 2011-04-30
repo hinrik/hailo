@@ -6,6 +6,10 @@ Revision history for Hailo
 
     - Speed up the learning of repetitive sentences by caching more
 
+    - Added Hailo::Engine::Scored, which generates multiple replies (limited
+      by time or number of iterations) and returns the best one. Based on
+      code from Peter Teichman's Cobe project.
+
 0.67 2011-04-27 23:33:08
 
     - Word tokenizer: Improve matching of Perl class names

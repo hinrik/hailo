@@ -46,42 +46,78 @@ sub reply {
         grep { $i++ % 2 == 0 } shuffle(@$tokens);
     };
 
-    my (@key_ids, %token_cache);
-    for my $token_info (@key_tokens) {
-        my $text = $token_info->[1];
-        my $info = $self->_token_similar($text);
-        next unless defined $info;
-        my ($id, $spacing) = @$info;
-        next unless defined $id;
-        push @key_ids, $id;
-        next if exists $token_cache{$id};
-        $token_cache{$id} = [$spacing, $text];
-    }
+    my $token_cache = $self->_resolve_input_tokens($tokens);
+    my @key_ids = keys %$token_cache;
 
     # sort the rest by rareness
     @key_ids = $self->_find_rare_tokens(\@key_ids, 2);
 
     # get the middle expression
-    my $seed_token_id = shift @key_ids;
-    my ($orig_expr_id, @token_ids) = $self->_random_expr($seed_token_id);
-    return unless defined $orig_expr_id; # we don't know any expressions yet
+    my $pivot_token_id = shift @key_ids;
+    my ($pivot_expr_id, @token_ids) = $self->_random_expr($pivot_token_id);
+    return unless defined $pivot_expr_id; # we don't know any expressions yet
 
     # remove key tokens we're already using
     @key_ids = grep { my $used = $_; !first { $_ == $used } @token_ids } @key_ids;
 
-    my $expr_id = $orig_expr_id;
+    my %expr_cache;
 
     # construct the end of the reply
-    $self->_construct_reply('next', $expr_id, \@token_ids, \@key_ids);
+    $self->_construct_reply('next', $pivot_expr_id, \@token_ids, \%expr_cache, \@key_ids);
 
     # construct the beginning of the reply
-    $self->_construct_reply('prev', $expr_id, \@token_ids, \@key_ids);
+    $self->_construct_reply('prev', $pivot_expr_id, \@token_ids, \%expr_cache, \@key_ids);
 
     # translate token ids to token spacing/text
-    my @reply = map {
-        $token_cache{$_} // ($token_cache{$_} = $self->_token_info($_))
+    my @output = map {
+        $token_cache->{$_} // ($token_cache->{$_} = $self->_token_info($_))
     } @token_ids;
-    return \@reply;
+    return \@output;
+}
+
+sub _resolve_input_tokens {
+    my ($self, $tokens) = @_;
+    my %token_cache;
+
+    if (@$tokens == 1) {
+        my ($spacing, $text) = @{ $tokens->[0] };
+        my $token_info = $self->_token_resolve($spacing, $text);
+
+        if (defined $token_info) {
+            my ($id, $count) = @$token_info;
+            $token_cache{$id} = [$spacing, $text, $count];
+        }
+        else {
+            # when there's just one token, it could be ';' for example,
+            # which will have normal spacing when it appears alone, but
+            # suffix spacing in a sentence like "those things; foo, bar",
+            # so we'll be a bit more lax here by also looking for any
+            # token that has the same text
+            $token_info = $self->_token_similar($text);
+            if (defined $token_info) {
+                my ($id, $spacing, $count) = @$token_info;
+                $token_cache{$id} = [$spacing, $text, $count];
+            }
+        }
+    }
+    else {
+        for my $token (@$tokens) {
+            my ($spacing, $text) = @$token;
+            my $token_info = $self->_token_resolve($spacing, $text);
+            next if !defined $token_info;
+            my ($id, $count) = @$token_info;
+            $token_cache{$id} = [$spacing, $text, $count];
+        }
+    }
+
+    return \%token_cache;
+}
+
+sub _token_resolve {
+    my ($self, $spacing, $text) = @_;
+
+    $self->{_sth_token_resolve}->execute($spacing, $text);
+    return $self->{_sth_token_resolve}->fetchrow_arrayref;
 }
 
 sub _token_info {
@@ -281,7 +317,7 @@ sub _pos_token {
 }
 
 sub _construct_reply {
-    my ($self, $what, $expr_id, $token_ids, $key_ids) = @_;
+    my ($self, $what, $expr_id, $token_ids, $expr_cache, $key_ids) = @_;
     my $order          = $self->order;
     my $repeat_limit   = $self->repeat_limit;
     my $boundary_token = $self->storage->_boundary_token_id;
@@ -295,18 +331,25 @@ sub _construct_reply {
         }
 
         my $id = $self->_pos_token($what, $expr_id, $key_ids);
-        last if $id eq $boundary_token;
+        last if $id == $boundary_token;
 
+        my @ids;
         given ($what) {
             when ('next') {
                 push @$token_ids, $id;
-                $expr_id = $self->_expr_id([@$token_ids[-$order..-1]]);
+                @ids = @$token_ids[-$order..-1];
             }
             when ('prev') {
                 unshift @$token_ids, $id;
-                $expr_id = $self->_expr_id([@$token_ids[0..$order-1]]);
+                @ids = @$token_ids[0..$order-1];
             }
         }
+
+        my $key = join '_', @ids;
+        if (!defined $expr_cache->{$key}) {
+            $expr_cache->{$key} = $self->_expr_id(\@ids);
+        }
+        $expr_id = $expr_cache->{$key};
     } continue {
         $i++;
     }
@@ -327,6 +370,11 @@ Hailo::Engine::Default - The default engine backend for L<Hailo|Hailo>
 This backend implements the logic of replying to and learning from
 input using the resources given to the L<engine
 roles|Hailo::Role::Engine>.
+
+It generates the reply in one go, while favoring some of the tokens in the
+input, and returns it. It is fast and the replies are decent, but you can
+get better replies (at the cost of speed) with the
+L<Scored|Hailo::Engine::Scored> engine.
 
 =head1 AUTHORS
 

@@ -12,6 +12,7 @@ use namespace::clean -except => 'meta';
 
 use constant PLUGINS => [ qw[
     Hailo::Engine::Default
+    Hailo::Engine::Scored
     Hailo::Storage::MySQL
     Hailo::Storage::PostgreSQL
     Hailo::Storage::SQLite

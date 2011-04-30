@@ -94,15 +94,16 @@ sub sth {
     $q_rand    = 'RAND()' if $dbd eq 'mysql';
 
     my $q_rand_id = "(abs($q_rand) % (SELECT max(id) FROM expr))";
-    $q_rand_id    = "(random()*id+1)::int" if $dbd eq 'Pg';
+    $q_rand_id = "(random()*id+1)::int" if $dbd eq 'Pg';
 
     my %state = (
         set_info         => qq[INSERT INTO info (attribute, text) VALUES (?, ?);],
 
         random_expr      => qq[SELECT * FROM expr WHERE id >= $q_rand_id LIMIT 1;],
+        token_resolve    => qq[SELECT id, count FROM token WHERE spacing = ? AND text = ?;],
         token_id         => qq[SELECT id FROM token WHERE spacing = ? AND text = ?;],
         token_info       => qq[SELECT spacing, text FROM token WHERE id = ?;],
-        token_similar    => qq[SELECT id, spacing FROM token WHERE text = ? ORDER BY $q_rand LIMIT 1;] ,
+        token_similar    => qq[SELECT id, spacing, count FROM token WHERE text = ? ORDER BY $q_rand LIMIT 1;] ,
         add_token        => qq[INSERT INTO token (spacing, text, count) VALUES (?, ?, 0)],
         inc_token_count  => qq[UPDATE token SET count = count + 1 WHERE id = ?],
 
@@ -116,6 +117,8 @@ sub sth {
         last_expr_rowid  => qq[SELECT id FROM expr ORDER BY id DESC LIMIT 1;],
         last_token_rowid => qq[SELECT id FROM token ORDER BY id DESC LIMIT 1;],
 
+        next_token_links => qq[SELECT SUM(count) FROM next_token WHERE expr_id = ?;],
+        prev_token_links => qq[SELECT SUM(count) FROM prev_token WHERE expr_id = ?;],
         next_token_count => qq[SELECT count FROM next_token WHERE expr_id = ? AND token_id = ?;],
         prev_token_count => qq[SELECT count FROM prev_token WHERE expr_id = ? AND token_id = ?;],
         next_token_inc   => qq[UPDATE next_token SET count = count + 1 WHERE expr_id = ? AND token_id = ?],
