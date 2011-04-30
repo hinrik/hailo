@@ -13,6 +13,7 @@ Revision history for Hailo
 0.67 2011-04-27 23:33:08
 
     - Word tokenizer: Improve matching of Perl class names
+
     - Require MooseX::StrictConstructor 0.16 for Moose 2.0 compatability
 
 0.66 2011-04-27 07:37:45
