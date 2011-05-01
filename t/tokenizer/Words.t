@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Test::More tests => 2;
 use Hailo::Tokenizer::Words;
+use Time::HiRes qw<gettimeofday tv_interval>;
 
 binmode $_, ':encoding(utf8)' for (*STDIN, *STDOUT, *STDERR);
 
@@ -432,16 +433,28 @@ subtest make_output => sub {
             [qw<it's as simple as C-u C-c C-t C-t t>],
             "It's as simple as C-u C-c C-t C-t t.",
         ],
+        [
+            "foo----------",
+            [qw<foo ---------->],
+            "foo----------",
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();
 
     for my $test (@tokens) {
+        my @before = gettimeofday();
         my $tokens = $toke->make_tokens($test->[0]);
+        my @after = gettimeofday();
+        cmp_ok(tv_interval(\@before, \@after), '<', 1, 'Tokenizing in under <1 second');
         my $t;
         push @$t, $_->[1] for @$tokens;
         is_deeply($t, $test->[1], 'Tokens are correct');
+
+        @before = gettimeofday();
         my $output = $toke->make_output($tokens);
+        @after = gettimeofday();
+        cmp_ok(tv_interval(\@before, \@after), '<', 1, 'Making output in <1 second');
         is_deeply($output, $test->[2], 'Output is correct');
     }
 

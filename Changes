@@ -10,6 +10,9 @@ Revision history for Hailo
       by time or number of iterations) and returns the best one. Based on
       code from Peter Teichman's Cobe project.
 
+    - Fixed a bug which caused the tokenizer to be very slow at capitalizing
+      replies which contain things like "script/osm-to-tilenumbers.pl"
+
 0.67 2011-04-27 23:33:08
 
     - Word tokenizer: Improve matching of Perl class names
