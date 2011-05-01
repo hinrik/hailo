@@ -99,10 +99,10 @@ sub learn {
     # only learn from inputs which are long enough
     return if @$tokens < $order;
 
-    my %token_cache;
+    my (%token_cache, %expr_cache);
 
     for my $token (@$tokens) {
-        my $key = join '', @$token;
+        my $key = join '', @$token; # the key is "$spacing$text"
         next if exists $token_cache{$key};
         $token_cache{$key} = $self->_token_id_add($token);
     }
@@ -110,12 +110,17 @@ sub learn {
     # process every expression of length $order
     for my $i (0 .. @$tokens - $order) {
         my @expr = map { $token_cache{ join('', @{ $tokens->[$_] }) } } $i .. $i+$order-1;
-        my $expr_id = $self->_expr_id(\@expr);
+        my $key = join('_', @expr);
 
-        if (!defined $expr_id) {
-            $expr_id = $self->_add_expr(\@expr);
-            $self->{_sth_inc_token_count}->execute($_) for uniq(@expr);
+        if (!defined $expr_cache{$key}) {
+            my $expr_id = $self->_expr_id(\@expr);
+            if (!defined $expr_id) {
+                $expr_id = $self->_add_expr(\@expr);
+                $self->{_sth_inc_token_count}->execute($_) for uniq(@expr);
+            }
+            $expr_cache{$key} = $expr_id;
         }
+        my $expr_id = $expr_cache{$key};
 
         # add link to next token for this expression, if any
         if ($i < @$tokens - $order) {

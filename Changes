@@ -4,6 +4,8 @@ Revision history for Hailo
 
     - Preserve casing of Emacs key sequences like "C-u"
 
+    - Speed up the learning of repetitive sentences by caching more
+
 0.67 2011-04-27 23:33:08
 
     - Word tokenizer: Improve matching of Perl class names
