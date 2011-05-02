@@ -137,10 +137,13 @@ sub learn {
 
     my (%token_cache, %expr_cache);
 
+    # resolve/add tokens and update their counter
     for my $token (@$tokens) {
         my $key = join '', @$token; # the key is "$spacing$text"
-        next if exists $token_cache{$key};
-        $token_cache{$key} = $self->_token_id_add($token);
+        if (!exists $token_cache{$key}) {
+            $token_cache{$key} = $self->_token_id_add($token);
+        }
+        $self->{_sth_inc_token_count}->execute($token_cache{$key});
     }
 
     # process every expression of length $order
@@ -150,10 +153,7 @@ sub learn {
 
         if (!defined $expr_cache{$key}) {
             my $expr_id = $self->_expr_id(\@expr);
-            if (!defined $expr_id) {
-                $expr_id = $self->_add_expr(\@expr);
-                $self->{_sth_inc_token_count}->execute($_) for uniq(@expr);
-            }
+            $expr_id = $self->_add_expr(\@expr) if !defined $expr_id;
             $expr_cache{$key} = $expr_id;
         }
         my $expr_id = $expr_cache{$key};
