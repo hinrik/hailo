@@ -15,12 +15,12 @@ my $ALPHABET   = qr/(?![_\d])\w/;
 
 # tokenization
 my $DASH       = qr/[–-]/;
-my $DECIMAL    = qr/[.,]/;
+my $POINT      = qr/[.,]/;
 my $APOSTROPHE = qr/['’´]/;
 my $ELLIPSIS   = qr/\.{2,}|…/;
 my $NON_WORD   = qr/\W+/;
 my $BARE_WORD  = qr/\w+/;
-my $NUMBER     = qr/$DECIMAL\d+(?:$DECIMAL\d+)*|\d+(?:$DECIMAL\d+)+\w*/;
+my $NUMBER     = qr/$POINT\d+(?:$POINT\d+)*|\d+(?:$POINT\d+)+\w*/;
 my $APOST_WORD = qr/$ALPHABET+(?:$APOSTROPHE$ALPHABET+)+/;
 my $NORM_WORD  = qr/$APOST_WORD|$BARE_WORD/;
 my $WORD_TYPES = qr/$NUMBER|$BARE_WORD\.(?:$BARE_WORD\.)+|$NORM_WORD/;
@@ -49,7 +49,7 @@ my $SPLIT_WORD  = qr{$LOOSE_WORD(?:/$LOOSE_WORD)?(?=$PUNCTUATION(?: |$)|$CLOSE_Q
 
 # we want to capitalize words that come after "On example.com?"
 # or "You mean 3.2?", but not "Yes, e.g."
-my $DOTTED_STRICT = qr/$LOOSE_WORD(?:$DECIMAL(?:\d+|\w{2,}))?/;
+my $DOTTED_STRICT = qr/$LOOSE_WORD(?:$POINT(?:\d+|\w{2,}))?/;
 my $WORD_STRICT   = qr/$DOTTED_STRICT(?:$APOSTROPHE$DOTTED_STRICT)*/;
 
 # input -> tokens
