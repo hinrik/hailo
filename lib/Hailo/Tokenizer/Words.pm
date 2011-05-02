@@ -43,7 +43,7 @@ my $CLOSE_QUOTE = qr/['"’“”«»」』›‘]/;
 my $TERMINATOR  = qr/(?:[?!‽]+|(?<!\.)\.)/;
 my $ADDRESS     = qr/:/;
 my $PUNCTUATION = qr/[?!‽,;.:]/;
-my $BOUNDARY    = qr/$CLOSE_QUOTE?(?:\s*$TERMINATOR|$ADDRESS|$ELLIPSIS)\s+$OPEN_QUOTE?\s*/;
+my $BOUNDARY    = qr/$CLOSE_QUOTE?(?:\s*$TERMINATOR|$ADDRESS)\s+$OPEN_QUOTE?\s*/;
 my $LOOSE_WORD  = qr/$WORD_TYPES|$BARE_WORD(?:$DASH(?:$WORD_TYPES|$BARE_WORD)|$APOSTROPHE(?!$ALPHABET|$NUMBER|$APOSTROPHE)|$DASH(?!$DASH{2}))*/;
 my $SPLIT_WORD  = qr{$LOOSE_WORD(?:/$LOOSE_WORD)?(?=$PUNCTUATION(?: |$)|$CLOSE_QUOTE|$TERMINATOR| |$)};
 

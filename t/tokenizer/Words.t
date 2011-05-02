@@ -438,6 +438,11 @@ subtest make_output => sub {
             [qw<foo ---------->],
             "foo----------",
         ],
+        [
+            "HE'S A NIGGER! HE'S A... wait",
+            [qw<HE'S A NIGGER ! HE'S A ... wait>],
+            "HE'S A NIGGER! HE'S A... wait.",
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();

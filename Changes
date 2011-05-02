@@ -15,6 +15,8 @@ Revision history for Hailo
 
     - Speed up learning quite a bit (up to 25%) by using more efficient SQL.
 
+    - Don't capitalize words after ellipses (e.g. "Wait... what?")
+
 0.67 2011-04-27 23:33:08
 
     - Word tokenizer: Improve matching of Perl class names
