@@ -46,7 +46,6 @@ my $PUNCTUATION = qr/[?!‽,;.:]/;
 my $BOUNDARY    = qr/$CLOSE_QUOTE?(?:\s*$TERMINATOR|$ADDRESS|$ELLIPSIS)\s+$OPEN_QUOTE?\s*/;
 my $LOOSE_WORD  = qr/$WORD_TYPES|$BARE_WORD(?:$DASH(?:$WORD_TYPES|$BARE_WORD)|$APOSTROPHE(?!$ALPHABET|$NUMBER|$APOSTROPHE)|$DASH(?!$DASH{2}))*/;
 my $SPLIT_WORD  = qr{$LOOSE_WORD(?:/$LOOSE_WORD)?(?=$PUNCTUATION(?: |$)|$CLOSE_QUOTE|$TERMINATOR| |$)};
-my $SEPARATOR   = qr/\s+|$ELLIPSIS/;
 
 # we want to capitalize words that come after "On example.com?"
 # or "You mean 3.2?", but not "Yes, e.g."
@@ -184,15 +183,15 @@ sub make_output {
 
     # capitalize all other words after word boundaries
     # we do it in two passes because we need to match two words at a time
-    $reply =~ s/$SEPARATOR$OPEN_QUOTE?\s*$WORD_STRICT$BOUNDARY\K($SPLIT_WORD)/\x1B\u$1\x1B/go;
+    $reply =~ s/(?:$ELLIPSIS|\s+)$OPEN_QUOTE?\s*$WORD_STRICT$BOUNDARY\K($SPLIT_WORD)/\x1B\u$1\x1B/go;
     $reply =~ s/\x1B$WORD_STRICT\x1B$BOUNDARY\K($SPLIT_WORD)/\u$1/go;
     $reply =~ s/\x1B//go;
 
     # end paragraphs with a period when it makes sense
-    $reply =~ s/(?:$SEPARATOR|^)$OPEN_QUOTE?(?:$SPLIT_WORD(?:\.$SPLIT_WORD)*)$CLOSE_QUOTE?\K$/./o;
+    $reply =~ s/(?:$ELLIPSIS|\s+|^)$OPEN_QUOTE?(?:$SPLIT_WORD(?:\.$SPLIT_WORD)*)$CLOSE_QUOTE?\K$/./o;
 
     # capitalize I'm, I've...
-    $reply =~ s{(?:$SEPARATOR|$OPEN_QUOTE)\Ki(?=$APOSTROPHE$ALPHABET)}{I}go;
+    $reply =~ s{(?:(?:$ELLIPSIS|\s+)|$OPEN_QUOTE)\Ki(?=$APOSTROPHE$ALPHABET)}{I}go;
 
     return $reply;
 }
