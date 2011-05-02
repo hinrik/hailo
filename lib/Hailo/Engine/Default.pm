@@ -201,13 +201,8 @@ sub _find_rare_tokens {
 sub _inc_link {
     my ($self, $type, $expr_id, $token_id) = @_;
 
-    $self->{"_sth_${type}_count"}->execute($expr_id, $token_id);
-    my $count = $self->{"_sth_${type}_count"}->fetchrow_array;
-
-    if (defined $count) {
-        $self->{"_sth_${type}_inc"}->execute($expr_id, $token_id);
-    }
-    else {
+    $self->{"_sth_${type}_inc"}->execute($expr_id, $token_id);
+    if (!$self->{"_sth_${type}_inc"}->rows) {
         $self->{"_sth_${type}_add"}->execute($expr_id, $token_id);
     }
 

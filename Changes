@@ -13,6 +13,8 @@ Revision history for Hailo
     - Fixed a bug which caused the tokenizer to be very slow at capitalizing
       replies which contain things like "script/osm-to-tilenumbers.pl"
 
+    - Speed up learning quite a bit (up to 25%) by using more efficient SQL.
+
 0.67 2011-04-27 23:33:08
 
     - Word tokenizer: Improve matching of Perl class names
