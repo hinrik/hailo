@@ -17,6 +17,9 @@ Revision history for Hailo
 
     - Don't capitalize words after ellipses (e.g. "Wait... what?")
 
+    - When adding a full stop to paragraphs which end with a quoted word,
+      add it inside the quotes (e.g. "I heard him say 'hello there.'")
+
 0.67 2011-04-27 23:33:08
 
     - Word tokenizer: Improve matching of Perl class names

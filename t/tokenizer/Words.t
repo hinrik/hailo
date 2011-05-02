@@ -206,12 +206,12 @@ subtest make_output => sub {
         [
             'cpanm is a true "religion"',
             [qw<cpanm is a true " religion ">],
-            'Cpanm is a true "religion".'
+            'Cpanm is a true "religion."'
         ],
         [
             'cpanm is a true "anti-religion"',
             [qw<cpanm is a true " anti-religion ">],
-            'Cpanm is a true "anti-religion".'
+            'Cpanm is a true "anti-religion."'
         ],
         [
             'Maps to weekends/holidays',
