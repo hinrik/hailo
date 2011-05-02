@@ -47,7 +47,7 @@ my $ADDRESS     = qr/:/;
 my $PUNCTUATION = qr/[?!‽,;.:]/;
 my $BOUNDARY    = qr/$CLOSE_QUOTE?(?:\s*$TERMINATOR|$ADDRESS)\s+$OPEN_QUOTE?\s*/;
 my $LOOSE_WORD  = qr/$WORD_TYPES|$BARE_WORD(?:$DASH(?:$WORD_TYPES|$BARE_WORD)|$APOSTROPHE(?!$ALPHABET|$NUMBER|$APOSTROPHE)|$DASH(?!$DASH{2}))*/;
-my $SPLIT_WORD  = qr{$LOOSE_WORD(?:/$LOOSE_WORD)?(?=$PUNCTUATION(?: |$)|$CLOSE_QUOTE|$TERMINATOR| |$)};
+my $SPLIT_WORD  = qr{$LOOSE_WORD(?:/$LOOSE_WORD)?(?=$PUNCTUATION(?:\s+|$)|$CLOSE_QUOTE|$TERMINATOR|\s+|$)};
 
 # we want to capitalize words that come after "On example.com?"
 # or "You mean 3.2?", but not "Yes, e.g."
@@ -56,10 +56,12 @@ my $WORD_STRICT   = qr/$DOTTED_STRICT(?:$APOSTROPHE$DOTTED_STRICT)*/;
 
 # input -> tokens
 sub make_tokens {
-    my ($self, $line) = @_;
+    my ($self, $input) = @_;
 
     my @tokens;
-    my @chunks = split /\s+/, $line;
+    $input =~ s/$DASH\K\s*\n+\s*//;
+    $input =~ s/\s*\n+\s*/ /gm;
+    my @chunks = split /\s+/, $input;
 
     # process all whitespace-delimited chunks
     for my $chunk (@chunks) {

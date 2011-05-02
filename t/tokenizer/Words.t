@@ -443,6 +443,16 @@ subtest make_output => sub {
             [qw<HE'S A NIGGER ! HE'S A ... wait>],
             "HE'S A NIGGER! HE'S A... wait.",
         ],
+        [
+            "I use\nPOE-Component-IRC",
+            [qw<I use POE-Component-IRC>],
+            "I use POE-Component-IRC.",
+        ],
+        [
+            "I use POE-Component- \n IRC",
+            [qw<I use POE-Component-IRC>],
+            "I use POE-Component-IRC.",
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();
