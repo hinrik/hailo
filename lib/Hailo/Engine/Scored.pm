@@ -186,7 +186,7 @@ sub _expr_token_probability {
     my ($self, $pos, $expr, $token_id) = @_;
     my $order = $self->order;
 
-    my $expr_id = $self->_expr_id($expr);
+    my $expr_id = $self->_expr_id_add($expr);
 
     $self->{"_sth_${pos}_token_count"}->execute($expr_id, $token_id);
     my $expr2token = $self->{"_sth_${pos}_token_count"}->fetchrow_array();

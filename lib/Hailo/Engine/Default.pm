@@ -152,9 +152,7 @@ sub learn {
         my $key = join('_', @expr);
 
         if (!defined $expr_cache{$key}) {
-            my $expr_id = $self->_expr_id(\@expr);
-            $expr_id = $self->_add_expr(\@expr) if !defined $expr_id;
-            $expr_cache{$key} = $expr_id;
+            $expr_cache{$key} = $self->_expr_id_add(\@expr);
         }
         my $expr_id = $expr_cache{$key};
 
@@ -216,20 +214,16 @@ sub _inc_link {
     return;
 }
 
-# add new expression to the database
-sub _add_expr {
+# look up/add an expression id based on tokens
+sub _expr_id_add {
     my ($self, $token_ids) = @_;
 
-    # add the expression
+    $self->{_sth_expr_id}->execute(@$token_ids);
+    my $expr_id = $self->{_sth_expr_id}->fetchrow_array();
+    return $expr_id if defined $expr_id;
+
     $self->{_sth_add_expr}->execute(@$token_ids);
     return $self->storage->dbh->last_insert_id(undef, undef, "expr", undef);
-}
-
-# look up an expression id based on tokens
-sub _expr_id {
-    my ($self, $tokens) = @_;
-    $self->{_sth_expr_id}->execute(@$tokens);
-    return $self->{_sth_expr_id}->fetchrow_array();
 }
 
 # return token id if the token exists
@@ -347,7 +341,7 @@ sub _construct_reply {
 
         my $key = join '_', @ids;
         if (!defined $expr_cache->{$key}) {
-            $expr_cache->{$key} = $self->_expr_id(\@ids);
+            $expr_cache->{$key} = $self->_expr_id_add(\@ids);
         }
         $expr_id = $expr_cache->{$key};
     } continue {
