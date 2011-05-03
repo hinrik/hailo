@@ -42,7 +42,7 @@ hailo - Command-line interface to the L<Hailo|Hailo> Markov bot
 
 =head1 USAGE
 
-    usage: hailo [-abEhLlopRrSsTtuv] [long options...]
+    usage: hailo [-abEfhLlopRrSsTtuv] [long options...]
 	-v --version           Print version and exit
 	-u --ui                Use UI CLASS
 	-t --train             Learn from all the lines in FILE, use - for STDIN
@@ -52,6 +52,7 @@ hailo - Command-line interface to the L<Hailo|Hailo> Markov bot
 	-o --order             Markov order; How deep the rabbit hole goes
 	-l --learn             Learn from STRING
 	-h --help              You're soaking it in
+	-f --train-fast        Train with aggressive caching (memory-hungry!)
 	-b --brain             Load/save brain to/from FILE
 	-a --autosave          Save the brain on exit (on by default)
 	-T --tokenizer         Use tokenizer CLASS

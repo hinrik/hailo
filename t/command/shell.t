@@ -2,7 +2,7 @@ use 5.010;
 use strict;
 use warnings;
 use Test::Script::Run;
-use Test::More tests => 58;
+use Test::More tests => 60;
 
 my $app = 'hailo';
 

@@ -79,6 +79,15 @@ has _go_train => (
     is            => "ro",
 );
 
+has _go_train_fast => (
+    traits        => [ qw/ Getopt / ],
+    cmd_aliases   => "f",
+    cmd_flag      => "train-fast",
+    documentation => "Train with aggressive caching (memory-hungry!)",
+    isa           => 'Str',
+    is            => "ro",
+);
+
 has _go_reply => (
     traits        => [ qw/ Getopt / ],
     cmd_aliases   => "r",
@@ -214,6 +223,7 @@ before run => sub {
     if (not $self->_storage->ready and
         (defined $self->_go_reply or
          defined $self->_go_train or
+         defined $self->_go_train_fast or
          defined $self->_go_stats or
          defined $self->_go_learn or
          defined $self->_go_learn_reply or
@@ -222,6 +232,10 @@ before run => sub {
         # with invalid options does usually, but only if run via
         # ->new_with_options
         die "To reply/train/learn/stat you must specify options to initialize your storage backend\n";
+    }
+
+    if (defined $self->_go_train and defined $self->_go_train_fast) {
+        die "You can only specify one of --train and --train-fast\n";
     }
 
     return;
@@ -243,6 +257,7 @@ sub run {
     if ($self->_is_interactive() and
         $self->_storage->ready and
         not defined $self->_go_train and
+        not defined $self->_go_train_fast and
         not defined $self->_go_learn and
         not defined $self->_go_reply and
         not defined $self->_go_learn_reply and
@@ -252,6 +267,7 @@ sub run {
     }
 
     $self->train($self->_go_train) if defined $self->_go_train;
+    $self->train($self->_go_train_fast, 1) if defined $self->_go_train_fast;
     $self->learn($self->_go_learn) if defined $self->_go_learn;
 
     if (defined $self->_go_learn_reply) {
@@ -282,10 +298,10 @@ sub run {
 }
 
 override _train_fh => sub {
-    my ($self, $fh, $filename) = @_;
+    my ($self, $fh, $fast, $filename) = @_;
 
     if ($self->_go_progress and $self->_is_interactive) {
-        $self->train_progress($fh, $filename);
+        $self->train_progress($fh, $fast, $filename);
     } else {
         super();
     }
@@ -301,7 +317,7 @@ before train_progress => sub {
 };
 
 sub train_progress {
-    my ($self, $fh, $filename) = @_;
+    my ($self, $fh, $fast, $filename) = @_;
     my $lines = count_lines($filename);
     my $progress = Term::Sk->new('%d Elapsed: %8t %21b %4p %2d (%c lines of %m)', {
         # Start at line 1, not 0
@@ -325,11 +341,17 @@ sub train_progress {
     my $i = 0; while (my $line = <$fh>) {
         $i++;
         chomp $line;
-        $self->_learn_one($line);
+        $self->_learn_one($line, $fast);
+        $self->_engine->flush_cache if !$fast;
         $progress->up;
     }
 
     $progress->close;
+
+    if ($fast) {
+        print "Flushing cache (this may take a while for large inputs)\n";
+        $self->_engine->flush_cache;
+    }
 
     my $elapsed = tv_interval($start_time);
     say sprintf "Trained from %d lines in %.2f seconds; %.2f lines/s", $i, $elapsed, ($i / $elapsed);

@@ -105,7 +105,7 @@ sub sth {
         token_info       => qq[SELECT spacing, text FROM token WHERE id = ?;],
         token_similar    => qq[SELECT id, spacing, count FROM token WHERE text = ? ORDER BY $q_rand LIMIT 1;] ,
         add_token        => qq[INSERT INTO token (spacing, text, count) VALUES (?, ?, 0)],
-        inc_token_count  => qq[UPDATE token SET count = count + 1 WHERE id = ?],
+        inc_token_count  => qq[UPDATE token SET count = count + ? WHERE id = ?],
 
         # ->stats()
         expr_total       => qq[SELECT COUNT(*) FROM expr;],
@@ -126,8 +126,8 @@ sub sth {
     for my $table (qw(next_token prev_token)) {
         $state{"${table}_links"} = qq[SELECT SUM(count) FROM $table WHERE expr_id = ?;],
         $state{"${table}_count"} = qq[SELECT count FROM $table WHERE expr_id = ? AND token_id = ?;],
-        $state{"${table}_inc"}   = qq[UPDATE $table SET count = count + 1 WHERE expr_id = ? AND token_id = ?],
-        $state{"${table}_add"}   = qq[INSERT INTO $table (expr_id, token_id, count) VALUES (?, ?, 1);],
+        $state{"${table}_inc"}   = qq[UPDATE $table SET count = count + ? WHERE expr_id = ? AND token_id = ?],
+        $state{"${table}_add"}   = qq[INSERT INTO $table (expr_id, token_id, count) VALUES (?, ?, ?);],
         $state{"${table}_get"}   = qq[SELECT token_id, count FROM $table WHERE expr_id = ?;],
     }
 

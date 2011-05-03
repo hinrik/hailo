@@ -13,6 +13,11 @@ Revision history for Hailo
 
     - Speed up learning quite a bit (up to 25%) by using more efficient SQL.
 
+    - Add --train-fast to speed up learning by up to an additional 45% on
+      large brains by using aggressive caching. This uses a lot of memory.
+      Almost 600MB with SQLite on a 64bit machine for a brain which
+      eventually takes 134MB on disk (trained from a 350k line IRC log).
+
     - Word tokenizer:
         * Preserve casing of Emacs key sequences like "C-u"
         * Don't capitalize words after ellipses (e.g. "Wait... what?")

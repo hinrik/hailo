@@ -143,7 +143,7 @@ sub learn {
         if (!exists $token_cache{$key}) {
             $token_cache{$key} = $self->_token_id_add($token);
         }
-        $self->{_sth_inc_token_count}->execute($token_cache{$key});
+        $self->{_sth_inc_token_count}->execute(1, $token_cache{$key});
     }
 
     # process every expression of length $order
@@ -159,22 +159,95 @@ sub learn {
         # add link to next token for this expression, if any
         if ($i < @$tokens - $order) {
             my $next_id = $token_cache{ join('', @{ $tokens->[$i+$order] }) };
-            $self->_inc_link('next_token', $expr_id, $next_id);
+            $self->_inc_link('next_token', $expr_id, $next_id, 1);
         }
 
         # add link to previous token for this expression, if any
         if ($i > 0) {
             my $prev_id = $token_cache{ join('', @{ $tokens->[$i-1] }) };
-            $self->_inc_link('prev_token', $expr_id, $prev_id);
+            $self->_inc_link('prev_token', $expr_id, $prev_id, 1);
         }
 
         # add links to boundary token if appropriate
         my $b = $self->storage->_boundary_token_id;
-        $self->_inc_link('prev_token', $expr_id, $b) if $i == 0;
-        $self->_inc_link('next_token', $expr_id, $b) if $i == @$tokens-$order;
+        $self->_inc_link('prev_token', $expr_id, $b, 1) if $i == 0;
+        $self->_inc_link('next_token', $expr_id, $b, 1) if $i == @$tokens-$order;
     }
 
     return;
+}
+
+sub learn_cached {
+    my ($self, $tokens) = @_;
+    my $order = $self->order;
+
+    # only learn from inputs which are long enough
+    return if @$tokens < $order;
+
+    my (%token_cache, %expr_cache);
+
+    # resolve/add tokens and update their counter
+    for my $token (@$tokens) {
+        my $key = join '', @$token; # the key is "$spacing$text"
+        if (!exists $token_cache{$key}) {
+            my $token_id = $self->_token_id_add($token);
+            $token_cache{$key} = $token_id;
+            $self->{_updates}{token_count}{$token_id}++;
+        }
+    }
+
+    # process every expression of length $order
+    for my $i (0 .. @$tokens - $order) {
+        my @expr = map { $token_cache{ join('', @{ $tokens->[$_] }) } } $i .. $i+$order-1;
+        my $key = join('_', @expr);
+
+        if (!defined $expr_cache{$key}) {
+            $expr_cache{$key} = $self->_expr_id_add(\@expr);
+        }
+        my $expr_id = $expr_cache{$key};
+
+        # add link to next token for this expression, if any
+        if ($i < @$tokens - $order) {
+            my $next_id = $token_cache{ join('', @{ $tokens->[$i+$order] }) };
+            $self->{_updates}{next_token}{$expr_id}{$next_id}++;
+        }
+
+        # add link to previous token for this expression, if any
+        if ($i > 0) {
+            my $prev_id = $token_cache{ join('', @{ $tokens->[$i-1] }) };
+            $self->{_updates}{prev_token}{$expr_id}{$prev_id}++;
+        }
+
+        # add links to boundary token if appropriate
+        my $b = $self->storage->_boundary_token_id;
+        $self->{_updates}{prev_token}{$expr_id}{$b}++ if $i == 0;
+        $self->{_updates}{next_token}{$expr_id}{$b}++ if $i == @$tokens-$order;
+    }
+
+    return;
+}
+
+sub flush_cache {
+    my ($self) = @_;
+
+    my $updates = $self->{_updates};
+    return if !$updates;
+
+    while (my ($token_id, $count) = each %{ $updates->{token_count} }) {
+        $self->{_sth_inc_token_count}->execute($count, $token_id);
+    }
+
+    while (my ($expr_id, $links) = each %{ $updates->{next_token} }) {
+        while (my ($next_token_id, $count) = each %$links) {
+            $self->_inc_link('next_token', $expr_id, $next_token_id, $count);
+        }
+    }
+
+    while (my ($expr_id, $links) = each %{ $updates->{prev_token} }) {
+        while (my ($prev_token_id, $count) = each %$links) {
+            $self->_inc_link('prev_token', $expr_id, $prev_token_id, $count);
+        }
+    }
 }
 
 # sort token ids based on how rare they are
@@ -199,11 +272,11 @@ sub _find_rare_tokens {
 
 # increase the link weight between an expression and a token
 sub _inc_link {
-    my ($self, $type, $expr_id, $token_id) = @_;
+    my ($self, $type, $expr_id, $token_id, $count) = @_;
 
-    $self->{"_sth_${type}_inc"}->execute($expr_id, $token_id);
+    $self->{"_sth_${type}_inc"}->execute($count, $expr_id, $token_id);
     if (!$self->{"_sth_${type}_inc"}->rows) {
-        $self->{"_sth_${type}_add"}->execute($expr_id, $token_id);
+        $self->{"_sth_${type}_add"}->execute($expr_id, $token_id, $count);
     }
 
     return;
