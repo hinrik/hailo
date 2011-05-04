@@ -27,19 +27,12 @@ sub reply {
     my @input_token_ids = keys %$token_cache;
     my @token_counts;
 
-    # let's select potential pivot tokens
+    # let's select potential pivot tokens from the input
     if (keys %$token_cache) {
-        # we got some known tokens, let's prefer the ones with normal
-        # spacing, i.e. words instead of things like ',' or '('.
+        # we only want the ones with normal spacing (usually normal words)
         @token_counts = map {
             $token_cache->{$_}[0] == 0 ? [$_, $token_cache->{$_}[2]] : ()
         } keys %$token_cache;
-
-        if (!@token_counts) {
-            # no known words in the input, so we'll settle for the rest
-            @token_counts = map { [$_, $token_cache->{$_}[2]] } keys %$token_cache;
-        }
-
     }
 
     my $token_probs = $self->_get_pivot_probabilites(\@token_counts);
