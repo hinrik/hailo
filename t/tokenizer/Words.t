@@ -473,6 +473,16 @@ subtest make_output => sub {
             ['tabs', "\t", 'tabs', "\t", 'tabs', '.'],
             "Tabs\ttabs\ttabs.",
         ],
+        [
+            "2011-05-05 22:55 22:55Z 2011-05-05T22:55Z 2011-W18-4 2011-125 12:00±05:00",
+            [qw<2011-05-05 22:55 22:55Z 2011-05-05T22:55Z 2011-W18-4 2011-125 12:00±05:00>],
+            "2011-05-05 22:55 22:55Z 2011-05-05T22:55Z 2011-W18-4 2011-125 12:00±05:00.",
+        ],
+        [
+            '<@literal> oh hi < literal> what is going on?',
+            [qw{<@literal> oh hi}, '< literal>', qw<what is going on ?>],
+            '<@literal> oh hi < literal> what is going on?',
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();

@@ -14,11 +14,13 @@ with qw(Hailo::Role::Arguments
 my $ALPHABET   = qr/(?![_\d])\w/;
 
 # tokenization
+my $SPACE      = qr/[\n ]/;
+my $NONSPACE   = qr/[^\n ]/;
 my $DASH       = qr/[–-]/;
 my $POINT      = qr/[.,]/;
 my $APOSTROPHE = qr/['’´]/;
 my $ELLIPSIS   = qr/\.{2,}|…/;
-my $NON_WORD   = qr/\W+/;
+my $NON_WORD   = qr/[^\w\n ]+/;
 my $BARE_WORD  = qr/\w+/;
 my $NUMBER     = qr/$POINT\d+(?:$POINT\d+)*|\d+(?:$POINT\d+)+$ALPHABET*/;
 my $APOST_WORD = qr/$ALPHABET+(?:$APOSTROPHE$ALPHABET+)+/;
@@ -34,15 +36,19 @@ my $UPPER_NONW = qr/^ (?:\p{Upper}+ \W+)(?<!I') (?: \p{Upper}* \p{Lower} ) /x;
 my $TWAT_NAME  = qr/ \@ [A-Za-z0-9_]+ /x;
 my $EMAIL      = qr/ [A-Z0-9._%+-]+ @ [A-Z0-9.-]+ \. [A-Z]{2,4} /xi;
 my $PERL_CLASS = qr/ (?: :: \w+ (?: :: \w+ )* | \w+ (?: :: \w+ )+ ) (?: :: )? | \w+ :: /x;
-my $EXTRA_URI  = qr{ (?: \w+ \+ ) ssh:// \S+ }x;
+my $EXTRA_URI  = qr{ (?: \w+ \+ ) ssh:// $NONSPACE+ }x;
 my $ESC_SPACE  = qr/(?:\\ )+/;
 my $NAME       = qr/(?:$BARE_WORD|$ESC_SPACE)+/;
 my $FILENAME   = qr/ $NAME? \. $NAME (?: \. $NAME )* | $NAME/x;
 my $UNIX_PATH  = qr{ / $FILENAME (?: / $FILENAME )* /? }x;
 my $WIN_PATH   = qr{ $ALPHABET : \\ $FILENAME (?: \\ $FILENAME )* \\?}x;
 my $PATH       = qr/$UNIX_PATH|$WIN_PATH/;
+my $DATE       = qr/[0-9]{4}-W?[0-9]{1,2}-[0-9]{1,2}/i;
+my $TIME       = qr/[0-9]{1,2}:[0-9]{2}(?::[0-9]{2})?(?:Z|[AP]M|[-+±][0-9]{2}(?::?[0-9]{2})?)?/i;
+my $DATETIME   = qr/${DATE}T$TIME/;
+my $IRC_NICK   = qr/<[ @%+~&]?[A-Za-z_`\-^\|\\\{}\[\]][A-Za-z_0-9`\-^\|\\\{}\[\]]+>/;
 
-my $CASED_WORD = qr/$PERL_CLASS|$EXTRA_URI|$EMAIL|$TWAT_NAME|$PATH/;
+my $CASED_WORD = qr/$IRC_NICK|$DATETIME|$DATE|$TIME|$PERL_CLASS|$EXTRA_URI|$EMAIL|$TWAT_NAME|$PATH/;
 
 # capitalization
 # The rest of the regexes are pretty hairy. The goal here is to catch the
@@ -55,7 +61,7 @@ my $TERMINATOR  = qr/(?:[?!‽]+|(?<!\.)\.)/;
 my $ADDRESS     = qr/:/;
 my $PUNCTUATION = qr/[?!‽,;.:]/;
 my $BOUNDARY    = qr/$CLOSE_QUOTE?(?:\s*$TERMINATOR|$ADDRESS)\s+$OPEN_QUOTE?\s*/;
-my $LOOSE_WORD  = qr/$PATH|$NUMBER|$ABBREV|$APOST_WORD|$BARE_WORD(?:$DASH(?:$WORD_TYPES|$BARE_WORD)|$APOSTROPHE(?!$ALPHABET|$NUMBER|$APOSTROPHE)|$DASH(?!$DASH{2}))*/;
+my $LOOSE_WORD  = qr/$DATETIME|$DATE|$TIME|$PATH|$NUMBER|$ABBREV|$APOST_WORD|$BARE_WORD(?:$DASH(?:$WORD_TYPES|$BARE_WORD)|$APOSTROPHE(?!$ALPHABET|$NUMBER|$APOSTROPHE)|$DASH(?!$DASH{2}))*/;
 my $SPLIT_WORD  = qr{$LOOSE_WORD(?:/$LOOSE_WORD)?(?=$PUNCTUATION(?:\s+|$)|$CLOSE_QUOTE|$TERMINATOR|\s+|$)};
 
 # we want to capitalize words that come after "On example.com?"
@@ -68,48 +74,48 @@ sub make_tokens {
     my ($self, $input) = @_;
 
     my @tokens;
-    $input =~ s/$DASH\K\s*\n+\s*//;
-    $input =~ s/\s*\n+\s*/ /gm;
-    my @chunks = split /[\n ]+/, $input;
+    $input =~ s/$DASH\K *\n+ *//;
+    $input =~ s/ *\n+ */ /gm;
 
-    # process all whitespace-delimited chunks
-    for my $chunk (@chunks) {
+    while (length $input) {
+        # remove the next chunk of whitespace
+        $input =~ s/^[\n ]+//;
         my $got_word;
 
-        while (length $chunk) {
+        while (length $input && $input =~ /^$NONSPACE/) {
             # We convert it to ASCII and then look for a URI because $RE{URI}
             # from Regexp::Common doesn't support non-ASCII domain names
-            my $ascii = $chunk;
+            my ($ascii) = $input =~ /^($NONSPACE+)/;
             $ascii =~ s/[^[:ascii:]]/a/g;
 
             # URIs
             if (!$got_word && $ascii =~ / ^ $RE{URI} /xo) {
                 my $uri_end = $+[0];
-                my $uri = substr $chunk, 0, $uri_end;
-                $chunk =~ s/^\Q$uri//;
+                my $uri = substr $input, 0, $uri_end;
+                $input =~ s/^\Q$uri//;
 
                 push @tokens, [$self->{_spacing_normal}, $uri];
                 $got_word = 1;
             }
             # special words for which we preserve case
-            elsif (!$got_word && $chunk =~ s/ ^ (?<word> $CASED_WORD )//xo) {
+            elsif (!$got_word && $input =~ s/ ^ (?<word> $CASED_WORD )//xo) {
                 push @tokens, [$self->{_spacing_normal}, $+{word}];
                 $got_word = 1;
             }
             # normal words
-            elsif ($chunk =~ / ^ $WORD /xo) {
+            elsif ($input =~ / ^ $WORD /xo) {
                 my $word;
 
                 # special case to allow matching q{ridin'} as one word, even when
                 # it appears as q{"ridin'"}, but not as q{'ridin'}
                 my $last_char = @tokens ? substr $tokens[-1][1], -1, 1 : '';
-                if (!@tokens && $chunk =~ s/ ^ (?<word>$WORD_APOST) //xo
+                if (!@tokens && $input =~ s/ ^ (?<word>$WORD_APOST) //xo
                     || $last_char =~ / ^ $APOSTROPHE $ /xo
-                    && $chunk =~ s/ ^ (?<word>$WORD_APOST) (?<! $last_char ) //xo) {
+                    && $input =~ s/ ^ (?<word>$WORD_APOST) (?<! $last_char ) //xo) {
                     $word = $+{word};
                 }
                 else {
-                    $chunk =~ s/^($WORD)//o and $word = $1;
+                    $input =~ s/^($WORD)//o and $word = $1;
                 }
 
                 # Maybe preserve the casing of this word
@@ -124,18 +130,18 @@ sub make_tokens {
                 $got_word = 1;
             }
             # everything else
-            elsif ($chunk =~ s/ ^ (?<non_word> $NON_WORD ) //xo) {
+            elsif ($input =~ s/ ^ (?<non_word> $NON_WORD ) //xo) {
                 my $non_word = $+{non_word};
                 my $spacing = $self->{_spacing_normal};
 
                 # was the previous token a word?
                 if ($got_word) {
-                    $spacing = length $chunk
+                    $spacing = $input =~ /^$NONSPACE/
                         ? $self->{_spacing_infix}
                         : $self->{_spacing_postfix};
                 }
-                # do we still have more tokens in this chunk?
-                elsif (length $chunk) {
+                # do we still have more tokens?
+                elsif ($input =~ /^$NONSPACE/) {
                     $spacing = $self->{_spacing_prefix};
                 }
 
@@ -143,6 +149,7 @@ sub make_tokens {
             }
         }
     }
+
     return \@tokens;
 }
 
