@@ -468,6 +468,11 @@ subtest make_output => sub {
             [qw<the file is C:\\hlagh\\bar\\foo.txt . just read it .>],
             "The file is C:\\hlagh\\bar\\foo.txt. Just read it.",
         ],
+        [
+            "Tabs\ttabs\ttabs.",
+            ['tabs', "\t", 'tabs', "\t", 'tabs', '.'],
+            "Tabs\ttabs\ttabs.",
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();

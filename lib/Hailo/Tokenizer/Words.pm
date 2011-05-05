@@ -70,7 +70,7 @@ sub make_tokens {
     my @tokens;
     $input =~ s/$DASH\K\s*\n+\s*//;
     $input =~ s/\s*\n+\s*/ /gm;
-    my @chunks = split /\s+/, $input;
+    my @chunks = split /[\n ]+/, $input;
 
     # process all whitespace-delimited chunks
     for my $chunk (@chunks) {
