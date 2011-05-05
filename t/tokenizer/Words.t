@@ -115,7 +115,7 @@ subtest make_output => sub {
         ],
         [
             'on example.com? yes',
-            [qw<on example . com ? yes>],
+            [qw<on example.com ? yes>],
             "On example.com? Yes.",
         ],
         [
@@ -255,7 +255,7 @@ subtest make_output => sub {
         ],
         [
             '.com bubble',
-            [qw<. com bubble>],
+            [qw<.com bubble>],
             '.com bubble.'
         ],
         [
@@ -370,7 +370,7 @@ subtest make_output => sub {
         ],
         [
             'taka úr sources.list',
-            [qw<taka úr sources . list>],
+            [qw<taka úr sources.list>],
             'Taka úr sources.list.',
         ],
         [
@@ -452,6 +452,21 @@ subtest make_output => sub {
             "I use POE-Component- \n IRC",
             [qw<I use POE-Component-IRC>],
             "I use POE-Component-IRC.",
+        ],
+        [
+            "I wrote theres_no_place_like_home.ly. And then some.",
+            [qw<I wrote theres_no_place_like_home.ly . and then some .>],
+            "I wrote theres_no_place_like_home.ly. And then some.",
+        ],
+        [
+            "The file is /hlagh/bar/foo.txt. Just read it.",
+            [qw<the file is /hlagh/bar/foo.txt . just read it .>],
+            "The file is /hlagh/bar/foo.txt. Just read it.",
+        ],
+        [
+            "The file is C:\\hlagh\\bar\\foo.txt. Just read it.",
+            [qw<the file is C:\\hlagh\\bar\\foo.txt . just read it .>],
+            "The file is C:\\hlagh\\bar\\foo.txt. Just read it.",
         ],
     );
 

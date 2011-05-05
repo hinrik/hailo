@@ -20,10 +20,11 @@ my $APOSTROPHE = qr/['’´]/;
 my $ELLIPSIS   = qr/\.{2,}|…/;
 my $NON_WORD   = qr/\W+/;
 my $BARE_WORD  = qr/\w+/;
-my $NUMBER     = qr/$POINT\d+(?:$POINT\d+)*|\d+(?:$POINT\d+)+\w*/;
+my $NUMBER     = qr/$POINT\d+(?:$POINT\d+)*|\d+(?:$POINT\d+)+$ALPHABET*/;
 my $APOST_WORD = qr/$ALPHABET+(?:$APOSTROPHE$ALPHABET+)+/;
-my $NORM_WORD  = qr/$APOST_WORD|$BARE_WORD/;
-my $WORD_TYPES = qr/$NUMBER|$BARE_WORD\.(?:$BARE_WORD\.)+|$NORM_WORD/;
+my $ABBREV     = qr/$ALPHABET(?:\.$ALPHABET)+\./;
+my $DOTTED     = qr/$BARE_WORD?\.$BARE_WORD(?:\.$BARE_WORD)*/;
+my $WORD_TYPES = qr/$NUMBER|$ABBREV|$DOTTED|$APOST_WORD|$BARE_WORD/;
 my $WORD_APOST = qr/$WORD_TYPES(?:$DASH$WORD_TYPES)*$APOSTROPHE(?!$ALPHABET|$NUMBER)/;
 my $WORD       = qr/$WORD_TYPES(?:(?:$DASH$WORD_TYPES)+|$DASH(?!$DASH))?/;
 my $MIXED_CASE = qr/ \p{Lower}+ \p{Upper} /x;
@@ -34,6 +35,14 @@ my $TWAT_NAME  = qr/ \@ [A-Za-z0-9_]+ /x;
 my $EMAIL      = qr/ [A-Z0-9._%+-]+ @ [A-Z0-9.-]+ \. [A-Z]{2,4} /xi;
 my $PERL_CLASS = qr/ (?: :: \w+ (?: :: \w+ )* | \w+ (?: :: \w+ )+ ) (?: :: )? | \w+ :: /x;
 my $EXTRA_URI  = qr{ (?: \w+ \+ ) ssh:// \S+ }x;
+my $ESC_SPACE  = qr/(?:\\ )+/;
+my $NAME       = qr/(?:$BARE_WORD|$ESC_SPACE)+/;
+my $FILENAME   = qr/ $NAME? \. $NAME (?: \. $NAME )* | $NAME/x;
+my $UNIX_PATH  = qr{ / $FILENAME (?: / $FILENAME )* /? }x;
+my $WIN_PATH   = qr{ $ALPHABET : \\ $FILENAME (?: \\ $FILENAME )* \\?}x;
+my $PATH       = qr/$UNIX_PATH|$WIN_PATH/;
+
+my $CASED_WORD = qr/$PERL_CLASS|$EXTRA_URI|$EMAIL|$TWAT_NAME|$PATH/;
 
 # capitalization
 # The rest of the regexes are pretty hairy. The goal here is to catch the
@@ -46,7 +55,7 @@ my $TERMINATOR  = qr/(?:[?!‽]+|(?<!\.)\.)/;
 my $ADDRESS     = qr/:/;
 my $PUNCTUATION = qr/[?!‽,;.:]/;
 my $BOUNDARY    = qr/$CLOSE_QUOTE?(?:\s*$TERMINATOR|$ADDRESS)\s+$OPEN_QUOTE?\s*/;
-my $LOOSE_WORD  = qr/$WORD_TYPES|$BARE_WORD(?:$DASH(?:$WORD_TYPES|$BARE_WORD)|$APOSTROPHE(?!$ALPHABET|$NUMBER|$APOSTROPHE)|$DASH(?!$DASH{2}))*/;
+my $LOOSE_WORD  = qr/$PATH|$NUMBER|$ABBREV|$APOST_WORD|$BARE_WORD(?:$DASH(?:$WORD_TYPES|$BARE_WORD)|$APOSTROPHE(?!$ALPHABET|$NUMBER|$APOSTROPHE)|$DASH(?!$DASH{2}))*/;
 my $SPLIT_WORD  = qr{$LOOSE_WORD(?:/$LOOSE_WORD)?(?=$PUNCTUATION(?:\s+|$)|$CLOSE_QUOTE|$TERMINATOR|\s+|$)};
 
 # we want to capitalize words that come after "On example.com?"
@@ -82,27 +91,9 @@ sub make_tokens {
                 push @tokens, [$self->{_spacing_normal}, $uri];
                 $got_word = 1;
             }
-            # Perl class names
-            elsif (!$got_word && $chunk =~ s/ ^ (?<class> $PERL_CLASS )//xo) {
-                push @tokens, [$self->{_spacing_normal}, $+{class}];
-                $got_word = 1;
-            }
-            # ssh:// (and foo+ssh://) URIs
-            elsif (!$got_word && $chunk =~ s{ ^ (?<uri> $EXTRA_URI ) }{}xo) {
-                push @tokens, [$self->{_spacing_normal}, $+{uri}];
-                $got_word = 1;
-            }
-            # email addresses
-            elsif (!$got_word && $chunk =~ s/ ^ (?<email> $EMAIL ) //xo) {
-                push @tokens, [$self->{_spacing_normal}, $+{email}];
-                $got_word = 1;
-            }
-            # Twitter names
-            elsif (!$got_word && $chunk =~ s/ ^ (?<twat> $TWAT_NAME ) //xo) {
-                # Names on Twitter/Identi.ca can only match
-                # @[A-Za-z0-9_]+. I tested this on ~800k Twatterhose
-                # names.
-                push @tokens, [$self->{_spacing_normal}, $+{twat}];
+            # special words for which we preserve case
+            elsif (!$got_word && $chunk =~ s/ ^ (?<word> $CASED_WORD )//xo) {
+                push @tokens, [$self->{_spacing_normal}, $+{word}];
                 $got_word = 1;
             }
             # normal words

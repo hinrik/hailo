@@ -4,6 +4,9 @@ Revision history for Hailo
 
     - Scored engine: Prefer shorter replies, like MegaHAL/cobe.
 
+    - Word tokenizer: Improve matching/capitalization of filenames and
+      domain names
+
 0.68 2011-05-03 13:16:05
 
     - Speed up the learning of repetitive sentences by caching more

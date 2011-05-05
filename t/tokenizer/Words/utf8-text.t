@@ -23,7 +23,7 @@ BEGIN {
     plan skip_all => "Haven't got YAML::XS" if !$got_yaml;
 }
 
-plan tests => '2503';
+plan tests => '2501';
 
 my $self = bless {} => __PACKAGE__;
 my $text = ${ $self->section_data("UTF-8 encoded sample plain-text file") };
@@ -2476,10 +2476,8 @@ __[ YAML::XS result ]__
   - ':'
 - - 0
   - ABCDEFGHIJKLMNOPQRSTUVWXYZ
-- - 1
-  - /
 - - 0
-  - '0123456789'
+  - /0123456789
 - - 0
   - abcdefghijklmnopqrstuvwxyz
 - - 1
