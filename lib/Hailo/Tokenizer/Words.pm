@@ -50,8 +50,9 @@ my $DATETIME   = qr/${DATE}T$TIME/;
 my $IRC_NICK   = qr/<[ @%+~&]?[A-Za-z_`\-^\|\\\{}\[\]][A-Za-z_0-9`\-^\|\\\{}\[\]]+>/;
 my $IRC_CHAN   = qr/[#&+][^ \a\0\012\015,:]{1,199}/;
 my $NUMERO     = qr/#[0-9]+/;
+my $CLOSE_TAG  = qr{</[-\w]+>};
 
-my $CASED_WORD = qr/$IRC_NICK|$IRC_CHAN|$DATETIME|$DATE|$TIME|$PERL_CLASS|$EXTRA_URI|$EMAIL|$TWAT_NAME|$PATH|$NUMERO/;
+my $CASED_WORD = qr/$CLOSE_TAG|$IRC_NICK|$IRC_CHAN|$DATETIME|$DATE|$TIME|$PERL_CLASS|$EXTRA_URI|$EMAIL|$TWAT_NAME|$PATH|$NUMERO/;
 
 # capitalization
 # The rest of the regexes are pretty hairy. The goal here is to catch the

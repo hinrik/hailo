@@ -498,6 +498,11 @@ subtest make_output => sub {
             [qw<we are in>, '#perl'],
             'We are in #perl.',
         ],
+        [
+            '</foo>',
+            [qw{</foo>}],
+            '</foo>',
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();

@@ -11,6 +11,7 @@ Revision history for Hailo
         * Match IRC channel names (#foo, &bar, +baz)
         * Match various prefixes and postfixes with numbers
         * Match "#1" and "#1234" as single tokens
+        * Match </foo> as a single token
 
 0.68 2011-05-03 13:16:05
 
