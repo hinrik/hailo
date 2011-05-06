@@ -493,6 +493,11 @@ subtest make_output => sub {
             [qw<10pt or 12em or 15cm>],
             '10pt or 12em or 15cm.',
         ],
+        [
+            'failo is #1',
+            [qw<failo is #1>],
+            'Failo is #1.',
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();
