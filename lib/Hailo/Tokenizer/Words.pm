@@ -45,7 +45,7 @@ my $UNIX_PATH  = qr{ / $FILENAME (?: / $FILENAME )* /? }x;
 my $WIN_PATH   = qr{ $ALPHABET : \\ $FILENAME (?: \\ $FILENAME )* \\?}x;
 my $PATH       = qr/$UNIX_PATH|$WIN_PATH/;
 my $DATE       = qr/[0-9]{4}-W?[0-9]{1,2}-[0-9]{1,2}/i;
-my $TIME       = qr/[0-9]{1,2}:[0-9]{2}(?::[0-9]{2})?(?:Z|[AP]M|[-+±][0-9]{2}(?::?[0-9]{2})?)?/i;
+my $TIME       = qr/[0-9]{1,2}:[0-9]{2}(?::[0-9]{2})?(?:Z| ?[AP]M|[-+±][0-9]{2}(?::?[0-9]{2})?)?/i;
 my $DATETIME   = qr/${DATE}T$TIME/;
 my $IRC_NICK   = qr/<[ @%+~&]?[A-Za-z_`\-^\|\\\{}\[\]][A-Za-z_0-9`\-^\|\\\{}\[\]]+>/;
 
