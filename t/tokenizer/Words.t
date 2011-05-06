@@ -483,6 +483,16 @@ subtest make_output => sub {
             [qw{<@literal> oh hi}, '< literal>', qw<what is going on ?>],
             '<@literal> oh hi < literal> what is going on?',
         ],
+        [
+            'It costs $.50, no, wait, it cost $2.50... or 50¢',
+            [qw<it costs $.50 , no , wait , it cost $2.50 ... or 50¢>],
+            'It costs $.50, no, wait, it cost $2.50... or 50¢.',
+        ],
+        [
+            '10pt or 12em or 15cm',
+            [qw<10pt or 12em or 15cm>],
+            '10pt or 12em or 15cm.',
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();

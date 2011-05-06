@@ -13,6 +13,8 @@ Revision history for Hailo
 
     - Word tokenizer: Match IRC nicks (<foobar>, <@foobar>, etc)
 
+    - Word tokenizer: Match various prefixes and postfixes with numbers
+
 0.68 2011-05-03 13:16:05
 
     - Speed up the learning of repetitive sentences by caching more
