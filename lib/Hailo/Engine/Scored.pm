@@ -175,7 +175,6 @@ sub _evaluate_reply {
     # Prefer shorter replies. This behavior is present but not
     # documented in recent MegaHAL.
     my $score_divider = 1;
-    my $n_tokens = @$reply_token_ids;
     if (@$reply_token_ids >= 8) {
         $score_divider = sqrt(@$reply_token_ids - 1);
     }
