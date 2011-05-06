@@ -161,7 +161,7 @@ sub _evaluate_reply {
 
         if (any { $_ == $prev_token_id } @$input_token_ids) {
             my @expr = @$reply_token_ids[$idx+1 .. $idx+$order];
-            my $key = join('_', @expr)."-$prev_token_id";
+            my $key = "$prev_token_id-".join('_', @expr);
 
             if (!defined $cache->{$key}) {
                 $cache->{$key} = $self->_expr_token_probability('prev', \@expr, $prev_token_id);
