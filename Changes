@@ -2,20 +2,15 @@ Revision history for Hailo
 
 {{$NEXT}}
 
-    - Scored engine: Prefer shorter replies, like MegaHAL/cobe.
+    - Scored engine: Prefer shorter replies, like MegaHAL/cobe do
 
-    - Word tokenizer: Improve matching/capitalization of filenames and
-      domain names
-
-    - Word tokenizer: Match tabs as tokens
-
-    - Word tokenizer: Match timestamps as single tokens
-
-    - Word tokenizer: Match IRC nicks (<foobar>, <@foobar>, etc)
-
-    - Word tokenizer: Match various prefixes and postfixes with numbers
-
-    - Word tokenizer: Match "#1" and "#1234" as single tokens
+    - Word tokenizer:
+        * Improve matching/capitalization of filenames and domain names
+        * Match tabs as tokens
+        * Match timestamps as single tokens
+        * Match IRC nicks (<foobar>, <@foobar>, etc) as single tokens
+        * Match various prefixes and postfixes with numbers
+        * Match "#1" and "#1234" as single tokens
 
 0.68 2011-05-03 13:16:05
 
