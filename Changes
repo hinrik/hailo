@@ -6,7 +6,6 @@ Revision history for Hailo
 
     - Word tokenizer:
         * Improve matching/capitalization of filenames and domain names
-        * Match tabs as tokens
         * Match timestamps as single tokens
         * Match IRC nicks (<foobar>, <@foobar>, etc) as single tokens
         * Match various prefixes and postfixes with numbers

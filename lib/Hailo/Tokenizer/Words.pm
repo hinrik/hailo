@@ -14,13 +14,13 @@ with qw(Hailo::Role::Arguments
 my $ALPHABET   = qr/(?![_\d])\w/;
 
 # tokenization
-my $SPACE      = qr/[\n ]/;
-my $NONSPACE   = qr/[^\n ]/;
+my $SPACE      = qr/\s/;
+my $NONSPACE   = qr/\S/;
 my $DASH       = qr/[–-]/;
 my $POINT      = qr/[.,]/;
 my $APOSTROPHE = qr/['’´]/;
 my $ELLIPSIS   = qr/\.{2,}|…/;
-my $NON_WORD   = qr/[^\w\n ]+/;
+my $NON_WORD   = qr/[^\w\s]+/;
 my $BARE_WORD  = qr/\w+/;
 my $CURRENCY   = qr/[¤¥¢£\$]/;
 my $NUMBER     = qr/$CURRENCY?$POINT\d+(?:$POINT\d+)*(?:$CURRENCY|$ALPHABET+)?|$CURRENCY?\d+(?:$POINT\d+)*(?:$CURRENCY|$ALPHABET+)?(?!\d|$ALPHABET)/;
@@ -76,12 +76,12 @@ sub make_tokens {
     my ($self, $input) = @_;
 
     my @tokens;
-    $input =~ s/$DASH\K *\n+ *//;
-    $input =~ s/ *\n+ */ /gm;
+    $input =~ s/$DASH\K\s*\n+\s*//;
+    $input =~ s/\s*\n+\s*/ /gm;
 
     while (length $input) {
         # remove the next chunk of whitespace
-        $input =~ s/^[\n ]+//;
+        $input =~ s/^$SPACE+//;
         my $got_word;
 
         while (length $input && $input =~ /^$NONSPACE/) {
