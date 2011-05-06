@@ -48,9 +48,10 @@ my $DATE       = qr/[0-9]{4}-W?[0-9]{1,2}-[0-9]{1,2}/i;
 my $TIME       = qr/[0-9]{1,2}:[0-9]{2}(?::[0-9]{2})?(?:Z| ?[AP]M|[-+±][0-9]{2}(?::?[0-9]{2})?)?/i;
 my $DATETIME   = qr/${DATE}T$TIME/;
 my $IRC_NICK   = qr/<[ @%+~&]?[A-Za-z_`\-^\|\\\{}\[\]][A-Za-z_0-9`\-^\|\\\{}\[\]]+>/;
+my $IRC_CHAN   = qr/[#&+][^ \a\0\012\015,:]{1,199}/;
 my $NUMERO     = qr/#[0-9]+/;
 
-my $CASED_WORD = qr/$IRC_NICK|$DATETIME|$DATE|$TIME|$PERL_CLASS|$EXTRA_URI|$EMAIL|$TWAT_NAME|$PATH|$NUMERO/;
+my $CASED_WORD = qr/$IRC_NICK|$IRC_CHAN|$DATETIME|$DATE|$TIME|$PERL_CLASS|$EXTRA_URI|$EMAIL|$TWAT_NAME|$PATH|$NUMERO/;
 
 # capitalization
 # The rest of the regexes are pretty hairy. The goal here is to catch the
@@ -63,7 +64,7 @@ my $TERMINATOR  = qr/(?:[?!‽]+|(?<!\.)\.)/;
 my $ADDRESS     = qr/:/;
 my $PUNCTUATION = qr/[?!‽,;.:]/;
 my $BOUNDARY    = qr/$CLOSE_QUOTE?(?:\s*$TERMINATOR|$ADDRESS)\s+$OPEN_QUOTE?\s*/;
-my $LOOSE_WORD  = qr/$DATETIME|$DATE|$TIME|$PATH|$NUMBER|$ABBREV|$APOST_WORD|$NUMERO|$BARE_WORD(?:$DASH(?:$WORD_TYPES|$BARE_WORD)|$APOSTROPHE(?!$ALPHABET|$NUMBER|$APOSTROPHE)|$DASH(?!$DASH{2}))*/;
+my $LOOSE_WORD  = qr/$IRC_CHAN|$DATETIME|$DATE|$TIME|$PATH|$NUMBER|$ABBREV|$APOST_WORD|$NUMERO|$BARE_WORD(?:$DASH(?:$WORD_TYPES|$BARE_WORD)|$APOSTROPHE(?!$ALPHABET|$NUMBER|$APOSTROPHE)|$DASH(?!$DASH{2}))*/;
 my $SPLIT_WORD  = qr{$LOOSE_WORD(?:/$LOOSE_WORD)?(?=$PUNCTUATION(?:\s+|$)|$CLOSE_QUOTE|$TERMINATOR|\s+|$)};
 
 # we want to capitalize words that come after "On example.com?"

@@ -8,6 +8,7 @@ Revision history for Hailo
         * Improve matching/capitalization of filenames and domain names
         * Match timestamps as single tokens
         * Match IRC nicks (<foobar>, <@foobar>, etc) as single tokens
+        * Match IRC channel names (#foo, &bar, +baz)
         * Match various prefixes and postfixes with numbers
         * Match "#1" and "#1234" as single tokens
 
