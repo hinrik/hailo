@@ -485,7 +485,7 @@ subtest make_output => sub {
         ],
         [
             'It costs $.50, no, wait, it cost $2.50... or 50¢',
-            [qw<it costs $.50 , no , wait , it cost $2.50 ... or 50¢>],
+            [qw<it costs $.50>, ',', 'no', ',', 'wait', ',', qw<it cost $2.50 ... or 50¢>],
             'It costs $.50, no, wait, it cost $2.50... or 50¢.',
         ],
         [
@@ -495,7 +495,7 @@ subtest make_output => sub {
         ],
         [
             'failo is #1',
-            [qw<failo is #1>],
+            [qw<failo is>, '#1'],
             'Failo is #1.',
         ],
     );
