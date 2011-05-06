@@ -176,13 +176,12 @@ sub _evaluate_reply {
     # documented in recent MegaHAL.
     my $score_divider = 1;
     if (@$reply_token_ids >= 8) {
-        $score_divider = sqrt(@$reply_token_ids - 1);
+        $score /= sqrt(@$reply_token_ids - 1);
     }
     elsif (@$reply_token_ids >= 16) {
-        $score_divider = @$reply_token_ids;
+        $score /= @$reply_token_ids;
     }
 
-    $score = $score / $score_divider;
     return $score;
 }
 
