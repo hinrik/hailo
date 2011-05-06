@@ -13,6 +13,8 @@ Revision history for Hailo
         * Match "#1" and "#1234" as single tokens
         * Match </foo> as a single token
 
+    - Depend on MouseX::Getopt 0.33 to fix test failures
+
 0.68 2011-05-03 13:16:05
 
     - Speed up the learning of repetitive sentences by caching more
