@@ -355,8 +355,13 @@ subtest make_output => sub {
         ],
         [
             'tumi@foo',
-            [qw<tumi @ foo>],
+            [qw<tumi@foo>],
             'tumi@foo',
+        ],
+        [
+            'tumi@foo.co.uk',
+            [qw<tumi@foo.co.uk>],
+            'tumi@foo.co.uk',
         ],
         [
             'e.g. the river',
