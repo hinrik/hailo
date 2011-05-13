@@ -4,6 +4,8 @@ Revision history for Hailo
 
     - Word tokenizer: Improve tokenization of email addresses
 
+    - When using --train-fast, remove the "flushing cache" message when done
+
 0.69 2011-05-07 04:02:38
 
     - Scored engine: Prefer shorter replies, like MegaHAL/cobe do

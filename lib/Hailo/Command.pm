@@ -349,8 +349,10 @@ sub train_progress {
     $progress->close;
 
     if ($fast) {
-        print "Flushing cache (this may take a while for large inputs)\n";
+        my $msg = "Flushing cache (this may take a while for large inputs)";
+        syswrite STDOUT, $msg;
         $self->_engine->flush_cache;
+        print "\010" x length $msg;
     }
 
     my $elapsed = tv_interval($start_time);
