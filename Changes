@@ -6,6 +6,10 @@ Revision history for Hailo
 
     - When using --train-fast, remove the "flushing cache" message when done
 
+    - Word tokenizer: Use backspace instead of escape as a magic character
+      when capitalizing text in multiple passes, since it's less likely to
+      appear in tokens.
+
 0.69 2011-05-07 04:02:38
 
     - Scored engine: Prefer shorter replies, like MegaHAL/cobe do

@@ -73,6 +73,12 @@ my $SPLIT_WORD  = qr{$LOOSE_WORD(?:/$LOOSE_WORD)?(?=$PUNCTUATION(?:\s+|$)|$CLOSE
 my $DOTTED_STRICT = qr/$LOOSE_WORD(?:$POINT(?:\d+|\w{2,}))?/;
 my $WORD_STRICT   = qr/$DOTTED_STRICT(?:$APOSTROPHE$DOTTED_STRICT)*/;
 
+# This string is added to (and later removed from) the output string when
+# capitalizing it in multiple passes. We use backspace, because that is
+# unlikely to be in the input. This dirty approach can probably be replaced
+# with regex grammars, but I haven't bothered to learn to use those.
+my $SEPARATOR     = "\x08";
+
 # input -> tokens
 sub make_tokens {
     my ($self, $input) = @_;
@@ -189,9 +195,9 @@ sub make_output {
 
     # capitalize all other words after word boundaries
     # we do it in two passes because we need to match two words at a time
-    $reply =~ s/(?:$ELLIPSIS|\s+)$OPEN_QUOTE?\s*$WORD_STRICT$BOUNDARY\K($SPLIT_WORD)/\x1B\u$1\x1B/go;
-    $reply =~ s/\x1B$WORD_STRICT\x1B$BOUNDARY\K($SPLIT_WORD)/\u$1/go;
-    $reply =~ s/\x1B//go;
+    $reply =~ s/(?:$ELLIPSIS|\s+)$OPEN_QUOTE?\s*$WORD_STRICT$BOUNDARY\K($SPLIT_WORD)/$SEPARATOR\u$1$SEPARATOR/go;
+    $reply =~ s/$SEPARATOR$WORD_STRICT$SEPARATOR$BOUNDARY\K($SPLIT_WORD)/\u$1/go;
+    $reply =~ s/$SEPARATOR//go;
 
     # end paragraphs with a period when it makes sense
     $reply =~ s/(?:$ELLIPSIS|\s+|^)$OPEN_QUOTE?(?:$SPLIT_WORD(?:\.$SPLIT_WORD)*)\K($CLOSE_QUOTE?)$/.$1/o;
