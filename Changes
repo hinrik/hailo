@@ -1,6 +1,7 @@
 Revision history for Hailo
 
 {{$NEXT}}
+
     - Word tokenizer: Improve tokenization of email addresses
 
 0.69 2011-05-07 04:02:38
