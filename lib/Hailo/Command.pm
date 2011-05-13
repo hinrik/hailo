@@ -325,7 +325,7 @@ sub train_progress {
         target => $lines,
         # Every 0.1 seconds for long files
         freq => ($lines < 10_000 ? 10 : 'd'),
-        # Override Term::Sk's default 100_100 to 100,000
+        # Override Term::Sk's default 100_000 to 100,000
         commify => sub {
             my $int = shift;
             $int = reverse $int;
