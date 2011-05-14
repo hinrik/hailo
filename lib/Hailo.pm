@@ -604,10 +604,7 @@ interface to Hailo available at L<hailo.nix.is|http://hailo.nix.is>
 and as L<hailo-ui-web|http://github.com/avar/hailo-ui-web> on
 L<GitHub|http://github.com>
 
-=item * L<HALBot> - Another L<Catalyst> Dojo powered web interface to
-Hailo available at L<bifurcat.es|http://bifurcat.es/> and as
-L<halbot-on-the-web|http://gitorious.org/halbot-on-the-web/halbot-on-the-web>
-at L<gitorious|http://gitorious.org>
+=item * L<tweetmix|http://www.tweetmix.me/>, a random tweet generator powered by Hailo
 
 =item * L<http://github.com/pteichman/cobe> - cobe, a Python port of MegaHAL "inspired by the success of Hailo"
 
