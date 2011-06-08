@@ -13,3 +13,5 @@
 ^xt/
 ^RELEASE
 ^nytprof
+^README.pod$
+^cover_db/
