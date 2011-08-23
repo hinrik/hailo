@@ -2,13 +2,13 @@ Revision history for Hailo
 
 {{$NEXT}}
 
-    - Word tokenizer: Improve tokenization of email addresses
-
     - When using --train-fast, remove the "flushing cache" message when done
 
-    - Word tokenizer: Use backspace instead of escape as a magic character
-      when capitalizing text in multiple passes, since it's less likely to
-      appear in tokens.
+    - Word tokenizer:
+        * Improve tokenization of email addresses
+        * Use backspace instead of escape as a magic character when
+          capitalizing text in multiple passes, since it's less likely to
+          appear in tokens.
 
 0.69 2011-05-07 04:02:38
 
