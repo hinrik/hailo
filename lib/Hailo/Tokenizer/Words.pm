@@ -30,7 +30,7 @@ my $DOTTED     = qr/$BARE_WORD?\.$BARE_WORD(?:\.$BARE_WORD)*/;
 my $WORD_TYPES = qr/$NUMBER|$ABBREV|$DOTTED|$APOST_WORD|$BARE_WORD/;
 my $WORD_APOST = qr/$WORD_TYPES(?:$DASH$WORD_TYPES)*$APOSTROPHE(?!$ALPHABET|$NUMBER)/;
 my $WORD       = qr/$WORD_TYPES(?:(?:$DASH$WORD_TYPES)+|$DASH(?!$DASH))?/;
-my $MIXED_CASE = qr/ \p{Lower}+ \p{Upper} /x;
+my $MIXED_CASE = qr/ \p{Lower}+ \p{Upper} | \p{Upper}{2,} \p{Lower} /x;
 my $UPPER_NONW = qr/^ (?:\p{Upper}+ \W+)(?<!I') (?: \p{Upper}* \p{Lower} ) /x;
 
 # special tokens
@@ -131,7 +131,7 @@ sub make_tokens {
                 # Maybe preserve the casing of this word
                 $word = lc $word
                     if $word ne uc $word
-                    # Mixed-case words like "WoW"
+                    # Mixed-case words like "WoW" or "ATMs"
                     and $word !~ $MIXED_CASE
                     # Words that are upper case followed by a non-word character.
                     and $word !~ $UPPER_NONW;

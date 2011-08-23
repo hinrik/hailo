@@ -9,6 +9,7 @@ Revision history for Hailo
         * Use backspace instead of escape as a magic character when
           capitalizing text in multiple passes, since it's less likely to
           appear in tokens.
+        * Preserve casing of words like "ATMs"
 
 0.69 2011-05-07 04:02:38
 

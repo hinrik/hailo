@@ -508,6 +508,11 @@ subtest make_output => sub {
             [qw{</foo>}],
             '</foo>',
         ],
+        [
+            'ATMs in Baltimore',
+            [qw{ATMs in baltimore}],
+            'ATMs in baltimore.',
+        ],
     );
 
     my $toke = Hailo::Tokenizer::Words->new();
